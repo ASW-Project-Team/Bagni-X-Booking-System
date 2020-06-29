@@ -1,6 +1,6 @@
 # Bagni X Booking System
 
- - Corso di studi magistrale in Ingegneria e Scienze informatiche
+ - Corso di studi magistrale in Ingegneria e Scienze Informatiche
 
  - Progetto per il corso di Applicazioni e Servizi Web
 
