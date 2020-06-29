@@ -6,32 +6,58 @@ const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
 
+global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
+const port = 3000;
 
-global.appRoot = path.resolve(__dirname);
-var PORT = 3000;
-const CLIENT_APP_FOLDER = '/dist/client';
+const main = function () {
+    //waitForMongoInit();
 
-//mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true, useFindAndModify: false });
+    // Permits only requests from this domain inside the API
+    app.use(cors({
+        origin: "http://localhost:" + port,
+        optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    }))
 
-// Permits only requests from this domain inside the API
-app.use(cors())
+    // File size optimization in requests
+    app.use(compression());
 
-// File size optimization in requests
-app.use(compression());
+    // parse requests of content-type - application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({extended: true}));
 
-// Used to access parameters in HTTP requests
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+    // parse requests of content-type - application/json
+    app.use(bodyParser.json());
 
-app.use(express.static(__dirname + CLIENT_APP_FOLDER));
+    app.use(express.static(ANGULAR_CLIENT_PATH));
 
-var routes = require('./src/routes/moviesRoutes');
-routes(app);
+    const routes = require('./src/routes/routes');
+    routes.set(app);
 
-app.use(function(req, res) {
-  res.status(404).send({url: req.originalUrl + ' not found'})
-});
+    app.listen(port, function () {
+        console.log('BagniX API server started on port ' + port);
+    });
+}
 
-app.listen(PORT, function () {
-  console.log('BagniX API server started on port ' + PORT);
-});
+
+const waitForMongoInit = function () {
+    console.log('Waiting while MongoDB container is setting up...');
+    var date = new Date();
+    var curDate = null;
+    do {
+        curDate = new Date();
+    }
+    while (curDate - date < 10000);
+
+    console.log('Starting MongoDB connection...');
+
+    mongoose.connect(
+        'mongodb://mongodb:27017/dbsa',
+        {
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            connectTimeoutMS: 30
+        })
+        .then(() => console.log('MongoDB Connected'))
+        .catch((err) => console.log('Connection failed!' + err));
+}
+
+main();

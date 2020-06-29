@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  nodejsapp:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      args:
+        - IMAGE_VERSION=non_serve
+    image: nodejsapp
+#    image: vic/debian.iptables.ifconfig
+    environment:
+      - MIAVAR=non_serve__solo_come_esempio
+    ports:
+      - 3000:3000
+    networks:
+      - interna
+  mongodb:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+      args:
+        - IMAGE_VERSION=non_serve
+    image: mymongo
+    environment:
+      - MIAVAR=non_serve3__solo_come_esempio
+    ports:
+      - 27017-27019:27017-27019
+    networks:
+      - interna
+#    volumes:
+#      - mydata:/data
+
+networks:
+  interna:
+    driver: bridge
+    driver_opts:
+       com.docker.network.bridge.name: "brinterna" 
+#      com.docker.network.enable_ipv6: "false"
+#volumes:
+#  mydata:
+
