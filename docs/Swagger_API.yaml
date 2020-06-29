@@ -1,0 +1,250 @@
+openapi: 3.0.1
+info:
+  title: BagniBookingSystemApi
+  description: Progetto per l'esame di ASW di Maldini, Gorini e Angelini.
+  version: "0.1"
+servers:
+- url: http://localhost:8080
+paths:
+  /api/customers/{user-id}:
+    get:
+      summary: It returns the user-id description
+      description: User data
+      parameters:
+      - name: user-id
+        in: path
+        description: User identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+    put:
+      summary: It allows the user to modify some data about hisself
+      description: User data
+      parameters:
+      - name: user-id
+        in: path
+        description: User identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/feed/10/:
+    get:
+      summary: It returns the first 10 news
+      description: Feed
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/feed/:
+    get:
+      summary: It returns the of the page-id page
+      description: Feed
+      parameters:
+      - name: page-id
+        in: query
+        description: The number of the page which has been selected
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/customers/{user-id}/bookings/:
+    get:
+      summary: It returns all user's bookings
+      description: Booking
+      parameters:
+      - name: user-id
+        in: path
+        description: User identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/bookings/{booking-id}/:
+    get:
+      summary: It returns the booking with id booking-id
+      description: Booking
+      parameters:
+      - name: booking-id
+        in: path
+        description: Booking identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+    put:
+      summary: It allows the user to modify the booking
+      description: Booking
+      parameters:
+      - name: booking-id
+        in: path
+        description: Booking identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+    delete:
+      summary: It deletes a reservation
+      description: Modifica-aggiunta prenotazione
+      parameters:
+      - name: booking-id
+        in: path
+        description: Booking identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/new-booking/:
+    get:
+      summary: It returns all the available places in the period
+      description: New booking
+      parameters:
+      - name: availability
+        in: query
+        description: Starting-ending date
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/new-booking/checkout/:
+    post:
+      summary: It allows the user to book a site
+      description: New booking
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/bookings/{booking-id}/detail/:
+    get:
+      summary: It returns all the details of a specific booking
+      description: Booking dashboard
+      parameters:
+      - name: booking-id
+        in: path
+        description: Booking identificator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/bookings/10/:
+    get:
+      summary: It returns the last 10 bookings
+      description: Booking dashboard
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/bookings/:
+    get:
+      summary: It returns the bookings at the page page-id
+      description: Booking dashboard
+      parameters:
+      - name: page-id
+        in: query
+        description: Page identificator
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+  /api/unregistred-costumer/:
+    post:
+      summary: It creates a user
+      description: Modifica-aggiunta prenotazione
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+components: {}
