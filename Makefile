@@ -1,10 +1,10 @@
 SHELL=/bin/bash
 
-MONGO_SERVICE_NAME=mongodb
-NODEJSAPP_SERVICE_NAME=nodejsapp
+MONGO_SERVICE_NAME=database
+NODEJSAPP_SERVICE_NAME=server
 
-MONGO_IMAGE=mymongo
-NODEJSAPP_IMAGE=nodejsapp
+MONGO_IMAGE=mongoimage
+NODEJSAPP_IMAGE=serverimage
 
 
 NETWORK=interna

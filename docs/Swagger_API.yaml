@@ -1,24 +1,24 @@
 openapi: 3.0.1
 info:
-  title: BagniBookingSystemApi
+  title: BagniXBookingSystemApi
   description: Progetto per l'esame di ASW di Maldini, Gorini e Angelini.
   version: "0.1"
 servers:
-- url: http://localhost:8080
+  - url: http://localhost:3000
 paths:
   /api/customers/{user-id}:
     get:
       summary: It returns the user-id description
       description: User data
       parameters:
-      - name: user-id
-        in: path
-        description: User identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: user-id
+          in: path
+          description: User identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -30,14 +30,14 @@ paths:
       summary: It allows the user to modify some data about hisself
       description: User data
       parameters:
-      - name: user-id
-        in: path
-        description: User identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: user-id
+          in: path
+          description: User identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -45,10 +45,21 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-  /api/feed/10/:
-    get:
-      summary: It returns the first 10 news
-      description: Feed
+
+  /api/customers/:
+    post:
+      summary: It returns the user-id description
+      description: User data
+      parameters:
+        - name: registered
+          in: query
+          description: Specifies whether the passed user has a real profile in Firebase Authentication.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: boolean
+
       responses:
         "200":
           description: OK
@@ -56,19 +67,29 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
+
   /api/feed/:
     get:
       summary: It returns the of the page-id page
       description: Feed
       parameters:
-      - name: page-id
-        in: query
-        description: The number of the page which has been selected
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: page-id
+            in: query
+            description: Page identificator. If speficied, only bookings relative to the page are returned.
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: integer
+
+        - name: page-size
+            in: query
+            description: It specifies that the returned booking are only of the number given.
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: integer
       responses:
         "200":
           description: OK
@@ -76,19 +97,39 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-  /api/customers/{user-id}/bookings/:
+
+  /api/bookings/:
     get:
-      summary: It returns all user's bookings
+      summary: It returns some bookings, related optionally to a user. If page size is not specified, the first 10 are returned.
       description: Booking
       parameters:
-      - name: user-id
-        in: path
-        description: User identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: user-id
+          in: query
+          description: User identificator. If the parameter is present, bookings from the specified user are returned.
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+
+        - name: page-id
+            in: query
+            description: Page identificator. If speficied, only bookings relative to the page are returned.
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: integer
+
+        - name: page-size
+            in: query
+            description: It specifies that the returned booking are only of the number given.
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: integer
+
       responses:
         "200":
           description: OK
@@ -96,19 +137,21 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
+
   /api/bookings/{booking-id}/:
     get:
       summary: It returns the booking with id booking-id
       description: Booking
       parameters:
-      - name: booking-id
-        in: path
-        description: Booking identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: booking-id
+          in: path
+          description: Booking identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+
       responses:
         "200":
           description: OK
@@ -120,14 +163,14 @@ paths:
       summary: It allows the user to modify the booking
       description: Booking
       parameters:
-      - name: booking-id
-        in: path
-        description: Booking identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: booking-id
+          in: path
+          description: Booking identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -139,14 +182,14 @@ paths:
       summary: It deletes a reservation
       description: Modifica-aggiunta prenotazione
       parameters:
-      - name: booking-id
-        in: path
-        description: Booking identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: booking-id
+          in: path
+          description: Booking identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -154,19 +197,30 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
+
   /api/new-booking/:
     get:
       summary: It returns all the available places in the period
       description: New booking
       parameters:
-      - name: availability
-        in: query
-        description: Starting-ending date
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: from
+            in: query
+            description: Start booking date
+            required: true
+            style: form
+            explode: true
+            schema:
+              type: date
+
+        - name: to
+          in: query
+          description: End booking date
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: date
+
       responses:
         "200":
           description: OK
@@ -174,6 +228,7 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
+
   /api/new-booking/checkout/:
     post:
       summary: It allows the user to book a site
@@ -185,66 +240,110 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-  /api/bookings/{booking-id}/detail/:
+
+
+  /api/catalog/umbrellas/:
     get:
-      summary: It returns all the details of a specific booking
-      description: Booking dashboard
-      parameters:
-      - name: booking-id
-        in: path
-        description: Booking identificator
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
-  /api/bookings/10/:
-    get:
-      summary: It returns the last 10 bookings
-      description: Booking dashboard
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
-  /api/bookings/:
-    get:
-      summary: It returns the bookings at the page page-id
-      description: Booking dashboard
-      parameters:
-      - name: page-id
-        in: query
-        description: Page identificator
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
-  /api/unregistred-costumer/:
     post:
-      summary: It creates a user
-      description: Modifica-aggiunta prenotazione
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
+
+  /api/catalog/umbrellas/{umbrella-id}:
+    get:
+    put:
+
+  /api/catalog/ranks/:
+    get:
+    post:
+    put:
+
+
+  /api/catalog/sales/:
+    get:
+      parameters:
+        - name: rank-id
+          in: query
+          description: Rank to refer for the sale
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+
+        - name: page-id
+          in: query
+          description: Page identificator. If speficied, only sales relative to the page are returned.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+
+        - name: page-size
+          in: query
+          description: It specifies that the returned salews are only of the number given.
+          required: false
+          style: form
+          explode: true
+          schema:
+             type: integer
+    post:
+
+    /api/catalog/sales/{sale-id}:
+      get:
+        parameters:
+          - name: sale-id
+            in: path
+            description: Id to refer for the sale
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: string
+      put:
+        parameters:
+          - name: sale-id
+            in: path
+            description: Id to refer for the sale
+            required: false
+            style: form
+            explode: true
+            schema:
+              type: string
+
+  /api/catalog/services/:
+    get:
+      parameters:
+        - name: page-id
+          in: query
+          description: Page identificator. If speficied, only sales relative to the page are returned.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+
+        - name: page-size
+          in: query
+          description: It specifies that the returned salews are only of the number given.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+    post:
+
+    /api/catalog/services/{service-id}:
+      get:
+        parameters:
+          - name: service-id
+            in: path
+            description: Service id
+            required: true
+            style: form
+            explode: true
+            schema:
+              type: integer
+
+    /api/stats/:
+      description: robe
+
 components: {}
