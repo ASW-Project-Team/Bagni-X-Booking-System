@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-//Movie = require("../models/movieModel.js")(mongoose);
+//Movie = require("../models/whatYouNeed.js")(mongoose);
 
 exports.list_bookings = function(req, res) {
 	Movie.find({}, function(err, movie) {

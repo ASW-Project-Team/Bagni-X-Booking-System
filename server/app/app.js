@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
+const Float = require('mongoose-float').loadType(mongoose);
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
+
 
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;

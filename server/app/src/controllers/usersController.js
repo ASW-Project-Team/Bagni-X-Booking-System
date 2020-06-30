@@ -1,5 +1,3 @@
-var mongoose = require('mongoose');
-Movie = require("../models/movieModel.js")(mongoose);
 
 exports.list_users = function(req, res) {
 	// todo
