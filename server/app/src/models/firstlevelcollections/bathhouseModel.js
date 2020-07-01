@@ -1,10 +1,7 @@
+import {Gallery} from '../othercollections/galleryModel'
+
 module.exports = function(mongoose) {
     const Schema = mongoose.Schema;
-
-    const gallery = new Schema({
-        _id: Schema.Types.ObjectID,
-        url: String
-    });
 
     const bathhouseInfo = new Schema({
         _id: Schema.Types.ObjectId,
@@ -13,7 +10,7 @@ module.exports = function(mongoose) {
         phone: String,
         n_umbrella: Number,
         n_available_now_umbrellas: Number,
-        gallery: [gallery]
+        gallery: [Gallery]
     });
     return mongoose.model('bathhousemodel', bathhouseInfo, 'bathhouse_info');
 };
