@@ -8,6 +8,7 @@ RUN	mkdir -p ${WORKINGDIR} && chmod 666 ${WORKINGDIR}
 
 COPY 	./app  ${WORKINGDIR}/
 
+# installs all needed packages, and discards unneeded dependencies
 RUN	apt-get -y update		&&	\
 	apt-get -y install apt-utils	&&	\
 	apt-get -y install nodejs	&&	\
@@ -21,7 +22,11 @@ RUN	apt-get -y update		&&	\
 	apt-get -y install curl		&&	\
 	apt-get -y clean
 
-RUN	npm install
+# installs dependencies and builds client
+RUN	npm install && \
+    cd ./client && \
+    npm install && \
+    ng build
 
 EXPOSE 3000
 
