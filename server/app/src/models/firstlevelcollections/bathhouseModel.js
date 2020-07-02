@@ -7,8 +7,11 @@ module.exports = function(mongoose) {
         _id: Schema.Types.ObjectId,
         name: String, // String is shorthand for {type: String}
         description: {type: String, default: ""},
-        phone: String,
-        n_umbrella: Number,
+        phone: String, // fixme add validator from server
+        n_umbrella: {
+            type: Number,
+            min: [10, 'Too small'],
+        },
         n_available_now_umbrellas: Number,
         gallery: [Gallery]
     });

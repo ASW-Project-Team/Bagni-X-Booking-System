@@ -8,8 +8,8 @@ export class Booking {
     umbrella_id: Schema.Types.ObjectID
     confirmed: Boolean
     cancelled: Boolean
-    price: Float
+    price: Float // fixme price > price min
     date_from: Date
-    date_to: Date // fixme vincolo da gestire esternamente
+    date_to: Date // fixme date_to > date_from
     services: [Service]
 }

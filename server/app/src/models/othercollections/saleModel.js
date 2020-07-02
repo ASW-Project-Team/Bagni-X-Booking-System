@@ -4,7 +4,10 @@ const Schema = mongoose.Schema;
 // used in catalog
 export class Sale{
     _id: Schema.Types.ObjectID
-    percent: Number
+    percent: {
+        type: Number,
+        min: [0, 'Too small'],
+    }
     date_from: Date
     date_to: Date
 }

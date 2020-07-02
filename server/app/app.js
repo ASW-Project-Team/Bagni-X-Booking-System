@@ -7,6 +7,8 @@ const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
 
+mongoose.connect('mongodb://localhost/bagni_X_booking_system_db', { useNewUrlParser: true, useFindAndModify: false });
+
 
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;
