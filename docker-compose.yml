@@ -1,41 +1,41 @@
 version: '3'
 
 services:
-  nodejsapp:
+  server:
     build:
-      context: ./server
+      context: server
       dockerfile: Dockerfile
       args:
-        - IMAGE_VERSION=non_serve
-    image: nodejsapp
-#    image: vic/debian.iptables.ifconfig
+      # - IMAGE_VERSION=non_serve
+    image: server
+    #    image: vic/debian.iptables.ifconfig
     environment:
-      - MIAVAR=non_serve__solo_come_esempio
+    #- MIAVAR=non_serve__solo_come_esempio
     ports:
       - 3000:3000
     networks:
-      - interna
-  mongodb:
+      - internal
+  database:
     build:
       context: ./database
       dockerfile: Dockerfile
       args:
-        - IMAGE_VERSION=non_serve
-    image: mymongo
+      # - IMAGE_VERSION=non_serve
+    image: database
     environment:
-      - MIAVAR=non_serve3__solo_come_esempio
+    #- MIAVAR=non_serve3__solo_come_esempio
     ports:
       - 27017-27019:27017-27019
     networks:
-      - interna
+      - internal
 #    volumes:
 #      - mydata:/data
 
 networks:
-  interna:
+  internal:
     driver: bridge
     driver_opts:
-       com.docker.network.bridge.name: "brinterna" 
+      com.docker.network.bridge.name: "brinternal"
 #      com.docker.network.enable_ipv6: "false"
 #volumes:
 #  mydata:

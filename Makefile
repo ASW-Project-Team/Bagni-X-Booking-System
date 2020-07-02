@@ -1,68 +1,71 @@
 SHELL=/bin/bash
 
-MONGO_SERVICE_NAME=database
-NODEJSAPP_SERVICE_NAME=server
+DB_SERVICE_NAME=database
+WS_SERVICE_NAME=server
 
-MONGO_IMAGE=mongoimage
-NODEJSAPP_IMAGE=serverimage
+DB_IMAGE=databaseimage
+WS_IMAGE=serverimage
 
+NETWORK=internal
 
-NETWORK=interna
+DB_PORTS="27017-27019:27017-27019"
+WS_PORTS="3000:3000"
 
-MONGO_PORTS_EXPOSED="27017-27019:27017-27019"
-NODEJSAPP_PORTS_EXPOSED="3000:3000"
+DB_PATH=./database
+WS_PATH=./server
 
-MONGODOCKERFILEDIR=./database
-NODEJSAPPDOCKERFILEDIR=./server
+.PHONY: all
+all: build network up
 
-all:	build network up
+.PHONY: build
+build:
+	ps ; cd ${DB_PATH} && docker build -t ${DB_IMAGE} .
+	cd ${WS_PATH}  && docker build -t ${WS_IMAGE} .
 
+.PHONY: network
+network:
+	- docker network create -d bridge ${NETWORK}
 
-.PHONY:	build network up rmnetwork clean cleanall down downrmi stop rmi rm
+.PHONY: up
+up: network
+	docker run -itd --network ${NETWORK} -p ${DB_PORTS} --name ${DB_SERVICE_NAME}      ${DB_IMAGE}
+	docker run -itd --network ${NETWORK} -p ${WS_PORTS} --name ${WS_SERVICE_NAME} --rm ${WS_IMAGE}
 
+.PHONY: cleanall
+cleanall: downrmi
 
-build:	
-	ps ; cd ${MONGODOCKERFILEDIR} && docker build -t ${MONGO_IMAGE}  .
-	cd ${NODEJSAPPDOCKERFILEDIR} && docker build -t ${NODEJSAPP_IMAGE} . 
+.PHONY: clean
+clean: down
 
-network:	
-	- docker network create -d bridge interna
+.PHONY: downrmi
+downrmi: down rmi
 
-up:	network
-	docker run  -itd  --network interna  -p 27017-27019:27017-27019  --name mongodb  mymongo
-	docker run -itd --rm --network interna --name nodejsapp -p 3000:3000 nodejsapp
+.PHONY: down
+down: stop rm rmnetwork
 
+.PHONY: stop
+stop:
+	- docker stop ${DB_SERVICE_NAME} ${WS_SERVICE_NAME}
 
-cleanall:	downrmi
+.PHONY: rm
+rm:
+	- docker rm ${DB_SERVICE_NAME} ${WS_SERVICE_NAME}
 
-
-clean:	down
-
-
-downrmi: down  rmi
-
-
-down:	stop rm rmnetwork
-
-
-stop:	
-	- docker stop ${MONGO_SERVICE_NAME}  ${NODEJSAPP_SERVICE_NAME}
-
-rm:	
-	- docker rm ${MONGO_SERVICE_NAME}  ${NODEJSAPP_SERVICE_NAME}
-
-rmi:	
+.PHONY: rmi
+rmi:
 	- docker rmi ${NODEJSAPPIMAGE} ${MONGOIMAGE}
 
-rmnetwork:	
+.PHONY: rmnetwork
+rmnetwork:
 	- docker network rm ${NETWORK}
 
-.PHONY: build-local-server
-build-local-server:
-	cd ${NODEJSAPPDOCKERFILEDIR}/app/client && npm update && ng build
-	cd ${NODEJSAPPDOCKERFILEDIR}/app/ && npm update && node app.js
+.PHONY: build-ws-local
+build-local:
+	cd ${WS_PATH}/app/client && npm update && ng build
+	cd ${WS_PATH}/app/ && npm update && node app.js
 
-.PHONY: up-local-server
-up-local-server:
-	cd ${NODEJSAPPDOCKERFILEDIR}/app/ && node app.js
+
+.PHONY: up-ws-local
+up-local:
+	cd ${WS_PATH}/app/ && node app.js
 

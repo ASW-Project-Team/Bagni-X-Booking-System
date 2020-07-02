@@ -37,7 +37,7 @@ const main = function () {
     routes.set(app);
 
     app.listen(port, function () {
-        console.log('BagniX API server started on port ' + port);
+        console.log('BagniX webserver started on port ' + port);
     });
 }
 
@@ -54,7 +54,7 @@ const waitForMongoInit = function () {
     console.log('Starting MongoDB connection...');
 
     mongoose.connect(
-        'mongodb://mongodb:27017/dbsa',
+        'mongodb://database:27017/dbsa',
         {
             useNewUrlParser: true,
             useFindAndModify: false,
