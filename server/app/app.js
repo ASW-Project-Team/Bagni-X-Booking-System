@@ -65,6 +65,21 @@ const waitForMongoInit = function () {
         .catch((err) => console.log('Connection failed!' + err));
 
 
+/*    const MongoClient = require('mongodb').MongoClient;
+    const uri = "mongodb+srv://test<password>:@bagnixbookingsystem-ed7uh.gcp.mongodb.net/BagniXBookingSystem?retryWrites=true&w=majority";
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true,
+        connectTimeoutMS: 30 });
+    client.connect(err => {
+        const collection = client.db("test").collection("devices");
+        // perform actions on the collection object
+        client.close();
+    });*/
+
+
+
 }
 
 main();

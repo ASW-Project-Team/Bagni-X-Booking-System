@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 User = require("../models/firstlevelcollections/userModel.js")(mongoose);
 
-const ObjectId = mongoose.Schema.Types.ObjectID
+
 // Before this queries we have to check the permissions to interact with db
 
 
 exports.read_user = function(req, res) {
-    User.findById(ObjectId(req.params.id), function(err, user) {
+    User.findById(mongoose.Types.ObjectId(req.params.id), function(err, user) {
         if (err)
             res.send(err);
         else {
@@ -16,8 +16,7 @@ exports.read_user = function(req, res) {
                 });
             } else{
                 // responds with user
-                res.status(200);
-                res.json(user);
+                res.status(200).json(user);
             }
         }
     });
@@ -30,12 +29,9 @@ exports.create_user = function(req, res) {
 
     // 201 -> istance created
     newUser.save(function(err, savedUser) {
-        if (err) {
-            console.log(err)
+        if (err)
             res.send(err);
-        }
 
-        //res.send({ data: savedUser });
         res.status(201).json(savedUser);
     });
 };
@@ -45,14 +41,26 @@ exports.create_user = function(req, res) {
 exports.update_user = function(req, res) {
     User.findById(ObjectId(req.params.id), (err, user) => {
         // This assumes all the fields of the object is present in the body.
-        // TODO check se i campi ci sono o no e check che siano ben formattati
-        user.name = req.body.name;
-        user.surname = req.body.surname;
-        user.phone = req.body.phone;
-        user.email = req.body.email;
-        user.address = req.body.address;
+        // TODO check che i campi siano ben formattati
+        if (req.body.name !== undefined)
+            user.name = req.body.name;
+
+        if (req.body.surname !== undefined)
+            user.surname = req.body.surname;
+
+        if (req.body.phone !== undefined)
+            user.phone = req.body.phone;
+
+        if (req.body.email !== undefined)
+            user.email = req.body.email;
+
+        if (req.body.address !== undefined)
+            user.address = req.body.address;
 
         user.save((saveErr, updatedUser) => {
+            if (saveErr){
+                res.send(saveErr);
+            }
             res.status(200).send({ data: updatedUser });
         });
     });
@@ -70,9 +78,11 @@ exports.delete_user = function(req, res) {
     });
 };
 
+
+/* BOOKINGS */
 //const ObjectId = mongoose.Schema.Types.ObjectID
 const defaultPageSize = 10;
-const defaultPageId = 0;
+const defaultPageId = 0; // FIXME to 1
 
 
 exports.read_bookings = function(req, res) {
