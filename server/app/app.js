@@ -1,14 +1,10 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
-const Float = require('mongoose-float').loadType(mongoose);
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
-
-mongoose.connect('mongodb://localhost/bagni_X_booking_system_db', { useNewUrlParser: true, useFindAndModify: false });
-
 
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;
@@ -54,7 +50,8 @@ const waitForMongoInit = function () {
     console.log('Starting MongoDB connection...');
 
     mongoose.connect(
-        'mongodb://database:27017/dbsa',
+        // localhost -> database:27017
+        'mongodb://localhost/bagni_X_booking_system_db',
         {
             useNewUrlParser: true,
             useFindAndModify: false,
@@ -62,6 +59,10 @@ const waitForMongoInit = function () {
         })
         .then(() => console.log('MongoDB Connected'))
         .catch((err) => console.log('Connection failed!' + err));
+
+        /*let request = new Request();
+        create_user()*/
+
 }
 
 main();

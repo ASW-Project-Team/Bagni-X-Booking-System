@@ -1,8 +1,9 @@
-import {RankUmbrella} from "../othercollections/rankUmbrellaModel";
-import {Umbrella} from "../othercollections/umbrellaModel";
-import {Service} from "../othercollections/serviceModel";
-
 module.exports = function (mongoose) {
+
+    import {RankUmbrella} from "../othercollections/rankUmbrellaModel";
+    import {Umbrella} from "../othercollections/umbrellaModel";
+    import {Service} from "../othercollections/serviceModel";
+
     const Schema = mongoose.Schema;
 
 

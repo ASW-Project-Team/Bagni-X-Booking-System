@@ -1,5 +1,6 @@
 module.exports.set = function(app) {
-	const bookingsController = require('../controllers/bookingsController');
+	// due to not possible two or more require at the same collection
+	const bookingsController = require('../controllers/usersController');
 
 	app.route('/api/bookings')
 		.get(bookingsController.list_bookings)

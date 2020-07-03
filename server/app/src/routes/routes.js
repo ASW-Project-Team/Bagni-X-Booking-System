@@ -1,6 +1,6 @@
 module.exports.set = function(app) {
-	const bookingRoutes = require('./bookingsRoutes');
 	const usersRoutes = require('./usersRoutes');
+	const bookingRoutes = require('./bookingsRoutes');
 	const genericRoutes = require('./genericRoutes');
 	// todo add all required root here
 

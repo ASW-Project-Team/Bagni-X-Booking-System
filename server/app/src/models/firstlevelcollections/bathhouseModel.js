@@ -1,6 +1,9 @@
-import {Gallery} from '../othercollections/galleryModel'
-
 module.exports = function(mongoose) {
+
+    //const Gallery = require('../othercollections/galleryModel');
+
+    import {Gallery} from '../othercollections/galleryModel'
+
     const Schema = mongoose.Schema;
 
     const bathhouseInfo = new Schema({

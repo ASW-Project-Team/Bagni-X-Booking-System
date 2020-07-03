@@ -1,7 +1,12 @@
-// Used in booking and in catalog
-export class Service {
-        _id: Schema.Types.ObjectID
-        service_id: Schema.Types.ObjectID
-        price: Float
-        description: {type: String, default: ""}
+module.exports = function(mongoose) {
+
+        const Schema = mongoose.Schema;
+
+        const Service = new Schema({
+                _id: Schema.Types.ObjectID,
+                price: Float,
+                description: {type: String, default: ""}
+        });
+        return mongoose.model('servicemodel', ServiceSchema, 'services');
+
 }
