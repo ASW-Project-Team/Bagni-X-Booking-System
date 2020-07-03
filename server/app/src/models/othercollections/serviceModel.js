@@ -1,12 +1,13 @@
 module.exports = function(mongoose) {
 
-        const Schema = mongoose.Schema;
+        let Schema = mongoose.Schema;
+        let Float = require('mongoose-float').loadType(mongoose);
 
-        const Service = new Schema({
+        let Service = new Schema({
                 _id: Schema.Types.ObjectID,
                 price: Float,
-                description: {type: String, default: ""}
+                description: {type: String, default: null}
         });
-        return mongoose.model('servicemodel', ServiceSchema, 'services');
+        return mongoose.model('servicemodel', Service, 'services');
 
 }

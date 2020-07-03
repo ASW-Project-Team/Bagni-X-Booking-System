@@ -5,12 +5,13 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
+const DOCKER = false;
 
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;
 
 const main = function () {
-    //waitForMongoInit();
+    waitForMongoInit();
 
     // Permits only requests from this domain inside the API
     app.use(cors({
@@ -39,15 +40,17 @@ const main = function () {
 
 
 const waitForMongoInit = function () {
-    console.log('Waiting while MongoDB container is setting up...');
-    var date = new Date();
-    var curDate = null;
-    do {
-        curDate = new Date();
-    }
-    while (curDate - date < 10000);
+    if (DOCKER) {
+        console.log('Waiting while MongoDB container is setting up...');
+        let date = new Date(); // var?
+        let curDate = null;  // var?
+        do {
+            curDate = new Date();
+        }
+        while (curDate - date < 10000);
 
-    console.log('Starting MongoDB connection...');
+        console.log('Starting MongoDB connection...');
+    }
 
     mongoose.connect(
         // localhost -> database:27017
@@ -55,13 +58,12 @@ const waitForMongoInit = function () {
         {
             useNewUrlParser: true,
             useFindAndModify: false,
+            useUnifiedTopology: true,
             connectTimeoutMS: 30
         })
         .then(() => console.log('MongoDB Connected'))
         .catch((err) => console.log('Connection failed!' + err));
 
-        /*let request = new Request();
-        create_user()*/
 
 }
 

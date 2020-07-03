@@ -25,16 +25,18 @@ exports.read_user = function(req, res) {
 
 // POST
 exports.create_user = function(req, res) {
-    var newUser = new User(req.body);
+    let newUser = new User(req.body);
+    newUser._id = mongoose.Types.ObjectId();
 
     // 201 -> istance created
-    newUser.save(function(err, user) => {
+    newUser.save(function(err, savedUser) {
         if (err) {
+            console.log(err)
             res.send(err);
         }
 
-        res.status(201).send({ data: savedUser });
-        res.json(savedUser);
+        //res.send({ data: savedUser });
+        res.status(201).json(savedUser);
     });
 };
 

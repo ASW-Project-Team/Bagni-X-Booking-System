@@ -1,12 +1,12 @@
 module.exports = function(mongoose) {
 
-    const Service = require('./serviceModel');
-//import {Service} from "./serviceModel";
+    let Service = require('./serviceModel')(mongoose).schema;
+    let Float = require('mongoose-float').loadType(mongoose);
 
-    const Schema = mongoose.Schema;
+    let Schema = mongoose.Schema;
 
 
-    const Booking = new Schema({
+    let Booking = new Schema({
         _id: Schema.Types.ObjectID,
         umbrella_id: Schema.Types.ObjectID,
         confirmed: Boolean,
@@ -14,8 +14,8 @@ module.exports = function(mongoose) {
         price: Float, // fixme price > price min
         date_from: Date,
         date_to: Date, // fixme date_to > date_from
-        services: [Service]
+        services: [{type: Service, default: null}]
     });
-    return mongoose.model('bookingmodel', BookingSchema, 'bookings');
+    return mongoose.model('bookingmodel', Booking, 'bookings');
 
 }
