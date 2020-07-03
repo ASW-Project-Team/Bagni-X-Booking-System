@@ -4,9 +4,9 @@ User = require("../models/firstlevelcollections/userModel.js")(mongoose);
 
 // Before this queries we have to check the permissions to interact with db
 
-
+// GET OKAY
 exports.read_user = function(req, res) {
-    User.findById(mongoose.Types.ObjectId(req.params.id), function(err, user) {
+    User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
         if (err)
             res.send(err);
         else {
@@ -14,7 +14,7 @@ exports.read_user = function(req, res) {
                 res.status(404).send({ // fixme better 404
                     description: 'User not found'
                 });
-            } else{
+            } else {
                 // responds with user
                 res.status(200).json(user);
             }
@@ -22,12 +22,13 @@ exports.read_user = function(req, res) {
     });
 };
 
-// POST
+// POST OKAY
+// TODO add checkers for params
 exports.create_user = function(req, res) {
     let newUser = new User(req.body);
     newUser._id = mongoose.Types.ObjectId();
 
-    // 201 -> istance created
+    // 201 -> instance created
     newUser.save(function(err, savedUser) {
         if (err)
             res.send(err);
@@ -39,30 +40,38 @@ exports.create_user = function(req, res) {
 
 // customer modify PUT
 exports.update_user = function(req, res) {
-    User.findById(ObjectId(req.params.id), (err, user) => {
-        // This assumes all the fields of the object is present in the body.
-        // TODO check che i campi siano ben formattati
-        if (req.body.name !== undefined)
-            user.name = req.body.name;
+    User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
+        if (err)
+            res.send(err);
+        else if (user == null) {
+            res.status(404).send({ // fixme better 404
+                description: 'User not found'
+            });
+        } else {
 
-        if (req.body.surname !== undefined)
-            user.surname = req.body.surname;
+            // FIXME Check that elements are corrected formatted
+            if (req.body.name !== undefined)
+                user.name = req.body.name;
 
-        if (req.body.phone !== undefined)
-            user.phone = req.body.phone;
+            if (req.body.surname !== undefined)
+                user.surname = req.body.surname;
 
-        if (req.body.email !== undefined)
-            user.email = req.body.email;
+            if (req.body.phone !== undefined)
+                user.phone = req.body.phone;
 
-        if (req.body.address !== undefined)
-            user.address = req.body.address;
+            if (req.body.email !== undefined)
+                user.email = req.body.email;
 
-        user.save((saveErr, updatedUser) => {
-            if (saveErr){
-                res.send(saveErr);
-            }
-            res.status(200).send({ data: updatedUser });
-        });
+            if (req.body.address !== undefined)
+                user.address = req.body.address;
+
+            user.save((saveErr, updatedUser) => {
+                if (saveErr) {
+                    res.send(saveErr);
+                }
+                res.status(200).json(updatedUser);
+            });
+        }
     });
 };
 
