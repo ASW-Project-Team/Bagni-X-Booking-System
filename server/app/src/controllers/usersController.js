@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-User = require("../models/firstlevelcollections/userModel.js")(mongoose);
+User = require("../models/firstlevelcollections/userModel")(mongoose);
 
 
 // Before this queries we have to check the permissions to interact with db
@@ -10,10 +10,8 @@ exports.read_user = function(req, res) {
         if (err)
             res.send(err);
         else {
-            if(user == null) {
-                res.status(404).send({ // fixme better 404
-                    description: 'User not found'
-                });
+            if (user == null) {
+                res.status(404).json('User not found'); // fixme better 404
             } else {
                 // responds with user
                 res.status(200).json(user);
@@ -38,7 +36,8 @@ exports.create_user = function(req, res) {
 };
 
 
-// customer modify PUT
+// PUT OKAY
+// TODO add checkers for params checkers
 exports.update_user = function(req, res) {
     User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
         if (err)
@@ -106,7 +105,7 @@ exports.read_bookings = function(req, res) {
         page_id = req.params.page_id;
     }
 
-    if (isParameterPresent(ObjectId(req.params.user_id))) {
+    if (isParameterPresent(mongoose.Types.ObjectId(req.params.user_id))) {
         read_bookings_from_user(res, ObjectId(req.params.user_id), page_size, page_id);
     }
 };
@@ -137,12 +136,37 @@ exports.read_booking = function(req, res) {
 };
 
 exports.create_booking = function(req, res) {
-    var new_movie = new Movie(req.body);
-    new_movie.save(function(err, movie) {
-        if (err)
+   // import Booking from "../models/othercollections/bookingModel";
+
+    User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
+        if (err) {
+            console.log("error");
             res.send(err);
-        res.status(201).json(movie);
+        } else {
+            if(user == null) {
+                console.log("User not found");
+                res.status(404).json("User not found");
+            } else {
+
+                if (user.bookings === undefined)
+                    user.bookings = req.body
+                else
+                    user.bookings.push(req.body);
+
+                
+
+                user.save((saveErr, updatedUser) => {
+                    if (saveErr) {
+                        res.send(saveErr);
+                    }
+                    // 201 -> instance created
+                    res.status(201).json(updatedUser);
+                });
+
+            }
+        }
     });
+
 };
 
 exports.update_booking = function(req, res) {

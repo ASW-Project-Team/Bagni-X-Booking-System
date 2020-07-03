@@ -3,11 +3,11 @@ module.exports.set = function(app) {
 	const bookingsController = require('../controllers/usersController');
 
 	app.route('/api/bookings')
-		.get(bookingsController.list_bookings)
-		.post(bookingsController.create_booking);
+		.get(bookingsController.list_bookings);
 
 	app.route('/api/bookings/:id')
 		.get(bookingsController.read_booking)
 		.put(bookingsController.update_booking)
+		.post(bookingsController.create_booking) // POST is associated to user-id
 		.delete(bookingsController.delete_booking);
 };

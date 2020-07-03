@@ -229,7 +229,7 @@ paths:
         "403":
           description: Unauthorized
 
-  /api/new-booking/checkout/:
+  /api/new-booking/checkout/:id:
     post:
       summary: It allows the user to book a site
       description: New booking

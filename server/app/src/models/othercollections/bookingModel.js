@@ -12,8 +12,8 @@ module.exports = function(mongoose) {
         confirmed: Boolean,
         cancelled: Boolean,
         price: Float, // fixme price > price min
-        date_from: Date,
-        date_to: Date, // fixme date_to > date_from
+        date_from: {type: Date, $gte: Date.now()},
+        date_to: {type: Date, $gte: Date.now()}, // fixme date_to > date_from
         services: [{type: Service, default: null}]
     });
     return mongoose.model('bookingmodel', Booking, 'bookings');
