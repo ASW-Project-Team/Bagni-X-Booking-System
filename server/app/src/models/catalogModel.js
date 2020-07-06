@@ -9,9 +9,9 @@ module.exports = function(mongoose) {
 
 
 const initializeCollection = function() {
-    const serviceModel = require('../othercollections/serviceModel')
-    const umbrellaModel = require('../othercollections/umbrellaModel')
-    const rankUmbrellaModel = require('../othercollections/rankUmbrellaModel')
+    const serviceModel = require('./nestedSchemas/serviceModel')
+    const umbrellaModel = require('./nestedSchemas/umbrellaModel')
+    const rankUmbrellaModel = require('./nestedSchemas/rankUmbrellaModel')
 
     const Schema = mongoose.Schema;
 

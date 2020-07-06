@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-User = require("../models/firstlevelcollections/userModel.js")(mongoose);
+User = require("../models/userModel.js")(mongoose);
 
 const ObjectId = mongoose.Schema.Types.ObjectID
 const defaultPageSize = 10;

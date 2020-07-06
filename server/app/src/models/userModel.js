@@ -10,7 +10,7 @@ module.exports = function(mongoose) {
 
 const initializeCollection = function() {
     let Schema = mongoose.Schema;
-    let bookingModel = require('../othercollections/bookingModel')
+    let bookingModel = require('./nestedSchemas/bookingModel')
 
     // it's possible also nested declaration?
     let UserSchema = new Schema({

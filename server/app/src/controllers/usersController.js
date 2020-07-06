@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-Bathhouse = require("../models/firstlevelcollections/bathhouseModel")(mongoose);
-Booking = require("../models/othercollections/bookingModel")(mongoose);
-User = require("../models/firstlevelcollections/userModel")(mongoose);
+Bathhouse = require("../models/bathhouseModel")(mongoose);
+Booking = require("../models/nestedSchemas/bookingModel")(mongoose);
+User = require("../models/userModel")(mongoose);
 
 
 // Before this queries we have to check the permissions to interact with db
