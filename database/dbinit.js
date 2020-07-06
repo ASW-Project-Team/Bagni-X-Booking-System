@@ -4,22 +4,22 @@
  * @type {Mongo}
  */
 
-var conn = new Mongo();
-var db = conn.getDB('dbsa');
+let conn = new Mongo();
+let db = conn.getDB('bagni_X_booking_system_db');
 
 // Initializes collections, leaving them untouched if present yet
-db.createCollection('test', function(err, collection) {});
-//db.createCollection('users', function(err, collection) {});
-//db.createCollection('catalog', function(err, collection) {});
-//db.createCollection('bathhouse_info', function(err, collection) {});
+db.createCollection('feed', function(err, collection) {});
+db.createCollection('users', function(err, collection) {});
+db.createCollection('catalog', function(err, collection) {});
+db.createCollection('bathhouse_info', function(err, collection) {});
 
 
 // elimina gli eventuali documenti della collection 'alignments'
 try {
-   db.test.deleteMany( { } );
-   //db.users.deleteMany( { } );
-   //db.catalog.deleteMany( { } );
-   //db.bathhouse_info.deleteMany( { } );
+   db.feed.deleteMany( { } );
+   db.users.deleteMany( { } );
+   db.catalog.deleteMany( { } );
+   db.bathhouse_info.deleteMany( { } );
 
 } catch (e) {
    print (e);
@@ -27,12 +27,12 @@ try {
 
 
 // inserts a document per collection
-db.test.insert({ "test": "Hello World!" })
+//db.test.insert({ "test": "Hello World!" })
 
 
 // shows existing documents.
-var cursor = db.tests.find();
+/*let cursor = db.feed.find();
 while ( cursor.hasNext() ) {
    printjson( cursor.next() );
-}
+}*/
 

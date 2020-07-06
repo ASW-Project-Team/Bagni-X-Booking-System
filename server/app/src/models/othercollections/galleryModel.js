@@ -1,7 +1,13 @@
-const Schema = mongoose.Schema;
+module.exports = function (mongoose) {
+
+    let Schema = mongoose.Schema;
 
 // used in bathhouse
-export class Gallery{
-    _id: Schema.Types.ObjectID
-    url: String
+    let GallerySchema = new Schema({
+        _id: Schema.Types.ObjectID,
+        url: String
+    })
+
+    return mongoose.model("gallerymodel", GallerySchema, "galleries")
 }
+

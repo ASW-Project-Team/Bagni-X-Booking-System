@@ -1,12 +1,10 @@
 module.exports = function(mongoose) {
 
-    //const Gallery = require('../othercollections/galleryModel');
+    //import {Gallery} from '../othercollections/galleryModel'
 
-    import {Gallery} from '../othercollections/galleryModel'
+    let Schema = mongoose.Schema;
 
-    const Schema = mongoose.Schema;
-
-    const bathhouseInfo = new Schema({
+    let bathhouseInfo = new Schema({
         _id: Schema.Types.ObjectId,
         name: String, // String is shorthand for {type: String}
         description: {type: String, default: ""},
@@ -16,7 +14,10 @@ module.exports = function(mongoose) {
             min: [10, 'Too small'],
         },
         n_available_now_umbrellas: Number,
-        gallery: [Gallery]
+        gallery: [{type: new Schema({
+            _id: Schema.Types.ObjectID,
+            url: String
+        }), default: null}]
     });
     return mongoose.model('bathhousemodel', bathhouseInfo, 'bathhouse_info');
 };

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+Bathhouse = require("../models/firstlevelcollections/bathhouseModel")(mongoose);
+Booking = require("../models/othercollections/bookingModel")(mongoose);
 User = require("../models/firstlevelcollections/userModel")(mongoose);
 
 
@@ -119,24 +121,23 @@ exports.list_bookings = function(req, res) {
 };
 
 exports.read_booking = function(req, res) {
-    Movie.findById(req.params.id, function(err, movie) {
+    Booking.findById(req.params.id, (err, booking) => {
         if (err)
             res.send(err);
         else{
-            if(movie==null){
+            if(booking == null) {
                 res.status(404).send({
-                    description: 'Movie not found'
+                    description: 'Booking not found'
                 });
-            }
-            else{
-                res.json(movie);
+
+            } else {
+                res.status(200).json(booking);
             }
         }
     });
 };
 
 exports.create_booking = function(req, res) {
-   // import Booking from "../models/othercollections/bookingModel";
 
     User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
         if (err) {
@@ -148,12 +149,21 @@ exports.create_booking = function(req, res) {
                 res.status(404).json("User not found");
             } else {
 
-                if (user.bookings === undefined)
-                    user.bookings = req.body
-                else
-                    user.bookings.push(req.body);
+/*
+                let booking = new Booking(req.body);
+                booking._id = mongoose.Types.ObjectId();
+                user.bookings.push(booking);
+*/
 
-                
+                // TODO checks
+                let booking = new Booking();
+                booking._id = mongoose.Types.ObjectId();
+                booking.umbrella_id = mongoose.Types.ObjectId(req.body.umbrella_id);
+                booking.price = req.body.price;
+                booking.date_from = req.body.date_from;
+                booking.date_to = req.body.date_to;
+
+                user.bookings.push(booking);
 
                 user.save((saveErr, updatedUser) => {
                     if (saveErr) {
@@ -166,25 +176,56 @@ exports.create_booking = function(req, res) {
             }
         }
     });
-
 };
 
 exports.update_booking = function(req, res) {
-    Movie.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, movie) {
-        if (err)
-            res.send(err);
+    User.findById(mongoose.Types.ObjectId(req.params.id), (errUser, user) => {
+        if (errUser)
+            res.send(errUser);
         else{
-            if(movie == null){
+            if(user == null){
                 res.status(404).send({
-                    description: 'Movie not found'
+                    description: 'User not found'
                 });
             }
             else{
-                res.json(movie);
+
+                // FIXME aggregate
+
+                let booking = user.bookings.find(correctId);
+
+                if (booking !== undefined) {
+
+                     if (req.body.umbrella_id !== undefined)
+                         booking.umbrella_id = mongoose.Types.ObjectId(req.body.umbrella_id);
+
+                     if (req.body.price !== undefined)
+                         booking.price = req.body.price;
+
+                     if (req.body.date_from !== undefined)
+                         booking.date_from = req.body.date_from;
+
+                     if (req.body.date_to !== undefined)
+                         booking.date_to = req.body.date_to;
+
+                     user.save((saveErr, updatedUser) => {
+                         if (saveErr) {
+                             res.send(saveErr)
+                          }
+
+                         res.status(200).json(updatedUser);
+                     });
+                } else {
+                     res.status(404).send("Booking not found");
+                 }
             }
         }
     });
 };
+
+function correctId(reqId, bookingId) {
+    return reqId === bookingId;
+}
 
 exports.delete_booking = function(req, res) {
     Movie.deleteOne({_id: req.params.id}, function(err, result) {

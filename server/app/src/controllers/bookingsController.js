@@ -1,4 +1,4 @@
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 User = require("../models/firstlevelcollections/userModel.js")(mongoose);
 
 const ObjectId = mongoose.Schema.Types.ObjectID
@@ -144,4 +144,4 @@ function read_bookings_from_user(res, user_id, max_page_size, page_id) {
 			}
 		}
 	});*/
-//}
+}

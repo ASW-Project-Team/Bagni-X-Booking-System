@@ -1,16 +1,20 @@
 module.exports = function (mongoose) {
 
-    import {RankUmbrella} from "../othercollections/rankUmbrellaModel";
-    import {Umbrella} from "../othercollections/umbrellaModel";
-    import {Service} from "../othercollections/serviceModel";
+    let Schema = mongoose.Schema;
 
-    const Schema = mongoose.Schema;
-
-
-    const CatalogSchema = new Schema({
+    let CatalogSchema = new Schema({
         rank_umbrellas: [RankUmbrella], // includes also sales
-        umbrellas: [Umbrella],
-        services: [Service]
+        umbrellas: [{type: new Schema({ // price depends from rank
+                _id: Schema.Types.ObjectID,
+                x_position: Number,
+                y_position: Number,
+                rank_id: Schema.Types.ObjectID
+            }), default: null}],
+        services: [{type: new Schema({
+            _id: Schema.Types.ObjectID,
+            price: Float,
+            description: {type: String, default: null}
+        }), default: null}]
     });
     return mongoose.model('catalogmodel', CatalogSchema, 'catalog');
 };

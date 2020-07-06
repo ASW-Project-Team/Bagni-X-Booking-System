@@ -1,8 +1,8 @@
 module.exports = function(mongoose) {
-    const Schema = mongoose.Schema;
+    let Schema = mongoose.Schema;
 
     // it's possible also nested declaration?
-    const FeedSchema = new Schema({
+    let FeedSchema = new Schema({
         _id: Schema.Types.ObjectId,
         date: Date,
         title: String,

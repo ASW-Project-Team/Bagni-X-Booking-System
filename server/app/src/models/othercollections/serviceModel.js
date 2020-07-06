@@ -5,7 +5,7 @@ module.exports = function(mongoose) {
 
         let Service = new Schema({
                 _id: Schema.Types.ObjectID,
-                price: Float,
+                price: { type: Float, $gt: 0.0 },
                 description: {type: String, default: null}
         });
         return mongoose.model('servicemodel', Service, 'services');

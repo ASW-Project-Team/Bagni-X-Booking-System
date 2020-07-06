@@ -6,8 +6,8 @@ module.exports.set = function(app) {
 		.get(bookingsController.list_bookings);
 
 	app.route('/api/bookings/:id')
-		.get(bookingsController.read_booking)
-		.put(bookingsController.update_booking)
-		.post(bookingsController.create_booking) // POST is associated to user-id
-		.delete(bookingsController.delete_booking);
+		.get(bookingsController.read_booking) // GET "id" is associated to user-id
+		.put(bookingsController.update_booking) // PUT "id" is associated to user-id
+		.post(bookingsController.create_booking) // POST "id" is associated to user-id
+		.delete(bookingsController.delete_booking); // DELETE "id" is associated to user-id
 };
