@@ -1,20 +1,24 @@
-module.exports = function (mongoose) {
+let collection;
 
-    let Schema = mongoose.Schema;
+module.exports = function(mongoose) {
+    if (!!!collection)
+        collection = initializeCollection();
+
+    return collection;
+};
+
+
+const initializeCollection = function() {
+    const serviceModel = require('../othercollections/serviceModel')
+    const umbrellaModel = require('../othercollections/umbrellaModel')
+    const rankUmbrellaModel = require('../othercollections/rankUmbrellaModel')
+
+    const Schema = mongoose.Schema;
 
     let CatalogSchema = new Schema({
-        rank_umbrellas: [RankUmbrella], // includes also sales
-        umbrellas: [{type: new Schema({ // price depends from rank
-                _id: Schema.Types.ObjectID,
-                x_position: Number,
-                y_position: Number,
-                rank_id: Schema.Types.ObjectID
-            }), default: null}],
-        services: [{type: new Schema({
-            _id: Schema.Types.ObjectID,
-            price: Float,
-            description: {type: String, default: null}
-        }), default: null}]
+        rank_umbrellas: [rankUmbrellaModel.schema()], // includes also sales
+        umbrellas: [{type: umbrellaModel.schema(), default: null}],
+        services: [{type: serviceModel.schema(), default: null}]
     });
     return mongoose.model('catalogmodel', CatalogSchema, 'catalog');
 };

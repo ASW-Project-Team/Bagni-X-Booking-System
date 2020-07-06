@@ -1,9 +1,17 @@
-module.exports = function(mongoose) {
+let collection;
 
-    //import {Gallery} from '../othercollections/galleryModel'
+module.exports = function(mongoose) {
+    if (!!!collection)
+        collection = initializeCollection();
+
+    return collection;
+};
+
+
+const initializeCollection = function() {
+    const galleryModel = require('../othercollections/galleryModel')
 
     let Schema = mongoose.Schema;
-
     let bathhouseInfo = new Schema({
         _id: Schema.Types.ObjectId,
         name: String, // String is shorthand for {type: String}
@@ -14,10 +22,7 @@ module.exports = function(mongoose) {
             min: [10, 'Too small'],
         },
         n_available_now_umbrellas: Number,
-        gallery: [{type: new Schema({
-            _id: Schema.Types.ObjectID,
-            url: String
-        }), default: null}]
+        gallery: [{ type: galleryModel.schema(), default: null}]
     });
     return mongoose.model('bathhousemodel', bathhouseInfo, 'bathhouse_info');
-};
+}

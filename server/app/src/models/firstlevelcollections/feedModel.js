@@ -1,4 +1,14 @@
+let collection;
+
 module.exports = function(mongoose) {
+    if (!!!collection)
+        collection = initializeCollection();
+
+    return collection;
+};
+
+
+const initializeCollection = function() {
     let Schema = mongoose.Schema;
 
     // it's possible also nested declaration?

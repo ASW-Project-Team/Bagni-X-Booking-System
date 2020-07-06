@@ -1,13 +1,10 @@
-module.exports = function (mongoose) {
+module.exports.schema = function () {
+    const Schema = mongoose.Schema;
 
-    let Schema = mongoose.Schema;
-
-// used in bathhouse
-    let GallerySchema = new Schema({
+    // used in bathhouse
+    return new Schema({
         _id: Schema.Types.ObjectID,
         url: String
-    })
-
-    return mongoose.model("gallerymodel", GallerySchema, "galleries")
+    });
 }
 

@@ -1,10 +1,9 @@
-module.exports = function(mongoose) {
+module.exports.schema = function () {
+    const Schema = mongoose.Schema;
+    const Float = require('mongoose-float').loadType(mongoose);
+    const serviceModel = require('serviceModel')
 
-    let Float = require("mongoose-float").loadType(mongoose);
-
-    let Schema = mongoose.Schema;
-
-    let BookingSchema = new Schema({
+    return new Schema({
         _id: Schema.Types.ObjectID,
         umbrella_id: Schema.Types.ObjectID,
         confirmed: {type: Boolean, default: false},
@@ -12,14 +11,9 @@ module.exports = function(mongoose) {
         price: { type: Float, $gt: 0.0 }, // fixme price > price min
         date_from: {type: Date, $gte: Date.now()}, // fixme $gte not correct
         date_to: {type: Date, $gte: Date.now()}, // fixme date_to > date_from
-        services: [{type: new Schema({
-                _id: Schema.Types.ObjectID,
-                price: Float,
-                description: {type: String, default: null}
-            }), default: null}]
+        services: [{type: serviceModel.schema(), default: null}]
     });
-
-    return mongoose.model('bookingmodel', BookingSchema, 'bookings');
-
 }
+
+
 

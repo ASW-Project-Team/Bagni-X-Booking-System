@@ -1,10 +1,9 @@
-module.exports = function(mongoose) {
+module.exports.schema = function () {
+    const Schema = mongoose.Schema;
 
-    let Schema = mongoose.Schema;
-
-// price could change thanks to sales
-// used in catalog
-    let SaleSchema = new Schema({
+    // price could change thanks to sales
+    // used in catalog
+    return new Schema({
         _id: Schema.Types.ObjectID,
         percent: {
             type: Number,
@@ -13,6 +12,4 @@ module.exports = function(mongoose) {
         date_from: Date,
         date_to: Date
     });
-
-    return mongoose.model("salemodel", SaleSchema, "sales");
 }
