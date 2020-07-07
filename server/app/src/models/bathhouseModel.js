@@ -9,7 +9,7 @@ module.exports = function(mongoose) {
 
 
 const initializeModel = function(mongoose) {
-    const galleryModel = require('./nestedSchemas/galleryModel')
+    const galleryModel = require('./nestedSchemas/galleryModel')(mongoose).schema;
 
     let Schema = mongoose.Schema;
     let bathhouseInfo = new Schema({

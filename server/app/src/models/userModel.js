@@ -10,7 +10,6 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     let Schema = mongoose.Schema;
-    let bookingModel = require('./bookingModel')
 
     // it's possible also nested declaration?
     let userSchema = new Schema({

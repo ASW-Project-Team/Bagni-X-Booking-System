@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
+const genericController = require("./genericController");
 
 // Before this queries we have to check the permissions to interact with db
 
@@ -10,7 +11,7 @@ exports.read_user = function(req, res) {
             res.send(err);
         else {
             if (user == null) {
-                res.status(404).json('User not found'); // fixme better 404
+                genericController.serve_plain_404(req, res);
             } else {
                 // responds with user
                 res.status(200).json(user);
@@ -26,12 +27,7 @@ exports.create_user = function(req, res) {
     newUser._id = mongoose.Types.ObjectId();
 
     // 201 -> instance created
-    newUser.save(function(err, savedUser) {
-        if (err)
-            res.send(err);
-
-        res.status(201).json(savedUser);
-    });
+    genericController.correct_save(newUser, 201, res);
 };
 
 
@@ -42,46 +38,34 @@ exports.update_user = function(req, res) {
         if (err)
             res.send(err);
         else if (user == null) {
-            res.status(404).send({ // fixme better 404
-                description: 'User not found'
-            });
+            genericController.serve_plain_404(req, res);
         } else {
 
             // FIXME Check that elements are corrected formatted
-            if (req.body.name !== undefined)
-                user.name = req.body.name;
+            if (req.body.deleted === true){
+                // DELETE
+                user.deleted = true;
 
-            if (req.body.surname !== undefined)
-                user.surname = req.body.surname;
+            } else {
+                // UPDATE
+                if (req.body.name !== undefined)
+                    user.name = req.body.name;
 
-            if (req.body.phone !== undefined)
-                user.phone = req.body.phone;
+                if (req.body.surname !== undefined)
+                    user.surname = req.body.surname;
 
-            if (req.body.email !== undefined)
-                user.email = req.body.email;
+                if (req.body.phone !== undefined)
+                    user.phone = req.body.phone;
 
-            if (req.body.address !== undefined)
-                user.address = req.body.address;
+                if (req.body.email !== undefined)
+                    user.email = req.body.email;
 
-            user.save((saveErr, updatedUser) => {
-                if (saveErr) {
-                    res.send(saveErr);
-                }
-                res.status(200).json(updatedUser);
-            });
+                if (req.body.address !== undefined)
+                    user.address = req.body.address;
+
+            }
+            genericController.correct_save(user, 200, res);
         }
-    });
-};
-
-// DELETE
-exports.delete_user = function(req, res) {
-    User.findById(ObjectId(req.params.id), (err, user) => {
-        // This assumes all the fields of the object is present in the body.
-        user.deleted = true;
-
-        user.save((saveErr, updatedUser) => {
-            res.send({ data: updatedUser });
-        });
     });
 };
 

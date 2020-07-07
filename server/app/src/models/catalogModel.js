@@ -9,9 +9,9 @@ module.exports = function(mongoose) {
 
 
 const initializeModel = function(mongoose) {
-    const serviceModel = require('./nestedSchemas/serviceModel')
-    const umbrellaModel = require('./nestedSchemas/umbrellaModel')
-    const rankUmbrellaModel = require('./nestedSchemas/rankUmbrellaModel')
+    const serviceModel = require('./nestedSchemas/serviceModel')(mongoose).schema;
+    const umbrellaModel = require('./nestedSchemas/umbrellaModel')(mongoose).schema;
+    const rankUmbrellaModel = require('./nestedSchemas/rankUmbrellaModel')(mongoose).schema;
 
     const Schema = mongoose.Schema;
 
