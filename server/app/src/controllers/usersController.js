@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
 
-
-
-
 // Before this queries we have to check the permissions to interact with db
 
 // GET OKAY

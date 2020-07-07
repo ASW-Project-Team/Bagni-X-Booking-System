@@ -1,6 +1,6 @@
 let model;
 
-module.export = function(mongoose) {
+module.exports = function(mongoose) {
     if (!!!model)
         model = initializeModel(mongoose);
 
