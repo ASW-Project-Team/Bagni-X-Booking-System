@@ -1,15 +1,24 @@
-module.exports.schema = function () {
+let model;
+
+module.export = function(mongoose) {
+    if (!!!model)
+        model = initializeModel(mongoose);
+
+    return model;
+};
+
+
+const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
     const Float = require("mongoose-float").loadType(mongoose);
     const saleModel = require('saleModel');
 
-    let RankUmbrella = new Schema({
+    const rankUmbrellaSchema = new Schema({
         _id: Schema.Types.ObjectID,
         name: String,
         description: String,
         price: Float,
-        sales: [{type: new Schema(saleModel.schema()), default: null}]
+        sales: [{type: saleModel, default: null}]
     });
-    return mongoose.model();
-
+    return mongoose.model('rankUmbrella', rankUmbrellaSchema);
 }

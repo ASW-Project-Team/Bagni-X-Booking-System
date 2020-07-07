@@ -1,14 +1,14 @@
-let collection;
+let model;
 
-module.exports = function(mongoose) {
-    if (!!!collection)
-        collection = initializeCollection();
+module.export = function(mongoose) {
+    if (!!!model)
+        model = initializeModel(mongoose);
 
-    return collection;
+    return model;
 };
 
 
-const initializeCollection = function() {
+const initializeModel = function(mongoose) {
     const serviceModel = require('./nestedSchemas/serviceModel')
     const umbrellaModel = require('./nestedSchemas/umbrellaModel')
     const rankUmbrellaModel = require('./nestedSchemas/rankUmbrellaModel')
@@ -16,11 +16,11 @@ const initializeCollection = function() {
     const Schema = mongoose.Schema;
 
     let CatalogSchema = new Schema({
-        rank_umbrellas: [rankUmbrellaModel.schema()], // includes also sales
-        umbrellas: [{type: umbrellaModel.schema(), default: null}],
-        services: [{type: serviceModel.schema(), default: null}]
+        rank_umbrellas: [rankUmbrellaModel], // includes also sales
+        umbrellas: [{type: umbrellaModel, default: null}],
+        services: [{type: serviceModel, default: null}]
     });
-    return mongoose.model('catalogmodel', CatalogSchema, 'catalog');
+    return mongoose.model('catalog', CatalogSchema, 'catalog');
 };
 
 

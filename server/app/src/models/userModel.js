@@ -1,19 +1,19 @@
-let collection;
+let model;
 
-module.exports = function(mongoose) {
-    if (!!!collection)
-        collection = initializeCollection();
+module.export = function(mongoose) {
+    if (!!!model)
+        model = initializeModel(mongoose);
 
-    return collection;
+    return model;
 };
 
 
-const initializeCollection = function() {
+const initializeModel = function(mongoose) {
     let Schema = mongoose.Schema;
-    let bookingModel = require('./nestedSchemas/bookingModel')
+    let bookingModel = require('./bookingModel')
 
     // it's possible also nested declaration?
-    let UserSchema = new Schema({
+    let userSchema = new Schema({
         _id: mongoose.Types.ObjectId,
         name: String, // String is shorthand for {type: String}
         surname: String,
@@ -21,8 +21,8 @@ const initializeCollection = function() {
         email: String, // fixme add validator from server
         address: String,
         registered: Boolean,
+        admin: {type: Boolean, default: false},
         deleted: {type: Boolean, default: false},
-        bookings: [{type: bookingModel.schema(), default: null}]
     });
-    return mongoose.model('usermodel', UserSchema, 'users');
+    return mongoose.model('user', userSchema, 'users');
 };

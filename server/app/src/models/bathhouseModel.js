@@ -1,14 +1,14 @@
-let collection;
+let model;
 
-module.exports = function(mongoose) {
-    if (!!!collection)
-        collection = initializeCollection();
+module.export = function(mongoose) {
+    if (!!!model)
+        model = initializeModel(mongoose);
 
-    return collection;
+    return model;
 };
 
 
-const initializeCollection = function() {
+const initializeModel = function(mongoose) {
     const galleryModel = require('./nestedSchemas/galleryModel')
 
     let Schema = mongoose.Schema;
@@ -22,7 +22,7 @@ const initializeCollection = function() {
             min: [10, 'Too small'],
         },
         n_available_now_umbrellas: Number,
-        gallery: [{ type: galleryModel.schema(), default: null}]
+        gallery: [{ type: galleryModel, default: null}]
     });
-    return mongoose.model('bathhousemodel', bathhouseInfo, 'bathhouse_info');
+    return mongoose.model('bathhouse_info', bathhouseInfo, 'bathhouse_info');
 }

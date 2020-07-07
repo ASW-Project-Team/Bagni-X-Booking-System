@@ -1,22 +1,22 @@
-let collection;
+let model;
 
-module.exports = function(mongoose) {
-    if (!!!collection)
-        collection = initializeCollection();
+module.export = function(mongoose) {
+    if (!!!model)
+        model = initializeModel(mongoose);
 
-    return collection;
+    return model;
 };
 
 
-const initializeCollection = function() {
+const initializeModel = function(mongoose) {
     let Schema = mongoose.Schema;
 
     // it's possible also nested declaration?
-    let FeedSchema = new Schema({
+    let newsSchema = new Schema({
         _id: Schema.Types.ObjectId,
         date: Date,
         title: String,
         description: String
     });
-    return mongoose.model('feedmodel', FeedSchema, 'feeds');
+    return mongoose.model('news', newsSchema, 'feed');
 };
