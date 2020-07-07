@@ -11,7 +11,7 @@ exports.read_user = function(req, res) {
             res.send(err);
         else {
             if (user == null) {
-                res.status(404).json('User not found'); // fixme better 404
+                genericController.serve_plain_404(req, res);
             } else {
                 // responds with user
                 res.status(200).json(user);
@@ -38,9 +38,7 @@ exports.update_user = function(req, res) {
         if (err)
             res.send(err);
         else if (user == null) {
-            res.status(404).send({ // fixme better 404
-                description: 'User not found'
-            });
+            genericController.serve_plain_404(req, res);
         } else {
 
             // FIXME Check that elements are corrected formatted
