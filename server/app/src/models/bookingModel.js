@@ -10,7 +10,7 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     const Float = require('mongoose-float').loadType(mongoose);
-    const serviceModel = require("./nestedSchemas/serviceModel")(mongoose);
+    const serviceModel = require("./nestedSchemas/serviceModel")(mongoose).schema;
     const Schema = mongoose.Schema;
     const bookingSchema = new Schema({
         _id: Schema.Types.ObjectID,
@@ -26,4 +26,3 @@ const initializeModel = function(mongoose) {
 
     return mongoose.model('booking', bookingSchema, 'bookings');
 }
-

@@ -10,9 +10,35 @@ const defaultPageSize = 10;
 const defaultPageId = 0; // FIXME to 1
 
 
+
+// OK
+// It creates a new booking.
+exports.create_booking = function(req, res) {
+		let newBooking = new Booking(req.body);
+		newBooking._id = mongoose.Types.ObjectId();
+		newBooking.user_id = req.params.id;
+		// 201 -> instance created
+		newBooking.save(function(err, savedBooking) {
+		if (err){
+			res.send(err);
+		}
+		res.status(201).json(savedBooking);
+		});
+};
+
+// OK
+// It lists all bookings
+exports.list_bookings = function(req, res) {
+		Booking.find({}, function(err, movie) {
+			if (err){
+				res.send(err);
+			}
+			res.json(movie);
+		});
+};
+
+
 exports.read_bookings = function(req, res) {
-	// todo nel caso in cui sia specificato l'id dell'utente, ritornta tutte le booking dell'utente, con bookings.find(user_id),
-	// altrimenti ritorna tutte le bookings (con l'eventuale filtraggio per page)
 
 	let page_size = defaultPageSize;
 	if (isParameterPresent(req.params.page_size)) {
@@ -29,13 +55,7 @@ exports.read_bookings = function(req, res) {
 	}
 };
 
-exports.list_bookings = function(req, res) {
-	Movie.find({}, function(err, movie) {
-		if (err)
-			res.send(err);
-		res.json(movie);
-	});
-};
+
 
 exports.read_booking = function(req, res) {
 	// todo find by id facile
@@ -55,47 +75,7 @@ exports.read_booking = function(req, res) {
 	});
 };
 
-exports.create_booking = function(req, res) {
-	// TODO ADD semplice sulla collection bookings
 
-	User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
-		if (err) {
-			console.log("error");
-			res.send(err);
-		} else {
-			if(user == null) {
-				console.log("User not found");
-				res.status(404).json("User not found");
-			} else {
-
-				/*
-                                let booking = new Booking(req.body);
-                                booking._id = mongoose.Types.ObjectId();
-                                user.bookings.push(booking);
-                */
-
-				// TODO checks
-				let booking = new Booking();
-				booking._id = mongoose.Types.ObjectId();
-				booking.umbrella_id = mongoose.Types.ObjectId(req.body.umbrella_id);
-				booking.price = req.body.price;
-				booking.date_from = req.body.date_from;
-				booking.date_to = req.body.date_to;
-
-				user.bookings.push(booking);
-
-				user.save((saveErr, updatedUser) => {
-					if (saveErr) {
-						res.send(saveErr);
-					}
-					// 201 -> instance created
-					res.status(201).json(updatedUser);
-				});
-
-			}
-		}
-	});
-};
 
 exports.update_booking = function(req, res) {
 	// todo uguale, solo che poi sovrascrivi
