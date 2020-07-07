@@ -11,12 +11,12 @@ module.exports = function(mongoose) {
 const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
     const Float = require("mongoose-float").loadType(mongoose);
-    const saleModel = require('saleModel')(mongoose).schema;
+    const saleModel = require('./saleModel')(mongoose).schema;
 
     const rankUmbrellaSchema = new Schema({
         _id: Schema.Types.ObjectID,
         name: String,
-        description: String,
+        description: {type: String, default: null},
         price: Float,
         sales: [{type: saleModel, default: null}]
     });

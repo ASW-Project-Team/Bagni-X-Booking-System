@@ -26,7 +26,7 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-    put:
+    put: --> used also for logical delete
       summary: It allows the user to modify some data about hisself
       description: User data
       parameters:
@@ -246,15 +246,16 @@ paths:
     get:
     post:
 
-  /api/catalog/umbrellas/{umbrella-id}:
+  /api/catalog/umbrellas/{umbrella_id}:
     get:
     put:
 
   /api/catalog/ranks/:
     get:
     post:
-    put:
 
+  /api/catalog/ranks/:id:
+    put:
 
   /api/catalog/sales/:
     get:
@@ -287,7 +288,7 @@ paths:
              type: integer
     post:
 
-    /api/catalog/sales/{sale-id}:
+    /api/catalog/sales/{sale_id}:
       get:
         parameters:
           - name: sale_id

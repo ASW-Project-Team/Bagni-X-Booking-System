@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
-const genericController = require("./genericController");
+const commonController = require("./commonController");
 
 // Before this queries we have to check the permissions to interact with db
 
@@ -11,10 +11,10 @@ exports.read_user = function(req, res) {
             res.send(err);
         else {
             if (user == null) {
-                genericController.serve_plain_404(req, res);
+                commonController.serve_plain_404(req, res);
             } else {
                 // responds with user
-                res.status(200).json(user);
+                res.status(commonController.status_completed).json(user);
             }
         }
     });
@@ -27,7 +27,7 @@ exports.create_user = function(req, res) {
     newUser._id = mongoose.Types.ObjectId();
 
     // 201 -> instance created
-    genericController.correct_save(newUser, 201, res);
+    commonController.correct_save(newUser, commonController.status_created, res);
 };
 
 
@@ -38,15 +38,14 @@ exports.update_user = function(req, res) {
         if (err)
             res.send(err);
         else if (user == null) {
-            genericController.serve_plain_404(req, res);
+            commonController.serve_plain_404(req, res);
         } else {
 
-            // FIXME Check that elements are corrected formatted
-            if (req.body.deleted === true){
+            if (req.body.deleted !== undefined) { // "deleted": true
                 // DELETE
-                user.deleted = true;
-
+                user.deleted = req.body.deleted;
             } else {
+                // FIXME Check that elements are corrected formatted
                 // UPDATE
                 if (req.body.name !== undefined)
                     user.name = req.body.name;
@@ -64,7 +63,7 @@ exports.update_user = function(req, res) {
                     user.address = req.body.address;
 
             }
-            genericController.correct_save(user, 200, res);
+            commonController.correct_save(user, commonController.status_completed, res);
         }
     });
 };

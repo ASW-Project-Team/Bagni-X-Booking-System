@@ -10,11 +10,7 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     const Float = require('mongoose-float').loadType(mongoose);
-<<<<<<< HEAD
     const serviceModel = require("./nestedSchemas/serviceModel")(mongoose).schema;
-=======
-    const serviceModel = require("./nestedSchemas/serviceModel")(mongoose).schema; // TODO Put everywhere except in controller
->>>>>>> e1223aa1c7ece4ee0bd4f8326dc0ce62f4c8f293
     const Schema = mongoose.Schema;
     const bookingSchema = new Schema({
         _id: Schema.Types.ObjectID,

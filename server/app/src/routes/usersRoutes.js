@@ -3,8 +3,7 @@ module.exports.set = function(app) {
 
     app.route('/api/customers/:id')
         .get(usersController.read_user)
-        .put(usersController.update_user)
-        .delete(usersController.delete_user);
+        .put(usersController.update_user);
 
     app.route('/api/customers/')
         .post(usersController.create_user);
