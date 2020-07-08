@@ -15,6 +15,7 @@ const initializeModel = function(mongoose) {
     const serviceSchema = new Schema({
         _id: Schema.Types.ObjectID,
         price: {type: Float, $gte: 0.0},
+        umbrella_related: Boolean,
         description: {type: String, default: null}
     });
     return mongoose.model('service', serviceSchema);
