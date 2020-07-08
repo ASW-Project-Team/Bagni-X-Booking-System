@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Catalog = require("../models/catalogModel")(mongoose);
 const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
+const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
 const commonController = require("./commonController");
 
 const CatalogId = mongoose.Types.ObjectId("5f045a72e60fd3b3c85c4145");
@@ -107,10 +108,13 @@ module.exports.create_umbrella = function (req, res) {
  * @param res The response.
  */
 module.exports.read_ranks = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
+    checkCatalog(req, res, "Ranks", (err, catalog, documentName) => {
+        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, documentName)
+    });
+/*    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
         commonController.checkError(err, catalog, req, res,"Catalog");
         commonController.getDocuments(err, catalog.rank_umbrellas, req, res, "Ranks");
-    });
+    });*/
 }
 
 
@@ -123,6 +127,7 @@ module.exports.create_rank = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
         commonController.checkError(err, catalog, req, res, "Catalog");
 
+        // TODO common with services
         let rank = new Rank(req.body);
         rank._id = mongoose.Types.ObjectId();
         catalog.rank_umbrellas.push(rank);
@@ -166,6 +171,50 @@ module.exports.update_rank = function (req, res) {
 }
 
 
+module.exports.create_service = function(req, res) {
+    checkCatalog(req, res, "Service", (err, catalog)  => {
+
+        // TODO common with rank
+        let service = new Service(req.body);
+        service._id = mongoose.Types.ObjectId();
+        catalog.services.push(service);
+
+        commonController.correct_save(catalog, commonController.status_created, res);
+    });
+}
+
+/**
+ * The query GET return two possible scenario:
+ *  . if "id" is present in the params, the query have to find the specified service
+ *  . if "id" is not present, the query have to return some services based on body params "page_id" and "page_size"
+ *      Body Param "page_id": the id that have to be shown for first...
+ *          If not specified we assume id is 1 (the most recent page)
+ *      Body Param "page_size": the number of page that have to be shown
+ *          If not specified we assume 10 pages
+ * @param req
+ * @param res
+ */
+module.exports.read_services = function (req, res) {
+
+    checkCatalog(req, res, "Service", (err, catalog, documentName) => {
+        // If par is present find the specified param ...
+        if (req.params.id !== undefined) {
+
+            let serviceTarget = null;
+            for (let service of catalog.services) {
+                serviceTarget = commonController.dfs(service, req.params.id);
+                if (serviceTarget) {
+                    commonController.getDocuments(err, serviceTarget, req, res, documentName);
+                    break;
+                }
+            }
+        } else {
+            commonController.response(res, catalog.services);
+        }
+    });
+}
+
+
 /**
  * Read a single sale if exist, error otherwise.
  * @param req The read sale request.
@@ -185,22 +234,16 @@ module.exports.read_sale = function (req, res) {
 }
 
 
+
 /**
  * TODO Want to create a callback that automatize catalog checks
  * @param req
  * @param res
  * @param func
  */
-function checkCatalog(req, res, func) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        if (err)
-            res.send(err);
-        else {
-            if (catalog == null) {
-                commonController.serve_plain_404(req, res);
-            } else {
-                func();
-            }
-        }
+function checkCatalog(req, res, documentName, func) {
+    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog, documentName) => {
+        commonController.checkError(err, catalog, req, res, documentName);
+        func(err, catalog, documentName);
     });
 }

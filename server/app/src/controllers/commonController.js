@@ -48,3 +48,7 @@ module.exports.getDocuments = function (err, documents, req, res, documentName) 
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
+
+module.exports.default_page_id = 1;
+
+module.exports.default_page_size = 10;

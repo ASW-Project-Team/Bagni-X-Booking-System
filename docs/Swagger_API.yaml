@@ -244,22 +244,18 @@ paths:
   /api/home/:
     get:
 
-  # TO TEST
   /api/catalog/umbrellas/:
     get:
     post:
 
-  # TO TEST
   /api/catalog/umbrellas/{umbrella_id}:
     get:
     put:
 
-  # TO TEST
   /api/catalog/ranks/:
     get:
     post:
 
-  # TO TEST
   /api/catalog/ranks/:id:
     put:
 
@@ -338,7 +334,7 @@ paths:
             type: integer
     post:
 
-    /api/catalog/services/{service-id}:
+    /api/catalog/services/:id:
       get:
         parameters:
           - name: service_id

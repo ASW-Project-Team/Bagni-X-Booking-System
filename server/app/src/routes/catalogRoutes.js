@@ -18,4 +18,10 @@ module.exports.set = function(app) {
 
     app.route('/api/catalog/sales/:id')
         .get(catalogController.read_sale);
+
+    app.route('/api/catalog/services/')
+        .post(catalogController.create_service);
+
+    app.route('/api/catalog/services/:id')
+        .get(catalogController.read_services);
 }
