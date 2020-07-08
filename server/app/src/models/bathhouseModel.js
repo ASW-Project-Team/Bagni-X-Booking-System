@@ -15,6 +15,8 @@ const initializeModel = function(mongoose) {
     let bathhouseInfo = new Schema({
         _id: Schema.Types.ObjectId,
         name: String, // String is shorthand for {type: String}
+        logo_url: String,
+        home_cards: null, // todo list of home cards
         description: {type: String, default: ""},
         phone: String, // fixme add validator from server
         n_umbrella: {

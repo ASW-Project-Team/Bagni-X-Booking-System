@@ -198,9 +198,9 @@ paths:
         "403":
           description: Unauthorized
 
-  /api/new-booking/:
+  /api/new-booking/availability/:
     get:
-      summary: It returns all the available places in the period
+      summary: It returns all the available places in the period, also available selectable services, rank linked to every umbrella
       description: New booking
       parameters:
         - name: from
@@ -229,18 +229,20 @@ paths:
         "403":
           description: Unauthorized
 
-  /api/new-booking/checkout/:id:
+  /api/new-booking/checkout/:
     post:
-      summary: It allows the user to book a site
-      description: New booking
+      summary: All fields of a booking, i.e. umbrella id, services, price, ecc.
+      description: It allows the user to book a site
       responses:
         "200":
-          description: OK
+          description: OK, all fields of the confirmed booking, included the id
         "400":
           description: FAIL
         "403":
           description: Unauthorized
 
+  /api/home/:
+    get:
 
   /api/catalog/umbrellas/:
     get:
