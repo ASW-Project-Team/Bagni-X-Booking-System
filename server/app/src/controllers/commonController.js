@@ -35,13 +35,14 @@ module.exports.checkError = function (err, documents, req, res, documentName) {
     }
 }
 
+// I return all document as catalog and not the specific as the new umbrella added
 module.exports.response = function (res, documents) {
     res.status(this.status_completed).json(documents);
 }
 
 module.exports.getDocuments = function (err, documents, req, res, documentName) {
-    checkError(err, documents, req, res, documentName);
-    response(res, documents);
+    this.checkError(err, documents, req, res, documentName);
+    this.response(res, documents);
 }
 
 module.exports.status_created = 201;

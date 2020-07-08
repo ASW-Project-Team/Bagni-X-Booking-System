@@ -2,7 +2,8 @@ module.exports.set = function(app) {
     const catalogController = require('../controllers/catalogController');
 
     app.route('/api/catalog/umbrellas/:id')
-        .get(catalogController.read_umbrellas);
+        .get(catalogController.read_umbrellas)
+        .put(catalogController.update_umbrellas);
 
     app.route('/api/catalog/umbrellas/')
         .get(catalogController.read_umbrellas)

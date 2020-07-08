@@ -28,7 +28,7 @@ module.exports.read_umbrellas = function (req, res) {
             for (let umbrella of catalog.umbrellas) {
                 umbrellaResult = commonController.dfs(umbrella, req.params.id);
                 if (umbrellaResult) {
-                    commonController.getDocuments(err, umbrella, req, res, "Umbrella");
+                    commonController.getDocuments(err, umbrellaResult, req, res, "Umbrella");
                     break;
                 }
             }
@@ -40,14 +40,12 @@ module.exports.read_umbrellas = function (req, res) {
 
 /**
  * The query responds have two main scenario:
- *  . if "id" is present in the params the query have to find the umbrella
- *      If it doesn't exist responds with error.
- *  . if "id" isn't present the query have to return the umbrella list
- *      If the list haven't any umbrella it returns an empty array.
+ *  . if "id" is present in the params the query have to find the umbrella and modify it with the body params.
+ *  . otherwise the query doesn't modify the umbrella.
  * @param req Request
  * @param res Response
  */
-module.exports.read_umbrellas = function (req, res) {
+module.exports.update_umbrellas = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
         commonController.checkError(err, catalog, req, res, "Catalog");
 
@@ -57,15 +55,17 @@ module.exports.read_umbrellas = function (req, res) {
             let umbrellaResult = null;
             for (let umbrella of catalog.umbrellas) {
                 umbrellaResult = commonController.dfs(umbrella, req.params.id);
+
+                // Change the umbrella information, position and/or rank
                 if (umbrellaResult) {
                     if (req.body.x_position !== undefined )
-                        umbrella.x_position = req.body.x_position;
+                        umbrellaResult.x_position = req.body.x_position;
 
                     if (req.body.y_position !== undefined )
-                        umbrella.y_position = req.body.y_position;
+                        umbrellaResult.y_position = req.body.y_position;
 
                     if (req.body.rank_id !== undefined )
-                        umbrella.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
+                        umbrellaResult.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
 
                     commonController.correct_save(catalog, commonController.status_completed, res);
                     break;
@@ -76,9 +76,9 @@ module.exports.read_umbrellas = function (req, res) {
 };
 
 /**
- *
- * @param req
- * @param res
+ * Create a new umbrella, position and rank are required.
+ * @param req The create umbrella request.
+ * @param res The create umbrella response.
  */
 module.exports.create_umbrella = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
@@ -100,7 +100,7 @@ module.exports.create_umbrella = function (req, res) {
 }
 
 /**
- * Return all ranks if present. If there aren't any ranks return null.
+ * Return all ranks if present. If there aren't any ranks return "Rank not found".
  * If there is an error with Catalog return the error.
  * If catalog is null return 404.
  * @param req The request.
@@ -108,11 +108,17 @@ module.exports.create_umbrella = function (req, res) {
  */
 module.exports.read_ranks = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res,"Rank");
-        commonController.getDocuments(err, catalog.rank_umbrellas, req, res);
+        commonController.checkError(err, catalog, req, res,"Catalog");
+        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, "Ranks");
     });
 }
 
+
+/**
+ * Create a new rank. Name and price are required. Sales and description are optional.
+ * @param req The create umbrella request.
+ * @param res The create umbrella response.
+ */
 module.exports.create_rank = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
         commonController.checkError(err, catalog, req, res, "Catalog");
@@ -134,7 +140,7 @@ module.exports.create_rank = function (req, res) {
  */
 module.exports.update_rank = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res);
+        commonController.checkError(err, catalog, req, res, "Catalog");
         let rankResult = null;
 
         for (let rank of catalog.rank_umbrellas) {
@@ -160,21 +166,21 @@ module.exports.update_rank = function (req, res) {
 }
 
 
-
-// Read a single sale
+/**
+ * Read a single sale if exist, error otherwise.
+ * @param req The read sale request.
+ * @param res The read sale response.
+ */
 module.exports.read_sale = function (req, res) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        if (err)
-            res.send(err);
-        else {
-            if (catalog == null) {
-                commonController.serve_plain_404(req, res);
-            } else {
-                Catalog.sales.findById(mongoose.Types.ObjectId(req.params.id), (errRank, sale) => {
-                    commonController.getDocuments(errRank, sale, req, res);
-                });
-            }
+        commonController.checkError(err, catalog, req, res, "Catalog");
+
+        // If par is present find the specified param ...
+        if (req.params.id !== undefined) {
+
+            // find in rank umbrellas
         }
+        commonController.getDocuments(err, catalog.sales, req, res, "Sale");
     });
 }
 
