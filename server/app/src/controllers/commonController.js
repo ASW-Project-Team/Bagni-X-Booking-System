@@ -1,4 +1,4 @@
-module.exports.serve_plain_404 = function(req, res, obj) {
+module.exports.serve_plain_404 = function(req, res, objName) {
     res.status(404).json(obj + ' not found');
 };
 
@@ -37,18 +37,20 @@ module.exports.checkError = function (err, documents, req, res, documentName) {
 
 // I return all document as catalog and not the specific as the new umbrella added
 module.exports.response = function (res, documents) {
-    res.status(this.status_completed).json(documents);
+    // if (documents != null)
+        res.status(this.status_completed).json(documents);
 }
 
-module.exports.getDocuments = function (err, documents, req, res, documentName) {
+// I could add also to return the specific nested document
+module.exports.getDocuments = function (err, documents, req, res, documentName, documentsToReturn) {
     this.checkError(err, documents, req, res, documentName);
-    this.response(res, documents);
+    this.response(res, documentsToReturn);
 }
 
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
 
-module.exports.default_page_id = 1;
+module.exports.default_page_id = 0;
 
 module.exports.default_page_size = 10;

@@ -3,6 +3,7 @@ const Catalog = require("../models/catalogModel")(mongoose);
 const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
 const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
+const Sale = require("../models/nestedSchemas/saleModel")(mongoose);
 const commonController = require("./commonController");
 
 const CatalogId = mongoose.Types.ObjectId("5f045a72e60fd3b3c85c4145");
@@ -19,20 +20,17 @@ const CatalogId = mongoose.Types.ObjectId("5f045a72e60fd3b3c85c4145");
  * @param res Response
  */
 module.exports.read_umbrellas = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
+    checkCatalog(req, res, "Umbrella", (err, catalog) => {
+
 
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-            let umbrellaResult = null;
-            for (let umbrella of catalog.umbrellas) {
-                umbrellaResult = commonController.dfs(umbrella, req.params.id);
-                if (umbrellaResult) {
-                    commonController.getDocuments(err, umbrellaResult, req, res, "Umbrella");
-                    break;
-                }
-            }
+//            returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, );
+            getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
+                commonController.getDocuments(err, catalog.umbrellas, req, res, "umbrellaResult", umbrellaResult);
+            });
+
         } else {
             commonController.response(res, catalog.umbrellas);
         }
@@ -47,32 +45,22 @@ module.exports.read_umbrellas = function (req, res) {
  * @param res Response
  */
 module.exports.update_umbrellas = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
+    checkCatalog(req, res, "Umbrella", (err, catalog) => {
 
-        // If par is present find the specified param ...
-        if (req.params.id !== undefined) {
+        updateClass(catalog, catalog.umbrellas, req, res, req.params.id, (umbrellaTarget) => {
+            // Change the umbrella information, position and/or rank
+            if (umbrellaTarget) {
+                if (req.body.x_position !== undefined )
+                    umbrellaTarget.x_position = req.body.x_position;
 
-            let umbrellaResult = null;
-            for (let umbrella of catalog.umbrellas) {
-                umbrellaResult = commonController.dfs(umbrella, req.params.id);
+                if (req.body.y_position !== undefined )
+                    umbrellaTarget.y_position = req.body.y_position;
 
-                // Change the umbrella information, position and/or rank
-                if (umbrellaResult) {
-                    if (req.body.x_position !== undefined )
-                        umbrellaResult.x_position = req.body.x_position;
-
-                    if (req.body.y_position !== undefined )
-                        umbrellaResult.y_position = req.body.y_position;
-
-                    if (req.body.rank_id !== undefined )
-                        umbrellaResult.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
-
-                    commonController.correct_save(catalog, commonController.status_completed, res);
-                    break;
-                }
+                if (req.body.rank_id !== undefined )
+                    umbrellaTarget.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
             }
-        }
+        });
+
     });
 };
 
@@ -82,8 +70,7 @@ module.exports.update_umbrellas = function (req, res) {
  * @param res The create umbrella response.
  */
 module.exports.create_umbrella = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
+    checkCatalog(req, res, "Catalog", (err, catalog) => {
 
         let umbrella = new Umbrella();
 
@@ -92,8 +79,9 @@ module.exports.create_umbrella = function (req, res) {
         umbrella.y_position = req.body.y_position;
         umbrella.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
 
-        catalog.umbrellas.push(umbrella);
-
+        // add as first element
+        catalog.umbrellas.splice(0,0, umbrella);
+        //catalog.umbrellas.push(umbrella);
 
         commonController.correct_save(catalog, commonController.status_created, res);
 
@@ -108,13 +96,11 @@ module.exports.create_umbrella = function (req, res) {
  * @param res The response.
  */
 module.exports.read_ranks = function (req, res) {
+    // To check
     checkCatalog(req, res, "Ranks", (err, catalog, documentName) => {
-        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, documentName)
+        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, documentName, catalog.rank_umbrellas);
     });
-/*    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res,"Catalog");
-        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, "Ranks");
-    });*/
+
 }
 
 
@@ -124,13 +110,13 @@ module.exports.read_ranks = function (req, res) {
  * @param res The create umbrella response.
  */
 module.exports.create_rank = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
+    checkCatalog(req, res, "Rank", (err, catalog)  => {
 
         // TODO common with services
         let rank = new Rank(req.body);
         rank._id = mongoose.Types.ObjectId();
-        catalog.rank_umbrellas.push(rank);
+        catalog.umbrellas.splice(0,0, rank);
+        // catalog.rank_umbrellas.push(rank); CHECK splice
 
         commonController.correct_save(catalog, commonController.status_created, res);
     });
@@ -144,29 +130,20 @@ module.exports.create_rank = function (req, res) {
  * @param res The response.
  */
 module.exports.update_rank = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
-        let rankResult = null;
+    checkCatalog(req, res, "Rank", (err, catalog)  => {
 
-        for (let rank of catalog.rank_umbrellas) {
-            rankResult = commonController.dfs(rank, req.params.id)
-            if (rankResult) {
-                if (req.body.name !== undefined)
-                    rankResult.name = req.body.name
+        updateClass(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
 
-                if (req.body.description !== undefined)
-                    rankResult.description = req.body.description
+            if (req.body.name !== undefined)
+                rankTarget.name = req.body.name
 
-                if (req.body.price !== undefined)
-                    rankResult.price = req.body.price
+            if (req.body.description !== undefined)
+                rankTarget.description = req.body.description
 
-                commonController.correct_save(catalog, commonController.status_completed, res);
-                break;
-            }
-        }
+            if (req.body.price !== undefined)
+                rankTarget.price = req.body.price
 
-        if (!rankResult)
-            commonController.serve_plain_404(req, res);
+        });
     });
 }
 
@@ -174,10 +151,11 @@ module.exports.update_rank = function (req, res) {
 module.exports.create_service = function(req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
-        // TODO common with rank
         let service = new Service(req.body);
         service._id = mongoose.Types.ObjectId();
-        catalog.services.push(service);
+        catalog.umbrellas.splice(0,0, service);
+
+        // catalog.services.push(service); CHECK splice
 
         commonController.correct_save(catalog, commonController.status_created, res);
     });
@@ -187,9 +165,9 @@ module.exports.create_service = function(req, res) {
  * The query GET return two possible scenario:
  *  . if "id" is present in the params, the query have to find the specified service
  *  . if "id" is not present, the query have to return some services based on body params "page_id" and "page_size"
- *      Body Param "page_id": the id that have to be shown for first...
- *          If not specified we assume id is 1 (the most recent page)
- *      Body Param "page_size": the number of page that have to be shown
+ *      Query Param "page_id": indicate position ...
+ *          If not specified we assume id is 1 (the oldest page)
+ *      Query Param "page_size": the number of page that have to be shown
  *          If not specified we assume 10 pages
  * @param req
  * @param res
@@ -200,17 +178,58 @@ module.exports.read_services = function (req, res) {
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-            let serviceTarget = null;
-            for (let service of catalog.services) {
-                serviceTarget = commonController.dfs(service, req.params.id);
-                if (serviceTarget) {
-                    commonController.getDocuments(err, serviceTarget, req, res, documentName);
-                    break;
-                }
-            }
+            returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
+
         } else {
-            commonController.response(res, catalog.services);
+            // Return tot pages
+            returnPages(req.body.page_id, req.body.page_size, req, res, catalog.services, "Services");
         }
+    });
+}
+
+/**
+ * The query PUT return two possible scenario:
+ *  . if "id" is present in the params, the query have to find the specified service and modify it
+ *      as requested with the query params
+ *  . otherwise return error
+ * @param req The update service request
+ * @param res The update service response
+ */
+module.exports.update_service = function (req, res) {
+    checkCatalog(req, res, "Service", (err, catalog)  => {
+
+        updateClass(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
+            if (req.body.price !== undefined)
+                serviceTarget.price = req.body.price;
+
+            if (req.body.description !== undefined)
+                serviceTarget.description = req.body.description;
+
+            if (req.body.umbrella_related !== undefined)
+                serviceTarget.umbrella_related = req.body.umbrella_related;
+        });
+    });
+}
+
+module.exports.create_sale = function (req, res) {
+    checkCatalog(req, res, "Sale", (err, catalog) => {
+
+        getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
+            let sale = new Sale();
+
+            sale._id = mongoose.Types.ObjectId();
+            sale.percent = req.body.percent;
+            sale.date_from = req.body.date_from;
+            sale.date_to = req.body.date_to;
+
+            rank.sales.splice(0,0, sale);
+
+            commonController.correct_save(catalog, commonController.status_created, res);
+        });
+
+
+        // catalog.services.push(service); CHECK splice
+
     });
 }
 
@@ -220,30 +239,137 @@ module.exports.read_services = function (req, res) {
  * @param req The read sale request.
  * @param res The read sale response.
  */
-module.exports.read_sale = function (req, res) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
+module.exports.read_sales = function (req, res) {
+    // FIXME DON'T FUNCTION
+    checkCatalog(req, res, "Sale", (err, catalog, documentName)  => {
 
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-            // find in rank umbrellas
+            let saleResult = null;
+
+            // fixme hasOwnProperty
+            for (let rank in catalog.rank_umbrellas){
+                saleResult = returnNestedDocument(rank.sales, req, res, req.params.id, err, "Sale");
+                if (saleResult != null)
+                    break;
+            }
+
+            // FIXME Se trovato non dovrebbe arrivare qui
+            if (saleResult !== null)
+                commonController.serve_plain_404(req, res, "Sale");
+        } else {
+            commonController.getDocuments(err, catalog.sales, req, res, "Sale", "target");
         }
-        commonController.getDocuments(err, catalog.sales, req, res, "Sale");
+
     });
 }
 
 
 
 /**
- * TODO Want to create a callback that automatize catalog checks
- * @param req
- * @param res
- * @param func
+ * A function that automatize control of id.
+ * @param req The specific request
+ * @param res The specific response
+ * @param documentName The document that have to be founded.
+ * @param func The callback executed only if document exist and is found.
  */
 function checkCatalog(req, res, documentName, func) {
     Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog, documentName) => {
-        commonController.checkError(err, catalog, req, res, documentName);
+        commonController.checkError(err, catalog, req, res, "Catalog");
         func(err, catalog, documentName);
     });
+}
+
+/**
+ * Function that update a class. The controls are specified externally because each control is different.
+ * @param classToUpdate The firstLevelCollection that have to update.
+ * @param classToSearch The collection (also nested) that documents belongs
+ * @param req The specific update request
+ * @param res The specific update response
+ * @param id The id to search
+ * @param func The callback function that is executed only if id is found. In this callback are inserted
+ *          all controls.
+ */
+function updateClass(classToUpdate, classToSearch, req, res, id, func) {
+
+    getNestedDocument(classToSearch, req, res, id, (documentTarget) => {
+        func(documentTarget);
+        commonController.correct_save(classToUpdate, commonController.status_created, res);
+    });
+}
+
+function returnNestedDocument(classToSearch, req, res, id, err, documentName) {
+    getNestedDocument(classToSearch, req, res, id, (documentTarget) =>  {
+        commonController.getDocuments(err, classToSearch, req, res, documentName, documentTarget);
+    });
+}
+
+/**
+ * Find an element in a nested collection.
+ * @param classToSearch
+ * @param classToSearch The collection (also nested) that documents belongs
+ * @param req The specific update request
+ * @param res The specific update response
+ * @param id The id to search
+ * @param func The callback function that is executed only if id is found.
+ */
+function getNestedDocument(classToSearch, req, res, id, func) {
+
+    if (id !== undefined) {
+        let documentTarget = null;
+
+        // Check if blocks infinite time
+        let foundElement = false;
+
+        for (let document of classToSearch) {
+            documentTarget = commonController.dfs(document, id);
+            if (documentTarget) {
+                foundElement = true;
+                break;
+            }
+        }
+
+        if (foundElement)
+            func(documentTarget);
+        else // So we can manipulate also more than two nested level collection. See sale read or put.
+            return null;
+    } else
+        commonController.serve_plain_404(req, res, "Id in url");
+
+}
+
+/**
+ * Return the specified elements.
+ * @param id Where first element start.
+ * @param size Number of maximum elements.
+ * @param req The specific request.
+ * @param res The specific response.
+ * @param classToSearch The class where elements are taken.
+ * @param className The class name.
+ */
+function returnPages(id, size, req, res, classToSearch, className) {
+
+
+    let pageId = commonController.default_page_id;
+    if ((id !== undefined) && (id >= 0)) {
+        pageId = id;
+    }
+
+    let pageSize = commonController.default_page_size;
+    if ((size !== undefined) && (size >= 1)) {
+        pageSize = size;
+    }
+
+    let pages = classToSearch;
+    // Return error if there aren't any service present with that id
+    if (pageId >= pages.length) {
+        commonController.serve_plain_404(req, res, className);
+    }
+    // Get the resultant pages
+    if (pageId + pageSize >= pages.length ) {
+        pageSize = pages.length - pageId;
+    }
+
+    commonController.response(res, pages.slice(pageId, pageSize));
 }

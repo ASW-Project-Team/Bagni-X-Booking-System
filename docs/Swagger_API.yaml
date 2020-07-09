@@ -345,6 +345,16 @@ paths:
             explode: true
             schema:
               type: integer
+      put:
+        parameters:
+          - name: service_id
+            in: path
+            description: Service id
+            required: true
+            style: form
+            explode: true
+            schema:
+              type: integer
 
     /api/stats/:
       description: robe
