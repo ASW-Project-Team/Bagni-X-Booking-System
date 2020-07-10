@@ -1,6 +1,12 @@
 module.exports.serve_plain_404 = function(req, res, objName) {
-    res.status(404).json(obj + ' not found');
+    res.status(404).json(objName + ' not found');
 };
+
+module.exports.field_require_404 = function(req, res) {
+    res.status(404).json("All fields are required, someone  not found!");
+};
+
+
 
     // We can return the specific modified object
 module.exports.correct_save = function (document, status, res) {
@@ -42,8 +48,8 @@ module.exports.response = function (res, documents) {
 }
 
 // I could add also to return the specific nested document
-module.exports.getDocuments = function (err, documents, req, res, documentName, documentsToReturn) {
-    this.checkError(err, documents, req, res, documentName);
+module.exports.getDocuments = function (err, collectionToSearch, req, res, documentName, documentsToReturn) {
+    this.checkError(err, collectionToSearch, req, res, documentName);
     this.response(res, documentsToReturn);
 }
 

@@ -6,7 +6,7 @@ const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
 const Sale = require("../models/nestedSchemas/saleModel")(mongoose);
 const commonController = require("./commonController");
 
-const CatalogId = mongoose.Types.ObjectId("5f045a72e60fd3b3c85c4145");
+const CatalogId = mongoose.Types.ObjectId("5f081889b5653238cfc16a3d");
 // Before this queries we have to check the permissions to interact with db
 
 
@@ -20,16 +20,16 @@ const CatalogId = mongoose.Types.ObjectId("5f045a72e60fd3b3c85c4145");
  * @param res Response
  */
 module.exports.read_umbrellas = function (req, res) {
-    checkCatalog(req, res, "Umbrella", (err, catalog) => {
+    checkCatalog(req, res, "Umbrella", (err, catalog, documentName) => {
 
 
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-//            returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, );
-            getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
+            returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, documentName);
+/*            getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
                 commonController.getDocuments(err, catalog.umbrellas, req, res, "umbrellaResult", umbrellaResult);
-            });
+            });*/
 
         } else {
             commonController.response(res, catalog.umbrellas);
@@ -70,21 +70,18 @@ module.exports.update_umbrellas = function (req, res) {
  * @param res The create umbrella response.
  */
 module.exports.create_umbrella = function (req, res) {
-    checkCatalog(req, res, "Catalog", (err, catalog) => {
+    checkCatalog(req, res, "Umbrella", (err, catalog) => {
 
-        let umbrella = new Umbrella();
+        areRequiredFieldsPresent(req, res, () =>{
 
-        umbrella._id = mongoose.Types.ObjectId();
-        umbrella.x_position = req.body.x_position;
-        umbrella.y_position = req.body.y_position;
-        umbrella.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
+            // FIXME Here are more checks
+            let umbrella = new Umbrella(req.body);
+            umbrella._id = mongoose.Types.ObjectId();
+            // add as first element
+            catalog.umbrellas.splice(0, 0, umbrella);
 
-        // add as first element
-        catalog.umbrellas.splice(0,0, umbrella);
-        //catalog.umbrellas.push(umbrella);
-
-        commonController.correct_save(catalog, commonController.status_created, res);
-
+            commonController.correct_save(catalog, commonController.status_created, res);
+        }, req.body.x_position, req.body.y_position, req.body.rank_id);
     });
 }
 
@@ -112,13 +109,16 @@ module.exports.read_ranks = function (req, res) {
 module.exports.create_rank = function (req, res) {
     checkCatalog(req, res, "Rank", (err, catalog)  => {
 
-        // TODO common with services
-        let rank = new Rank(req.body);
-        rank._id = mongoose.Types.ObjectId();
-        catalog.umbrellas.splice(0,0, rank);
-        // catalog.rank_umbrellas.push(rank); CHECK splice
+        areRequiredFieldsPresent(req, res, () =>{
 
-        commonController.correct_save(catalog, commonController.status_created, res);
+            let rank = new Rank(req.body);
+            rank._id = mongoose.Types.ObjectId();
+            catalog.rank_umbrellas.splice(0, 0, rank);
+            // catalog.rank_umbrellas.push(rank); CHECK splice
+
+            commonController.correct_save(catalog, commonController.status_created, res);
+        }, req.body.name, req.body.price);
+
     });
 }
 
@@ -151,13 +151,20 @@ module.exports.update_rank = function (req, res) {
 module.exports.create_service = function(req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
-        let service = new Service(req.body);
-        service._id = mongoose.Types.ObjectId();
-        catalog.umbrellas.splice(0,0, service);
+        areRequiredFieldsPresent(req, res, () =>{
 
-        // catalog.services.push(service); CHECK splice
+            if (req.body.price >= 0){
 
-        commonController.correct_save(catalog, commonController.status_created, res);
+                let service = new Service(req.body);
+                service._id = mongoose.Types.ObjectId();
+
+                catalog.services.splice(0, 0, service);
+
+                commonController.correct_save(catalog, commonController.status_created, res);
+            }
+        }, req.body.umbrella_related, req.body.price);
+
+
     });
 }
 
@@ -179,7 +186,6 @@ module.exports.read_services = function (req, res) {
         if (req.params.id !== undefined) {
 
             returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
-
         } else {
             // Return tot pages
             returnPages(req.body.page_id, req.body.page_size, req, res, catalog.services, "Services");
@@ -211,57 +217,103 @@ module.exports.update_service = function (req, res) {
     });
 }
 
+/**
+ * Create a sale for a specific rank.
+ * @param req The specific request.
+ * @param res The specific response.
+ */
 module.exports.create_sale = function (req, res) {
     checkCatalog(req, res, "Sale", (err, catalog) => {
 
         getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
-            let sale = new Sale();
 
-            sale._id = mongoose.Types.ObjectId();
-            sale.percent = req.body.percent;
-            sale.date_from = req.body.date_from;
-            sale.date_to = req.body.date_to;
+            areRequiredFieldsPresent(req, res, () =>{
 
-            rank.sales.splice(0,0, sale);
+                let sale = new Sale(req.body);
+                sale._id = mongoose.Types.ObjectId();
 
-            commonController.correct_save(catalog, commonController.status_created, res);
+                rank.sales.splice(0,0, sale);
+
+                commonController.correct_save(catalog, commonController.status_created, res);
+
+            }, req.body.percent, req.body.date_from, req.body.date_to);
+
         });
-
-
-        // catalog.services.push(service); CHECK splice
 
     });
 }
 
 
 /**
- * Read a single sale if exist, error otherwise.
+ * Two possible scenario:
+ *  . if param "id" is present: Read a single sale if "id" exist, error otherwise.
+ *  . Read from "page_id" to "page_id" + "page_size" sales.
  * @param req The read sale request.
  * @param res The read sale response.
  */
 module.exports.read_sales = function (req, res) {
-    // FIXME DON'T FUNCTION
-    checkCatalog(req, res, "Sale", (err, catalog, documentName)  => {
+    checkCatalog(req, res, "Sale", (err, catalog)  => {
 
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
             let saleResult = null;
 
-            // fixme hasOwnProperty
             for (let rank in catalog.rank_umbrellas){
-                saleResult = returnNestedDocument(rank.sales, req, res, req.params.id, err, "Sale");
-                if (saleResult != null)
+                saleResult = returnNestedDocument(catalog.rank_umbrellas[rank].sales, req, res, req.params.id, err, "Sale");
+                if (saleResult !== null)
                     break;
+
             }
 
-            // FIXME Se trovato non dovrebbe arrivare qui
-            if (saleResult !== null)
+            if (saleResult === null)
                 commonController.serve_plain_404(req, res, "Sale");
+
         } else {
-            commonController.getDocuments(err, catalog.sales, req, res, "Sale", "target");
+            // TODO
+            //commonController.getDocuments(err, catalog.sales, req, res, "Sale", "target");
         }
 
+    });
+}
+
+/**
+ * Update a specific sale if present. If not present return error.
+ * @param req The specific request.
+ * @param res The specific response.
+ */
+module.exports.update_sale = function (req, res) {
+    checkCatalog(req, res, "Sale", (err, catalog)  => {
+
+        // If par is present find the specified param ...
+        if (req.params.id !== undefined) {
+
+            let saleFound = false;
+
+            for (let rank in catalog.rank_umbrellas){
+
+                updateClass(catalog, catalog.rank_umbrellas[rank].sales, req, res, req.params.id, (saleResult) => {
+
+                    saleFound = true;
+
+                    if (req.body.percent !== undefined)
+                        saleResult.percent = req.body.percent
+
+                    if (req.body.date_from !== undefined)
+                        saleResult.date_from = req.body.date_from
+
+                    if (req.body.date_to !== undefined)
+                        saleResult.date_to = req.body.date_to
+                });
+
+                if (saleFound)
+                    break;
+
+            }
+
+            if (!saleFound)
+                commonController.serve_plain_404(req, res, "Sale");
+        }
     });
 }
 
@@ -333,7 +385,7 @@ function getNestedDocument(classToSearch, req, res, id, func) {
         if (foundElement)
             func(documentTarget);
         else // So we can manipulate also more than two nested level collection. See sale read or put.
-            return null;
+            return  commonController.serve_plain_404(req, res, "Elem");
     } else
         commonController.serve_plain_404(req, res, "Id in url");
 
@@ -352,17 +404,18 @@ function returnPages(id, size, req, res, classToSearch, className) {
 
 
     let pageId = commonController.default_page_id;
-    if ((id !== undefined) && (id >= 0)) {
+    if ((id !== undefined) && (id !== null) && (id >= 0)) {
         pageId = id;
     }
 
     let pageSize = commonController.default_page_size;
-    if ((size !== undefined) && (size >= 1)) {
+    if ((size !== undefined) && (size !== null) && (size >= 1)) {
         pageSize = size;
     }
 
     let pages = classToSearch;
     // Return error if there aren't any service present with that id
+
     if (pageId >= pages.length) {
         commonController.serve_plain_404(req, res, className);
     }
@@ -372,4 +425,26 @@ function returnPages(id, size, req, res, classToSearch, className) {
     }
 
     commonController.response(res, pages.slice(pageId, pageSize));
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param fields Array of body params
+ * @param func
+ */
+function areRequiredFieldsPresent(req, res, func, ...fieldsRequired) {
+
+    let toSave = true;
+    for (let field in fieldsRequired){
+        if (fieldsRequired[field] === undefined) {
+            toSave = false;
+        }
+    }
+    if (toSave) {
+        func();
+    } else {
+        commonController.field_require_404(req, res)
+    }
 }

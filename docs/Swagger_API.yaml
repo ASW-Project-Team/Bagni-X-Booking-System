@@ -290,7 +290,7 @@ paths:
              type: integer
     post:
 
-    /api/catalog/sales/{sale_id}:
+    /api/catalog/sales/:id:
       get:
         parameters:
           - name: sale_id
