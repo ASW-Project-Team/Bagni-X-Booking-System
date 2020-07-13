@@ -29,15 +29,15 @@ exports.create_booking = function(req, res) {
 // OK
 // It lists all bookings
 exports.list_bookings = function(req, res) {
-		Booking.find({}, function(err, movie) {
+		Booking.find({}, function(err, feed) {
 			if (err){
 				res.send(err);
 			}
-			res.json(movie);
+			res.json(feed);
 		});
 };
 
-
+/*
 exports.read_bookings = function(req, res) {
 
 	let page_size = defaultPageSize;
@@ -54,11 +54,11 @@ exports.read_bookings = function(req, res) {
 		read_bookings_from_user(res, ObjectId(req.params.user_id), page_size, page_id);
 	}
 };
+*/
 
-
-
+// OK
+// It returns the booking with the specified ID
 exports.read_booking = function(req, res) {
-	// todo find by id facile
 	Booking.findById(req.params.id, (err, booking) => {
 		if (err)
 			res.send(err);
@@ -67,7 +67,6 @@ exports.read_booking = function(req, res) {
 				res.status(404).send({
 					description: 'Booking not found'
 				});
-
 			} else {
 				res.status(200).json(booking);
 			}
@@ -128,16 +127,16 @@ function correctId(reqId, bookingId) {
 	return reqId === bookingId;
 }
 
+// OK
+// It deletes a booking
 exports.delete_booking = function(req, res) {
-	// todo uguale
-
-	Movie.deleteOne({_id: req.params.id}, function(err, result) {
+	Booking.deleteOne({_id: req.params.id}, function(err, result) {
 		if (err)
 			res.send(err);
 		else{
 			if(result.deletedCount === 0){
 				res.status(404).send({
-					description: 'Movie not found'
+					description: 'Booking not found'
 				});
 			}
 			else{
