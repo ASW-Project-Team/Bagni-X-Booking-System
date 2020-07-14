@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 module.exports.serve_plain_404 = function(req, res, objName) {
     res.status(404).json(objName + ' not found');
 };
@@ -55,47 +57,49 @@ module.exports.getDocuments = function (err, collectionToSearch, req, res, docum
 
 /**
  * Function that update a class. The controls are specified externally because each control is different.
- * @param classToUpdate The firstLevelCollection that have to update.
- * @param classToSearch The collection (also nested) that documents belongs
+ * @param collectionToUpdate The firstLevelCollection that have to update.
+ * @param collectionToSearch The collection (also nested) that documents belongs
  * @param req The specific update request
  * @param res The specific update response
  * @param id The id to search
  * @param func The callback function that is executed only if id is found. In this callback are inserted
  *          all controls.
  */
-module.exports.updateClass = function (classToUpdate, classToSearch, req, res, id, func) {
+module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func) {
 
-    this.getNestedDocument(classToSearch, req, res, id, (documentTarget) => {
+    this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) => {
         func(documentTarget);
-        this.correct_save(classToUpdate, this.status_created, res);
+        this.correct_save(collectionToUpdate, this.status_created, res);
     });
 }
 
 /**
- *
- * @param classToSearch
- * @param req
- * @param res
- * @param id
- * @param err
- * @param documentName
+ * Used to do GET for nested documents. It's return the elements that query wants.
+ * This function have different scenario:
+ *  . if "id" is present return the specific document.
+ *  . if "id" isn't present return error.
+ * @param collectionToSearch The nested collection where query do the search.
+ * @param req The GET request.
+ * @param res The GET response.
+ * @param id The id to search.
+ * @param err The error is used if document isn't present.
+ * @param documentName The name of document used if doc is not present.
  */
-module.exports.returnNestedDocument = function (classToSearch, req, res, id, err, documentName) {
-    getNestedDocument(classToSearch, req, res, id, (documentTarget) =>  {
-        this.getDocuments(err, classToSearch, req, res, documentName, documentTarget);
+module.exports.returnNestedDocument = function (collectionToSearch, req, res, id, err, documentName) {
+    getNestedDocument(collectionToSearch, req, res, id, (documentTarget) =>  {
+        this.getDocuments(err, collectionToSearch, req, res, documentName, documentTarget);
     });
 }
 
 /**
  * Find an element in a nested collection.
- * @param classToSearch
- * @param classToSearch The collection (also nested) that documents belongs
+ * @param collectionToSearch The collection (also nested) that documents belongs
  * @param req The specific update request
  * @param res The specific update response
  * @param id The id to search
  * @param func The callback function that is executed only if id is found.
  */
-module.exports.getNestedDocument = function(classToSearch, req, res, id, func) {
+module.exports.getNestedDocument = function(collectionToSearch, req, res, id, func) {
 
     if (id !== undefined) {
         let documentTarget = null;
@@ -103,7 +107,7 @@ module.exports.getNestedDocument = function(classToSearch, req, res, id, func) {
         // Check if blocks infinite time
         let foundElement = false;
 
-        for (let document of classToSearch) {
+        for (let document of collectionToSearch) {
             documentTarget = this.dfs(document, id);
             if (documentTarget) {
                 foundElement = true;
@@ -120,6 +124,70 @@ module.exports.getNestedDocument = function(classToSearch, req, res, id, func) {
 
 }
 
+module.exports.checkFirstLevelClass = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
+    collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, catalog, documentName) => {
+        this.checkError(err, catalog, req, res, errDocName);
+        func(err, catalog, documentName);
+    });
+}
+
+/**
+ * Return the specified elements.
+ * @param id Where first element start.
+ * @param size Number of maximum elements.
+ * @param req The specific request.
+ * @param res The specific response.
+ * @param collectionToSearch The class where elements are taken.
+ * @param collectionName The class name.
+ */
+module.exports.returnPages = function (id, size, req, res, collectionToSearch, collectionName) {
+
+    let pageId = this.default_page_id;
+    if ((id !== undefined) && (id !== null) && (id >= 0)) {
+        pageId = id;
+    }
+
+    let pageSize = this.default_page_size;
+    if ((size !== undefined) && (size !== null) && (size >= 1)) {
+        pageSize = size;
+    }
+
+    let pages = collectionToSearch;
+    // Return error if there aren't any service present with that id
+
+    if (pageId >= pages.length) {
+        this.serve_plain_404(req, res, collectionName);
+    }
+    // Get the resultant pages
+    if (pageId + pageSize >= pages.length ) {
+        pageSize = pages.length - pageId;
+    }
+
+    this.response(res, pages.slice(pageId, pageSize));
+}
+
+/**
+ * Control if fields required are present. It's used in POST because user can't create document
+ * without required fields.
+ * @param req
+ * @param res
+ * @param func
+ * @param fieldsRequired
+ */
+module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsRequired) {
+
+    let toSave = true;
+    for (let field in fieldsRequired){
+        if (fieldsRequired[field] === undefined) {
+            toSave = false;
+        }
+    }
+    if (toSave) {
+        func();
+    } else {
+        this.field_require_404(req, res)
+    }
+}
 
 module.exports.status_created = 201;
 

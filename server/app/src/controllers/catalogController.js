@@ -26,10 +26,7 @@ module.exports.read_umbrellas = function (req, res) {
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-            returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, documentName);
-            /*  getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
-                commonController.getDocuments(err, catalog.umbrellas, req, res, "umbrellaResult", umbrellaResult);
-            });*/
+            commonController.returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, documentName);
 
         } else {
             commonController.response(res, catalog.umbrellas);
@@ -47,7 +44,7 @@ module.exports.read_umbrellas = function (req, res) {
 module.exports.update_umbrellas = function (req, res) {
     checkCatalog(req, res, "Umbrella", (err, catalog) => {
 
-        updateClass(catalog, catalog.umbrellas, req, res, req.params.id, (umbrellaTarget) => {
+        commonController.updateCollection(catalog, catalog.umbrellas, req, res, req.params.id, (umbrellaTarget) => {
             // Change the umbrella information, position and/or rank
             if (umbrellaTarget) {
                 if (req.body.x_position !== undefined )
@@ -72,7 +69,7 @@ module.exports.update_umbrellas = function (req, res) {
 module.exports.create_umbrella = function (req, res) {
     checkCatalog(req, res, "Umbrella", (err, catalog) => {
 
-        areRequiredFieldsPresent(req, res, () =>{
+        commonController.areRequiredFieldsPresent(req, res, () =>{
 
             // FIXME Here are more checks
             let umbrella = new Umbrella(req.body);
@@ -109,7 +106,7 @@ module.exports.read_ranks = function (req, res) {
 module.exports.create_rank = function (req, res) {
     checkCatalog(req, res, "Rank", (err, catalog)  => {
 
-        areRequiredFieldsPresent(req, res, () =>{
+        commonController.areRequiredFieldsPresent(req, res, () =>{
 
             let rank = new Rank(req.body);
             rank._id = mongoose.Types.ObjectId();
@@ -132,7 +129,7 @@ module.exports.create_rank = function (req, res) {
 module.exports.update_rank = function (req, res) {
     checkCatalog(req, res, "Rank", (err, catalog)  => {
 
-        updateClass(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
+        commonController.updateCollection(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
 
             if (req.body.name !== undefined)
                 rankTarget.name = req.body.name
@@ -151,7 +148,7 @@ module.exports.update_rank = function (req, res) {
 module.exports.create_service = function(req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
-        areRequiredFieldsPresent(req, res, () =>{
+        commonController.areRequiredFieldsPresent(req, res, () =>{
 
             if (req.body.price >= 0){
 
@@ -185,10 +182,10 @@ module.exports.read_services = function (req, res) {
         // If par is present find the specified param ...
         if (req.params.id !== undefined) {
 
-            returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
+            commonController.returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
         } else {
             // Return tot pages
-            returnPages(req.body.page_id, req.body.page_size, req, res, catalog.services, "Services");
+            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, catalog.services, "Services");
         }
     });
 }
@@ -204,7 +201,7 @@ module.exports.read_services = function (req, res) {
 module.exports.update_service = function (req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
-        updateClass(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
+        commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
             if (req.body.price !== undefined)
                 serviceTarget.price = req.body.price;
 
@@ -225,9 +222,9 @@ module.exports.update_service = function (req, res) {
 module.exports.create_sale = function (req, res) {
     checkCatalog(req, res, "Sale", (err, catalog) => {
 
-        getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
+        commonController.getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
 
-            areRequiredFieldsPresent(req, res, () =>{
+            commonController.areRequiredFieldsPresent(req, res, () =>{
 
                 let sale = new Sale(req.body);
                 sale._id = mongoose.Types.ObjectId();
@@ -259,8 +256,9 @@ module.exports.read_sales = function (req, res) {
 
             let saleResult = null;
 
+            // check hasOwnProperty
             for (let rank in catalog.rank_umbrellas){
-                saleResult = returnNestedDocument(catalog.rank_umbrellas[rank].sales, req, res, req.params.id, err, "Sale");
+                saleResult = commonController.returnNestedDocument(catalog.rank_umbrellas[rank].sales, req, res, req.params.id, err, "Sale");
                 if (saleResult !== null)
                     break;
 
@@ -290,9 +288,10 @@ module.exports.update_sale = function (req, res) {
 
             let saleFound = false;
 
+            // check hasOwnProperty
             for (let rank in catalog.rank_umbrellas){
 
-                updateClass(catalog, catalog.rank_umbrellas[rank].sales, req, res, req.params.id, (saleResult) => {
+                commonController.updateCollection(catalog, catalog.rank_umbrellas[rank].sales, req, res, req.params.id, (saleResult) => {
 
                     saleFound = true;
 
@@ -327,124 +326,9 @@ module.exports.update_sale = function (req, res) {
  * @param func The callback executed only if document exist and is found.
  */
 function checkCatalog(req, res, documentName, func) {
-    Catalog.findById(mongoose.Types.ObjectId(CatalogId), (err, catalog, documentName) => {
-        commonController.checkError(err, catalog, req, res, "Catalog");
-        func(err, catalog, documentName);
-    });
+
+    commonController.checkFirstLevelClass(req, res, documentName, Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogId), func);
 }
 
-/**
- * Function that update a class. The controls are specified externally because each control is different.
- * @param classToUpdate The firstLevelCollection that have to update.
- * @param classToSearch The collection (also nested) that documents belongs
- * @param req The specific update request
- * @param res The specific update response
- * @param id The id to search
- * @param func The callback function that is executed only if id is found. In this callback are inserted
- *          all controls.
- */
-function updateClass(classToUpdate, classToSearch, req, res, id, func) {
 
-    getNestedDocument(classToSearch, req, res, id, (documentTarget) => {
-        func(documentTarget);
-        commonController.correct_save(classToUpdate, commonController.status_created, res);
-    });
-}
-
-function returnNestedDocument(classToSearch, req, res, id, err, documentName) {
-    getNestedDocument(classToSearch, req, res, id, (documentTarget) =>  {
-        commonController.getDocuments(err, classToSearch, req, res, documentName, documentTarget);
-    });
-}
-
-/**
- * Find an element in a nested collection.
- * @param classToSearch
- * @param classToSearch The collection (also nested) that documents belongs
- * @param req The specific update request
- * @param res The specific update response
- * @param id The id to search
- * @param func The callback function that is executed only if id is found.
- */
-function getNestedDocument(classToSearch, req, res, id, func) {
-
-    if (id !== undefined) {
-        let documentTarget = null;
-
-        // Check if blocks infinite time
-        let foundElement = false;
-
-        for (let document of classToSearch) {
-            documentTarget = commonController.dfs(document, id);
-            if (documentTarget) {
-                foundElement = true;
-                break;
-            }
-        }
-
-        if (foundElement)
-            func(documentTarget);
-        else // So we can manipulate also more than two nested level collection. See sale read or put.
-            return  commonController.serve_plain_404(req, res, "Elem");
-    } else
-        commonController.serve_plain_404(req, res, "Id in url");
-
-}
-
-/**
- * Return the specified elements.
- * @param id Where first element start.
- * @param size Number of maximum elements.
- * @param req The specific request.
- * @param res The specific response.
- * @param classToSearch The class where elements are taken.
- * @param className The class name.
- */
-function returnPages(id, size, req, res, classToSearch, className) {
-
-
-    let pageId = commonController.default_page_id;
-    if ((id !== undefined) && (id !== null) && (id >= 0)) {
-        pageId = id;
-    }
-
-    let pageSize = commonController.default_page_size;
-    if ((size !== undefined) && (size !== null) && (size >= 1)) {
-        pageSize = size;
-    }
-
-    let pages = classToSearch;
-    // Return error if there aren't any service present with that id
-
-    if (pageId >= pages.length) {
-        commonController.serve_plain_404(req, res, className);
-    }
-    // Get the resultant pages
-    if (pageId + pageSize >= pages.length ) {
-        pageSize = pages.length - pageId;
-    }
-
-    commonController.response(res, pages.slice(pageId, pageSize));
-}
-
-/**
- *
- * @param req
- * @param res
- * @param func
- * @param fieldsRequired
- */
-function areRequiredFieldsPresent(req, res, func, ...fieldsRequired) {
-
-    let toSave = true;
-    for (let field in fieldsRequired){
-        if (fieldsRequired[field] === undefined) {
-            toSave = false;
-        }
-    }
-    if (toSave) {
-        func();
-    } else {
-        commonController.field_require_404(req, res)
-    }
-}
