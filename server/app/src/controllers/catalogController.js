@@ -27,7 +27,7 @@ module.exports.read_umbrellas = function (req, res) {
         if (req.params.id !== undefined) {
 
             returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, documentName);
-/*            getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
+            /*  getNestedDocument(catalog.umbrellas, req, res, req.params.id, (umbrellaResult) => {
                 commonController.getDocuments(err, catalog.umbrellas, req, res, "umbrellaResult", umbrellaResult);
             });*/
 
@@ -431,8 +431,8 @@ function returnPages(id, size, req, res, classToSearch, className) {
  *
  * @param req
  * @param res
- * @param fields Array of body params
  * @param func
+ * @param fieldsRequired
  */
 function areRequiredFieldsPresent(req, res, func, ...fieldsRequired) {
 

@@ -53,6 +53,74 @@ module.exports.getDocuments = function (err, collectionToSearch, req, res, docum
     this.response(res, documentsToReturn);
 }
 
+/**
+ * Function that update a class. The controls are specified externally because each control is different.
+ * @param classToUpdate The firstLevelCollection that have to update.
+ * @param classToSearch The collection (also nested) that documents belongs
+ * @param req The specific update request
+ * @param res The specific update response
+ * @param id The id to search
+ * @param func The callback function that is executed only if id is found. In this callback are inserted
+ *          all controls.
+ */
+module.exports.updateClass = function (classToUpdate, classToSearch, req, res, id, func) {
+
+    this.getNestedDocument(classToSearch, req, res, id, (documentTarget) => {
+        func(documentTarget);
+        this.correct_save(classToUpdate, this.status_created, res);
+    });
+}
+
+/**
+ *
+ * @param classToSearch
+ * @param req
+ * @param res
+ * @param id
+ * @param err
+ * @param documentName
+ */
+module.exports.returnNestedDocument = function (classToSearch, req, res, id, err, documentName) {
+    getNestedDocument(classToSearch, req, res, id, (documentTarget) =>  {
+        this.getDocuments(err, classToSearch, req, res, documentName, documentTarget);
+    });
+}
+
+/**
+ * Find an element in a nested collection.
+ * @param classToSearch
+ * @param classToSearch The collection (also nested) that documents belongs
+ * @param req The specific update request
+ * @param res The specific update response
+ * @param id The id to search
+ * @param func The callback function that is executed only if id is found.
+ */
+module.exports.getNestedDocument = function(classToSearch, req, res, id, func) {
+
+    if (id !== undefined) {
+        let documentTarget = null;
+
+        // Check if blocks infinite time
+        let foundElement = false;
+
+        for (let document of classToSearch) {
+            documentTarget = this.dfs(document, id);
+            if (documentTarget) {
+                foundElement = true;
+                break;
+            }
+        }
+
+        if (foundElement)
+            func(documentTarget);
+        else // So we can manipulate also more than two nested level collection. See sale read or put.
+            return  this.serve_plain_404(req, res, "Elem");
+    } else
+        this.serve_plain_404(req, res, "Id in url");
+
+}
+
+
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
