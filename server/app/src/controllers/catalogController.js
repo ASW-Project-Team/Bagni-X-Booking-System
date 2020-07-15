@@ -267,9 +267,26 @@ module.exports.read_sales = function (req, res) {
             if (saleResult === null)
                 commonController.serve_plain_404(req, res, "Sale");
 
+        }  else if ((req.body.page_id !== undefined) && (req.body.page_size !== undefined)){
+
+            let allSale = [];
+
+
+            // FIXME filtra tutti i sales
+            for (let rank in catalog.rank_umbrellas) {
+                allSale.splice(0, 0, catalog.rank_umbrellas[rank].sales);
+            }
+
+            allSale = allSale.filter(x => x.date_to > Date.now()).sort(function (a,b) {
+                    return new Date(a.date_to) - new Date(b.date_to);
+                }
+            );
+
+            // Return tot pages
+            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, allSale, "Sales");
+
         } else {
-            // TODO
-            //commonController.getDocuments(err, catalog.sales, req, res, "Sale", "target");
+            commonController.serve_plain_404(req, res, "Sale")
         }
 
     });
