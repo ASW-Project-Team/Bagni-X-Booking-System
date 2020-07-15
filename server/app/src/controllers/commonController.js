@@ -156,14 +156,19 @@ module.exports.returnPages = function (id, size, req, res, collectionToSearch, c
     // Return error if there aren't any service present with that id
 
     if (pageId >= pages.length) {
+
         this.serve_plain_404(req, res, collectionName);
-    }
-    // Get the resultant pages
-    if (pageId + pageSize >= pages.length ) {
-        pageSize = pages.length - pageId;
+
+    } else {
+
+        // Get the resultant pages
+        if (pageId + pageSize >= pages.length ) {
+            pageSize = pages.length - pageId;
+        }
+
+        this.response(res, pages.slice(pageId, pageSize));
     }
 
-    this.response(res, pages.slice(pageId, pageSize));
 }
 
 /**
