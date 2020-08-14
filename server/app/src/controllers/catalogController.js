@@ -274,16 +274,23 @@ module.exports.read_sales = function (req, res) {
 
             // FIXME filtra tutti i sales
             for (let rank in catalog.rank_umbrellas) {
-                allSale.splice(0, 0, catalog.rank_umbrellas[rank].sales);
+                for (let sale in catalog.rank_umbrellas[rank].sales){
+                    allSale.splice(0, 0, catalog.rank_umbrellas[rank].sales[sale]);
+                }
             }
 
-            allSale = allSale.filter(x => x.date_to > Date.now()).sort(function (a,b) {
+            console.log(Date.now());
+            for (let i = 0; i < allSale.length; i++) {
+                console.log(allSale[i].date_to);
+            }
+
+            let allSaleRequested = allSale.filter(x => x.date_to > Date.now()).sort(function (a,b) {
                     return new Date(a.date_to) - new Date(b.date_to);
                 }
             );
 
             // Return tot pages
-            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, allSale, "Sales");
+            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, allSaleRequested, "Sales");
 
         } else {
             commonController.serve_plain_404(req, res, "Sale")
