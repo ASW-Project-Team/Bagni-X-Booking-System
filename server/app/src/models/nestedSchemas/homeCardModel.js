@@ -19,5 +19,5 @@ const initializeModel = function(mongoose) {
         description: String
     });
 
-    return mongoose.model('sale', saleSchema);
+    return mongoose.model('homeCard', homeCardSchema);
 }
