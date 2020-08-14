@@ -27,7 +27,7 @@ exports.create_user = function(req, res) {
     newUser._id = mongoose.Types.ObjectId();
 
     // 201 -> instance created
-    commonController.correct_save(newUser, commonController.status_created, res);
+    commonController.correctSave(newUser, commonController.status_created, res);
 };
 
 
@@ -63,7 +63,7 @@ exports.update_user = function(req, res) {
                     user.address = req.body.address;
 
             }
-            commonController.correct_save(user, commonController.status_completed, res);
+            commonController.correctSave(user, commonController.status_completed, res);
         }
     });
 };
