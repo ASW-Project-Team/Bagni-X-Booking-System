@@ -24,7 +24,7 @@ module.exports.read_umbrellas = function (req, res) {
 
 
         // If par is present find the specified param ...
-        if (req.params.id !== undefined) {
+        if (req.params.id) {
 
             commonController.returnNestedDocument(catalog.umbrellas, req, res, req.params.id, err, documentName);
 
@@ -77,7 +77,7 @@ module.exports.create_umbrella = function (req, res) {
             // add as first element
             catalog.umbrellas.splice(0, 0, umbrella);
 
-            commonController.correct_save(catalog, commonController.status_created, res);
+            commonController.correctSave(catalog, commonController.status_created, res);
         }, req.body.x_position, req.body.y_position, req.body.rank_id);
     });
 }
@@ -113,7 +113,7 @@ module.exports.create_rank = function (req, res) {
             catalog.rank_umbrellas.splice(0, 0, rank);
             // catalog.rank_umbrellas.push(rank); CHECK splice
 
-            commonController.correct_save(catalog, commonController.status_created, res);
+            commonController.correctSave(catalog, commonController.status_created, res);
         }, req.body.name, req.body.price);
 
     });
@@ -157,7 +157,7 @@ module.exports.create_service = function(req, res) {
 
                 catalog.services.splice(0, 0, service);
 
-                commonController.correct_save(catalog, commonController.status_created, res);
+                commonController.correctSave(catalog, commonController.status_created, res);
             }
         }, req.body.umbrella_related, req.body.price);
 
@@ -231,7 +231,7 @@ module.exports.create_sale = function (req, res) {
 
                 rank.sales.splice(0,0, sale);
 
-                commonController.correct_save(catalog, commonController.status_created, res);
+                commonController.correctSave(catalog, commonController.status_created, res);
 
             }, req.body.percent, req.body.date_from, req.body.date_to);
 
@@ -347,7 +347,7 @@ module.exports.update_sale = function (req, res) {
  */
 function checkCatalog(req, res, documentName, func) {
 
-    commonController.checkFirstLevelClass(req, res, documentName, Catalog, "Catalog",
+    commonController.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogId), func);
 }
 
