@@ -11,7 +11,7 @@ module.exports.field_require_404 = function(req, res) {
 
 
     // We can return the specific modified object
-module.exports.correct_save = function (document, status, res) {
+module.exports.correctSave = function (document, status, res) {
     document.save((saveErr, updatedDocument) => {
         if (saveErr) {
             res.send(saveErr);
@@ -33,11 +33,11 @@ module.exports.dfs = function (obj, targetId) {
     return null
 }
 
-module.exports.checkError = function (err, documents, req, res, documentName) {
+module.exports.checkError = function (err, documents, req, res, documentName, deleteOperation = false) {
     if (err)
         res.send(err);
     else {
-        if (documents == null) {
+        if (!deleteOperation && !documents) { // FIXME !documents
             this.serve_plain_404(req, res, documentName);
         }
     }
@@ -45,8 +45,7 @@ module.exports.checkError = function (err, documents, req, res, documentName) {
 
 // I return all document as catalog and not the specific as the new umbrella added
 module.exports.response = function (res, documents) {
-    // if (documents != null)
-        res.status(this.status_completed).json(documents);
+    res.status(this.status_completed).json(documents);
 }
 
 // I could add also to return the specific nested document
@@ -69,7 +68,7 @@ module.exports.updateCollection = function (collectionToUpdate, collectionToSear
 
     this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) => {
         func(documentTarget);
-        this.correct_save(collectionToUpdate, this.status_created, res);
+        this.correctSave(collectionToUpdate, this.status_created, res);
     });
 }
 
@@ -101,7 +100,7 @@ module.exports.returnNestedDocument = function (collectionToSearch, req, res, id
  */
 module.exports.getNestedDocument = function(collectionToSearch, req, res, id, func) {
 
-    if (id !== undefined) {
+    if (id) {
         let documentTarget = null;
 
         // Check if blocks infinite time
@@ -124,10 +123,61 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
 
 }
 
-module.exports.checkFirstLevelClass = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
-    collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, catalog, documentName) => {
-        this.checkError(err, catalog, req, res, errDocName);
-        func(err, catalog, documentName);
+/**
+ * Find by id for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName
+ * @param collFirstLevel
+ * @param errDocName
+ * @param id
+ * @param func
+ */
+module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
+    collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
+        this.checkError(err, docResult, req, res, errDocName);
+        func(err, docResult, docResultName);
+    });
+}
+
+/**
+ * Delete by id for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName
+ * @param collFirstLevel
+ * @param errDocName
+ */
+module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
+    collFirstLevel.deleteOne({ _id: req.body.id }, (err, docResult)  => {
+
+        if (!errDocName)
+            errDocName = documentName + "not found";
+
+
+        this.checkError(err, docResult, req, res, errDocName, true);
+        this.response(res, "Delete on " + documentName + " completed!");
+    });
+}
+
+/**
+ * Find all for a collection with control that this isn't empty.
+ * @param req
+ * @param res
+ * @param documentName
+ * @param collFirstLevel
+ * @param errDocName is optional. FIXME with default
+ * @param func
+ */
+module.exports.findAllFromCollection = function (req, res, documentName, collFirstLevel, errDocName, func) {
+    collFirstLevel.find({}, (err, docResult) => {
+
+        if (!errDocName){
+            errDocName = documentName + "not found";
+        }
+
+        this.checkError(err, docResult, req, res, errDocName);
+        func(err, docResult, documentName);
     });
 }
 
@@ -137,23 +187,23 @@ module.exports.checkFirstLevelClass = function (req, res, documentName, collFirs
  * @param size Number of maximum elements.
  * @param req The specific request.
  * @param res The specific response.
- * @param collectionToSearch The class where elements are taken.
+ * @param arrayToSearch The class where elements are taken.
  * @param collectionName The class name.
  */
-module.exports.returnPages = function (id, size, req, res, collectionToSearch, collectionName) {
+module.exports.returnPages = function (id, size, req, res, arrayToSearch, collectionName) {
 
     let pageId = this.default_page_id;
-    if ((id !== undefined) && (id !== null) && (id >= 0)) {
+    if (id) {
         pageId = id;
     }
 
     let pageSize = this.default_page_size;
-    if ((size !== undefined) && (size !== null) && (size >= 1)) {
+    if (size) {
         pageSize = size;
     }
 
-    let pages = collectionToSearch;
-    // Return error if there aren't any service present with that id
+    let pages = arrayToSearch;
+    // Return error if there aren't any collection present with that id
 
     if (pageId >= pages.length) {
 
