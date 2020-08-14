@@ -279,12 +279,8 @@ module.exports.read_sales = function (req, res) {
                 }
             }
 
-            console.log(Date.now());
-            for (let i = 0; i < allSale.length; i++) {
-                console.log(allSale[i].date_to);
-            }
 
-            let allSaleRequested = allSale.filter(x => x.date_to > Date.now()).sort(function (a,b) {
+            let allSaleRequested = allSale.filter(x => x.date_to.getTime() > Date.now()).sort(function (a,b) {
                     return new Date(a.date_to) - new Date(b.date_to);
                 }
             );
