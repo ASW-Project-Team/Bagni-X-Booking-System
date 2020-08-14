@@ -2,62 +2,32 @@ const mongoose = require('mongoose');
 const Feed = require("../models/feedModel")(mongoose);
 const commonController = require("./commonController");
 
-// It lists all feed
-exports.list_feed = function(req, res) {
-		Feed.find({}, function(err, feed) {
-			if (err){
-				res.send(err);
-			}
-			res.json(feed);
-		});
-};
-
+const feedName = "Feed";
 
 // It creates a new feed.
-exports.create_booking = function(req, res) {
-		let newFeed = new Feed(req.body);
-		newFeed._id = mongoose.Types.ObjectId();
-		// 201 -> instance created
-		newFeed.save(function(err, savedFeed) {
-		if (err){
-			res.send(err);
-		}
-		res.status(201).json(savedFeed);
-		});
+exports.create_feed = function(req, res) {
+
+	commonController.areRequiredFieldsPresent(req, res, () =>{
+
+		let feed = new Feed(req.body);
+		feed._id = mongoose.Types.ObjectId();
+
+		commonController.correctSave(feed, commonController.status_created, res);
+
+	}, req.body.date, req.body.title);
 };
 
 // It returns the feed with the specified ID
 exports.read_feed = function(req, res) {
-	Feed.findById(req.params.id, (err, feed) => {
-		if (err)
-			res.send(err);
-		else{
-			if(feed == null) {
-				res.status(404).send({
-					description: 'Feed not found'
-				});
-			} else {
-				res.status(200).json(feed);
-			}
-		}
-	});
+
+	commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, document) =>{
+		commonController.returnPages(req.body.page_id, req.body.page_size, req, res, document, "Feed");
+	})
 };
 
 
 // It deletes a feed
-exports.delete_feed= function(req, res) {
-	Feed.deleteOne({_id: req.params.id}, function(err, result) {
-		if (err)
-			res.send(err);
-		else{
-			if(result.deletedCount === 0){
-				res.status(404).send({
-					description: 'Feed not found'
-				});
-			}
-			else{
-				res.json({ message: 'Task successfully deleted' });
-			}
-		}
-	});
+exports.delete_feed = function(req, res) {
+
+	commonController.deleteFirstLevelCollection(req, res, feedName, Feed, "", req.params.id);
 };
