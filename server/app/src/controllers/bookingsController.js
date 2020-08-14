@@ -1,29 +1,32 @@
 const mongoose = require('mongoose');
 User = require("../models/userModel.js")(mongoose);
-Booking = require("../models/bookingModel")(mongoose);
+const Booking = require("../models/bookingModel")(mongoose);
+const commonController = require("./commonController");
+
 
 const ObjectId = mongoose.Schema.Types.ObjectID
-
-/* BOOKINGS */
-//const ObjectId = mongoose.Schema.Types.ObjectID
-const defaultPageSize = 10;
-const defaultPageId = 0; // FIXME to 1
+const collectionName = "bookings"
 
 
-
-// OK
-// It creates a new booking.
+/**
+ * Create a booking and check that parameter are possible.
+ * @param req
+ * @param res
+ */
 exports.create_booking = function(req, res) {
-		let newBooking = new Booking(req.body);
-		newBooking._id = mongoose.Types.ObjectId();
-		newBooking.user_id = req.params.id;
-		// 201 -> instance created
-		newBooking.save(function(err, savedBooking) {
-		if (err){
-			res.send(err);
+	commonController.areRequiredFieldsPresent(req, res, () =>{
+
+		if (req.body.price > 0 && new Date(req.body.date_from).getTime() >= Date.now()
+			&& new Date(req.body.date_to).getTime() >  new Date(req.body.date_from).getTime()) {
+
+			let booking = new Booking(req.body);
+			booking._id = mongoose.Types.ObjectId();
+
+			// add as first element
+			commonController.correctSave(booking, commonController.status_created, res);
 		}
-		res.status(201).json(savedBooking);
-		});
+
+	}, req.body.user_id, req.body.umbrella_id, req.body.price, req.body.date_from, req.body.date_to);
 };
 
 // OK
@@ -37,28 +40,36 @@ exports.list_bookings = function(req, res) {
 		});
 };
 
-/*
+
+// FIXME TO CHECK
+/**
+ *
+ * @param req
+ * @param res
+ */
 exports.read_bookings = function(req, res) {
 
-	let page_size = defaultPageSize;
-	if (isParameterPresent(req.params.page_size)) {
-		page_size = req.params.page_size;
-	}
+	commonController.findAllFromCollection(req, res, collectionName, Booking
+		, collectionName + " not found", (err, docResult) => {
+			if (req.body.user_id)
+				docResult.filter(x => mongoose.Types.ObjectId(req.body.user_id) === x.user_id);
+			else
+				commonController.returnPages(req.body.page_id, req.body.page_size, req, res, docResult, collectionName)
+	});
 
-	let page_id = defaultPageId;
-	if (isParameterPresent(req.params.page_size)) {
-		page_id = req.params.page_id;
-	}
-
-	if (isParameterPresent(mongoose.Types.ObjectId(req.params.user_id))) {
-		read_bookings_from_user(res, ObjectId(req.params.user_id), page_size, page_id);
-	}
-};
-*/
+}
 
 // OK
 // It returns the booking with the specified ID
 exports.read_booking = function(req, res) {
+
+
+	/*commonController.checkFirstLevelClass(req, res, "Booking", Booking, "Booking not found",
+		mongoose.Types.ObjectId(req.params.id), (err, document) =>{
+			commonController.response(res, document);
+		}
+	);*/
+
 	Booking.findById(req.params.id, (err, booking) => {
 		if (err)
 			res.send(err);
@@ -145,10 +156,6 @@ exports.delete_booking = function(req, res) {
 		}
 	});
 };
-
-function isParameterPresent(param) {
-	return param !== undefined;
-}
 
 function read_bookings_from_user(res, user_id, max_page_size, page_id) {
 	let skip_value = page_id * max_page_size;
