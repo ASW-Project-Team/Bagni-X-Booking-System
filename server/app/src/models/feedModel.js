@@ -16,7 +16,7 @@ const initializeModel = function(mongoose) {
         _id: Schema.Types.ObjectId,
         date: Date,
         title: String,
-        description: String
+        description: {type: String, default: null}
     });
     return mongoose.model('news', newsSchema, 'feed');
 };
