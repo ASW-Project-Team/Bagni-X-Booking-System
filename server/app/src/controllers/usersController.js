@@ -5,66 +5,72 @@ const commonController = require("./commonController");
 // Before this queries we have to check the permissions to interact with db
 
 // GET OKAY
+/**
+ * GET a specific user
+ * @param req
+ * @param res
+ */
 exports.read_user = function(req, res) {
-    User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
-        if (err)
-            res.send(err);
-        else {
-            if (user == null) {
-                commonController.serve_plain_404(req, res);
-            } else {
-                // responds with user
-                res.status(commonController.status_completed).json(user);
-            }
-        }
-    });
+    commonController.findByIdFirstLevelCollection(req, res, "user",User, "",
+        req.params.id, (err, docResult) =>{
+            commonController.response(res, docResult);
+        });
 };
 
 // POST OKAY
-// TODO add checkers for params
+/**
+ * POST a new user
+ * @param req
+ * @param res
+ */
 exports.create_user = function(req, res) {
-    let newUser = new User(req.body);
-    newUser._id = mongoose.Types.ObjectId();
+    commonController.areRequiredFieldsPresent(req, res, () => {
 
-    // 201 -> instance created
-    commonController.correctSave(newUser, commonController.status_created, res);
+        let user = new User(req.body);
+        user._id = mongoose.Types.ObjectId();
+
+        commonController.correctSave(user, commonController.status_created, res);
+
+    }, req.body.name, req.body.surname, req.body.email);
+
 };
 
-
-// PUT OKAY
-// TODO add checkers for params checkers
+/**
+ * UPDATE a specific User
+ * @param req
+ * @param res
+ */
 exports.update_user = function(req, res) {
-    User.findById(mongoose.Types.ObjectId(req.params.id), (err, user) => {
-        if (err)
-            res.send(err);
-        else if (user == null) {
-            commonController.serve_plain_404(req, res);
-        } else {
+    commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
+        req.params.id, (err, docResult)=>{
 
-            if (req.body.deleted !== undefined) { // "deleted": true
-                // DELETE
-                user.deleted = req.body.deleted;
-            } else {
-                // FIXME Check that elements are corrected formatted
-                // UPDATE
-                if (req.body.name !== undefined)
-                    user.name = req.body.name;
-
-                if (req.body.surname !== undefined)
-                    user.surname = req.body.surname;
-
-                if (req.body.phone !== undefined)
-                    user.phone = req.body.phone;
-
-                if (req.body.email !== undefined)
-                    user.email = req.body.email;
-
-                if (req.body.address !== undefined)
-                    user.address = req.body.address;
-
+/*        for (let param in req.body) {
+            if (req.body.hasOwnProperty(param) && param) {
+                console.log(para);
+                docResult.param = req.body.par;
             }
-            commonController.correctSave(user, commonController.status_completed, res);
-        }
-    });
+        }*/
+
+            if (req.body.name)
+                docResult.name = req.body.name
+
+            if (req.body.surname)
+                docResult.surname = req.body.surname
+
+            if (req.body.phone)
+                docResult.phone = req.body.phone
+
+            if (req.body.address)
+                docResult.address = req.body.address
+
+            if (req.body.registered)
+                docResult.registered = req.body.registered
+
+            if (req.body.deleted)
+                docResult.deleted = req.body.deleted
+
+            commonController.correctSave(docResult, commonController.status_completed, res);
+        })
+
 };
 
