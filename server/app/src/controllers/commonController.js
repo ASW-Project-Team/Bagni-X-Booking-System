@@ -1,16 +1,31 @@
 const mongoose = require('mongoose');
 
+/**
+ * Error for object not found.
+ * @param req
+ * @param res
+ * @param objName
+ */
 module.exports.serve_plain_404 = function(req, res, objName) {
     res.status(404).json(objName + ' not found');
 };
 
+/**
+ * Error caused because not all required fields are inserted.
+ * @param req
+ * @param res
+ */
 module.exports.field_require_404 = function(req, res) {
     res.status(404).json("All fields are required, someone  not found!");
 };
 
 
-
-    // We can return the specific modified object
+/**
+ * Used for save new document or updated one.
+ * @param document The document to save
+ * @param status The status that have to be sent in response
+ * @param res The response with status and document
+ */
 module.exports.correctSave = function (document, status, res) {
     document.save((saveErr, updatedDocument) => {
         if (saveErr) {
@@ -33,22 +48,46 @@ module.exports.dfs = function (obj, targetId) {
     return null
 }
 
+/**
+ * Check if exist error in the operation to do. Error could be in two scenario:
+ *  . document don't exist in a collection
+ *  . document is null
+ * @param err The possible error
+ * @param documents The documents searched
+ * @param req
+ * @param res
+ * @param documentName Used for response in error case
+ * @param deleteOperation Indicate if is a delete operation. Used because if is applied a DELETE document can't be
+ *                        returned because don't exist yet.
+ */
 module.exports.checkError = function (err, documents, req, res, documentName, deleteOperation = false) {
     if (err)
         res.send(err);
     else {
-        if (!deleteOperation && !documents) { // FIXME !documents
+        if (!deleteOperation && !documents) {
             this.serve_plain_404(req, res, documentName);
         }
     }
 }
 
-// I return all document as catalog and not the specific as the new umbrella added
+/**
+ * Positive response to an operation
+ * @param res The response given with status created and documents used
+ * @param documents The documents used
+ */
 module.exports.response = function (res, documents) {
     res.status(this.status_completed).json(documents);
 }
 
-// I could add also to return the specific nested document
+/**
+ * GET all documents requested
+ * @param err Possible error
+ * @param collectionToSearch Collection where could be present
+ * @param req
+ * @param res
+ * @param documentName Name of document, used in error case
+ * @param documentsToReturn
+ */
 module.exports.getDocuments = function (err, collectionToSearch, req, res, documentName, documentsToReturn) {
     this.checkError(err, collectionToSearch, req, res, documentName);
     this.response(res, documentsToReturn);
@@ -127,11 +166,11 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
  * Find by id for first level class that tracks scenario of error.
  * @param req
  * @param res
- * @param documentName
- * @param collFirstLevel
- * @param errDocName
- * @param id
- * @param func
+ * @param documentName Name used only in case of error
+ * @param collFirstLevel Collection where is searched the id
+ * @param errDocName Document name used only in case of error.
+ * @param id Id to search
+ * @param func Callback applied if find is correctly done
  */
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
@@ -144,9 +183,9 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * Delete by id for first level class that tracks scenario of error.
  * @param req
  * @param res
- * @param documentName
- * @param collFirstLevel
- * @param errDocName
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched the id.
+ * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
     collFirstLevel.deleteOne({ _id: req.body.id }, (err, docResult)  => {
@@ -164,10 +203,10 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
  * Find all for a collection with control that this isn't empty.
  * @param req
  * @param res
- * @param documentName
- * @param collFirstLevel
- * @param errDocName is optional. FIXME with default
- * @param func
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched elements.
+ * @param errDocName Document name used only in case of error.
+ * @param func Function applied if findAll correctly applied.
  */
 module.exports.findAllFromCollection = function (req, res, documentName, collFirstLevel, errDocName, func) {
     collFirstLevel.find({}, (err, docResult) => {
@@ -226,8 +265,8 @@ module.exports.returnPages = function (id, size, req, res, arrayToSearch, collec
  * without required fields.
  * @param req
  * @param res
- * @param func
- * @param fieldsRequired
+ * @param func Function applied if findAll correctly applied.
+ * @param fieldsRequired The fields that are requested because not optional.
  */
 module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsRequired) {
 
