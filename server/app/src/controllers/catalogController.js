@@ -47,13 +47,13 @@ module.exports.update_umbrellas = function (req, res) {
         commonController.updateCollection(catalog, catalog.umbrellas, req, res, req.params.id, (umbrellaTarget) => {
             // Change the umbrella information, position and/or rank
             if (umbrellaTarget) {
-                if (req.body.x_position !== undefined )
+                if (req.body.x_position || req.body.x_position === 0)
                     umbrellaTarget.x_position = req.body.x_position;
 
-                if (req.body.y_position !== undefined )
+                if (req.body.y_position || req.body.y_position === 0)
                     umbrellaTarget.y_position = req.body.y_position;
 
-                if (req.body.rank_id !== undefined )
+                if (req.body.rank_id)
                     umbrellaTarget.rank_id = mongoose.Types.ObjectId(req.body.rank_id);
             }
         });
@@ -71,7 +71,6 @@ module.exports.create_umbrella = function (req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            // FIXME Here are more checks
             let umbrella = new Umbrella(req.body);
             umbrella._id = mongoose.Types.ObjectId();
             // add as first element
@@ -131,13 +130,13 @@ module.exports.update_rank = function (req, res) {
 
         commonController.updateCollection(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
 
-            if (req.body.name !== undefined)
+            if (req.body.name)
                 rankTarget.name = req.body.name
 
-            if (req.body.description !== undefined)
+            if (req.body.description)
                 rankTarget.description = req.body.description
 
-            if (req.body.price !== undefined)
+            if (req.body.price || req.body.price >= 0)
                 rankTarget.price = req.body.price
 
         });
@@ -202,13 +201,13 @@ module.exports.update_service = function (req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
         commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
-            if (req.body.price !== undefined)
+            if (req.body.price || req.body.price >= 0)
                 serviceTarget.price = req.body.price;
 
-            if (req.body.description !== undefined)
+            if (req.body.description)
                 serviceTarget.description = req.body.description;
 
-            if (req.body.umbrella_related !== undefined)
+            if (req.body.umbrella_related)
                 serviceTarget.umbrella_related = req.body.umbrella_related;
         });
     });
@@ -252,7 +251,7 @@ module.exports.read_sales = function (req, res) {
     checkCatalog(req, res, "Sale", (err, catalog)  => {
 
         // If par is present find the specified param ...
-        if (req.params.id !== undefined) {
+        if (req.params.id) {
 
             let saleResult = null;
 
@@ -267,7 +266,7 @@ module.exports.read_sales = function (req, res) {
             if (saleResult === null)
                 commonController.serve_plain_404(req, res, "Sale");
 
-        }  else if ((req.body.page_id !== undefined) && (req.body.page_size !== undefined)){
+        }  else if ((req.body.page_id || req.body.page_id === 0) && (req.body.page_size || req.body.page_size >= 0)){
 
             let allSale = [];
 
@@ -304,7 +303,7 @@ module.exports.update_sale = function (req, res) {
     checkCatalog(req, res, "Sale", (err, catalog)  => {
 
         // If par is present find the specified param ...
-        if (req.params.id !== undefined) {
+        if (req.params.id) {
 
             let saleFound = false;
 
@@ -315,13 +314,13 @@ module.exports.update_sale = function (req, res) {
 
                     saleFound = true;
 
-                    if (req.body.percent !== undefined)
+                    if (req.body.percent || req.body.percent >= 0)
                         saleResult.percent = req.body.percent
 
-                    if (req.body.date_from !== undefined)
+                    if (req.body.date_from || req.body.date_from.getTime() >= Date.now())
                         saleResult.date_from = req.body.date_from
 
-                    if (req.body.date_to !== undefined)
+                    if (req.body.date_to || req.body.date_to.getTime() > req.body.date_from.getTime())
                         saleResult.date_to = req.body.date_to
                 });
 
