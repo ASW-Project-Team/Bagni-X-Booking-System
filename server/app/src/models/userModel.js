@@ -20,7 +20,7 @@ const initializeModel = function(mongoose) {
         email: String, // fixme add validator from server
         address: {type: String, default: null},
         registered: {type: Boolean, default: true},
-        admin: {type: Boolean, default: false},
+        //admin: {type: Boolean, default: false},
         deleted: {type: Boolean, default: false},
     });
     return mongoose.model('user', userSchema, 'users');
