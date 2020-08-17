@@ -6,13 +6,14 @@ module.exports.set = function(app) {
 	app.route('/api/new-booking/checkout/')
 		.post(bookingsController.create_booking)
 
-/*	app.route('/api/bookings')
-		.get(bookingsController.list_bookings); // OK*/
+	app.route('/api/bookings')
+		.get(bookingsController.read_bookings);
 
+	app.route('/api/bookings/:id')
+		.get(bookingsController.get_booking)
+		.delete(bookingsController.delete_booking)
+		.put(bookingsController.modify_booking);
 
-	/*app.route('/api/bookings/:id')
-		.get(bookingsController.read_booking) // OK
-		.put(bookingsController.update_booking) // PUT "id" is associated to user-id
-		.post(bookingsController.create_booking) // OK
-		.delete(bookingsController.delete_booking); // OK*/
+/*	app.route('/api/new-booking/availability/')
+		.get(bookingsController.)*/
 };
