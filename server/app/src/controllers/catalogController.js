@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
+
 const Catalog = require("../models/catalogModel")(mongoose);
+const Booking = require("../models/bookingModel")(mongoose);
+
 const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
 const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
 const Sale = require("../models/nestedSchemas/saleModel")(mongoose);
+
 const commonController = require("./commonController");
 
 const CatalogId = mongoose.Types.ObjectId("5f081889b5653238cfc16a3d");
@@ -239,6 +243,27 @@ module.exports.create_sale = function (req, res) {
     });
 }
 
+module.exports.get_availability = function (req, res) {
+    checkCatalog(req, res, "catalog", (errCat, catalog) => {
+       // Ho tutti gli ombrelloni grazie al catalog
+        commonController.findAllFromCollection(req, res, "book", Booking, ""
+            ,(errBook, allBookings) =>{
+
+                // Umbrella not free in that periods
+                // Primo filtro: se la prenotazione deve ancora essere terminata
+                // Secondo filtro: se la prenotazione inizia in quel periodo
+                let umbrellaUsed = allBookings.filter(b => b.date_to.getTime() > req.body.from.getTime()
+                                                        && b.date_from.getTime() < req.body.to.getTime())
+                                               .map(x => x.umbrella_id);
+
+                let umbrellasFree = catalog.umbrellas.filter(x => !umbrellaUsed.includes(x));
+
+                // TODO Services
+
+                // TODO Map id with his rank
+        })
+    });
+}
 
 /**
  * Two possible scenario:
