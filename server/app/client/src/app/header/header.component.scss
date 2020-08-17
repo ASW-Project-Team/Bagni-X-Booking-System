@@ -1,0 +1,35 @@
+
+header {
+  background: var(background);
+  padding: 1em 0;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  a.logo {
+    font-weight: 600;
+  }
+
+  nav {
+    float: right;
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      display: flex;
+
+      li a {
+        padding: 1em;
+
+        &:hover {
+          background: var(--secondary);
+        }
+      }
+    }
+  }
+}

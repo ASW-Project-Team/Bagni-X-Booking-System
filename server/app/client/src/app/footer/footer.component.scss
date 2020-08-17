@@ -1,0 +1,17 @@
+footer {
+  background: var(--secondary);
+  padding: 1em 0;
+  text-align: center;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  attribution {
+    color: var(--primaryControl);
+    text-decoration: none;
+    padding: 16px;
+  }
+}
+
+// todo sticky footer

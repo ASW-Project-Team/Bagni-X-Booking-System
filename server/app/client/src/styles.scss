@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap');
+
+// main color variables used across the app
+@import "src/styles/colors.scss";
+
+// todo text styles imported from separated file
+@import "src/styles/fonts.scss";
+
+// todo basic global page structure as the mockup, from separated file
+@import "src/styles/page-structure";
+
+
+
+

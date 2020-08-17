@@ -1,0 +1,14 @@
+
+// Add some padding on document's body to prevent the content
+// to go underneath the header
+body {
+  margin: 0;
+  padding-top: 60px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: lighter;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
