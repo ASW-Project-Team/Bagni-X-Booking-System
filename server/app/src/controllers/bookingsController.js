@@ -25,7 +25,7 @@ exports.create_booking = function(req, res) {
 			commonController.correctSave(booking, commonController.status_created, res);
 		}
 
-	}, req.body.user_id, req.body.umbrella_id, req.body.price, req.body.date_from, req.body.date_to);
+	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.date_from, req.body.date_to);
 };
 
 /**
@@ -48,8 +48,8 @@ exports.modify_booking = function(req, res) {
 			if (req.body.user_id)
 				docResult.user_id = req.body.user_id
 
-			if (req.body.umbrella_id)
-				docResult.umbrella_id = req.body.umbrella_id
+			if (req.body.umbrellas)
+				docResult.umbrellas = req.body.umbrellas
 
 			if (req.body.confirmed)
 				docResult.confirmed = req.body.confirmed
