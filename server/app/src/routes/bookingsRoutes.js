@@ -13,7 +13,4 @@ module.exports.set = function(app) {
 		.get(bookingsController.get_booking)
 		.delete(bookingsController.delete_booking)
 		.put(bookingsController.modify_booking);
-
-/*	app.route('/api/new-booking/availability/')
-		.get(bookingsController.)*/
 };
