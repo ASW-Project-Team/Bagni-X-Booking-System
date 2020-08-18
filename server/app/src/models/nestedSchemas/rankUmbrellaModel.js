@@ -18,6 +18,8 @@ const initializeModel = function(mongoose) {
         name: String,
         description: {type: String, default: null},
         price: Float,
+        from_umbrella: Number,
+        to_umbrella: Number,
         sales: [{type: saleModel, default: null}]
     });
     return mongoose.model('rankUmbrella', rankUmbrellaSchema);

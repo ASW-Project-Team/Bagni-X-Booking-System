@@ -11,11 +11,12 @@ module.exports = function(mongoose) {
 const initializeModel = function(mongoose) {
     const Float = require('mongoose-float').loadType(mongoose);
     const serviceModel = require("./nestedSchemas/serviceModel")(mongoose).schema;
+    const umbrellaModel = require("./nestedSchemas/umbrellaModel")(mongoose).schema;
     const Schema = mongoose.Schema;
     const bookingSchema = new Schema({
         _id: Schema.Types.ObjectID,
         user_id: Schema.Types.ObjectID,
-        umbrella_id: [Schema.Types.ObjectID],
+        umbrellas: [{type: umbrellaModel, default: null}],
         confirmed: {type: Boolean, default: false},
         cancelled: {type: Boolean, default: false},
         price: {type: Float, $gt: 0.0}, // fixme price > price min

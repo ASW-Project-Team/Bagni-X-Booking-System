@@ -16,6 +16,7 @@ const initializeModel = function(mongoose) {
         _id: Schema.Types.ObjectID,
         image: {type: String, default: ""},// url
         title: String,
+        header: Boolean,
         description: String
     });
 

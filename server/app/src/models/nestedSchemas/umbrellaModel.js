@@ -14,8 +14,7 @@ const initializeModel = function(mongoose) {
     // used in bathhouse
     const umbrellaSchema = new Schema({ // price depends from rank
         _id: Schema.Types.ObjectID,
-        x_position: Number,
-        y_position: Number,
+        number: Number,
         rank_id: Schema.Types.ObjectID
     });
     return mongoose.model('umbrella', umbrellaSchema);
