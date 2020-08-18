@@ -1,14 +1,31 @@
 <header>
-  <div class="container">
-    <a routerLink="/" class="logo">Bagni X</a>
+  <div class="logo">
+    <a routerLink="/" class="logo">
+      <img src="assets/logo.png" alt="BagniX Logo"/>
+      <h1>Bagni X</h1>
+    </a>
+  </div>
+
+  <div class="extended-navigation">
     <nav>
       <ul>
         <!-- This is how you link together different pages of your app. Do not use href -->
-        <li><a href="#" routerLink="/">Home</a></li>
-        <li><a href="#" routerLink="/feed">Feed</a></li>
-        <li><a href="#" routerLink="/bookings">Prenotazioni</a></li>
-        <li><a href="#" routerLink="/profile">Profilo</a></li>
+        <li><a href="#" routerLink="/">
+          <mat-icon svgIcon="home-outline"></mat-icon>
+        </a></li>
+        <li><a href="#" routerLink="/feed">
+          <mat-icon svgIcon="newspaper-variant-outline"></mat-icon>
+        </a></li>
+        <li><a href="#" routerLink="/bookings">
+          <mat-icon svgIcon="calendar-check-outline"></mat-icon>
+        </a></li>
+        <li><a href="#" routerLink="/profile">
+          <mat-icon svgIcon="account-circle-outline"></mat-icon>
+        </a></li>
       </ul>
     </nav>
+  </div>
+  <div class="collapsable-menu">
+    <mat-icon svgIcon="menu"></mat-icon>
   </div>
 </header>

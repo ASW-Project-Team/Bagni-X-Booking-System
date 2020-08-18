@@ -1,14 +1,26 @@
-
-// Add some padding on document's body to prevent the content
-// to go underneath the header
-body {
+html, body {
+  height: 100%;
   margin: 0;
-  padding-top: 60px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: lighter;
 }
 
-.container {
-  width: 80%;
+.page {
+  height: 100%;
+  left: 0;
+  right: 0;
   margin: 0 auto;
+  width: 100%;
+  padding-top: 48px;
+  }
+
+$bigScreenWidth: 768px;
+@media only screen and (min-width: $bigScreenWidth) {
+  .page {
+    width: 700px;
+    padding-top: 64px;
+  }
+}
+
+.hided {
+  visibility: hidden;
+  display: none;
 }

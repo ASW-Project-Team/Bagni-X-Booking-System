@@ -1,0 +1,17 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    <Riccardo Maldini> -- <Programmer@AswProject> -- <https://github.com/maldins46>
+    <Francesco Gorini> -- <Programmer@AswProject> -- <>
+    <Thomas Angelini> -- <Programmer@AswProject> -- <>
+
+# THANKS
+
+    <Prof. Silvia Mirri>
+
+# TECHNOLOGY COLOPHON
+
+    Technologies: CSS3, HTML5, JavaScript
+    Framework:    Angular
