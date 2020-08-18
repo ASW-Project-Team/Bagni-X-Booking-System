@@ -83,6 +83,13 @@ module.exports.update_rank = function (req, res) {
 }
 
 
+/**
+ * Create a service. Need some required fields:
+ *  . price of the service
+ *  . umbrella_related indicates if is service is general or related to umbrella
+ * @param req
+ * @param res
+ */
 module.exports.create_service = function(req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
@@ -153,7 +160,10 @@ module.exports.update_service = function (req, res) {
 }
 
 /**
- * Create a sale for a specific rank.
+ * Create a sale for a specific rank. Fields needed:
+ *  . "percent" of sale
+ *  . "date_from" the sale start
+ *  . "date_to" the sale start
  * @param req The specific request.
  * @param res The specific response.
  */
@@ -164,12 +174,15 @@ module.exports.create_sale = function (req, res) {
 
             commonController.areRequiredFieldsPresent(req, res, () =>{
 
-                let sale = new Sale(req.body);
-                sale._id = mongoose.Types.ObjectId();
+                if (req.body.date_to.getTime() >= req.body.date_from.getTime()){
 
-                rank.sales.splice(0,0, sale);
+                    let sale = new Sale(req.body);
+                    sale._id = mongoose.Types.ObjectId();
 
-                commonController.correctSave(catalog, commonController.status_created, res);
+                    rank.sales.splice(0,0, sale);
+
+                    commonController.correctSave(catalog, commonController.status_created, res);
+                }
 
             }, req.body.percent, req.body.date_from, req.body.date_to);
 
@@ -287,13 +300,13 @@ module.exports.update_sale = function (req, res) {
  */
 module.exports.get_availability = function (req, res) {
     checkCatalog(req, res, "catalog", (errCat, catalog) => {
-        // Ho tutti gli ombrelloni grazie al catalog
+        // Get all bookings
         commonController.findAllFromCollection(req, res, "book", Booking, ""
             ,(errBook, allBookings) =>{
 
                 // Umbrella not free in that periods
-                // Primo filtro: se la prenotazione deve ancora essere terminata
-                // Secondo filtro: se la prenotazione inizia in quel periodo
+                // First filter: if book is not finished
+                // Second filter: if bool started in that period
                 let umbrellaNumberUsed = allBookings.filter(b => b.date_to.getTime() > new Date(req.body.from).getTime()
                                                     && b.date_from.getTime() < new Date(req.body.to).getTime()
                                                     && b.confirmed
@@ -301,7 +314,6 @@ module.exports.get_availability = function (req, res) {
                                                     .flatMap(b => b.umbrellas.map(u => u.number));
 
                 // When this cicle is terminated in rankNumberFree we have all ranks with his umbrellas
-                // Al termine di questo ciclo dovrei avere tutti i rank con gli ombrelloni correlati
                 let rankNumberFree = [];
                 for (let rank in catalog.rank_umbrellas) {
 
