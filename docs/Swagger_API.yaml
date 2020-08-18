@@ -244,14 +244,6 @@ paths:
   /api/home/:
     get:
 
-  /api/catalog/umbrellas/:
-    get:
-    post:
-
-  /api/catalog/umbrellas/{umbrella_id}:
-    get:
-    put:
-
   /api/catalog/ranks/:
     get:
     post:
