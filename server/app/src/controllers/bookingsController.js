@@ -8,7 +8,7 @@ const collectionName = "bookings"
 
 
 /**
- * Create a booking and check that parameter are possible.
+ * Create a booking and check that parameter needed are inserted and corrected.
  * @param req
  * @param res
  */
@@ -61,7 +61,10 @@ exports.modify_booking = function(req, res) {
 				docResult.date_from = req.body.date_from
 
 			if ((req.body.date_to) && (req.body.date_to.getTime() > docResult.date_from.getTime()))
-					docResult.date_to = req.body.date_to
+				docResult.date_to = req.body.date_to
+
+			if ((req.body.price) && (req.body.price >= 0))
+				docResult.price = req.body.price;
 
 			if (req.body.services)
 				docResult.services = req.body.services
