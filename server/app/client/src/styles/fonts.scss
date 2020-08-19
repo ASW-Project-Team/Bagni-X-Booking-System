@@ -5,14 +5,6 @@
 // The base font is Montserrat from Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap');
 
-// The font used as default text style.
-body {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  color: var(--secondaryControl);
-}
-
 // Font used for generic titles.
 h1 {
   font-family: 'Montserrat', sans-serif;
@@ -29,19 +21,25 @@ h2 {
   color: var(--primaryControl);
 }
 
+// The font used as default text style.
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: var(--secondaryControl);
+}
+
 // media query to adapt the font to the screen size.
-$bigScreenWidth: 768px;
-@media only screen and (min-width: $bigScreenWidth) {
-
-  body {
-    font-size: 20px;
-  }
-
+@media only screen and (min-width: 600px) {
   h1 {
     font-size: 22px;
   }
 
   h2 {
+    font-size: 20px;
+  }
+
+  body {
     font-size: 20px;
   }
 }

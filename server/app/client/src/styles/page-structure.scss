@@ -12,17 +12,10 @@ html, body {
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 100%;
-  padding-top: 48px;
-  }
-
-$bigScreenWidth: 768px;
-@media only screen and (min-width: $bigScreenWidth) {
-  .page {
-    width: 700px;
-    padding-top: 64px;
-  }
+  width: var(--pageWidth);
+  padding-top: var(--appBarHeight);
 }
+
 
 .hided {
   visibility: hidden;

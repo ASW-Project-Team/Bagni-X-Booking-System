@@ -1,17 +1,15 @@
 footer {
-  background: var(--secondary);
+  background: var(--background);
   text-align: center;
-  height: 100px;
+  height: var(--footerHeight);
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--defaultShadow);
 
   .attribution {
-    color: var(--primaryControl);
     text-decoration: none;
-    padding: 16px;
+    padding: var(--defaultMargin);
   }
 }
-
-// todo sticky footer

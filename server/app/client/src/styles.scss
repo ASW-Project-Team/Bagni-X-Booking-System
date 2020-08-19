@@ -10,11 +10,17 @@
 // elements more consistently and in line with modern standards.
 @import "node_modules/normalize-scss/sass/normalize";
 
+// the custom theme used to enable angular material
+@import "src/styles/material-custom-theme";
+
 // main color variables, used across the app
 @import "src/styles/colors";
 
-// the custom theme used to enable angular material
-@import "src/styles/material-custom-theme";
+// main color variables, used across the app
+@import "src/styles/sizes";
+
+// miscellaneous value variables, used across the app
+@import "src/styles/values";
 
 // text styles used across the app
 @import "src/styles/fonts";
