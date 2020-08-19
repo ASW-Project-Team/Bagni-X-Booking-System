@@ -15,7 +15,7 @@ const collectionName = "bookings"
 exports.create_booking = function(req, res) {
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		if (req.body.price > 0 && new Date(req.body.date_from).getTime() >= Date.now()
+		if (req.body.price >= 0 && new Date(req.body.date_from).getTime() >= Date.now()
 			&& new Date(req.body.date_to).getTime() >  new Date(req.body.date_from).getTime()) {
 
 			let booking = new Booking(req.body);
@@ -51,19 +51,22 @@ exports.modify_booking = function(req, res) {
 			if (req.body.umbrellas)
 				docResult.umbrellas = req.body.umbrellas
 
-			if (req.body.confirmed)
+			if (req.body.confirmed && commonController.typeOfBoolean(req.body.confirmed))
 				docResult.confirmed = req.body.confirmed
 
-			if (req.body.cancelled)
+			if (req.body.cancelled && commonController.typeOfBoolean(req.body.confirmed))
 				docResult.cancelled = req.body.cancelled
 
-			if ((req.body.date_from) && (req.body.date_from.getTime() > Date.now()))
-				docResult.date_from = req.body.date_from
+			if ((req.body.date_from)
+				&& (new Date(req.body.date_from).getTime() > Date.now()))
+				docResult.date_from = new Date(req.body.date_from)
 
-			if ((req.body.date_to) && (req.body.date_to.getTime() > docResult.date_from.getTime()))
-				docResult.date_to = req.body.date_to
+			if ((req.body.date_to)
+				&& (new Date(req.body.date_to).getTime() > docResult.date_from.getTime()))
+				docResult.date_to = new Date(req.body.date_to)
 
-			if ((req.body.price) && (req.body.price >= 0))
+			if ((req.body.price)
+				|| (req.body.price >= 0))
 				docResult.price = req.body.price;
 
 			if (req.body.services)
