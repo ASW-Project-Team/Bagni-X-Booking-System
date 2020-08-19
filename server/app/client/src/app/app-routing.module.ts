@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from "./customer/home/home.component";
-import { FeedComponent } from "./customer/feed/feed.component";
-import { BookingsComponent } from "./customer/bookings/bookings.component";
-import { ProfileComponent } from "./customer/profile/profile.component";
-import { PageNotFoundComponent } from "./page-structure/page-not-found/page-not-found.component";
+import { HomeComponent } from "./components/customer/home/home.component";
+import { FeedComponent } from "./components/customer/feed/feed.component";
+import { BookingsComponent } from "./components/customer/bookings/bookings.component";
+import { ProfileComponent } from "./components/customer/profile/profile.component";
+import { PageNotFoundComponent } from "./components/shared/page-not-found/page-not-found.component";
 
 // populate app routes
 const routes: Routes = [

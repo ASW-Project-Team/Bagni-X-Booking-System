@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './customer/home/home.component';
-import { FeedComponent } from './customer/feed/feed.component';
-import { BookingsComponent } from './customer/bookings/bookings.component';
-import { ProfileComponent } from './customer/profile/profile.component';
-import { HeaderComponent } from './page-structure/header/header.component';
-import { FooterComponent } from './page-structure/footer/footer.component';
+import { HomeComponent } from './components/customer/home/home.component';
+import { FeedComponent } from './components/customer/feed/feed.component';
+import { BookingsComponent } from './components/customer/bookings/bookings.component';
+import { ProfileComponent } from './components/customer/profile/profile.component';
+import { HeaderComponent } from './components/shared/header/header.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,7 +17,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
-import { PageNotFoundComponent } from './page-structure/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
+import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { PageNotFoundComponent } from './page-structure/page-not-found/page-not-
     HeaderComponent,
     FooterComponent,
     PageNotFoundComponent,
+    ImgLandscapeComponent,
   ],
   imports: [
     BrowserModule,

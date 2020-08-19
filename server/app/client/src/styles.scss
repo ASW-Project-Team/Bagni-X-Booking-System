@@ -3,30 +3,72 @@
  * and also import other style files.
  */
 
+
 // This must be at the top of the file; contains base boilerplate styles
-@import "styles/boilerplates/base-styles";
+@import "styles/globals/boilerplates/base-styles";
 
 // Normalize.css is a customisable CSS file that makes browsers render all
 // elements more consistently and in line with modern standards.
 @import "node_modules/normalize-scss/sass/normalize";
 
 // the custom theme used to enable angular material
-@import "src/styles/material-custom-theme";
+@import "styles/globals/material-custom-theme";
 
 // main color variables, used across the app
-@import "src/styles/colors";
+@import "styles/variables/variables";
 
-// main color variables, used across the app
-@import "src/styles/sizes";
+/*
+ * Start of Author-defined global styles
+ */
 
-// miscellaneous value variables, used across the app
-@import "src/styles/values";
+html, body {
+  height: 100%;
+  margin: 0;
+  @include bodyFont;
+}
 
-// text styles used across the app
-@import "src/styles/fonts";
+.page {
+  height: 100%;
+  left: 0;
+  right: 0;
+  margin: $appBarHeightSmartphone auto 0 auto;
+  width: $pageWidthSmartphone;
+  box-sizing: border-box;
 
-// global styles concerning the page structure, global to all components
-@import "src/styles/page-structure";
+  @include forDesktopOnly {
+    margin: $appBarHeightDesktop auto 0 auto;
+    width: $pageWidthDesktop;
+  }
+}
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+}
+
+
+// Font used for generic titles.
+h1 {
+  @include titleFont;
+}
+
+// combination of h1 and class super-title, used for very important titles, such as logo.
+h1.super-title {
+  color: $primaryColor;
+}
+
+// Font used for an important body text, such as a card title.
+h2 {
+  @include subheadFont;
+}
+
+/*
+ * End of author-defined global styles.
+ */
+
 
 // this must be at the end of the file; contains boilerplate helpers
-@import "styles/boilerplates/helper-classes";
+@import "styles/globals/boilerplates/helper-classes";

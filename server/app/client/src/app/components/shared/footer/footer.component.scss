@@ -1,0 +1,21 @@
+@import "../../../../styles/variables/variables";
+
+footer {
+  background: $backgroundColor;
+  text-align: center;
+  height: $footerHeight;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $defaultShadow;
+
+  .attribution {
+    text-decoration: none;
+    padding: $marginSmartphone;
+
+    @include forDesktopOnly {
+      padding: $marginDesktop;
+    }
+  }
+}

@@ -1,8 +1,8 @@
 <mat-toolbar>
   <div class="logo">
     <a routerLink="/" class="logo">
-      <img src="../../../assets/logo.png" alt="BagniX Logo"/>
-      <h1>Bagni X</h1>
+      <img src="../../../../assets/logo.png" alt="BagniX Logo"/>
+      <h1 class="super-title">Bagni X</h1>
     </a>
   </div>
 
@@ -10,16 +10,16 @@
   <div class="extended-navigation">
     <nav>
       <ul>
-        <li><a href="#" routerLink="/" title="Home" [ngClass]="selectedPage == 'home' ? 'selected': ''">
+        <li><a href="#" routerLink="/" title="Home" [ngClass]="selectedPage == 'home' ? 'selected-icon': ''">
           <mat-icon svgIcon="home-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/feed" title="Feed" [ngClass]="selectedPage == 'feed' ? 'selected': ''">
+        <li><a href="#" routerLink="/feed" title="Feed" [ngClass]="selectedPage == 'feed' ? 'selected-icon': ''">
           <mat-icon svgIcon="newspaper-variant-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/bookings" title="Prenotazioni" [ngClass]="selectedPage == 'bookings' ? 'selected': ''">
+        <li><a href="#" routerLink="/bookings" title="Prenotazioni" [ngClass]="selectedPage == 'bookings' ? 'selected-icon': ''">
           <mat-icon svgIcon="calendar-check-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/profile" title="Profilo" [ngClass]="selectedPage == 'profile' ? 'selected': ''">
+        <li><a href="#" routerLink="/profile" title="Profilo" [ngClass]="selectedPage == 'profile' ? 'selected-icon': ''">
           <mat-icon svgIcon="account-circle-outline"></mat-icon>
         </a></li>
       </ul>

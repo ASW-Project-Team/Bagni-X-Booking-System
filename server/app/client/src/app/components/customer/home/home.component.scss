@@ -1,0 +1,96 @@
+@import "../../../../styles/variables/variables";
+
+.page {
+  // the home page is the only one with 100% width;
+  // useful to show the main card wide as the mockup
+  width: 100%;
+}
+
+.main-card-container {
+  width: 100%;
+  height: 256px;
+  @include overlayable-father;
+
+  // for desktop screens, the main card takes the page height size,
+  // reduced a bit to hide de exceeding blurred image.
+  @include forDesktopOnly {
+    height: 100vh - 20vh;
+  }
+
+  .image-container {
+    @include overlayable-child;
+    filter: blur(4px);
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: -20px 0; // keeps the blurred image inside the border
+    background-position: center center;
+  }
+
+  .white-filter-container {
+    @include overlayable-child;
+    background: $backgroundColor;
+    opacity: 0.8;
+  }
+
+  .title-container {
+    @include overlayable-child;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    width: auto;
+    margin-top: -1 * $marginSmartphone; // makes the text higher
+    padding: 0 $marginSmartphone;
+
+    @include forDesktopOnly {
+      margin-top: -1 * $marginDesktop; // makes the text higher
+      padding: 0 $marginDesktop;
+    }
+
+    // the icon inside the main card disappears if in smartphone mode
+    mat-icon {
+      width: auto;
+      color: $primaryColor;
+      font-size: 80px;
+      height: 80px;
+
+      @include forSmartphoneOnly {
+        @include hide;
+      }
+    }
+  }
+}
+
+@mixin card-wide-container {
+  width: 100%;
+  padding: $marginSmartphone;
+  box-sizing: border-box;
+
+  @include forDesktopOnly {
+    padding: $marginDesktop;
+  }
+
+  .home-card {
+    box-sizing: border-box;
+    width: $pageWidthSmartphone;
+    margin: 0 auto;
+
+    @include forDesktopOnly {
+      width: $pageWidthDesktop;
+    }
+  }
+}
+
+.even-card-wide-container {
+  @include card-wide-container;
+  background: $secondaryColor;
+}
+
+.odd-card-wide-container {
+  @include card-wide-container;
+  background: $backgroundColor;
+}
+
+

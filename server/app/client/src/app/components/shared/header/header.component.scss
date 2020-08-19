@@ -1,8 +1,8 @@
-$bigScreenWidth: 600px;
+@import "../../../../styles/variables/variables";
 
 mat-toolbar {
-  background: var(--background);
-  box-shadow: var(--defaultShadow);
+  background: $backgroundColor;
+  box-shadow: $defaultShadow;
   position: fixed;
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@ mat-toolbar {
   width: 100%;
 
   a {
-    color: var(--secondaryControl);
+    color: $secondaryControlColor;
     text-decoration: none;
   }
 
@@ -22,11 +22,12 @@ mat-toolbar {
     display: flex;
     align-items: center;
 
+    // setting text decoration to none in l.15, makes h1 lost the font formatting.
+    // This re-enables the custom font
     h1 {
-      color: var(--primary);
+      @include titleFont;
+      color: $primaryColor;
     }
-
-
 
     img {
       height: 100%;
@@ -34,15 +35,18 @@ mat-toolbar {
     }
   }
 
-  .selected {
-    color: var(--primary);
-    background: var(--secondary);
+  .selected-icon {
+    color: $primaryColor;
+    background: $secondaryColor;
   }
 
   .extended-navigation {
-    margin-left: auto;
-    visibility: hidden;
-    display: none;
+    margin-left: auto; // keeps element aligned to the right
+
+    // hide extended navigation when in smartphone view
+    @include forSmartphoneOnly {
+      @include hide;
+    }
 
     nav {
       ul {
@@ -57,44 +61,28 @@ mat-toolbar {
           border-radius: 24px;
           transition: 0.1s;
           &:hover {
-            background: var(--secondary);
+            background: $secondaryColor;
           }
         }
       }
     }
   }
 
-  @media only screen and (min-width: $bigScreenWidth) {
-    .extended-navigation {
-      visibility: visible;
-      display: block;
-    }
-  }
 
   .collapsable-menu {
-    margin-left: auto;
-    visibility: visible;
-    display: block;
-    color: var(--primary);
+    margin-left: auto; // keeps element aligned to the right
+    color: $primaryColor;
     padding: 8px;
     border-radius: 48px;
     transition: 0.1s;
 
     &:hover {
-      background: var(--secondary);
+      background: $secondaryColor;
     }
-  }
 
-  @media only screen and (min-width: $bigScreenWidth) {
-    .collapsable-menu {
-      visibility: hidden;
-      display: none;
+    // hide collapsable navigation when in desktop view
+    @include forDesktopOnly {
+      @include hide;
     }
-  }
-}
-
-@media only screen and (min-width: $bigScreenWidth) {
-  h1 {
-    font-size: 22px;
   }
 }

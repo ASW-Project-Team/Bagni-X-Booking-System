@@ -11,7 +11,6 @@ export class HeaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // todo valuta la selected page, modifica di conseguenza la bar
   }
 
 }
