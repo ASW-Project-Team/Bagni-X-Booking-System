@@ -285,34 +285,28 @@ module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsReq
 
 module.exports.typeOfString = function (par) {
 
-    let isString = false;
-
-    if (typeof par === "string")
-        isString = true;
-
-    return isString;
+    typeOfType(par,"string")
 }
 
 module.exports.typeOfBoolean = function (par) {
 
-    let isBoolean = false;
-
-    if (typeof par === "boolean")
-        isBoolean = true;
-
-    return isBoolean;
+    typeOfType(par, "boolean")
 }
 
 module.exports.typeOfNumber = function (par) {
 
+    typeOfType(par, "number")
+}
+
+function typeOfType(par, parType) {
+
     let isNumber = false;
 
-    if (typeof par === "number")
+    if (typeof par === parType)
         isNumber = true;
 
     return isNumber;
 }
-
 
 module.exports.status_created = 201;
 
