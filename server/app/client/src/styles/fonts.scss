@@ -1,10 +1,11 @@
-// todo fonts
+/**
+ * Defines the fonts used across the app, according to the mockup
+ */
 
-
-// main font
+// The base font is Montserrat from Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap');
 
-// base font
+// The font used as default text style.
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
@@ -12,6 +13,7 @@ body {
   color: var(--secondaryControl);
 }
 
+// Font used for generic titles.
 h1 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
@@ -19,6 +21,7 @@ h1 {
   color: var(--primaryControl);
 }
 
+// Font used for an important body text, such as a card title.
 h2 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
@@ -26,6 +29,7 @@ h2 {
   color: var(--primaryControl);
 }
 
+// media query to adapt the font to the screen size.
 $bigScreenWidth: 768px;
 @media only screen and (min-width: $bigScreenWidth) {
 

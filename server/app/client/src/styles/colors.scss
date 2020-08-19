@@ -1,3 +1,8 @@
+/**
+ * This file contains the main color palette of the app.
+ * To use a color in another file, simply use var(colorName).
+ */
+
 :root {
   --primary: #FD7926;
   --secondary: #FAEFEF;
@@ -8,4 +13,3 @@
   --warning: #F5BA1B;
   --error: #EB3720;
 }
-
