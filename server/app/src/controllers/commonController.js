@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto')
 
 /**
  * Error for object not found.
@@ -308,6 +309,34 @@ function typeOfType(par, parType) {
     return isNumber;
 }
 
+/**
+ * generates random string of characters i.e salt
+ * @function
+ * @param {number} length - Length of the random string.
+ */
+module.exports.genRandomString = function(length){
+
+    return crypto.randomBytes(Math.ceil(length/2))
+        .toString('hex') /** convert to hexadecimal format */
+        .slice(0,length);   /** return required number of characters */
+};
+
+/**
+ * hash password with sha512.
+ * @function
+ * @param {string} password - List of required fields.
+ * @param {string} salt - Data to be validated.
+ */
+module.exports.sha512 = function(password, salt){
+    let hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    let value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
+
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
@@ -315,3 +344,5 @@ module.exports.status_completed = 200;
 module.exports.default_page_id = 0;
 
 module.exports.default_page_size = 10;
+
+module.exports.salt_length = 48;
