@@ -48,17 +48,36 @@ paths:
 
   /api/customers/:
     post:
-      summary: It returns the user-id description
+      summary: It creates user
       description: User data
       parameters:
-        - name: registered
+        - name: name
           in: query
-          description: Specifies whether the passed user has a real profile in Firebase Authentication.
+          description: The user name.
           required: true
           style: simple
           explode: false
           schema:
             type: boolean
+
+        - name: surname
+          in: query
+          description: The user surname.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: boolean
+
+        - name: email
+          in: query
+          description: The user email.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: boolean
+
 
       responses:
         "200":

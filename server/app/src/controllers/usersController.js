@@ -26,10 +26,16 @@ exports.read_user = function(req, res) {
 exports.create_user = function(req, res) {
     commonController.areRequiredFieldsPresent(req, res, () => {
 
-        let user = new User(req.body);
-        user._id = mongoose.Types.ObjectId();
+        // FIXME More checks for email
+        if (commonController.typeOfString(req.body.name)
+            && commonController.typeOfString(req.body.surname)
+            && commonController.typeOfString(req.body.email)){
 
-        commonController.correctSave(user, commonController.status_created, res);
+            let user = new User(req.body);
+            user._id = mongoose.Types.ObjectId();
+
+            commonController.correctSave(user, commonController.status_created, res);
+        }
 
     }, req.body.name, req.body.surname, req.body.email);
 
@@ -51,22 +57,23 @@ exports.update_user = function(req, res) {
             }
         }*/
 
-            if (req.body.name)
+            if (req.body.name && commonController.typeOfString(req.body.name))
                 docResult.name = req.body.name
 
-            if (req.body.surname)
+            if (req.body.surname && commonController.typeOfString(req.body.surname))
                 docResult.surname = req.body.surname
 
-            if (req.body.phone)
+            if (req.body.phone && commonController.typeOfString(req.body.phone))
                 docResult.phone = req.body.phone
 
-            if (req.body.address)
+            // FIXME More specific control
+            if (req.body.address && commonController.typeOfString(req.body.address))
                 docResult.address = req.body.address
 
-            if (req.body.registered)
+            if (req.body.registered && commonController.typeOfBoolean(req.body.registered))
                 docResult.registered = req.body.registered
 
-            if (req.body.deleted)
+            if (req.body.deleted && commonController.typeOfBoolean(req.body.deleted))
                 docResult.deleted = req.body.deleted
 
             commonController.correctSave(docResult, commonController.status_completed, res);

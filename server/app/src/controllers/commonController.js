@@ -124,7 +124,7 @@ module.exports.updateCollection = function (collectionToUpdate, collectionToSear
  * @param documentName The name of document used if doc is not present.
  */
 module.exports.returnNestedDocument = function (collectionToSearch, req, res, id, err, documentName) {
-    getNestedDocument(collectionToSearch, req, res, id, (documentTarget) =>  {
+    this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) =>  {
         this.getDocuments(err, collectionToSearch, req, res, documentName, documentTarget);
     });
 }
@@ -281,6 +281,31 @@ module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsReq
     } else {
         this.field_require_404(req, res)
     }
+}
+
+module.exports.typeOfString = function (par) {
+
+    typeOfType(par,"string")
+}
+
+module.exports.typeOfBoolean = function (par) {
+
+    typeOfType(par, "boolean")
+}
+
+module.exports.typeOfNumber = function (par) {
+
+    typeOfType(par, "number")
+}
+
+function typeOfType(par, parType) {
+
+    let isNumber = false;
+
+    if (typeof par === parType)
+        isNumber = true;
+
+    return isNumber;
 }
 
 module.exports.status_created = 201;

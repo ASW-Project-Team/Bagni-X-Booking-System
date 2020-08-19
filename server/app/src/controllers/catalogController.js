@@ -43,7 +43,6 @@ module.exports.create_rank = function (req, res) {
             let rank = new Rank(req.body);
             rank._id = mongoose.Types.ObjectId();
             catalog.rank_umbrellas.splice(0, 0, rank);
-            // catalog.rank_umbrellas.push(rank); CHECK splice
 
             commonController.correctSave(catalog, commonController.status_created, res);
         }, req.body.name, req.body.price, req.body.from_umbrella, req.body.to_umbrella);
@@ -78,6 +77,9 @@ module.exports.update_rank = function (req, res) {
             if (req.body.to_umbrella)
                 rankTarget.to_umbrella = req.body.to_umbrella
 
+            if (req.body.sales)
+                rankTarget.sales = req.body.sales
+
         });
     });
 }
@@ -95,7 +97,7 @@ module.exports.create_service = function(req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            if (req.body.price >= 0){
+            if (req.body.price >= 0 && (typeof req.body.umbrella_related === "boolean")){
 
                 let service = new Service(req.body);
                 service._id = mongoose.Types.ObjectId();
@@ -125,7 +127,7 @@ module.exports.read_services = function (req, res) {
 
     checkCatalog(req, res, "Service", (err, catalog, documentName) => {
         // If par is present find the specified param ...
-        if (req.params.id !== undefined) {
+        if (req.params.id) {
 
             commonController.returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
         } else {
@@ -153,7 +155,7 @@ module.exports.update_service = function (req, res) {
             if (req.body.description)
                 serviceTarget.description = req.body.description;
 
-            if (req.body.umbrella_related)
+            if (req.body.umbrella_related && typeof req.body.umbrella_related === "boolean")
                 serviceTarget.umbrella_related = req.body.umbrella_related;
         });
     });
@@ -172,9 +174,9 @@ module.exports.create_sale = function (req, res) {
 
         commonController.getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
 
-            commonController.areRequiredFieldsPresent(req, res, () =>{
+            commonController.areRequiredFieldsPresent(req, res, () => {
 
-                if (req.body.date_to.getTime() >= req.body.date_from.getTime()){
+                if (new Date(req.body.date_to).getTime() >= new Date(req.body.date_from).getTime()) {
 
                     let sale = new Sale(req.body);
                     sale._id = mongoose.Types.ObjectId();
@@ -220,12 +222,10 @@ module.exports.read_sales = function (req, res) {
             if (!saleResult)
                 commonController.serve_plain_404(req, res, "Sale");
 
-        }  else if ((req.body.page_id || req.body.page_id === 0) && (req.body.page_size || req.body.page_size >= 0)){
+        } else {
 
             let allSale = [];
 
-
-            // FIXME filtra tutti i sales
             for (let rank in catalog.rank_umbrellas) {
                 if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
                     for (let sale in catalog.rank_umbrellas[rank].sales) {
@@ -241,11 +241,8 @@ module.exports.read_sales = function (req, res) {
                 }
             );
 
-            // Return tot pages
             commonController.returnPages(req.body.page_id, req.body.page_size, req, res, allSaleRequested, "Sales");
 
-        } else {
-            commonController.serve_plain_404(req, res, "Sale")
         }
 
     });
@@ -274,11 +271,11 @@ module.exports.update_sale = function (req, res) {
                         if (req.body.percent || req.body.percent >= 0)
                             saleResult.percent = req.body.percent
 
-                        if (req.body.date_from || req.body.date_from.getTime() >= Date.now())
-                            saleResult.date_from = req.body.date_from
+                        if (req.body.date_from || new Date(req.body.date_from).getTime() >= Date.now())
+                            saleResult.date_from = new Date(req.body.date_from)
 
-                        if (req.body.date_to || req.body.date_to.getTime() > req.body.date_from.getTime())
-                            saleResult.date_to = req.body.date_to
+                        if (req.body.date_to || new Date(req.body.date_to).getTime() > new Date(req.body.date_from).getTime())
+                            saleResult.date_to = new Date(req.body.date_to)
                     });
 
                     if (saleFound)
@@ -294,7 +291,9 @@ module.exports.update_sale = function (req, res) {
 
 
 /**
- *
+ * Return:
+ *  . services available.
+ *  . ranks with the available umbrellas in that period. If not don't return that rank.
  * @param req
  * @param res
  */

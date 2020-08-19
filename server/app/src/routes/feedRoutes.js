@@ -4,6 +4,9 @@ module.exports.set = function(app) {
 
 	app.route('/api/feed/')
 		.get(feedController.read_feed)
-		.delete(feedController.delete_feed)
 		.post(feedController.create_feed);
+
+	app.route('/api/feed/:id')
+		.put(feedController.update_feed)
+		.delete(feedController.delete_feed);
 };
