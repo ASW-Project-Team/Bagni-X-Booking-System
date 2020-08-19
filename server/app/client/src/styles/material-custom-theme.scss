@@ -32,6 +32,18 @@ $client-theme: mat-light-theme((
 // that you are using.
 @include angular-material-theme($client-theme);
 
+// Define a custom typography config that overrides the font-family as well as the
+// `headlines` and `body-1` levels.
+$custom-typography: mat-typography-config(
+  $font-family: 'Montserrat, sans-serif',
+  $headline: mat-typography-level(18px, 22px, 600),
+  $title: mat-typography-level(14px, 20px, 500),
+  $body-1: mat-typography-level(14px, 20px, 300)
+);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+@include angular-material-typography($custom-typography);
+
 // alignment fixes for material design icons https://dev.materialdesignicons.com/getting-started/angular
 button.mat-menu-item {
   line-height: 24px !important;

@@ -1,4 +1,4 @@
-<header>
+<mat-toolbar>
   <div class="logo">
     <a routerLink="/" class="logo">
       <img src="assets/logo.png" alt="BagniX Logo"/>
@@ -9,23 +9,41 @@
   <div class="extended-navigation">
     <nav>
       <ul>
-        <!-- This is how you link together different pages of your app. Do not use href -->
-        <li><a href="#" routerLink="/">
+        <li><a href="#" routerLink="/" title="Home" [ngClass]="selectedPage == 'home' ? 'selected': ''">
           <mat-icon svgIcon="home-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/feed">
+        <li><a href="#" routerLink="/feed" title="Feed" [ngClass]="selectedPage == 'feed' ? 'selected': ''">
           <mat-icon svgIcon="newspaper-variant-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/bookings">
+        <li><a href="#" routerLink="/bookings" title="Prenotazioni" [ngClass]="selectedPage == 'bookings' ? 'selected': ''">
           <mat-icon svgIcon="calendar-check-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/profile">
+        <li><a href="#" routerLink="/profile" title="Profilo" [ngClass]="selectedPage == 'profile' ? 'selected': ''">
           <mat-icon svgIcon="account-circle-outline"></mat-icon>
         </a></li>
       </ul>
     </nav>
   </div>
+
   <div class="collapsable-menu">
-    <mat-icon svgIcon="menu"></mat-icon>
+    <mat-icon svgIcon="menu" [matMenuTriggerFor]="menu"></mat-icon>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/">
+        <mat-icon svgIcon="home-outline"></mat-icon>
+        <span>Home</span>
+      </button>
+      <button mat-menu-item routerLink="/feed">
+        <mat-icon svgIcon="newspaper-variant-outline"></mat-icon>
+        <span>Feed</span>
+      </button>
+      <button mat-menu-item routerLink="/bookings">
+        <mat-icon svgIcon="calendar-check-outline"></mat-icon>
+        <span>Prenotazioni</span>
+      </button>
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon svgIcon="account-circle-outline"></mat-icon>
+        <span>Profilo</span>
+      </button>
+    </mat-menu>
   </div>
-</header>
+</mat-toolbar>

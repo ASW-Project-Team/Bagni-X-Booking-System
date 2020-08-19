@@ -1,8 +1,7 @@
 $bigScreenWidth: 768px;
 
-header {
+mat-toolbar {
   background: var(--background);
-  height: 48px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   position: fixed;
   display: flex;
@@ -10,7 +9,6 @@ header {
   padding:0 8px 0 16px;
   flex-direction: row;
   box-sizing: border-box;
-
   top: 0;
   width: 100%;
 
@@ -32,6 +30,11 @@ header {
       height: 100%;
       margin-right: 8px;
     }
+  }
+
+  .selected {
+    color: var(--primary);
+    background: var(--secondary);
   }
 
   .extended-navigation {
