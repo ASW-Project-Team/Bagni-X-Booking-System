@@ -1,15 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap');
+/**
+ * Global styles file. You can add global styles to this file
+ * and also import other style files.
+ */
 
-// main color variables used across the app
-@import "src/styles/colors.scss";
+// This must be at the top of the file; contains base boilerplate styles
+@import "styles/boilerplates/base-styles";
 
-// todo text styles imported from separated file
-@import "src/styles/fonts.scss";
+// Normalize.css is a customisable CSS file that makes browsers render all
+// elements more consistently and in line with modern standards.
+@import "node_modules/normalize-scss/sass/normalize";
 
-// todo basic global page structure as the mockup, from separated file
+// main color variables, used across the app
+@import "src/styles/colors";
+
+// the custom theme used to enable angular material
+@import "src/styles/material-custom-theme";
+
+// text styles used across the app
+@import "src/styles/fonts";
+
+// global styles concerning the page structure, global to all components
 @import "src/styles/page-structure";
 
-
-
-
+// this must be at the end of the file; contains boilerplate helpers
+@import "styles/boilerplates/helper-classes";

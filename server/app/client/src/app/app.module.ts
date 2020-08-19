@@ -9,6 +9,14 @@ import { BookingsComponent } from './customer/bookings/bookings.component';
 import { ProfileComponent } from './customer/profile/profile.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,13 +26,25 @@ import { FooterComponent } from './footer/footer.component';
     BookingsComponent,
     ProfileComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MatIconModule,
+    MatMenuModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer){
+    matIconRegistry.addSvgIconSet(
+      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg')
+    );
+  }
+}

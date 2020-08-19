@@ -1,35 +1,98 @@
+$bigScreenWidth: 768px;
 
-header {
-  background: var(background);
-  padding: 1em 0;
+mat-toolbar {
+  background: var(--background);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   position: fixed;
+  display: flex;
+  align-items: center;
+  padding:0 8px 0 16px;
+  flex-direction: row;
+  box-sizing: border-box;
   top: 0;
   width: 100%;
 
   a {
-    color: var(--primary);
+    color: var(--secondaryControl);
     text-decoration: none;
   }
-  a.logo {
-    font-weight: 600;
+
+  .logo {
+    height: 24px;
+    display: flex;
+    align-items: center;
+
+    h1 {
+      color: var(--primary);
+    }
+
+    img {
+      height: 100%;
+      margin-right: 8px;
+    }
   }
 
-  nav {
-    float: right;
+  .selected {
+    color: var(--primary);
+    background: var(--secondary);
+  }
 
-    ul {
-      list-style-type: none;
-      margin: 0;
-      display: flex;
+  .extended-navigation {
+    margin-left: auto;
+    visibility: hidden;
+    display: none;
 
-      li a {
-        padding: 1em;
+    nav {
+      ul {
+        list-style-type: none;
+        margin: 0;
+        display: flex; // used for horizontal alignment
+        flex-direction: row;
 
-        &:hover {
-          background: var(--secondary);
+        li a {
+          margin-left: 8px;
+          padding: 8px;
+          border-radius: 24px;
+          transition: 0.1s;
+          &:hover {
+            background: var(--secondary);
+          }
         }
       }
     }
+  }
+
+  @media only screen and (min-width: $bigScreenWidth) {
+    .extended-navigation {
+      visibility: visible;
+      display: block;
+    }
+  }
+
+  .collapsable-menu {
+    margin-left: auto;
+    visibility: visible;
+    display: block;
+    color: var(--primary);
+    padding: 8px;
+    border-radius: 24px;
+    transition: 0.1s;
+
+    &:hover {
+      background: var(--secondary);
+    }
+  }
+
+  @media only screen and (min-width: $bigScreenWidth) {
+    .collapsable-menu {
+      visibility: hidden;
+      display: none;
+    }
+  }
+}
+
+@media only screen and (min-width: $bigScreenWidth) {
+  header {
+    height: 64px;
   }
 }
