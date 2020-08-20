@@ -15,7 +15,8 @@ const collectionName = "bookings"
 exports.create_booking = function(req, res) {
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		if (req.body.price >= 0 && new Date(req.body.date_from).getTime() >= Date.now()
+		if (req.body.price >= 0
+			&& new Date(req.body.date_from).getTime() >= Date.now()
 			&& new Date(req.body.date_to).getTime() >  new Date(req.body.date_from).getTime()) {
 
 			let booking = new Booking(req.body);
@@ -48,6 +49,7 @@ exports.modify_booking = function(req, res) {
 			if (req.body.user_id)
 				docResult.user_id = req.body.user_id
 
+			// FIXME Control umbrellas are free
 			if (req.body.umbrellas)
 				docResult.umbrellas = req.body.umbrellas
 

@@ -62,19 +62,23 @@ module.exports.update_rank = function (req, res) {
 
         commonController.updateCollection(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
 
-            if (req.body.name)
+            if (req.body.name
+                && commonController.typeOfString(req.body.name))
                 rankTarget.name = req.body.name
 
-            if (req.body.description)
+            if (req.body.description
+                && commonController.typeOfString(req.body.description))
                 rankTarget.description = req.body.description
 
             if (req.body.price || req.body.price >= 0)
                 rankTarget.price = req.body.price
 
-            if (req.body.from_umbrella)
+            if (req.body.from_umbrella
+                && commonController.typeOfNumber(req.body.from_umbrella))
                 rankTarget.from_umbrella = req.body.from_umbrella
 
-            if (req.body.to_umbrella)
+            if (req.body.to_umbrella
+                && commonController.typeOfNumber(req.body.to_umbrella))
                 rankTarget.to_umbrella = req.body.to_umbrella
 
             if (req.body.sales)
@@ -97,7 +101,8 @@ module.exports.create_service = function(req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            if (req.body.price >= 0 && (typeof req.body.umbrella_related === "boolean")){
+            if (req.body.price >= 0
+                && (typeof req.body.umbrella_related === "boolean")){
 
                 let service = new Service(req.body);
                 service._id = mongoose.Types.ObjectId();
@@ -152,10 +157,12 @@ module.exports.update_service = function (req, res) {
             if (req.body.price || req.body.price >= 0)
                 serviceTarget.price = req.body.price;
 
-            if (req.body.description)
+            if (req.body.description
+                && commonController.typeOfString(req.body.description))
                 serviceTarget.description = req.body.description;
 
-            if (req.body.umbrella_related && typeof req.body.umbrella_related === "boolean")
+            if (req.body.umbrella_related
+                && commonController.typeOfBoolean(req.body.umbrella_related))
                 serviceTarget.umbrella_related = req.body.umbrella_related;
         });
     });
@@ -176,7 +183,9 @@ module.exports.create_sale = function (req, res) {
 
             commonController.areRequiredFieldsPresent(req, res, () => {
 
-                if (new Date(req.body.date_to).getTime() >= new Date(req.body.date_from).getTime()) {
+                if ((req.body.percent
+                    || req.body.percent >= 0)
+                    && new Date(req.body.date_to).getTime() >= new Date(req.body.date_from).getTime()) {
 
                     let sale = new Sale(req.body);
                     sale._id = mongoose.Types.ObjectId();
@@ -271,10 +280,12 @@ module.exports.update_sale = function (req, res) {
                         if (req.body.percent || req.body.percent >= 0)
                             saleResult.percent = req.body.percent
 
-                        if (req.body.date_from || new Date(req.body.date_from).getTime() >= Date.now())
+                        if (req.body.date_from
+                            && new Date(req.body.date_from).getTime() >= Date.now())
                             saleResult.date_from = new Date(req.body.date_from)
 
-                        if (req.body.date_to || new Date(req.body.date_to).getTime() > new Date(req.body.date_from).getTime())
+                        if (req.body.date_to
+                            && new Date(req.body.date_to).getTime() > new Date(req.body.date_from).getTime())
                             saleResult.date_to = new Date(req.body.date_to)
                     });
 
@@ -326,10 +337,10 @@ module.exports.get_availability = function (req, res) {
 
                                 let umbrella = new Umbrella();
                                 umbrella.number = i;
-                                umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
 
                                 if (!rankNumberFree[rank]) {
                                     rankNumberFree[rank] = {};
+                                    rankNumberFree[rank]["id"] = catalog.rank_umbrellas[rank]._id;
                                     rankNumberFree[rank]["name"] = catalog.rank_umbrellas[rank].name;
                                     rankNumberFree[rank]["description"] = catalog.rank_umbrellas[rank].description;
                                     rankNumberFree[rank]["price"] = catalog.rank_umbrellas[rank].price;

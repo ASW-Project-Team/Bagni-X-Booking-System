@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto')
 
 /**
  * Error for object not found.
@@ -7,16 +8,24 @@ const mongoose = require('mongoose');
  * @param objName
  */
 module.exports.serve_plain_404 = function(req, res, objName) {
-    res.status(404).json(objName + ' not found');
+    res.status(this.status_error).json(objName + ' not found');
 };
 
 /**
+ * When create can't go good finish because obj already present.
+ * @param res
+ * @param document
+ */
+module.exports.already_present = function(res, document) {
+    res.status(this.status_error).json(document + " already present!");
+}
+
+/**
  * Error caused because not all required fields are inserted.
- * @param req
  * @param res
  */
-module.exports.field_require_404 = function(req, res) {
-    res.status(404).json("All fields are required, someone  not found!");
+module.exports.field_require_404 = function(res) {
+    res.status(this.status_error).json("All fields are required, someone  not found!");
 };
 
 
@@ -188,7 +197,10 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
-    collFirstLevel.deleteOne({ _id: req.body.id }, (err, docResult)  => {
+/*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+       "_id", req.params.id);*/
+
+     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
         if (!errDocName)
             errDocName = documentName + "not found";
@@ -198,6 +210,60 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
         this.response(res, "Delete on " + documentName + " completed!");
     });
 }
+
+/**
+ * Delete by id for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched the id.
+ * @param errDocName Document name used only in case of error.
+ */
+module.exports.deleteFirstLevelCollectionByUsername = function (req, res, documentName, collFirstLevel,
+                                                                errDocName) {
+
+/*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+        "username", req.body.username);*/
+
+    collFirstLevel.deleteOne({ "username": req.body.username }, (err, docResult)  => {
+
+
+        if (!errDocName)
+            errDocName = documentName + "not found";
+
+
+        this.checkError(err, docResult, req, res, errDocName, true);
+        this.response(res, "Delete on " + documentName + " completed!");
+    });
+}
+
+/**
+ * DELETE by a property for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched the id.
+ * @param errDocName Document name used only in case of error.
+ * @param propertyName
+ * @param propertyValue
+ */
+/*module.exports.deleteFirstLevelCollectionByProperty = function(req, res, documentName, collFirstLevel, errDocName,
+                                                                propertyName, propertyValue) {
+
+
+    collFirstLevel.deleteOne({ propertyName: propertyValue }, (err, docResult)  => {
+
+        console.log(propertyName);
+        console.log(propertyValue);
+
+        if (!errDocName)
+            errDocName = documentName + " not found";
+
+
+        this.checkError(err, docResult, req, res, errDocName, true);
+        this.response(res, "Delete on " + documentName + " completed!");
+    });
+}*/
 
 /**
  * Find all for a collection with control that this isn't empty.
@@ -279,39 +345,68 @@ module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsReq
     if (toSave) {
         func();
     } else {
-        this.field_require_404(req, res)
+        this.field_require_404(res)
     }
 }
 
 module.exports.typeOfString = function (par) {
 
-    typeOfType(par,"string")
+    return typeOfType(par,"string")
 }
 
 module.exports.typeOfBoolean = function (par) {
 
-    typeOfType(par, "boolean")
+    return typeOfType(par, "boolean")
 }
 
 module.exports.typeOfNumber = function (par) {
 
-    typeOfType(par, "number")
+    return typeOfType(par, "number")
 }
 
 function typeOfType(par, parType) {
 
-    let isNumber = false;
+    let isCorrectType = false;
 
     if (typeof par === parType)
-        isNumber = true;
+        isCorrectType = true;
 
-    return isNumber;
+    return isCorrectType;
 }
+
+/**
+ * generates random string of characters i.e salt
+ * @function
+ * @param {number} length - Length of the random string.
+ */
+module.exports.genRandomString = function(length){
+
+    return crypto.randomBytes(Math.ceil(length/2))
+        .toString('hex') /** convert to hexadecimal format */
+        .slice(0,length);   /** return required number of characters */
+};
+
+/**
+ * hash password with sha512.
+ * @function
+ * @param {string} password - List of required fields.
+ * @param {string} salt - Data to be validated.
+ */
+module.exports.sha512 = function(password, salt){
+    let hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    return hash.digest('hex');
+
+};
 
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
 
+module.exports.status_error = 404;
+
 module.exports.default_page_id = 0;
 
 module.exports.default_page_size = 10;
+
+module.exports.salt_length = 48;
