@@ -3,7 +3,7 @@ module.exports.set = function(app) {
 
 /*    app.route('/api/admins/:id')
         .delete(adminController.delete_admin);*/
-
+    
     app.route('/api/admins/')
         .delete(adminController.delete_admin)
         .get(adminController.authenticate_admin)
