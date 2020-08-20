@@ -22,6 +22,7 @@ import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/i
 import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     PageNotFoundComponent,
     ImgLandscapeComponent,
     FabComponent,
+    SalableCardComponent,
   ],
   imports: [
     BrowserModule,

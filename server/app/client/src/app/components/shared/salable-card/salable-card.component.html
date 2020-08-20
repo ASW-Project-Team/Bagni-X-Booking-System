@@ -1,0 +1,17 @@
+<div class="salable-card">
+  <div class="header">
+    <div class="image">
+      <img src="{{ imageUrl }}" alt="Sold item image" />
+    </div>
+    <div class="lines">
+      <h2 class="title">{{ title }}</h2>
+      <div class="description">{{ description }}</div>
+    </div>
+  </div>
+
+  <div class="chips-line">
+    <div class="price-chip"> {{ price }} </div>
+    <div *ngIf="moreInfo" class="more-info-chip"> {{ moreInfo }} </div>
+    <mat-icon *ngIf="sale" svgIcon="sale"></mat-icon>
+  </div>
+</div>
