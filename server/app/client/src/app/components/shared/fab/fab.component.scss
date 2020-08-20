@@ -1,5 +1,8 @@
 @import "~src/styles/utils/utils";
 
+// the style used for the fab is inspired by
+// https://github.com/angular/components/issues/12246#issuecomment-470307438
+
 .extended-fab-button {
   width: unset;
   padding: 0 $marginDesktop;
