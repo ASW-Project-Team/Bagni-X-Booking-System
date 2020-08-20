@@ -14,8 +14,8 @@
 // the custom theme used to enable angular material
 @import "styles/globals/material-custom-theme";
 
-// main color variables, used across the app
-@import "styles/variables/variables";
+// main color utils, used across the app
+@import "styles/utils/utils";
 
 /*
  * Start of Author-defined global styles
@@ -31,16 +31,11 @@ html, body {
   height: 100%;
   left: 0;
   right: 0;
-  margin: $appBarHeightSmartphone auto 0 auto;
-  width: $pageWidthSmartphone;
+  margin: 0 auto;
   box-sizing: border-box;
-
-  @include forDesktopOnly {
-    margin: $appBarHeightDesktop auto 0 auto;
-    width: $pageWidthDesktop;
-  }
+  @include responsiveProp(padding-top, $appBarHeight); // must be padding, not margin
+  @include responsiveProp(width, $pageWidth);
 }
-
 
 ul {
   list-style-type: none;
@@ -49,10 +44,11 @@ ul {
 
 }
 
-
 // Font used for generic titles.
 h1 {
   @include titleFont;
+  @include responsiveProp(margin-top, $defaultMargin);
+  @include responsiveProp(margin-bottom, $halfMargin);
 }
 
 // combination of h1 and class super-title, used for very important titles, such as logo.
@@ -63,6 +59,14 @@ h1.super-title {
 // Font used for an important body text, such as a card title.
 h2 {
   @include subheadFont;
+  @include responsiveProp(margin-top, $halfMargin);
+  @include responsiveProp(margin-bottom, $quarterMargin);
+}
+
+p {
+  @include bodyFont;
+  @include responsiveProp(margin-top, $halfMargin);
+  @include responsiveProp(margin-bottom, $quarterMargin);
 }
 
 /*

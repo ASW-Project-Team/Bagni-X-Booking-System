@@ -1,4 +1,4 @@
-@import "../../../../styles/variables/variables";
+@import "../../../../styles/utils/utils";
 
 footer {
   background: $backgroundColor;
@@ -9,13 +9,10 @@ footer {
   align-items: center;
   justify-content: center;
   box-shadow: $defaultShadow;
+  box-sizing: border-box;
+  @include responsiveProp(padding, $defaultMargin);
 
   .attribution {
-    text-decoration: none;
-    padding: $marginSmartphone;
 
-    @include forDesktopOnly {
-      padding: $marginDesktop;
-    }
   }
 }

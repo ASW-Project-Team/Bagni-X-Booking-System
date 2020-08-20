@@ -1,4 +1,4 @@
-@import "../../../../../styles/variables/variables";
+@import "../../../../../styles/utils/utils";
 
 .landscape-container {
   width:100%;
@@ -14,10 +14,6 @@
   object-fit: cover;
   width: 100%;
   height: 100%;
-  border-radius: $marginSmartphone;
   box-shadow: $defaultShadow;
-
-  @include forDesktopOnly {
-    border-radius: $marginDesktop;
-  }
+  @include responsiveProp(border-radius, $defaultMargin);
 }

@@ -1,0 +1,14 @@
+/**
+ * Various other variable and utils.
+ */
+$defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
+
+@mixin hide {
+  visibility: hidden;
+  display: none;
+}
+
+@mixin show {
+  visibility: visible;
+  display: block;
+}

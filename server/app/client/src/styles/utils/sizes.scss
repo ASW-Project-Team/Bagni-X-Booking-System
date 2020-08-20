@@ -1,0 +1,49 @@
+/**
+ * The file memorizes some values used as sizes, varying according to the screen size
+ * using a media query.
+ */
+@use "sass:map";
+
+// raw values
+$desktopWidth: 600px;
+$marginSmartphone: 16px;
+$marginDesktop: 24px;
+$appBarHeightSmartphone: 56px;
+$appBarHeightDesktop: 64px;
+$footerHeight: 100px;
+$pageWidthSmartphone: 100%;
+$pageWidthDesktop: $desktopWidth - $marginDesktop;
+
+// mapped desktop-smartphone values
+$defaultMargin: ("smartphone": $marginSmartphone, "desktop": $marginDesktop);
+$halfMargin:  ("smartphone": $marginSmartphone / 2, "desktop": $marginDesktop / 2);
+$quarterMargin:  ("smartphone": $marginSmartphone / 4, "desktop": $marginDesktop / 4);
+$appBarHeight: ("smartphone": $appBarHeightSmartphone, "desktop": $appBarHeightDesktop);
+$pageWidth: ("smartphone": $pageWidthSmartphone, "desktop": $pageWidthDesktop);
+
+
+// This mixin encapsulates and simplifies media queries for big screens.
+// From https://css-tricks.com/approaches-media-queries-sass/#landon-schropps-technique
+@mixin forDesktopOnly {
+  @media (min-width: #{$desktopWidth}) {
+    @content;
+  }
+}
+
+// This mixin encapsulates and simplifies media queries for small screens.
+// From https://css-tricks.com/approaches-media-queries-sass/#landon-schropps-technique
+@mixin forSmartphoneOnly {
+  @media (max-width: #{$desktopWidth}) {
+    @content;
+  }
+}
+
+// Sets a property that varies with screen size. It can be done
+// only with mapped desktop-smartphone values.
+@mixin responsiveProp($key, $mappedProp) {
+  #{$key}: map.get($mappedProp, "smartphone");
+
+  @include forDesktopOnly {
+    #{$key} : map.get($mappedProp, "desktop");
+  }
+}

@@ -1,4 +1,4 @@
-@import "../../../../styles/variables/variables";
+@import "../../../../styles/utils/utils";
 
 .page {
   // the home page is the only one with 100% width;
@@ -6,10 +6,21 @@
   width: 100%;
 }
 
+
+// the following mixin makes more div completely overlayable between tem,
+// and make them occupy all the available space
+@mixin overlayable {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
+
 .main-card-container {
   width: 100%;
   height: 256px;
-  @include overlayable-father;
+  position: relative;
 
   // for desktop screens, the main card takes the page height size,
   // reduced a bit to hide de exceeding blurred image.
@@ -18,7 +29,7 @@
   }
 
   .image-container {
-    @include overlayable-child;
+    @include overlayable;
     filter: blur(4px);
     background-image: none;
     background-size: cover;
@@ -28,13 +39,13 @@
   }
 
   .white-filter-container {
-    @include overlayable-child;
+    @include overlayable;
     background: $backgroundColor;
     opacity: 0.8;
   }
 
   .title-container {
-    @include overlayable-child;
+    @include overlayable;
     display: flex;
     text-align: center;
     flex-direction: column;
@@ -42,19 +53,16 @@
     align-content: center;
     width: auto;
     margin-top: -1 * $marginSmartphone; // makes the text higher
-    padding: 0 $marginSmartphone;
-
-    @include forDesktopOnly {
-      margin-top: -1 * $marginDesktop; // makes the text higher
-      padding: 0 $marginDesktop;
-    }
+    padding: 0;
+    @include responsiveProp(padding-left, $defaultMargin);
+    @include responsiveProp(padding-right, $defaultMargin);
 
     // the icon inside the main card disappears if in smartphone mode
     mat-icon {
       width: auto;
       color: $primaryColor;
-      font-size: 80px;
-      height: 80px;
+      font-size: 60px;
+      height: 60px;
 
       @include forSmartphoneOnly {
         @include hide;
@@ -65,12 +73,8 @@
 
 @mixin card-wide-container {
   width: 100%;
-  padding: $marginSmartphone;
   box-sizing: border-box;
-
-  @include forDesktopOnly {
-    padding: $marginDesktop;
-  }
+  @include responsiveProp(padding, $defaultMargin);
 
   .home-card {
     box-sizing: border-box;
