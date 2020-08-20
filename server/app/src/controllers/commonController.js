@@ -8,16 +8,24 @@ const crypto = require('crypto')
  * @param objName
  */
 module.exports.serve_plain_404 = function(req, res, objName) {
-    res.status(404).json(objName + ' not found');
+    res.status(this.status_error).json(objName + ' not found');
 };
 
 /**
+ * When create can't go good finish because obj already present.
+ * @param res
+ * @param document
+ */
+module.exports.already_present = function(res, document) {
+    res.status(this.status_error).json(document + " already present!");
+}
+
+/**
  * Error caused because not all required fields are inserted.
- * @param req
  * @param res
  */
-module.exports.field_require_404 = function(req, res) {
-    res.status(404).json("All fields are required, someone  not found!");
+module.exports.field_require_404 = function(res) {
+    res.status(this.status_error).json("All fields are required, someone  not found!");
 };
 
 
@@ -280,33 +288,33 @@ module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsReq
     if (toSave) {
         func();
     } else {
-        this.field_require_404(req, res)
+        this.field_require_404(res)
     }
 }
 
 module.exports.typeOfString = function (par) {
 
-    typeOfType(par,"string")
+    return typeOfType(par,"string")
 }
 
 module.exports.typeOfBoolean = function (par) {
 
-    typeOfType(par, "boolean")
+    return typeOfType(par, "boolean")
 }
 
 module.exports.typeOfNumber = function (par) {
 
-    typeOfType(par, "number")
+    return typeOfType(par, "number")
 }
 
 function typeOfType(par, parType) {
 
-    let isNumber = false;
+    let isCorrectType = false;
 
     if (typeof par === parType)
-        isNumber = true;
+        isCorrectType = true;
 
-    return isNumber;
+    return isCorrectType;
 }
 
 /**
@@ -340,6 +348,8 @@ module.exports.sha512 = function(password, salt){
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
+
+module.exports.status_error = 404;
 
 module.exports.default_page_id = 0;
 
