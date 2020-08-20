@@ -10,24 +10,27 @@
   <div class="extended-navigation">
     <nav>
       <ul>
-        <li><a href="#" routerLink="/" title="Home" [ngClass]="selectedPage == 'home' ? 'selected-icon': ''">
-          <mat-icon svgIcon="home-outline"></mat-icon>
+        <li><a href="#" mat-icon-button routerLink="/" title="Home" [ngClass]="selectedPage == 'home' ? 'selected-icon': ''">
+          <mat-icon class="menu-icon"  svgIcon="home-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/feed" title="Feed" [ngClass]="selectedPage == 'feed' ? 'selected-icon': ''">
-          <mat-icon svgIcon="newspaper-variant-outline"></mat-icon>
+        <li><a href="#" mat-icon-button routerLink="/feed" title="Feed" [ngClass]="selectedPage == 'feed' ? 'selected-icon': ''">
+          <mat-icon class="menu-icon"  svgIcon="newspaper-variant-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/bookings" title="Prenotazioni" [ngClass]="selectedPage == 'bookings' ? 'selected-icon': ''">
-          <mat-icon svgIcon="calendar-check-outline"></mat-icon>
+        <li><a href="#" mat-icon-button routerLink="/bookings" title="Prenotazioni" [ngClass]="selectedPage == 'bookings' ? 'selected-icon': ''">
+          <mat-icon class="menu-icon"  svgIcon="calendar-check-outline"></mat-icon>
         </a></li>
-        <li><a href="#" routerLink="/profile" title="Profilo" [ngClass]="selectedPage == 'profile' ? 'selected-icon': ''">
-          <mat-icon svgIcon="account-circle-outline"></mat-icon>
+        <li><a href="#" mat-icon-button routerLink="/profile" title="Profilo" [ngClass]="selectedPage == 'profile' ? 'selected-icon': ''">
+          <mat-icon class="menu-icon" svgIcon="account-circle-outline"></mat-icon>
         </a></li>
       </ul>
     </nav>
   </div>
 
   <div class="collapsable-menu">
-    <mat-icon svgIcon="menu" [matMenuTriggerFor]="menu"></mat-icon>
+    <button mat-icon-button [matMenuTriggerFor]="menu"
+            aria-label="Button used to access the website menu">
+      <mat-icon>menu</mat-icon>
+    </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item routerLink="/">
         <mat-icon svgIcon="home-outline"></mat-icon>

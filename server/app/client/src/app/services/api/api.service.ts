@@ -65,4 +65,6 @@ export class ApiService {
   }
 
   // todo ecc.
+
+  // todo caching system, limited to some cacheable values
 }

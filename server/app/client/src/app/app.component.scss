@@ -1,10 +1,14 @@
-@import "../styles/utils/utils";
+@import "~src/styles/utils/utils";
 
 .wrapper {
   min-height: 100%;
-  margin-bottom: -1 * $footerHeight;
+  margin-bottom: -1 * $footerHeightSmartphone;
+
+  @include forDesktopOnly {
+    margin-bottom: -1 * $footerHeightDesktop;
+  }
 }
 
 .push {
-  height: $footerHeight;
+  @include responsiveProp(height, $footerHeight);
 }

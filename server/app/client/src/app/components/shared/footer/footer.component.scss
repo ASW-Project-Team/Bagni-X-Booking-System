@@ -1,18 +1,32 @@
-@import "../../../../styles/utils/utils";
+@import "~src/styles/utils/utils";
 
 footer {
   background: $backgroundColor;
-  text-align: center;
-  height: $footerHeight;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   box-shadow: $defaultShadow;
   box-sizing: border-box;
-  @include responsiveProp(padding, $defaultMargin);
+  @include responsiveProp(height, $footerHeight);
+  @include responsiveProp(padding-left, $defaultMargin);
+  padding-right: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
 
-  .attribution {
+  @include forDesktopOnly {
+    padding-right: 200px;
 
+  }
+
+  .credits {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    a {
+      text-decoration: none;
+      @include subheadFont;
+    }
   }
 }

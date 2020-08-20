@@ -10,15 +10,21 @@ $marginSmartphone: 16px;
 $marginDesktop: 24px;
 $appBarHeightSmartphone: 56px;
 $appBarHeightDesktop: 64px;
-$footerHeight: 100px;
 $pageWidthSmartphone: 100%;
 $pageWidthDesktop: $desktopWidth - $marginDesktop;
+$fabHeightSmartphone: 56px;
+$fabHeightDesktop: 64px;
+$footerHeightSmartphone: $fabHeightSmartphone + $marginSmartphone * 2;
+$footerHeightDesktop: $fabHeightDesktop + $marginDesktop * 2;
+
 
 // mapped desktop-smartphone values
 $defaultMargin: ("smartphone": $marginSmartphone, "desktop": $marginDesktop);
 $halfMargin:  ("smartphone": $marginSmartphone / 2, "desktop": $marginDesktop / 2);
 $quarterMargin:  ("smartphone": $marginSmartphone / 4, "desktop": $marginDesktop / 4);
 $appBarHeight: ("smartphone": $appBarHeightSmartphone, "desktop": $appBarHeightDesktop);
+$fabHeight: ("smartphone": $fabHeightSmartphone, "desktop": $fabHeightDesktop);
+$footerHeight: ("smartphone": $footerHeightSmartphone, "desktop": $footerHeightDesktop);
 $pageWidth: ("smartphone": $pageWidthSmartphone, "desktop": $pageWidthDesktop);
 
 

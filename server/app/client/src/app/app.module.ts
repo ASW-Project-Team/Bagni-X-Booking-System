@@ -19,6 +19,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
 import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
 import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
+import {MatButtonModule} from '@angular/material/button';
+import { FabComponent } from './components/shared/fab/fab.component';
+
 
 @NgModule({
   declarations: [
@@ -31,6 +34,7 @@ import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/i
     FooterComponent,
     PageNotFoundComponent,
     ImgLandscapeComponent,
+    FabComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +44,8 @@ import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/i
     HttpClientModule,
     MatIconModule,
     MatMenuModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-@import "../../../../styles/utils/utils";
+@import "~src/styles/utils/utils";
 
 mat-toolbar {
   background: $backgroundColor;
@@ -55,12 +55,17 @@ mat-toolbar {
 
         li a {
           margin-left: 8px;
-          padding: 8px;
           border-radius: 24px;
-          transition: 0.1s;
+          transition: 0.2s;
+
           &:hover {
             background: $secondaryColor;
           }
+
+          .menu-icon {
+            vertical-align: baseline;
+          }
+
         }
       }
     }
@@ -69,13 +74,6 @@ mat-toolbar {
   .collapsable-menu {
     margin-left: auto; // keeps element aligned to the right
     color: $primaryColor;
-    padding: 8px;
-    border-radius: 48px;
-    transition: 0.1s;
-
-    &:hover {
-      background: $secondaryColor;
-    }
 
     // hide collapsable navigation when in desktop view
     @include forDesktopOnly {
