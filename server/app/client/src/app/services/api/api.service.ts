@@ -17,9 +17,17 @@ export class ApiService {
 
 
   getHomeCards(): Observable<any> {
+    // in production:
     // return this.http.get('https://localhost:4200/home-cards');
 
     // mock used for tests, waiting for real api response
+    return this.getHomeCardsMock();
+  }
+
+  // todo ecc.
+  // todo caching system, limited to some cacheable values
+
+  getHomeCardsMock(): Observable<any> {
     return new Observable((observer) => {
       const homeCardsMock = {
         mainCard: {
@@ -63,8 +71,4 @@ export class ApiService {
       };
     });
   }
-
-  // todo ecc.
-
-  // todo caching system, limited to some cacheable values
 }

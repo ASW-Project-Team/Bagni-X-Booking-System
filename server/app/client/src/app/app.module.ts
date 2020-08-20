@@ -21,6 +21,7 @@ import { PageNotFoundComponent } from './components/shared/page-not-found/page-n
 import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
 import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { FabComponent } from './components/shared/fab/fab.component';
     MatIconModule,
     MatMenuModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

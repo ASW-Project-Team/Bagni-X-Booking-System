@@ -1,30 +1,40 @@
 <div class="page">
   <!-- Main card -->
-  <div class="main-card-container">
-    <div class="image-container"
-         [ngStyle]="{'background-image': 'url(' + mainCard.image }">
+  <div *ngIf="mainCard && homeCards.length > 0; else loadingScreen">
+    <div class="main-card-container">
+      <div class="image-container"
+           [ngStyle]="{'background-image': 'url(' + mainCard.image }">
+      </div>
+      <div class="white-filter-container"></div>
+      <div class="title-container">
+        <mat-icon>beach_access</mat-icon>
+        <h1 class="super-title"> {{mainCard.title}} </h1>
+        <div> {{mainCard.description}} </div>
+      </div>
     </div>
-    <div class="white-filter-container"></div>
-    <div class="title-container">
-      <mat-icon>beach_access</mat-icon>
-      <h1 class="super-title"> {{mainCard.title}} </h1>
-      <div> {{mainCard.description}} </div>
-    </div>
+
+    <!-- Other cards -->
+    <!-- todo show other cards w. ngFor -->
+    <ul>
+      <li *ngFor="let homeCard of homeCards">
+        <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
+          <div class="home-card">
+            <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
+            <h1>{{homeCard.title}}</h1>
+            <div>{{ homeCard.description }}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
 
-  <!-- Other cards -->
-  <!-- todo show other cards w. ngFor -->
-  <ul>
-    <li *ngFor="let homeCard of homeCards">
-      <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
-        <div class="home-card">
-          <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
-          <h1>{{homeCard.title}}</h1>
-          <div>{{ homeCard.description }}</div>
-        </div>
-      </div>
-    </li>
-  </ul>
+  <ng-template #loadingScreen>
+    <!-- Content to render when condition is false. -->
+    <div class="loading-container">
+      <mat-spinner [diameter]="48"></mat-spinner>
+    </div>
+  </ng-template>
+
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
