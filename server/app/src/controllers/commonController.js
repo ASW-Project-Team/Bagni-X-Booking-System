@@ -197,7 +197,10 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
-    collFirstLevel.deleteOne({ _id: req.body.id }, (err, docResult)  => {
+/*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+       "_id", req.params.id);*/
+
+     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
         if (!errDocName)
             errDocName = documentName + "not found";
@@ -207,6 +210,60 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
         this.response(res, "Delete on " + documentName + " completed!");
     });
 }
+
+/**
+ * Delete by id for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched the id.
+ * @param errDocName Document name used only in case of error.
+ */
+module.exports.deleteFirstLevelCollectionByUsername = function (req, res, documentName, collFirstLevel,
+                                                                errDocName) {
+
+/*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+        "username", req.body.username);*/
+
+    collFirstLevel.deleteOne({ "username": req.body.username }, (err, docResult)  => {
+
+
+        if (!errDocName)
+            errDocName = documentName + "not found";
+
+
+        this.checkError(err, docResult, req, res, errDocName, true);
+        this.response(res, "Delete on " + documentName + " completed!");
+    });
+}
+
+/**
+ * DELETE by a property for first level class that tracks scenario of error.
+ * @param req
+ * @param res
+ * @param documentName Name used only in case of error.
+ * @param collFirstLevel Collection where is searched the id.
+ * @param errDocName Document name used only in case of error.
+ * @param propertyName
+ * @param propertyValue
+ */
+/*module.exports.deleteFirstLevelCollectionByProperty = function(req, res, documentName, collFirstLevel, errDocName,
+                                                                propertyName, propertyValue) {
+
+
+    collFirstLevel.deleteOne({ propertyName: propertyValue }, (err, docResult)  => {
+
+        console.log(propertyName);
+        console.log(propertyValue);
+
+        if (!errDocName)
+            errDocName = documentName + " not found";
+
+
+        this.checkError(err, docResult, req, res, errDocName, true);
+        this.response(res, "Delete on " + documentName + " completed!");
+    });
+}*/
 
 /**
  * Find all for a collection with control that this isn't empty.
@@ -338,11 +395,8 @@ module.exports.genRandomString = function(length){
 module.exports.sha512 = function(password, salt){
     let hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
     hash.update(password);
-    let value = hash.digest('hex');
-    return {
-        salt:salt,
-        passwordHash:value
-    };
+    return hash.digest('hex');
+
 };
 
 module.exports.status_created = 201;
