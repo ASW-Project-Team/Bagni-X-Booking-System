@@ -14,7 +14,6 @@
     </div>
 
     <!-- Other cards -->
-    <!-- todo show other cards w. ngFor -->
     <ul>
       <li *ngFor="let homeCard of homeCards">
         <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
