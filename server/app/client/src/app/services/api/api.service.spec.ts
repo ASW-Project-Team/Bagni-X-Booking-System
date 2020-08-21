@@ -14,6 +14,6 @@ describe('ApiService', () => {
   });
 
   it('#getHomeCards should return a well-formatted real result', () => {
-    expect(service.getHomeCards).toBeTruthy();
+    expect(service.getHome).toBeTruthy();
   });
 });

@@ -25,6 +25,44 @@
         </div>
       </li>
     </ul>
+
+    <!-- rankUmbrellas cards -->
+    <div class="rank-card" [ngClass]="homeCards.length % 2 == 0 ? 'odd-card-wide-container' : 'even-card-wide-container'">
+      <div class="home-card">
+        <h1>Cosa puoi prenotare?</h1>
+        <ul class="home-card">
+          <li *ngFor="let rankUmbrella of rankUmbrellas">
+            <app-salable-card
+              [title]="rankUmbrella.name"
+              [description]="rankUmbrella.description"
+              [imageUrl]="rankUmbrella.image"
+              [price]="rankUmbrella.price + ' €/gg'"
+              [more-info]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
+              [sale]="rankUmbrella.sales.length > 0"
+              [last-card]="rankUmbrellas.indexOf(rankUmbrella) >= services.length - 1">
+            </app-salable-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- services cards -->
+    <div class="service-card" [ngClass]="homeCards.length % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
+      <div class="home-card">
+        <h1>I nostri servizi</h1>
+        <ul >
+          <li *ngFor="let service of services">
+            <app-salable-card
+              [title]="service.title"
+              [description]="service.description"
+              [imageUrl]="service.image"
+              [price]="service.price == 0 ? 'Incluso' : service.price + ' €/gg'"
+              [last-card]="services.indexOf(service) >= services.length - 1">
+            </app-salable-card>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <ng-template #loadingScreen>

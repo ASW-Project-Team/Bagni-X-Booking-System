@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HomeCard} from "../../../model/homeCard";
 import {ApiService} from "../../../services/api/api.service";
+import {Service} from "../../../model/service";
+import {RankUmbrella} from "../../../model/rankUmbrella";
 
 @Component({
   selector: 'app-home',
@@ -9,18 +11,19 @@ import {ApiService} from "../../../services/api/api.service";
 })
 export class HomeComponent implements OnInit {
 
-  // main card mock
   mainCard: HomeCard;
-
-  // other cards mock
   homeCards: HomeCard[];
+  services: Service[];
+  rankUmbrellas: RankUmbrella[];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    this.apiService.getHomeCards().subscribe(data => {
+    this.apiService.getHome().subscribe(data => {
       this.mainCard = data.mainCard;
       this.homeCards = data.homeCards;
+      this.services = data.services;
+      this.rankUmbrellas = data.rankUmbrellas;
     });
   }
 

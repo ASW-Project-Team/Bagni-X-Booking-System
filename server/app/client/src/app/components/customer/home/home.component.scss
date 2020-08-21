@@ -105,4 +105,17 @@
   background: $backgroundColor;
 }
 
+@mixin listedCards {
+  h1 {
+    margin-top: 0;
+  }
+}
+
+.rank-card {
+  @include listedCards
+}
+
+.service-card {
+  @include listedCards;
+}
 
