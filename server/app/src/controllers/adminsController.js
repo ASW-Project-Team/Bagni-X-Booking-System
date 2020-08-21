@@ -13,10 +13,9 @@ const commonController = require("./commonController");
  *        authenticate=true and jwt.
  */
 module.exports.authenticate_admin = function(req, res) {
+
     findAdmin(req, res, req.body.username, req.body.password,
         (elemFounded) => {
-
-
 
             if (elemFounded.hashedPassword === commonController.sha512(req.body.password, elemFounded.salt)){
 
@@ -30,12 +29,12 @@ module.exports.authenticate_admin = function(req, res) {
             }
             else{
 
-                commonController.unauthorized_403(res);
+                commonController.unauthorized_401(res);
             }
 
         }, () =>{
 
-            commonController.unauthorized_403(res);
+            commonController.unauthorized_401(res);
 
 
         });
@@ -59,8 +58,12 @@ module.exports.authenticate_admin = function(req, res) {
 module.exports.create_admin = function(req, res) {
     findAdmin(req, res, req.body.username, req.body.password,
         () => {
-            commonController.already_present(res, "admin");
-        }, () =>{
+
+        commonController.already_present(res, "admin");
+
+        }, () => {
+
+        commonController.checkPassword(res, req.body.password, ()=>{
 
             // If someone pass root = true
             req.body.root = false
@@ -71,7 +74,23 @@ module.exports.create_admin = function(req, res) {
             admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
             commonController.correctSave(admin, commonController.status_created, res)
+
         })
+        /*    if (req.body.password.length>=8){
+
+                req.body.root = false
+
+                let admin = new Admin(req.body)
+                admin._id = mongoose.Types.ObjectId();
+                admin.salt = commonController.genRandomString(commonController.salt_length);
+                admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+
+                commonController.correctSave(admin, commonController.status_created, res)
+            } else {
+
+                commonController.notify(res, commonController.bad_request, "Password too short");
+            }*/
+    })
 };
 
 
@@ -101,11 +120,9 @@ module.exports.delete_admin = function(req, res) {
 module.exports.change_password = function(req, res) {
 
     findAdmin(req, res, req.body.username, req.body.password,
-        (elemFounded) => {
+        (adminFounded) => {
 
-            elemFounded.hashedPassword = commonController.sha512(req.body.password, elemFounded.salt)
-
-            commonController.correctSave(elemFounded, commonController.status_created, res)
+            commonController.updatePassword(res, req.body.password, adminFounded);
 
         }, () =>{
 
