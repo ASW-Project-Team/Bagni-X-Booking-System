@@ -7,6 +7,12 @@ const path = require('path');
 const compression = require("compression");
 const DOCKER = false;
 
+
+// auth
+const jwt = require('./src/auth/_helpers/jwt');
+const errorHandler = require('./src/auth/_helpers/error-handler');
+// end auth
+
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;
 
@@ -29,6 +35,12 @@ const main = function () {
     app.use(bodyParser.json());
 
     app.use(express.static(ANGULAR_CLIENT_PATH));
+
+    // auth
+    app.use(jwt());
+    app.use('/users', require('./src/auth/users/users.controller'));
+    app.use(errorHandler);
+    // end auth
 
     const routes = require('./src/routes/routes');
     routes.set(app);
@@ -65,18 +77,18 @@ const waitForMongoInit = function () {
         .catch((err) => console.log('Connection failed!' + err));
 
 
-/*    const MongoClient = require('mongodb').MongoClient;
-    const uri = "mongodb+srv://test<password>:@bagnixbookingsystem-ed7uh.gcp.mongodb.net/BagniXBookingSystem?retryWrites=true&w=majority";
-    const client = new MongoClient(uri, {
-        useNewUrlParser: true,
-        useFindAndModify: false,
-        useUnifiedTopology: true,
-        connectTimeoutMS: 30 });
-    client.connect(err => {
-        const collection = client.db("test").collection("devices");
-        // perform actions on the collection object
-        client.close();
-    });*/
+    /*    const MongoClient = require('mongodb').MongoClient;
+        const uri = "mongodb+srv://test<password>:@bagnixbookingsystem-ed7uh.gcp.mongodb.net/BagniXBookingSystem?retryWrites=true&w=majority";
+        const client = new MongoClient(uri, {
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            useUnifiedTopology: true,
+            connectTimeoutMS: 30 });
+        client.connect(err => {
+            const collection = client.db("test").collection("devices");
+            // perform actions on the collection object
+            client.close();
+        });*/
 
 
 
