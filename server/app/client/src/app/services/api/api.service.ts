@@ -19,7 +19,7 @@ export class ApiService {
 
   getHome(): Observable<any> {
     // in production:
-    // return this.http.get('https://localhost:4200/api/home-cards');
+    // return this.http.get('https://localhost:4200/api/home');
 
     // mock used for tests, waiting for real api response
     return this.getHomeMock();
