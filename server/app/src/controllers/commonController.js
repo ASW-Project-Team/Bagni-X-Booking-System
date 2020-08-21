@@ -28,6 +28,14 @@ module.exports.field_require_404 = function(res) {
     res.status(this.status_error).json("All fields are required, someone  not found!");
 };
 
+/**
+ * Error caused because not all required fields are inserted.
+ * @param res
+ */
+module.exports.unauthorized_403 = function(res) {
+    res.status(this.status_error).json("Access negathed!");
+};
+
 
 /**
  * Used for save new document or updated one.
@@ -40,6 +48,11 @@ module.exports.correctSave = function (document, status, res) {
         if (saveErr) {
             res.send(saveErr);
         }
+
+        if (updatedDocument.hashedPassword) {
+            updatedDocument.hashedPassword = "";
+        }
+
         res.status(status).json(updatedDocument);
     });
 }

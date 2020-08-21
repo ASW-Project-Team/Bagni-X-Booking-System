@@ -3,13 +3,19 @@ module.exports.set = function(app) {
 
 /*    app.route('/api/admins/:id')
         .delete(adminController.delete_admin);*/
-    
+
+
+    app.route('/api/admins/authenticate/')
+        .get(adminController.authenticate_admin);
+
+
+    app.route('/api/admins/change_password/')
+        .put(adminController.change_password);
+
+
     app.route('/api/admins/')
         .delete(adminController.delete_admin)
-        .get(adminController.authenticate_admin)
-        .put(adminController.change_password)
         .post(adminController.create_admin);
-
 
 
 };
