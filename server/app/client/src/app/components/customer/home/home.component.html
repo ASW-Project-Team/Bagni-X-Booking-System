@@ -68,10 +68,8 @@
   </div>
 
   <ng-template #loadingScreen>
-    <!-- Content to render when condition is false. -->
-    <div class="loading-container">
-      <mat-spinner [diameter]="48"></mat-spinner>
-    </div>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen></app-loading-screen>
   </ng-template>
 
 </div>
