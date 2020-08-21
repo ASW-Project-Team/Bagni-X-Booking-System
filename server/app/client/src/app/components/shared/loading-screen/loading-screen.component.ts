@@ -37,24 +37,24 @@ export class LoadingScreenComponent implements OnInit {
   }
 
 
-  startPhrasesTimer(): void {
+  private startPhrasesTimer(): void {
     const source = timer(1000, 1000);
     this.timerSubscription = source.subscribe(val => {
-      this.currentIndex = this.newRandomIndex(this.loadingPhrases.length, this.currentIndex);
+      this.currentIndex = LoadingScreenComponent.newRandomIndex(this.loadingPhrases.length, this.currentIndex);
     });
   }
 
 
-  newRandomIndex(nOfPhrases: number, previous: number): number {
+  private stopPhrasesTimer(): void {
+    this.timerSubscription.unsubscribe();
+  }
+
+
+  private static newRandomIndex(nOfPhrases: number, previous: number): number {
     let next = Math.floor(Math.random() * nOfPhrases);
     while (previous == next) {
       next = Math.floor(Math.random() * nOfPhrases);
     }
     return next;
-  }
-
-
-  stopPhrasesTimer(): void {
-    this.timerSubscription.unsubscribe();
   }
 }

@@ -33,34 +33,41 @@ html, body {
   right: 0;
   margin: 0 auto;
   box-sizing: border-box;
-  @include responsiveProp(padding-top, $appBarHeight); // must be padding, not margin
+  @include responsiveProp(padding, $defaultMargin);
   @include responsiveProp(width, $pageWidth);
+  padding-top: $appBarHeightSmartphone + $marginSmartphone; // this must be after the responsive padding rule
+
+
+  @include forDesktopOnly {
+    padding-top: $appBarHeightDesktop + $marginDesktop;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-
 }
 
 // Font used for generic titles.
 h1 {
-  @include titleFont;
   margin-top: 0;
+  @include titleFont;
   @include responsiveProp(margin-bottom, $halfMargin);
 }
 
 // Font used for an important body text, such as a card title.
 h2 {
-  @include subheadFont;
   margin-top: 0;
+  @include subheadFont;
   @include responsiveProp(margin-bottom, $quarterMargin);
 }
 
 p {
-  @include bodyFont;
   margin-top: 0;
+  @include bodyFont;
   @include responsiveProp(margin-bottom, $quarterMargin);
 }
 

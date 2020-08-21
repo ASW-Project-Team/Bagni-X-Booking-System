@@ -4,6 +4,8 @@
   // the home page is the only one with 100% width;
   // useful to show the main card wide as the mockup
   width: 100%;
+  padding: 0;
+  @include responsiveProp(padding-top, $appBarHeight);
 }
 
 

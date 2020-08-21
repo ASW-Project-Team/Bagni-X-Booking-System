@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Sale} from "../../model/sale";
+import {News} from "../../model/news";
 
 
 /**
@@ -17,7 +18,7 @@ export class ApiService {
   }
 
 
-  getHome(): Observable<any> {
+  public getHome(): Observable<any> {
     // in production:
     // return this.http.get('https://localhost:4200/api/home');
 
@@ -25,10 +26,64 @@ export class ApiService {
     return this.getHomeMock();
   }
 
+  public getFeed(): Observable<any> {
+    // in production:
+    // return this.http.get('https://localhost:4200/api/feed');
+
+    // mock used for tests, waiting for real api response
+    return this.getFeedMock();
+  }
+
   // todo ecc.
   // todo caching system, limited to some cacheable values
 
-  getHomeMock(): Observable<any> {
+  private getFeedMock(): Observable<any> {
+    return new Observable((observer) => {
+      const feedMock = {
+          feed: [
+            {
+              _id: "0",
+              title: "Una super notizia notiziona ona ona",
+              description: "Benvenuto nella web app ufficiale dello stabilimento balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo ombrellone direttamente online. Non vediamo l’ora di iniziare!",
+              date: new Date(),
+              image: "/assets/main-card.jpg"
+            },
+            {
+              _id: "1",
+              title: "Una super notizia notiziona ona ona",
+              description: "Benvenuto nella web app ufficiale dello stabilimento balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo ombrellone direttamente online. Non vediamo l’ora di iniziare!",
+              date: new Date(),
+              image: "/assets/main-card.jpg"
+            },
+            {
+              _id: "2",
+              title: "Una super notizia notiziona ona ona",
+              description: "Benvenuto nella web app ufficiale dello stabilimento balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo ombrellone direttamente online. Non vediamo l’ora di iniziare!",
+              date: new Date(),
+              image: "/assets/main-card.jpg"
+            },
+            {
+              _id: "3",
+              title: "Una super notizia notiziona ona ona",
+              description: "Benvenuto nella web app ufficiale dello stabilimento balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo ombrellone direttamente online. Non vediamo l’ora di iniziare!",
+              date: new Date(),
+              image: "/assets/main-card.jpg"
+            },
+          ]
+        };
+
+      observer.next(feedMock);
+
+      // When the consumer unsubscribes, clean up data ready for next subscription.
+      return {
+        unsubscribe() {
+        }
+      };
+    });
+  }
+
+
+  private getHomeMock(): Observable<any> {
     return new Observable((observer) => {
       const homeMock = {
         mainCard: {
@@ -89,9 +144,7 @@ export class ApiService {
             price: 16.12,
             fromUmbrella: 21,
             toUmbrella: 40,
-            sales: [
-
-            ]
+            sales: []
           },
           {
             _id: "2",
@@ -144,7 +197,8 @@ export class ApiService {
 
       // When the consumer unsubscribes, clean up data ready for next subscription.
       return {
-        unsubscribe() {}
+        unsubscribe() {
+        }
       };
     });
   }
