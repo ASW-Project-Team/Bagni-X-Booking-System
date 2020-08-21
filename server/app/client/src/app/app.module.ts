@@ -24,6 +24,8 @@ import { FabComponent } from './components/shared/fab/fab.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
 import { LoadingScreenComponent } from './components/shared/loading-screen/loading-screen.component';
+import { NewsCardComponent } from './components/shared/news-card/news-card.component';
+import { NewsDatePipe } from "./utils/news.datepipe";
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { LoadingScreenComponent } from './components/shared/loading-screen/loadi
     FabComponent,
     SalableCardComponent,
     LoadingScreenComponent,
+    NewsCardComponent,
+    NewsDatePipe,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,7 @@ import { LoadingScreenComponent } from './components/shared/loading-screen/loadi
     MatMenuModule,
     MatToolbarModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

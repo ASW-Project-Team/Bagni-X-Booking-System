@@ -12,3 +12,13 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   visibility: visible;
   display: block;
 }
+
+// mixin for multiline truncation w. ellipsis
+// https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css
+@mixin multiLineEllipsis($lineCount: 1){
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $lineCount;
+  -webkit-box-orient: vertical;
+}

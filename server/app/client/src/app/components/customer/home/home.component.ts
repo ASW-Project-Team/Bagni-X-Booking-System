@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeCard} from "../../../model/homeCard";
+import {HomeCard} from "../../../model/home.card";
 import {ApiService} from "../../../services/api/api.service";
 import {Service} from "../../../model/service";
-import {RankUmbrella} from "../../../model/rankUmbrella";
+import {RankUmbrella} from "../../../model/rank.umbrella";
 
 @Component({
   selector: 'app-home',
@@ -12,9 +12,9 @@ import {RankUmbrella} from "../../../model/rankUmbrella";
 export class HomeComponent implements OnInit {
 
   mainCard: HomeCard;
-  homeCards: HomeCard[];
-  services: Service[];
-  rankUmbrellas: RankUmbrella[];
+  homeCards: HomeCard[] = [];
+  services: Service[] = [];
+  rankUmbrellas: RankUmbrella[] = [];
 
   constructor(private apiService: ApiService) { }
 
