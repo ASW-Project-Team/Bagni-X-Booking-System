@@ -13,7 +13,7 @@ const CatalogId = require('catalogController').CatalogId;
  * @param objName
  */
 module.exports.serve_plain_404 = function(req, res, objName) {
-    res.status(this.status_error).json(objName + ' not found');
+    this.notify(res, this.status_error, objName + " not found!")
 };
 
 /**
@@ -22,16 +22,7 @@ module.exports.serve_plain_404 = function(req, res, objName) {
  * @param document
  */
 module.exports.already_present = function(res, document) {
-    res.status(this.status_error).json(document + " already present!");
-}
-
-/**
- * When create can't go good finish because obj have parameter types errated.
- * @param res
- * @param document
- */
-module.exports.already_present = function(res, document) {
-    res.status(this.status_error).json(document + " have some parameters errated!");
+    this.notify(res, this.status_error, document + " already present!")
 }
 
 /**
@@ -39,8 +30,26 @@ module.exports.already_present = function(res, document) {
  * @param res
  */
 module.exports.field_require_404 = function(res) {
-    res.status(this.status_error).json("All fields are required, someone  not found!");
+    this.notify(res,this.status_error,"All fields are required, someone  not found!")
 };
+
+/**
+ * Error caused because not authorized to an access.
+ * @param res
+ */
+module.exports.unauthorized_401 = function(res) {
+    this.notify(res,this.status_unauthorized,"Access negated!")
+};
+
+/**
+ * General structure for response to sell.
+ * @param res The response.
+ * @param status The response of status.
+ * @param jsonObject The string or json object to send.
+ */
+module.exports.notify = function(res, status, jsonObject){
+    res.status(status).json(jsonObject);
+}
 
 
 /**
@@ -54,6 +63,11 @@ module.exports.correctSave = function (document, status, res) {
         if (saveErr) {
             res.send(saveErr);
         }
+
+        if (updatedDocument.hashedPassword) {
+            updatedDocument.hashedPassword = "";
+        }
+
         res.status(status).json(updatedDocument);
     });
 }
@@ -414,6 +428,40 @@ module.exports.sha512 = function(password, salt){
 };
 
 /**
+ * Update password if succeed password check.
+ * There is a supposition that field to update is hashedPassword
+ * @param res two scenario:
+ *  . if too short return Bad Request
+ *  . otherwise return the Object without password visible
+ * @param password
+ * @param elem
+ */
+module.exports.updatePassword = function(res, password, elem) {
+
+    this.checkPassword(res, password, ()=>{
+
+       elem.hashedPassword = this.sha512(password, elem.salt);
+
+       this.correctSave(elem, this.status_created, res);
+    });
+}
+
+/**
+ * Check if password have almost the requested length.
+ * @param res: If shorter than requested length return Bad Request
+ * @param password
+ * @param func
+ */
+module.exports.checkPassword = function(res, password, func){
+
+    if (password.length >= this.password_length){
+        func()
+    } else {
+        this.notify(res, this.bad_request, "Password too short");
+    }
+}
+
+/**
  * Umbrella not free.
  * @param req
  * @param res
@@ -448,7 +496,7 @@ module.exports.umbrellaUsed = function (req, res, to, from){
  */
 module.exports.umbrellaFree = function (req, res, to, from, umbrellas){
 
-    
+
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
             this.findAllFromCollection(req, res, "book", Booking, ""
@@ -543,6 +591,8 @@ module.exports.default_page_size = 10;
 
 module.exports.salt_length = 48;
 
-module.exports.password_min_length = 8;
+module.exports.status_unauthorized = 401;
 
-module.exports.unathorized_access = 403;
+module.exports.bad_request = 400;
+
+module.exports.password_length = 8;
