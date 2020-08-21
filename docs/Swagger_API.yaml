@@ -262,6 +262,8 @@ paths:
 
   /api/home/:
     get:
+      summary: The main home card, an array of home cards, an array of services, and an array of rank umbrellas.
+      description: Used in the home screen, it returns all
 
   /api/catalog/ranks/:
     get:
