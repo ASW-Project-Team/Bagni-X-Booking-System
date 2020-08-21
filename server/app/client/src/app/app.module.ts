@@ -23,8 +23,6 @@ import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
-import {MatChipsModule} from '@angular/material/chips';
-
 
 @NgModule({
   declarations: [
@@ -50,8 +48,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MatMenuModule,
     MatToolbarModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
-    MatChipsModule
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
