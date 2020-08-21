@@ -10,7 +10,8 @@ const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 
 const commonController = require("./commonController");
 
-const CatalogId = mongoose.Types.ObjectId("5f3ba546cb999aee959eab3f");
+// FIXME To check
+module.exports.CatalogId = mongoose.Types.ObjectId("5f3ba546cb999aee959eab3f");
 // Before this queries we have to check the permissions to interact with db
 
 
@@ -317,11 +318,12 @@ module.exports.get_availability = function (req, res) {
                 // Umbrella not free in that periods
                 // First filter: if book is not finished
                 // Second filter: if bool started in that period
-                let umbrellaNumberUsed = allBookings.filter(b => b.date_to.getTime() > new Date(req.body.from).getTime()
+                let umbrellaNumberUsed = commonController.umbrellaUsed(req, res, req.body.from, req.body.to);
+/*                let umbrellaNumberUsed = allBookings.filter(b => b.date_to.getTime() > new Date(req.body.from).getTime()
                                                     && b.date_from.getTime() < new Date(req.body.to).getTime()
                                                     && b.confirmed
                                                     && !b.cancelled)
-                                                    .flatMap(b => b.umbrellas.map(u => u.number));
+                                                    .flatMap(b => b.umbrellas.map(u => u.number));*/
 
                 // When this cicle is terminated in rankNumberFree we have all ranks with his umbrellas
                 let rankNumberFree = [];
@@ -329,7 +331,9 @@ module.exports.get_availability = function (req, res) {
 
                     if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
 
-                        for (let i = catalog.rank_umbrellas[rank].from_umbrella; i < catalog.rank_umbrellas[rank].to_umbrella; i++){
+                        for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                             i < catalog.rank_umbrellas[rank].to_umbrella;
+                             i++){
 
                             if (!umbrellaNumberUsed.includes(i)){
 
