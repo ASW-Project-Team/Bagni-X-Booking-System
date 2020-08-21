@@ -1,11 +1,14 @@
-<div class="salable-card" [ngClass]="lastCard == true ? 'last-card' : ''">
+<div class="salable-card"
+     [ngStyle]="lastCard == true ? {'margin-bottom': 0} : {}">
+
   <div class="main-line">
     <div class="image"
       [ngStyle]="{'background-image': 'url(' + imageUrl }">
     </div>
+
     <div class="lines">
       <h2 class="title">{{ title }}</h2>
-      <div class="description">{{ description }}</div>
+      <p class="description">{{ description }}</p>
     </div>
   </div>
 

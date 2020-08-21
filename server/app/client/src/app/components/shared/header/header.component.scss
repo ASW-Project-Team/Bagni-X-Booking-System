@@ -24,7 +24,7 @@ mat-toolbar {
 
     // setting text decoration to none in l.15, makes h1 lost the font formatting.
     // This re-enables the custom font
-    h1 {
+    h1.title {
       @include titleFont;
       color: $primaryColor;
     }

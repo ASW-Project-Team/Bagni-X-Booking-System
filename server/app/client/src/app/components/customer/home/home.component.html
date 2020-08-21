@@ -8,7 +8,7 @@
       <div class="white-filter-container"></div>
       <div class="title-container">
         <mat-icon color="primary">beach_access</mat-icon>
-        <h1 class="super-title"> {{mainCard.title}} </h1>
+        <h1 class="title"> {{mainCard.title}} </h1>
         <div> {{mainCard.description}} </div>
       </div>
     </div>
@@ -18,7 +18,9 @@
       <li *ngFor="let homeCard of homeCards">
         <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
           <div class="home-card">
-            <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
+            <div class="home-card-image">
+              <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
+            </div>
             <h1>{{homeCard.title}}</h1>
             <div>{{ homeCard.description }}</div>
           </div>
@@ -66,10 +68,8 @@
   </div>
 
   <ng-template #loadingScreen>
-    <!-- Content to render when condition is false. -->
-    <div class="loading-container">
-      <mat-spinner [diameter]="48"></mat-spinner>
-    </div>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen></app-loading-screen>
   </ng-template>
 
 </div>

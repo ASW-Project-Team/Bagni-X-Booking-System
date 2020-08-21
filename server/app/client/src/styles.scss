@@ -47,25 +47,20 @@ ul {
 // Font used for generic titles.
 h1 {
   @include titleFont;
-  @include responsiveProp(margin-top, $defaultMargin);
+  margin-top: 0;
   @include responsiveProp(margin-bottom, $halfMargin);
-}
-
-// combination of h1 and class super-title, used for very important titles, such as logo.
-h1.super-title {
-  color: $primaryColor;
 }
 
 // Font used for an important body text, such as a card title.
 h2 {
   @include subheadFont;
-  @include responsiveProp(margin-top, $halfMargin);
+  margin-top: 0;
   @include responsiveProp(margin-bottom, $quarterMargin);
 }
 
 p {
   @include bodyFont;
-  @include responsiveProp(margin-top, $halfMargin);
+  margin-top: 0;
   @include responsiveProp(margin-bottom, $quarterMargin);
 }
 

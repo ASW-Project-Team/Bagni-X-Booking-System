@@ -18,13 +18,12 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
 import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
-import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
+import { ImgLandscapeComponent } from './components/shared/img-landscape/img-landscape.component';
 import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
-import {MatChipsModule} from '@angular/material/chips';
-
+import { LoadingScreenComponent } from './components/shared/loading-screen/loading-screen.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +38,7 @@ import {MatChipsModule} from '@angular/material/chips';
     ImgLandscapeComponent,
     FabComponent,
     SalableCardComponent,
+    LoadingScreenComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,8 +50,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MatMenuModule,
     MatToolbarModule,
     MatButtonModule,
-    MatProgressSpinnerModule,
-    MatChipsModule
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
