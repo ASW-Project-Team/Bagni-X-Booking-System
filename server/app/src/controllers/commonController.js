@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto')
 
+const Booking = require('../models/bookingModel')(mongoose);
+const Catalog = require('../models/catalogModel')(mongoose);
+const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
+const CatalogId = require('catalogController').CatalogId;
+
 /**
  * Error for object not found.
  * @param req
@@ -18,6 +23,15 @@ module.exports.serve_plain_404 = function(req, res, objName) {
  */
 module.exports.already_present = function(res, document) {
     res.status(this.status_error).json(document + " already present!");
+}
+
+/**
+ * When create can't go good finish because obj have parameter types errated.
+ * @param res
+ * @param document
+ */
+module.exports.already_present = function(res, document) {
+    res.status(this.status_error).json(document + " have some parameters errated!");
 }
 
 /**
@@ -399,6 +413,124 @@ module.exports.sha512 = function(password, salt){
 
 };
 
+/**
+ * Umbrella not free.
+ * @param req
+ * @param res
+ * @param to
+ * @param from
+ * @returns {*[]}
+ */
+module.exports.umbrellaUsed = function (req, res, to, from){
+
+    this.findAllFromCollection(req, res, "book", Booking, ""
+        ,(errBook, allBookings) => {
+            // Umbrella not free in that periods
+            // First filter: if book is not finished
+            // Second filter: if bool started in that period
+            return allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
+                && b.date_from.getTime() < new Date(to).getTime()
+                && b.confirmed
+                && !b.cancelled)
+                .flatMap(b => b.umbrellas.map(u => u.number));
+        });
+    return [];
+}
+
+/**
+ * Umbrella not free.
+ * @param req
+ * @param res
+ * @param to
+ * @param from
+ * @param umbrellas
+ * @returns {*[]}
+ */
+module.exports.umbrellaFree = function (req, res, to, from, umbrellas){
+
+    
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
+            this.findAllFromCollection(req, res, "book", Booking, ""
+                ,() => {
+
+                    let umbrellaUsedInPeriod = this.umbrellaUsed(req, res, to, from);
+
+                    let umbrellaNumberFree = [];
+                    for (let rank in catalog.rank_umbrellas) {
+
+                        if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+
+                            for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                                 i < catalog.rank_umbrellas[rank].to_umbrella;
+                                 i++){
+
+                                if (!umbrellaUsedInPeriod.includes(i)){
+
+
+                                    umbrellaNumberFree.push(i);
+                                }
+                            }
+                        }
+                    }
+
+                    return umbrellas.every(u => umbrellaNumberFree.includes(u.number));
+                });
+        });
+
+    return false;
+}
+
+/**
+ * Create umbrellas from numbers.
+ * @param umbrellasNumber
+ * @returns {[]}
+ */
+module.exports.createUmbrellas = function(umbrellasNumber){
+
+    let umbrellas = [];
+
+    for (let umbrellaNumber in umbrellasNumber) {
+        let umbrella = new Umbrella();
+        umbrella.number = umbrellasNumber;
+
+        this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+            mongoose.Types.ObjectId(CatalogId), (err, catalog)=> {
+
+                for (let rank of catalog.rank_umbrellas) {
+                    if ((umbrella.number <= rank.to_umbrella)
+                        && (umbrella.number >= rank.from_umbrella)){
+                        umbrella.rank_id = rank._id;
+                    }
+                }
+
+        });
+
+
+        umbrellas.push(umbrella);
+    }
+
+    return umbrellas;
+}
+
+/**
+ * Check if service_ids exists or not.
+ * @param req
+ * @param res
+ * @param services
+ * @returns {boolean}
+ */
+module.exports.servicesAvailable = function (req, res, services){
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
+
+        let catalogServices = catalog.services.map(x => x._id);
+        return services.every(s => catalogServices.includes(s));
+
+        });
+    return false;
+}
+
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
@@ -410,3 +542,7 @@ module.exports.default_page_id = 0;
 module.exports.default_page_size = 10;
 
 module.exports.salt_length = 48;
+
+module.exports.password_min_length = 8;
+
+module.exports.unathorized_access = 403;
