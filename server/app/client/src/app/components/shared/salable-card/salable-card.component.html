@@ -1,0 +1,17 @@
+<div class="salable-card" [ngClass]="lastCard == true ? 'last-card' : ''">
+  <div class="main-line">
+    <div class="image"
+      [ngStyle]="{'background-image': 'url(' + imageUrl }">
+    </div>
+    <div class="lines">
+      <h2 class="title">{{ title }}</h2>
+      <div class="description">{{ description }}</div>
+    </div>
+  </div>
+
+  <div class="chips-line">
+    <div class="price-chip"> {{ price }} </div>
+    <div class="more-info-chip" *ngIf="moreInfo" > {{ moreInfo }} </div>
+    <mat-icon svgIcon="sale" class="sale" color="primary" *ngIf="sale"></mat-icon>
+  </div>
+</div>

@@ -1,30 +1,77 @@
 <div class="page">
   <!-- Main card -->
-  <div class="main-card-container">
-    <div class="image-container"
-         [ngStyle]="{'background-image': 'url(' + mainCard.image }">
+  <div *ngIf="mainCard && homeCards.length > 0; else loadingScreen">
+    <div class="main-card-container">
+      <div class="image-container"
+           [ngStyle]="{'background-image': 'url(' + mainCard.image }">
+      </div>
+      <div class="white-filter-container"></div>
+      <div class="title-container">
+        <mat-icon color="primary">beach_access</mat-icon>
+        <h1 class="super-title"> {{mainCard.title}} </h1>
+        <div> {{mainCard.description}} </div>
+      </div>
     </div>
-    <div class="white-filter-container"></div>
-    <div class="title-container">
-      <mat-icon>beach_access</mat-icon>
-      <h1 class="super-title"> {{mainCard.title}} </h1>
-      <div> {{mainCard.description}} </div>
+
+    <!-- Other cards -->
+    <ul>
+      <li *ngFor="let homeCard of homeCards">
+        <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
+          <div class="home-card">
+            <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
+            <h1>{{homeCard.title}}</h1>
+            <div>{{ homeCard.description }}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- rankUmbrellas cards -->
+    <div class="rank-card" [ngClass]="homeCards.length % 2 == 0 ? 'odd-card-wide-container' : 'even-card-wide-container'">
+      <div class="home-card">
+        <h1>Cosa puoi prenotare?</h1>
+        <ul class="home-card">
+          <li *ngFor="let rankUmbrella of rankUmbrellas">
+            <app-salable-card
+              [title]="rankUmbrella.name"
+              [description]="rankUmbrella.description"
+              [imageUrl]="rankUmbrella.image"
+              [price]="rankUmbrella.price + ' €/gg'"
+              [more-info]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
+              [sale]="rankUmbrella.sales.length > 0"
+              [last-card]="rankUmbrellas.indexOf(rankUmbrella) >= services.length - 1">
+            </app-salable-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- services cards -->
+    <div class="service-card" [ngClass]="homeCards.length % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
+      <div class="home-card">
+        <h1>I nostri servizi</h1>
+        <ul >
+          <li *ngFor="let service of services">
+            <app-salable-card
+              [title]="service.title"
+              [description]="service.description"
+              [imageUrl]="service.image"
+              [price]="service.price == 0 ? 'Incluso' : service.price + ' €/gg'"
+              [last-card]="services.indexOf(service) >= services.length - 1">
+            </app-salable-card>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <!-- Other cards -->
-  <!-- todo show other cards w. ngFor -->
-  <ul>
-    <li *ngFor="let homeCard of homeCards">
-      <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
-        <div class="home-card">
-          <app-img-landscape src="{{ homeCard.image }}"></app-img-landscape>
-          <h1>{{homeCard.title}}</h1>
-          <div>{{ homeCard.description }}</div>
-        </div>
-      </div>
-    </li>
-  </ul>
+  <ng-template #loadingScreen>
+    <!-- Content to render when condition is false. -->
+    <div class="loading-container">
+      <mat-spinner [diameter]="48"></mat-spinner>
+    </div>
+  </ng-template>
+
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

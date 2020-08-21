@@ -21,6 +21,9 @@ import { PageNotFoundComponent } from './components/shared/page-not-found/page-n
 import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
 import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @NgModule({
@@ -35,6 +38,7 @@ import { FabComponent } from './components/shared/fab/fab.component';
     PageNotFoundComponent,
     ImgLandscapeComponent,
     FabComponent,
+    SalableCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +49,9 @@ import { FabComponent } from './components/shared/fab/fab.component';
     MatIconModule,
     MatMenuModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
