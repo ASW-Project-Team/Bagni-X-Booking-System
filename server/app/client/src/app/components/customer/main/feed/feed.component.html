@@ -6,7 +6,7 @@
     <ul class="feed-container">
       <li *ngFor="let news of feed">
         <app-news-card
-          (click)="navigateToNews(news)"
+          [routerLink]="['/news', news._id]"
           [title]="news.title"
           [description]="news.description"
           [imageUrl]="news.image"

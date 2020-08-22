@@ -4,7 +4,6 @@ import {Service} from "../../../../model/service";
 import {RankUmbrella} from "../../../../model/rank.umbrella";
 import {ApiService} from "../../../../services/api/api.service";
 import {News} from "../../../../model/news";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-feed',
@@ -14,16 +13,11 @@ import {Router} from "@angular/router";
 export class FeedComponent implements OnInit {
   feed: News[] = [];
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.apiService.getFeed().subscribe(data => {
       this.feed = data.feed;
     });
   }
-
-  navigateToNews(news: News): void {
-    this.router.navigate(['news', news._id]);
-  }
-
 }
