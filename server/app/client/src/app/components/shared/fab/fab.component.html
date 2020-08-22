@@ -1,5 +1,9 @@
 <a href="#" routerLink="{{route}}" class="extended-fab-button" mat-fab>
-  <mat-icon *ngIf="mdiIconName" svgIcon="{{mdiIconName}}"></mat-icon>
-  <mat-icon *ngIf="classicIconName">{{classicIconName}}</mat-icon>
+  <mat-icon *ngIf="isMdi; else normalIcon" class="menu-icon"  svgIcon="{{iconName}}"></mat-icon>
+
+  <ng-template #normalIcon>
+    <mat-icon class="menu-icon">{{iconName}}</mat-icon>
+  </ng-template>
+
   <span class="extended-fab-button__text">{{title}}</span>
 </a>

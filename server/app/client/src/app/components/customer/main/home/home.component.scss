@@ -67,8 +67,8 @@
     @include responsiveProp(padding-left, $defaultMargin);
     @include responsiveProp(padding-right, $defaultMargin);
 
-    // the icon inside the main card disappears if in smartphone mode
-    mat-icon {
+    // the mat-icon inside the main card disappears if in smartphone mode
+    .title-icon {
       width: auto;
       font-size: 60px;
       height: 60px;
