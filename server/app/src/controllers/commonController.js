@@ -324,7 +324,7 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
     collFirstLevel.find({}, (err, docResult) => {
 
         if (!errDocName){
-            errDocName = documentName + "not found";
+            errDocName = documentName + " not found";
         }
 
         if (!this.checkError(err, docResult, req, res, errDocName))
@@ -480,103 +480,114 @@ module.exports.checkPassword = function(res, password, func){
 }
 
 /**
- * Umbrella not free.
+ * Umbrella number of booked umbrellas.
  * @param req
  * @param res
  * @param to
  * @param from
+ * @param func
  * @returns {*[]}
  */
-module.exports.umbrellaUsed = function (req, res, to, from){
+module.exports.umbrellaUsed = function (req, res, to, from, func){
 
     this.findAllFromCollection(req, res, "book", Booking, ""
         ,(errBook, allBookings) => {
             // Umbrella not free in that periods
             // First filter: if book is not finished
             // Second filter: if bool started in that period
-            return allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
+
+            let allBookingsFiltered = allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
                 && b.date_from.getTime() < new Date(to).getTime()
-                && b.confirmed
-                && !b.cancelled)
-                .flatMap(b => b.umbrellas.map(u => u.number));
+                && !b.cancelled);
+
+            func(allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number)));
         });
-    return [];
 }
 
 /**
- * Umbrella not free.
+ * Umbrella number of free umbrellas.
  * @param req
  * @param res
  * @param to
  * @param from
  * @param umbrellas
+ * @param func
  * @returns {*[]}
  */
-module.exports.umbrellaFree = function (req, res, to, from, umbrellas){
-
+module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
-            this.findAllFromCollection(req, res, "book", Booking, ""
-                ,() => {
 
-                    let umbrellaUsedInPeriod = this.umbrellaUsed(req, res, to, from);
+        this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
-                    let umbrellaNumberFree = [];
-                    for (let rank in catalog.rank_umbrellas) {
+            let umbrellaNumberFree = [];
+            for (let rank in catalog.rank_umbrellas) {
 
-                        if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+                if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
 
-                            for (let i = catalog.rank_umbrellas[rank].from_umbrella;
-                                 i < catalog.rank_umbrellas[rank].to_umbrella;
-                                 i++){
+                    for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                         i < catalog.rank_umbrellas[rank].to_umbrella;
+                         i++){
 
-                                if (!umbrellaUsedInPeriod.includes(i)){
+                        if (!umbrellasNumberUsed.includes(i)){
 
-
-                                    umbrellaNumberFree.push(i);
-                                }
-                            }
+                            umbrellaNumberFree.push(i);
                         }
                     }
+                }
+            }
 
-                    return umbrellas.every(u => umbrellaNumberFree.includes(u.number));
-                });
+            func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
         });
 
-    return false;
+    });
+
 }
 
 /**
  * Create umbrellas from numbers.
+ * @param req
+ * @param res
  * @param umbrellasNumber
+ * @param func
  * @returns {[]}
  */
-module.exports.createUmbrellas = function(umbrellasNumber){
+module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 
-    let umbrellas = [];
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
 
-    for (let umbrellaNumber in umbrellasNumber) {
-        let umbrella = new Umbrella();
-        umbrella.number = umbrellasNumber;
+        let umbrellas = [];
 
-        this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-            mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
 
-                for (let rank of catalog.rank_umbrellas) {
-                    if ((umbrella.number <= rank.to_umbrella)
-                        && (umbrella.number >= rank.from_umbrella)){
-                        umbrella.rank_id = rank._id;
+        for (let umbrellaNumber in umbrellasNumber) {
+
+            let umbrella = new Umbrella();
+
+            if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
+                umbrella.number = umbrellasNumber[umbrellaNumber];
+
+                for (let rank in catalog.rank_umbrellas) {
+
+                    if (catalog.rank_umbrellas.hasOwnProperty(rank)
+                        && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
+                        && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
+
+                        umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
+                        umbrellas.push(umbrella);
+                        break;
                     }
                 }
+            }
 
-        });
+        }
+
+        func(umbrellas);
+
+    });
 
 
-        umbrellas.push(umbrella);
-    }
-
-    return umbrellas;
 }
 
 /**
@@ -587,14 +598,15 @@ module.exports.createUmbrellas = function(umbrellasNumber){
  * @returns {boolean}
  */
 module.exports.servicesAvailable = function (req, res, services){
+
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
         let catalogServices = catalog.services.map(x => x._id);
         return services.every(s => catalogServices.includes(s));
 
-        });
-    return false;
+    });
+
 }
 
 module.exports.status_created = 201;
