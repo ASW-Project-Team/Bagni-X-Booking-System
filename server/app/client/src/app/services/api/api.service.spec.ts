@@ -1,16 +1,19 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ApiService } from './api.service';
 
 describe('ApiService', () => {
+  let httpClientSpy: { get: jasmine.Spy };
   let service: ApiService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ApiService);
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+    service = new ApiService(httpClientSpy as any);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('#getHomeCards should return a well-formatted real result', () => {
+    expect(service.getHome).toBeTruthy();
   });
 });

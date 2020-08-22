@@ -4,13 +4,13 @@ module.exports.set = function(app) {
 	const genericRoutes = require('./genericRoutes');
 	const catalogRoutes = require('./catalogRoutes');
 	const feedRoutes = require('./feedRoutes');
-	// todo add all required root here
+	const adminRoutes = require('./adminsRoutes');
 
 	usersRoutes.set(app);
 	bookingRoutes.set(app);
 	catalogRoutes.set(app);
 	feedRoutes.set(app);
-
+	adminRoutes.set(app);
 
 	// the generic routes setting must be called last, handling all
 	// remaining routes

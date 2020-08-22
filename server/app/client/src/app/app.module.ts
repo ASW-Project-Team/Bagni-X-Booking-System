@@ -18,10 +18,14 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
 import { PageNotFoundComponent } from './components/shared/page-not-found/page-not-found.component';
-import { ImgLandscapeComponent } from './components/shared/utils/img-landscape/img-landscape.component';
+import { ImgLandscapeComponent } from './components/shared/img-landscape/img-landscape.component';
 import {MatButtonModule} from '@angular/material/button';
 import { FabComponent } from './components/shared/fab/fab.component';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
+import { LoadingScreenComponent } from './components/shared/loading-screen/loading-screen.component';
+import { NewsCardComponent } from './components/shared/news-card/news-card.component';
+import { NewsDatePipe } from "./utils/news.datepipe";
 
 @NgModule({
   declarations: [
@@ -35,6 +39,10 @@ import { FabComponent } from './components/shared/fab/fab.component';
     PageNotFoundComponent,
     ImgLandscapeComponent,
     FabComponent,
+    SalableCardComponent,
+    LoadingScreenComponent,
+    NewsCardComponent,
+    NewsDatePipe,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +53,8 @@ import { FabComponent } from './components/shared/fab/fab.component';
     MatIconModule,
     MatMenuModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
