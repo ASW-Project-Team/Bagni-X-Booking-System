@@ -6,6 +6,7 @@
     <ul class="feed-container">
       <li *ngFor="let news of feed">
         <app-news-card
+          (click)="navigateToNews(news)"
           [title]="news.title"
           [description]="news.description"
           [imageUrl]="news.image"
@@ -23,5 +24,5 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-header selectedPage="feed"></app-header>
-<app-fab title="Prenota" mdiIconName="calendar-plus" route="/new-booking"></app-fab>
+<app-customer-main-appbar></app-customer-main-appbar>
+<app-fab title="Prenota" icon-name="calendar-plus" route="/new-booking"></app-fab>

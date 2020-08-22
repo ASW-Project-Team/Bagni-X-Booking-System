@@ -109,21 +109,3 @@ $bagniX-theme: mat-light-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($bagniX-theme);
-
-
-// Alignment fixes for Material Design Icons
-// https://dev.materialdesignicons.com/getting-started/angular
-button.mat-menu-item {
-  line-height: 24px !important;
-}
-a.mat-menu-item > mat-icon {
-  margin-bottom: 14px;
-}
-.mat-icon svg {
-  height: 24px;
-  width: 24px;
-}
-.mat-step-icon-content .mat-icon svg {
-  height: 100%;
-  width: 100%;
-}

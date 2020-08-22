@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeCard} from "../../../model/home.card";
-import {ApiService} from "../../../services/api/api.service";
-import {Service} from "../../../model/service";
-import {RankUmbrella} from "../../../model/rank.umbrella";
+import {HomeCard} from "../../../../model/home.card";
+import {ApiService} from "../../../../services/api/api.service";
+import {Service} from "../../../../model/service";
+import {RankUmbrella} from "../../../../model/rank.umbrella";
 
 @Component({
   selector: 'app-home',

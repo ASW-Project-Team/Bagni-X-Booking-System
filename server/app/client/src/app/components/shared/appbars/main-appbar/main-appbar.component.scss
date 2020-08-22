@@ -1,5 +1,4 @@
 @import "~src/styles/utils/utils";
-
 mat-toolbar {
   background: $backgroundColor;
   box-shadow: $defaultShadow;
@@ -35,7 +34,7 @@ mat-toolbar {
     }
   }
 
-  .selected-icon {
+  .active {
     color: $primaryColor;
     background: $secondaryColor;
   }

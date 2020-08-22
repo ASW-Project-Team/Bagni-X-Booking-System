@@ -1,0 +1,49 @@
+<mat-toolbar>
+  <div class="logo">
+    <a routerLink="/" class="logo">
+      <img src="/assets/logo.png" alt="BagniX Logo"/>
+      <h1 class="title">Bagni X</h1>
+    </a>
+  </div>
+
+  <!-- Navigation for the desktop version -->
+  <div class="extended-navigation">
+    <nav>
+      <ul>
+        <li *ngFor="let page of pages">
+          <a href="#" mat-icon-button
+             routerLinkActive="active"
+             routerLink="{{page.route}}" title="{{ page.name | titlecase }}">
+
+            <mat-icon *ngIf="page.isMdi; else normalIcon" class="menu-icon"  svgIcon="{{page.icon}}"></mat-icon>
+
+            <ng-template #normalIcon>
+              <mat-icon class="menu-icon">{{page.isMdi}}</mat-icon>
+            </ng-template>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="collapsable-menu">
+    <button mat-icon-button [matMenuTriggerFor]="menu" color="primary"
+            aria-label="Button used to access the website menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <div *ngFor="let page of pages">
+      <button mat-menu-item routerLink="{{page.route}}">
+        <mat-icon *ngIf="page.isMdi; else normalIcon" class="menu-icon"  svgIcon="{{page.icon}}"></mat-icon>
+
+        <ng-template #normalIcon>
+          <mat-icon class="menu-icon">{{page.isMdi}}</mat-icon>
+        </ng-template>
+
+        <span>{{page.name | titlecase}}</span>
+      </button>
+      </div>
+    </mat-menu>
+  </div>
+</mat-toolbar>
