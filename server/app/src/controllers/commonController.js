@@ -4,7 +4,8 @@ const crypto = require('crypto')
 const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
-const CatalogId = require('catalogController').CatalogId;
+const CatalogID = "5f40f4125c935b69a7f0626f";
+
 
 /**
  * Error for object not found.
@@ -30,7 +31,7 @@ module.exports.already_present = function(res, document) {
  * @param res
  */
 module.exports.field_require_404 = function(res) {
-    this.notify(res,this.status_error,"All fields are required, someone  not found!")
+    this.notify(res,this.status_error,"Some required fields aren't found!")
 };
 
 /**
@@ -40,6 +41,15 @@ module.exports.field_require_404 = function(res) {
 module.exports.unauthorized_401 = function(res) {
     this.notify(res,this.status_unauthorized,"Access negated!")
 };
+
+
+/**
+ * Error caused because some parameters are bad formatted.
+ * @param res
+ */
+module.exports.parameter_bad_formatted = function(res){
+    this.notify(res, this.bad_request, "Some parameters are badly formatted!")
+}
 
 /**
  * General structure for response to sell.
@@ -98,13 +108,21 @@ module.exports.dfs = function (obj, targetId) {
  *                        returned because don't exist yet.
  */
 module.exports.checkError = function (err, documents, req, res, documentName, deleteOperation = false) {
-    if (err)
+
+    let errSave = false;
+
+    if (err) {
+        errSave = true;
         res.send(err);
+    }
     else {
         if (!deleteOperation && !documents) {
+            errSave = true;
             this.serve_plain_404(req, res, documentName);
         }
     }
+
+    return errSave;
 }
 
 /**
@@ -126,8 +144,8 @@ module.exports.response = function (res, documents) {
  * @param documentsToReturn
  */
 module.exports.getDocuments = function (err, collectionToSearch, req, res, documentName, documentsToReturn) {
-    this.checkError(err, collectionToSearch, req, res, documentName);
-    this.response(res, documentsToReturn);
+    if (!this.checkError(err, collectionToSearch, req, res, documentName))
+        this.response(res, documentsToReturn);
 }
 
 /**
@@ -211,8 +229,8 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
  */
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, docResultName);
+        if (!this.checkError(err, docResult, req, res, errDocName))
+            func(err, docResult, docResultName);
     });
 }
 
@@ -234,8 +252,8 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -260,8 +278,8 @@ module.exports.deleteFirstLevelCollectionByUsername = function (req, res, docume
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -309,8 +327,8 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
             errDocName = documentName + "not found";
         }
 
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, documentName);
+        if (!this.checkError(err, docResult, req, res, errDocName))
+            func(err, docResult, documentName);
     });
 }
 
@@ -498,7 +516,7 @@ module.exports.umbrellaFree = function (req, res, to, from, umbrellas){
 
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
             this.findAllFromCollection(req, res, "book", Booking, ""
                 ,() => {
 
@@ -543,7 +561,7 @@ module.exports.createUmbrellas = function(umbrellasNumber){
         umbrella.number = umbrellasNumber;
 
         this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-            mongoose.Types.ObjectId(CatalogId), (err, catalog)=> {
+            mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
 
                 for (let rank of catalog.rank_umbrellas) {
                     if ((umbrella.number <= rank.to_umbrella)
@@ -570,7 +588,7 @@ module.exports.createUmbrellas = function(umbrellasNumber){
  */
 module.exports.servicesAvailable = function (req, res, services){
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
         let catalogServices = catalog.services.map(x => x._id);
         return services.every(s => catalogServices.includes(s));

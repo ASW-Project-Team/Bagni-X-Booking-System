@@ -17,20 +17,25 @@ const collectionName = "bookings"
 exports.create_booking = function(req, res) {
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
+		// FIXME
 		if (req.body.price >= 0
 			&& new Date(req.body.date_from).getTime() >= Date.now()
-			&& new Date(req.body.date_to).getTime() >  new Date(req.body.date_from).getTime()
+			&& new Date(req.body.date_to).getTime() >=  new Date(req.body.date_from).getTime()
 			&& (commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas))
-			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
+			&& ((!req.body.services.length) || (commonController.servicesAvailable(req, res, req.body.services)))) {
 
 			let booking = new Booking(req.body);
+			booking.umbrellas = commonController.createUmbrellas(req.body.umbrellas);
 			booking._id = mongoose.Types.ObjectId();
 
+			// to confirm and to cancel
+			booking.confirmed = false
+			booking.cancelled = false
 
 			// add as first element
 			commonController.correctSave(booking, commonController.status_created, res);
 		} else {
-			commonController.status_error()
+			commonController.notify(res, commonController.bad_request, "Parameters wrong");
 		}
 
 	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.date_from, req.body.date_to);
