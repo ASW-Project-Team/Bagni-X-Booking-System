@@ -10,3 +10,14 @@ export class NewsDatePipe extends
     return super.transform(value, "MMM d");
   }
 }
+
+
+@Pipe({
+  name: 'newsDateExtended'
+})
+export class NewsDatePipeExtended extends
+  DatePipe implements PipeTransform {
+  transform(value: any, args?: any): any {
+    return super.transform(value, "EEEE d MMMM y");
+  }
+}

@@ -34,8 +34,36 @@ export class ApiService {
     return this.getFeedMock();
   }
 
+  public getNews(id: string): Observable<News> {
+    // in production:
+    // return this.http.get('https://localhost:4200/api/feed/:id');
+
+    // mock used for tests, waiting for real api response
+    return this.getNewsMock();
+  }
+
   // todo ecc.
   // todo caching system, limited to some cacheable values
+  private getNewsMock(): Observable<News> {
+    return new Observable((observer) => {
+      const newsMock: News = {
+            _id: "0",
+            title: "Una super notizia notiziona ona ona",
+            description: "Benvenuto nella web app ufficiale dello stabilimento balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo ombrellone direttamente online. Non vediamo l’ora di iniziare!",
+            date: new Date(),
+            image: "/assets/main-card.jpg"
+      };
+
+      observer.next(newsMock);
+
+      // When the consumer unsubscribes, clean up data ready for next subscription.
+      return {
+        unsubscribe() {
+        }
+      };
+    });
+  }
+
 
   private getFeedMock(): Observable<any> {
     return new Observable((observer) => {

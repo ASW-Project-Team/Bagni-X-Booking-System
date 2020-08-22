@@ -25,10 +25,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SalableCardComponent } from './components/shared/salable-card/salable-card.component';
 import { LoadingScreenComponent } from './components/shared/loading-screen/loading-screen.component';
 import { NewsCardComponent } from './components/shared/news-card/news-card.component';
-import { NewsDatePipe } from "./utils/news.datepipe";
+import {NewsDatePipe, NewsDatePipeExtended} from "./utils/news.datepipe";
 import { MatRippleModule } from '@angular/material/core';
 import { NewsComponent } from './components/customer/news/news.component';
 import { CustomerMainAppbarComponent } from './components/shared/appbars/customer-main-appbar/customer-main-appbar.component';
+import { NestedAppbarComponent } from './components/shared/appbars/nested-appbar/nested-appbar.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -46,8 +48,10 @@ import { CustomerMainAppbarComponent } from './components/shared/appbars/custome
     LoadingScreenComponent,
     NewsCardComponent,
     NewsDatePipe,
+    NewsDatePipeExtended,
     NewsComponent,
     CustomerMainAppbarComponent,
+    NestedAppbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +64,8 @@ import { CustomerMainAppbarComponent } from './components/shared/appbars/custome
     MatToolbarModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatRippleModule
+    MatRippleModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
