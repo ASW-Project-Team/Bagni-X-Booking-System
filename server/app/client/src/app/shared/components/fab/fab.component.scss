@@ -1,0 +1,30 @@
+@import "../../../../styles/utils/utils";
+
+// the style used for the fab is inspired by
+// https://github.com/angular/components/issues/12246#issuecomment-470307438
+
+.extended-fab-button {
+  width: unset;
+  padding: 0 $marginDesktop;
+  border-radius: 50px;
+  color: $backgroundColor;
+  background: $primaryColor;
+  @include responsiveProp(height, $fabHeight);
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  @include responsiveProp(margin, $defaultMargin);
+
+  @include forDesktopOnly {
+    padding: 4px $marginDesktop;
+  }
+
+  .mat-icon {
+    margin-right: 10px;
+  }
+
+  .extended-fab-button__text {
+    @include subheadFont;
+    color: $backgroundColor;
+  }
+}

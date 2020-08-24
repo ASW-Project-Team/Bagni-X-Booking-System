@@ -1,0 +1,123 @@
+@import "../../../../styles/utils/utils";
+
+.page {
+  // the home page is the only one with 100% width;
+  // useful to show the main card wide as the mockup
+  width: 100%;
+  padding: 0;
+  @include responsiveProp(padding-top, $appBarHeight);
+}
+
+
+// the following mixin makes more div completely overlayable between tem,
+// and make them occupy all the available space
+@mixin overlayable {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
+
+.main-card-container {
+  width: 100%;
+  height: 256px;
+  position: relative;
+
+
+  // combination of h1 and class super-title, used for very important titles, such as logo.
+  h1.title {
+    @include responsiveProp(margin-top, $halfMargin);
+    color: $primaryColor;
+  }
+
+
+  // for desktop screens, the main card takes the page height size,
+  // reduced a bit to hide de exceeding blurred image.
+  @include forDesktopOnly {
+    height: 100vh - 20vh;
+  }
+
+  .image-container {
+    @include overlayable;
+    filter: blur(4px);
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: -20px 0; // keeps the blurred image inside the border
+    background-position: center center;
+  }
+
+  .white-filter-container {
+    @include overlayable;
+    background: $backgroundColor;
+    opacity: 0.8;
+  }
+
+  .title-container {
+    @include overlayable;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    width: auto;
+    margin-top: -1 * $marginSmartphone; // makes the text higher
+    padding: 0;
+    @include responsiveProp(padding-left, $defaultMargin);
+    @include responsiveProp(padding-right, $defaultMargin);
+
+    // the mat-icon inside the main card disappears if in smartphone mode
+    .title-icon {
+      width: auto;
+      font-size: 60px;
+      height: 60px;
+
+      @include forSmartphoneOnly {
+        @include hide;
+      }
+    }
+  }
+}
+
+@mixin card-wide-container {
+  width: 100%;
+  box-sizing: border-box;
+  @include responsiveProp(padding, $defaultMargin);
+
+  .home-card {
+    box-sizing: border-box;
+    margin: 0 auto;
+    @include responsiveProp(width, $pageWidth);
+
+
+    .home-card-image {
+      @include responsiveProp(margin-bottom, $defaultMargin)
+    }
+  }
+}
+
+.even-card-wide-container {
+  @include card-wide-container;
+  background: $secondaryColor;
+}
+
+.odd-card-wide-container {
+  @include card-wide-container;
+  background: $backgroundColor;
+}
+
+@mixin listedCards {
+  h1 {
+    margin-top: 0;
+  }
+}
+
+.rank-card {
+  @include listedCards
+}
+
+.service-card {
+  @include listedCards;
+}
+
