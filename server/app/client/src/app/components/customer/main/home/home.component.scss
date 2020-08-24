@@ -4,6 +4,8 @@
   // the home page is the only one with 100% width;
   // useful to show the main card wide as the mockup
   width: 100%;
+  padding: 0;
+  @include responsiveProp(padding-top, $appBarHeight);
 }
 
 
@@ -65,8 +67,8 @@
     @include responsiveProp(padding-left, $defaultMargin);
     @include responsiveProp(padding-right, $defaultMargin);
 
-    // the icon inside the main card disappears if in smartphone mode
-    mat-icon {
+    // the mat-icon inside the main card disappears if in smartphone mode
+    .title-icon {
       width: auto;
       font-size: 60px;
       height: 60px;

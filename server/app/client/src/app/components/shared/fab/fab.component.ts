@@ -12,8 +12,8 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class FabComponent implements OnInit {
   @Input('title') title: string;
-  @Input('mdiIconName') mdiIconName: string; // used if the custom icon pack is used
-  @Input('classicIconName') classicIconName: string;
+  @Input('icon-name') iconName: string; // used if the custom icon pack is used
+  @Input('is-mdi') isMdi: boolean = true;
   @Input('route') route: string;
 
   constructor() { }

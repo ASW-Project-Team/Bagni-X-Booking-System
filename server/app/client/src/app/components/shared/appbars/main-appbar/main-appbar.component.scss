@@ -1,6 +1,5 @@
 @import "~src/styles/utils/utils";
-
-mat-toolbar {
+.appbar {
   background: $backgroundColor;
   box-shadow: $defaultShadow;
   position: fixed;
@@ -35,7 +34,7 @@ mat-toolbar {
     }
   }
 
-  .selected-icon {
+  .active {
     color: $primaryColor;
     background: $secondaryColor;
   }

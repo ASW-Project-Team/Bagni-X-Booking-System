@@ -6,27 +6,54 @@ footer {
   box-shadow: $defaultShadow;
   box-sizing: border-box;
   @include responsiveProp(height, $footerHeight);
-  @include responsiveProp(padding-left, $defaultMargin);
-  padding-right: 180px;
+  @include responsiveProp(padding, $defaultMargin);
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: center;
+  align-items: center;
+  justify-content: space-between;
 
-  @include forDesktopOnly {
-    padding-right: 200px;
+  a {
+    text-decoration: none;
   }
 
-  .credits {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+  .logo {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    @include responsiveProp(margin-left, $defaultMargin);
 
-    a {
-      text-decoration: none;
-      @include subheadFont;
+    // setting text decoration to none in l.15, makes h1 lost the font formatting.
+    // This re-enables the custom font
+    h1.title {
+      @include titleFont;
+      color: $primaryColor;
+      margin: 0;
+    }
+
+    img {
+      height: 100%;
+      margin-right: 8px;
+    }
+  }
+
+  .credits-container {
+    min-width: 0;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    flex-shrink: 1;
+
+    .credits {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+
+      a {
+        @include subheadFont;
+      }
     }
   }
 }

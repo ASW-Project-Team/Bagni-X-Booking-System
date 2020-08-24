@@ -11,7 +11,7 @@ paths:
       summary: It returns the user-id description
       description: User data
       parameters:
-        - name: user_id  (in query used id)
+        - name: user-id
           in: path
           description: User identificator
           required: true
@@ -26,11 +26,11 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-    put: --> used also for logical delete
+    put: 
       summary: It allows the user to modify some data about hisself
       description: User data
       parameters:
-        - name: user_id  (in query used id)
+        - name: user-id
           in: path
           description: User identificator
           required: true
@@ -55,7 +55,6 @@ paths:
           in: query
           description: The user name.
           required: true
-          style: simple
           explode: false
           schema:
             type: boolean
@@ -64,7 +63,6 @@ paths:
           in: query
           description: The user surname.
           required: true
-          style: simple
           explode: false
           schema:
             type: boolean
@@ -73,7 +71,6 @@ paths:
           in: query
           description: The user email.
           required: true
-          style: simple
           explode: false
           schema:
             type: boolean
@@ -87,28 +84,78 @@ paths:
         "403":
           description: Unauthorized
 
+  /api/auth/customers/signup/:
+    post:
+      summary: This root allows a user to sign up 
+      description: none
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+
+  /api/auth/user/signin/:
+    post:
+      summary: This root allows a user to login in
+      description: none
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+          
+          
+  /api/auth/admin/signup/:
+    post:
+      summary: This root allows the admiun to sign up 
+      description: none
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+          
+  /api/auth/admin/signin/:
+    post:
+      summary: This root allows the admin to login in
+      description: none
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+
+      
   /api/feed/:
     get:
       summary: It returns the of the page-id page
       description: Feed
       parameters:
         - name: page_id
-            in: query
-            description: Page identificator. If speficied, only bookings relative to the page are returned.
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: integer
+          in: query
+          description: Page identificator. If speficied, only bookings relative to the page are returned.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
 
         - name: page_size
-            in: query
-            description: It specifies that the returned booking are only of the number given.
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: integer
+          in: query
+          description: It specifies that the returned booking are only of the number given.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
       responses:
         "200":
           description: OK
@@ -126,28 +173,27 @@ paths:
           in: query
           description: User identificator. If the parameter is present, bookings from the specified user are returned.
           required: false
-          style: simple
           explode: false
           schema:
             type: string
 
         - name: page_id
-            in: query
-            description: Page identificator. If speficied, only bookings relative to the page are returned.
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: integer
+          in: query
+          description: Page identificator. If speficied, only bookings relative to the page are returned.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
 
         - name: page_size
-            in: query
-            description: It specifies that the returned booking are only of the number given.
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: integer
+          in: query
+          description: It specifies that the returned booking are only of the number given.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
 
       responses:
         "200":
@@ -162,7 +208,7 @@ paths:
       summary: It returns the booking with id booking_id
       description: Booking
       parameters:
-        - name: booking_id
+        - name: booking-id
           in: path
           description: Booking identificator
           required: true
@@ -182,7 +228,7 @@ paths:
       summary: It allows the user to modify the booking
       description: Booking
       parameters:
-        - name: booking_id
+        - name: booking-id
           in: path
           description: Booking identificator
           required: true
@@ -201,7 +247,7 @@ paths:
       summary: It deletes a reservation
       description: Modifica-aggiunta prenotazione
       parameters:
-        - name: booking_id
+        - name: booking-id
           in: path
           description: Booking identificator
           required: true
@@ -223,13 +269,13 @@ paths:
       description: New booking
       parameters:
         - name: from
-            in: query
-            description: Start booking date
-            required: true
-            style: form
-            explode: true
-            schema:
-              type: date
+          in: query
+          description: Start booking date
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
 
         - name: to
           in: query
@@ -238,7 +284,7 @@ paths:
           style: form
           explode: true
           schema:
-            type: date
+            type: string
 
       responses:
         "200":
@@ -263,80 +309,132 @@ paths:
   /api/home/:
     get:
       summary: The main home card, an array of home cards, an array of services, and an array of rank umbrellas.
-      description: Used in the home screen, it returns all
+      description: Used in the home screen
+      responses:
+        "200":
+          description: OK, all fields of the confirmed booking, included the id
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
 
   /api/catalog/ranks/:
-    get:
     post:
+      summary: The rank of the umbrella
+      description: It allows to insert a new rank
+      responses:
+        "200":
+          description: OK, all fields of the confirmed booking, included the id
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
 
-  /api/catalog/ranks/:id:
+  /api/catalog/ranks/{rank-id}/:
     put:
-
-  /api/catalog/sales/:
-    get:
+      summary: The rank of the umbrella
+      description: It allows to modify a rank 
+      responses:
+        "200":
+          description: OK, all fields of the confirmed booking, included the id
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
       parameters:
-        - name: rank_id
-          in: query
-          description: Rank to refer for the sale
-          required: false
-          style: form
+        - name: rank-id
+          in: path
+          description: The id of the rank
+          required: true
+          explode: true
+          schema:
+            type: string
+    
+    get:
+      summary: The rank of the umbrella
+      description: It return a specified rank
+      responses:
+        "200":
+          description: OK, all fields of the confirmed booking, included the id
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+    parameters:
+        - name: rank-id
+          in: path
+          description: The id of the rank
+          required: true
           explode: true
           schema:
             type: string
 
-        - name: page_id
-          in: query
-          description: Page identificator. If speficied, only sales relative to the page are returned.
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: integer
+  #/api/catalog/sales/:
+  #  get:
+  #    parameters:
+  #      - name: rank_id
+  #        in: query
+  #        description: Rank to refer for the sale
+  #        required: false
+  #        style: form
+  #        explode: true
+  #        schema:
+  #          type: string
 
-        - name: page_size
-          in: query
-          description: It specifies that the returned salews are only of the number given.
-          required: false
-          style: form
-          explode: true
-          schema:
-             type: integer
-    post:
+  #      - name: page_id
+  #        in: query
+  #        description: Page identificator. If speficied, only sales relative to the page are returned.
+  #        required: false
+  #        style: form
+  #        explode: true
+  #        schema:
+  #          type: integer
 
-    /api/catalog/sales/:id:
-      get:
-        parameters:
-          - name: sale_id
-            in: path
-            description: Id to refer for the sale
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: string
-      put:
-        parameters:
-          - name: sale_id
-            in: path
-            description: Id to refer for the sale
-            required: false
-            style: form
-            explode: true
-            schema:
-              type: string
+  #      - name: page_size
+  #        in: query
+  #        description: It specifies that the returned salews are only of the number given.
+  #        required: false
+  #        style: form
+  #        explode: true
+  #        schema:
+  #           type: integer
+  #  post:
+
+  #  /api/catalog/sales/:id:
+  #    get:
+  #      parameters:
+  #        - name: sale_id
+  #          in: path
+  #          description: Id to refer for the sale
+  #          required: false
+  #          style: form
+  #          explode: true
+  #          schema:
+  #            type: string
+  #    put:
+  #      parameters:
+  #        - name: sale_id
+  #          in: path
+  #          description: Id to refer for the sale
+  #          required: false
+  #          style: form
+  #          explode: true
+  #          schema:
+  #            type: string
 
   /api/catalog/services/:
     get:
+      summary: The services are some options that a user can insert in a new booking
+      description: It returns all the services availables
       parameters:
         - name: page_id
           in: query
-          description: Page identificator. If speficied, only sales relative to the page are returned.
+          description: Page identificator. If speficied, only services relative to the page are returned.
           required: false
           style: form
           explode: true
           schema:
             type: integer
-
         - name: page_size
           in: query
           description: It specifies that the returned salews are only of the number given.
@@ -345,31 +443,62 @@ paths:
           explode: true
           schema:
             type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
     post:
+      summary: The services are some options that a user can insert in a new booking
+      description: It allows the admin to insert a new service
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
 
-    /api/catalog/services/:id:
-      get:
-        parameters:
-          - name: service_id
+  /api/catalog/services/{service-id}/:
+    get:
+      summary: The services are some options that a user can insert in a new booking
+      description: It returns a specified service
+      parameters:
+          - name: service-id
             in: path
             description: Service id
             required: true
-            style: form
             explode: true
             schema:
               type: integer
-      put:
-        parameters:
-          - name: service_id
-            in: path
-            description: Service id
-            required: true
-            style: form
-            explode: true
-            schema:
-              type: integer
-
-    /api/stats/:
-      description: robe
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+    put:
+      summary: The services are some options that a user can insert in a new booking
+      description: It allows the admin to modify a service
+      parameters:
+        - name: service-id
+          in: path
+          description: Service id
+          required: true
+          explode: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: FAIL
+        "403":
+          description: Unauthorized
+ #   /api/stats/:
+  #    description: robe
 
 components: {}
