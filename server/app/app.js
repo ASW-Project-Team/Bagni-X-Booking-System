@@ -38,7 +38,7 @@ const main = function () {
 
     // auth
     app.use(jwt());
-    app.use('/users', require('./src/auth/users/users.controller'));
+    //app.use('/users', require('./src/auth/users/users.controller'));
     app.use(errorHandler);
     // end auth
 

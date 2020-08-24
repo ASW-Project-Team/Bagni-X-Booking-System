@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
 const commonController = require("./commonController");
-
+const userService = require('../auth/_helpers/utils');
+const bcrypt = require('bcryptjs');
 // Before this queries we have to check the permissions to interact with db
 
 // GET OKAY
@@ -25,19 +26,21 @@ exports.read_user = function(req, res) {
  */
 exports.create_user = function(req, res) {
     commonController.areRequiredFieldsPresent(req, res, () => {
-
         // FIXME More checks for email
-        if (commonController.typeOfString(req.body.name)
+        if (commonController.typeOfString(req.body.username)
             && commonController.typeOfString(req.body.surname)
             && commonController.typeOfString(req.body.email)){
-
             let user = new User(req.body);
             user._id = mongoose.Types.ObjectId();
+
+            if(req.body.password){
+                user.hash = bcrypt.hashSync(req.body.password, 10);
+            }
 
             commonController.correctSave(user, commonController.status_created, res);
         }
 
-    }, req.body.name, req.body.surname, req.body.email);
+    }, req.body.username, req.body.surname, req.body.email);
 
 };
 
@@ -81,3 +84,14 @@ exports.update_user = function(req, res) {
 
 };
 
+exports.authenticate = function(req, res, next) {
+    userService.authenticate(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+        .catch(err => next(err));
+}
+
+exports.register = function(req, res, next) {
+    this.create_user(req.body)
+        .then(() => res.json({}))
+        .catch(err => next(err));
+}

@@ -1,16 +1,19 @@
 const expressJwt = require('express-jwt');
-const config = require('config.json');
-const userService = require('../users/user.service');
-
+const userService = require('./utils.js');
+const config = require('./config.json');
+console.log(config);
 module.exports = jwt;
 
 function jwt() {
-    const secret = config.secret;
+    const secret = config.secretUser;
     return expressJwt({ secret, algorithms: ['HS256'], isRevoked }).unless({
         path: [
             // public routes that don't require authentication
-            '/users/authenticate',
-            '/users/register'
+            '/home',
+            '/api/feed',
+            '/api/auth/customers/signup/',
+            '/api/auth/customers/signin/',
+            '/api/auth/admin/signin/'
         ]
     });
 }

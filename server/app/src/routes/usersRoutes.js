@@ -8,6 +8,6 @@ module.exports.set = function(app) {
     app.route('/api/customers/')
         .post(usersController.create_user);
 
-
+    
 
 };
