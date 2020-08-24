@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Sale} from "../shared/models/sale";
-import {News} from "../shared/models/news";
+import {Sale} from "../shared/models/sale.model";
+import {News} from "../shared/models/news.model";
 
 
 /**

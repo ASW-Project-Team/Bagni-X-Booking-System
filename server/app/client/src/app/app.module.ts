@@ -3,10 +3,10 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './modules/customer/home/home.component';
-import { FeedComponent } from './modules/customer/news-feed/feed.component';
-import { BookingsComponent } from './modules/customer/bookings/bookings.component';
-import { ProfileComponent } from './modules/customer/profile/profile.component';
+import { HomeComponent } from './pages/customer/home/home.component';
+import { NewsFeedComponent } from './pages/customer/news-feed/news-feed.component';
+import { BookingsComponent } from './pages/customer/bookings/bookings.component';
+import { ProfileComponent } from './pages/customer/profile/profile.component';
 import { MainAppbarComponent } from './shared/components/appbars/main-appbar/main-appbar.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -17,7 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
-import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ImgLandscapeComponent } from './shared/components/img-landscape/img-landscape.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FabComponent } from './shared/components/fab/fab.component';
@@ -25,9 +25,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SalableCardComponent } from './shared/components/salable-card/salable-card.component';
 import { LoadingScreenComponent } from './shared/components/loading-screen/loading-screen.component';
 import { NewsCardComponent } from './shared/components/news-card/news-card.component';
-import {NewsDatePipe, NewsDatePipeExtended} from "./shared/pipes/news.datepipe";
+import {NewsDatePipe, NewsDatePipeExtended} from "./shared/pipes/news-date.pipe";
 import { MatRippleModule } from '@angular/material/core';
-import { NewsComponent } from './modules/customer/news/news.component';
+import { NewsComponent } from './pages/customer/news/news.component';
 import { CustomerMainAppbarComponent } from './shared/components/appbars/customer-main-appbar/customer-main-appbar.component';
 import { NestedAppbarComponent } from './shared/components/appbars/nested-appbar/nested-appbar.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
@@ -36,7 +36,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
   declarations: [
     AppComponent,
     HomeComponent,
-    FeedComponent,
+    NewsFeedComponent,
     BookingsComponent,
     ProfileComponent,
     MainAppbarComponent,

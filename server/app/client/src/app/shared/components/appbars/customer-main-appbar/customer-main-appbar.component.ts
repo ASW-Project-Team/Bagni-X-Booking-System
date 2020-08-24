@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Page} from "../page";
+import {Page} from "../../../models/page.model";
 
 @Component({
   selector: 'app-customer-main-appbar',
@@ -19,7 +19,7 @@ export class CustomerMainAppbarComponent implements OnInit {
     {
       id: "feed",
       name: "Feed",
-      route: "/feed",
+      route: "/news",
       isMdi: true,
       icon: "newspaper-variant-outline"
     },

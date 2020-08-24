@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {News} from "../shared/models/news.model";
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +12,14 @@ export class SharingService {
    * Tries to share the news using the sharing API for smartphone. If
    * not possible, copies a sharable text to the clipboard. Returns false
    * if it is not possible to use the sharing api.
-   * @param newsTitle the title of the news
-   * @param newsId the id of the news
+   * @param news the news
    * @return true if the sharing api is available.
    */
-  public shareNews(newsTitle: string, newsId: string): boolean {
+  public shareNews(news: News): boolean {
     let sharingApiAvailable = false;
 
-    const sharedUrl = "http://localhost:4200/news/" + newsId;
-    const sharedTitle = "Bagni X - " + newsTitle;
+    const sharedUrl = "http://localhost:4200/news/" + news._id;
+    const sharedTitle = "Bagni X - " + news.title;
     const description = "Scopri questa e altre news sul nostro sito."
 
 

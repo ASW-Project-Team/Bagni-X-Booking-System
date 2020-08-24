@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Page} from "../page";
+import {Page} from "../../../models/page.model";
 
 @Component({
   selector: 'app-main-appbar',

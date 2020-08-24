@@ -1,4 +1,4 @@
-import {Sale} from "./sale";
+import {Sale} from "./sale.model";
 
 export interface RankUmbrella {
   _id: any;
