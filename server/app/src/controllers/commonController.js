@@ -3,8 +3,10 @@ const crypto = require('crypto')
 
 const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
+const User = require('../models/userModel')(mongoose);
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
-const CatalogId = require('catalogController').CatalogId;
+const CatalogID = "5f40f4125c935b69a7f0626f";
+
 
 /**
  * Error for object not found.
@@ -30,7 +32,7 @@ module.exports.already_present = function(res, document) {
  * @param res
  */
 module.exports.field_require_404 = function(res) {
-    this.notify(res,this.status_error,"All fields are required, someone  not found!")
+    this.notify(res,this.status_error,"Some required fields aren't found!")
 };
 
 /**
@@ -40,6 +42,15 @@ module.exports.field_require_404 = function(res) {
 module.exports.unauthorized_401 = function(res) {
     this.notify(res,this.status_unauthorized,"Access negated!")
 };
+
+
+/**
+ * Error caused because some parameters are bad formatted.
+ * @param res
+ */
+module.exports.parameter_bad_formatted = function(res){
+    this.notify(res, this.bad_request, "Some parameters are badly formatted!")
+}
 
 /**
  * General structure for response to sell.
@@ -52,6 +63,7 @@ module.exports.notify = function(res, status, jsonObject){
 }
 
 
+// ASYNC AWAIT
 /**
  * Used for save new document or updated one.
  * @param document The document to save
@@ -98,13 +110,21 @@ module.exports.dfs = function (obj, targetId) {
  *                        returned because don't exist yet.
  */
 module.exports.checkError = function (err, documents, req, res, documentName, deleteOperation = false) {
-    if (err)
+
+    let errSave = false;
+
+    if (err) {
+        errSave = true;
         res.send(err);
+    }
     else {
         if (!deleteOperation && !documents) {
+            errSave = true;
             this.serve_plain_404(req, res, documentName);
         }
     }
+
+    return errSave;
 }
 
 /**
@@ -126,8 +146,8 @@ module.exports.response = function (res, documents) {
  * @param documentsToReturn
  */
 module.exports.getDocuments = function (err, collectionToSearch, req, res, documentName, documentsToReturn) {
-    this.checkError(err, collectionToSearch, req, res, documentName);
-    this.response(res, documentsToReturn);
+    if (!this.checkError(err, collectionToSearch, req, res, documentName))
+        this.response(res, documentsToReturn);
 }
 
 /**
@@ -211,8 +231,8 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
  */
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, docResultName);
+        if (!this.checkError(err, docResult, req, res, errDocName))
+            func(err, docResult, docResultName);
     });
 }
 
@@ -234,8 +254,8 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -260,8 +280,8 @@ module.exports.deleteFirstLevelCollectionByUsername = function (req, res, docume
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -306,11 +326,11 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
     collFirstLevel.find({}, (err, docResult) => {
 
         if (!errDocName){
-            errDocName = documentName + "not found";
+            errDocName = documentName + " not found";
         }
 
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, documentName);
+        if (!this.checkError(err, docResult, req, res, errDocName))
+            func(err, docResult, documentName);
     });
 }
 
@@ -389,7 +409,7 @@ module.exports.typeOfBoolean = function (par) {
 
 module.exports.typeOfNumber = function (par) {
 
-    return typeOfType(par, "number")
+    return (typeOfType(par, "number") && (par>=0))
 }
 
 function typeOfType(par, parType) {
@@ -462,103 +482,114 @@ module.exports.checkPassword = function(res, password, func){
 }
 
 /**
- * Umbrella not free.
+ * Umbrella number of booked umbrellas.
  * @param req
  * @param res
  * @param to
  * @param from
+ * @param func
  * @returns {*[]}
  */
-module.exports.umbrellaUsed = function (req, res, to, from){
+module.exports.umbrellaUsed = function (req, res, to, from, func){
 
     this.findAllFromCollection(req, res, "book", Booking, ""
         ,(errBook, allBookings) => {
             // Umbrella not free in that periods
             // First filter: if book is not finished
             // Second filter: if bool started in that period
-            return allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
+
+            let allBookingsFiltered = allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
                 && b.date_from.getTime() < new Date(to).getTime()
-                && b.confirmed
-                && !b.cancelled)
-                .flatMap(b => b.umbrellas.map(u => u.number));
+                && !b.cancelled);
+
+            func(allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number)));
         });
-    return [];
 }
 
 /**
- * Umbrella not free.
+ * Umbrella number of free umbrellas.
  * @param req
  * @param res
  * @param to
  * @param from
  * @param umbrellas
+ * @param func
  * @returns {*[]}
  */
-module.exports.umbrellaFree = function (req, res, to, from, umbrellas){
-
+module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
-            this.findAllFromCollection(req, res, "book", Booking, ""
-                ,() => {
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
-                    let umbrellaUsedInPeriod = this.umbrellaUsed(req, res, to, from);
+        this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
-                    let umbrellaNumberFree = [];
-                    for (let rank in catalog.rank_umbrellas) {
+            let umbrellaNumberFree = [];
+            for (let rank in catalog.rank_umbrellas) {
 
-                        if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+                if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
 
-                            for (let i = catalog.rank_umbrellas[rank].from_umbrella;
-                                 i < catalog.rank_umbrellas[rank].to_umbrella;
-                                 i++){
+                    for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                         i < catalog.rank_umbrellas[rank].to_umbrella;
+                         i++){
 
-                                if (!umbrellaUsedInPeriod.includes(i)){
+                        if (!umbrellasNumberUsed.includes(i)){
 
-
-                                    umbrellaNumberFree.push(i);
-                                }
-                            }
+                            umbrellaNumberFree.push(i);
                         }
                     }
+                }
+            }
 
-                    return umbrellas.every(u => umbrellaNumberFree.includes(u.number));
-                });
+            func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
         });
 
-    return false;
+    });
+
 }
 
 /**
  * Create umbrellas from numbers.
+ * @param req
+ * @param res
  * @param umbrellasNumber
+ * @param func
  * @returns {[]}
  */
-module.exports.createUmbrellas = function(umbrellasNumber){
+module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 
-    let umbrellas = [];
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
 
-    for (let umbrellaNumber in umbrellasNumber) {
-        let umbrella = new Umbrella();
-        umbrella.number = umbrellasNumber;
+        let umbrellas = [];
 
-        this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-            mongoose.Types.ObjectId(CatalogId), (err, catalog)=> {
 
-                for (let rank of catalog.rank_umbrellas) {
-                    if ((umbrella.number <= rank.to_umbrella)
-                        && (umbrella.number >= rank.from_umbrella)){
-                        umbrella.rank_id = rank._id;
+        for (let umbrellaNumber in umbrellasNumber) {
+
+            let umbrella = new Umbrella();
+
+            if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
+                umbrella.number = umbrellasNumber[umbrellaNumber];
+
+                for (let rank in catalog.rank_umbrellas) {
+
+                    if (catalog.rank_umbrellas.hasOwnProperty(rank)
+                        && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
+                        && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
+
+                        umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
+                        umbrellas.push(umbrella);
+                        break;
                     }
                 }
+            }
 
-        });
+        }
+
+        func(umbrellas);
+
+    });
 
 
-        umbrellas.push(umbrella);
-    }
-
-    return umbrellas;
 }
 
 /**
@@ -566,17 +597,37 @@ module.exports.createUmbrellas = function(umbrellasNumber){
  * @param req
  * @param res
  * @param services
+ * @param func
  * @returns {boolean}
  */
-module.exports.servicesAvailable = function (req, res, services){
+module.exports.servicesAvailable = function (req, res, services, func){
+
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogId), (err, catalog)=>{
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
         let catalogServices = catalog.services.map(x => x._id);
-        return services.every(s => catalogServices.includes(s));
+        func(services.every(s => catalogServices.includes(s)));
 
-        });
-    return false;
+    });
+
+}
+
+/**
+ * Check if user exist.
+ * @param req
+ * @param res
+ * @param user_id
+ * @param func
+ */
+module.exports.userExist = function (req, res, user_id, func){
+
+    this.findByIdFirstLevelCollection(req, res, "user", User, "User",
+        mongoose.Types.ObjectId(user_id), (err, user)=>{
+
+        func(user);
+
+    });
+
 }
 
 module.exports.status_created = 201;

@@ -10,8 +10,7 @@ const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 
 const commonController = require("./commonController");
 
-// FIXME To check
-module.exports.CatalogId = mongoose.Types.ObjectId("5f3ba546cb999aee959eab3f");
+const Catalog_id = "5f40f4125c935b69a7f0626f";
 // Before this queries we have to check the permissions to interact with db
 
 
@@ -41,11 +40,26 @@ module.exports.create_rank = function (req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            let rank = new Rank(req.body);
-            rank._id = mongoose.Types.ObjectId();
-            catalog.rank_umbrellas.splice(0, 0, rank);
+            if (req.body.price>=0
+                && req.body.from_umbrella >=0
+                && req.body.to_umbrella >= req.body.from_umbrella){
 
-            commonController.correctSave(catalog, commonController.status_created, res);
+                if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.from_umbrella, req.body.to_umbrella)) {
+
+                    let rank = new Rank(req.body);
+                    rank._id = mongoose.Types.ObjectId();
+                    catalog.rank_umbrellas.splice(0, 0, rank);
+
+                    commonController.correctSave(catalog, commonController.status_created, res);
+
+                } else {
+                    commonController.notify(res, commonController.status_error, "Umbrellas belongs to another rank");
+                }
+
+            } else {
+                commonController.parameter_bad_formatted(res);
+            }
+
         }, req.body.name, req.body.price, req.body.from_umbrella, req.body.to_umbrella);
 
     });
@@ -74,13 +88,27 @@ module.exports.update_rank = function (req, res) {
             if (req.body.price || req.body.price >= 0)
                 rankTarget.price = req.body.price
 
-            if (req.body.from_umbrella
-                && commonController.typeOfNumber(req.body.from_umbrella))
-                rankTarget.from_umbrella = req.body.from_umbrella
+            if (req.body.from_umbrella >=0
+                && req.body.to_umbrella >= req.body.from_umbrella) {
 
-            if (req.body.to_umbrella
-                && commonController.typeOfNumber(req.body.to_umbrella))
-                rankTarget.to_umbrella = req.body.to_umbrella
+                let oldFromUmbrella = rankTarget.from_umbrella;
+                let oldToUmbrella = rankTarget.to_umbrella;
+
+                rankTarget.from_umbrella = -1;
+                rankTarget.to_umbrella = -1;
+
+                if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.from_umbrella, req.body.to_umbrella)) {
+
+                    rankTarget.from_umbrella = req.body.from_umbrella;
+                    rankTarget.to_umbrella = req.body.to_umbrella
+
+                } else {
+
+                    rankTarget.from_umbrella = oldFromUmbrella;
+                    rankTarget.to_umbrella = oldToUmbrella;
+                }
+            }
+
 
             if (req.body.sales)
                 rankTarget.sales = req.body.sales
@@ -381,6 +409,28 @@ module.exports.get_availability = function (req, res) {
 function checkCatalog(req, res, documentName, func) {
 
     commonController.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogId), func);
+        Catalog_id, func);
 }
 
+/**
+ * Check if umbrellas belongs to some ranks already present.
+ * @param catalog
+ * @param from_umbrella
+ * @param to_umbrella
+ * @returns {boolean}
+ */
+function checkIfUmbrellasHaveAlreadyRanks(catalog, from_umbrella, to_umbrella) {
+    let umbrellasAreFree = true;
+
+    for (let rank in catalog.rank_umbrellas) {
+        if (catalog.rank_umbrellas.hasOwnProperty(rank)){
+            if ((from_umbrella <= catalog.rank_umbrellas[rank].to_umbrella)
+                && (to_umbrella >= catalog.rank_umbrellas[rank].from_umbrella)){
+
+                umbrellasAreFree = false;
+            }
+        }
+    }
+
+    return umbrellasAreFree;
+}
