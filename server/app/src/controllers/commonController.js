@@ -3,6 +3,7 @@ const crypto = require('crypto')
 
 const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
+const User = require('../models/userModel')(mongoose);
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
 const CatalogID = "5f40f4125c935b69a7f0626f";
 
@@ -62,6 +63,7 @@ module.exports.notify = function(res, status, jsonObject){
 }
 
 
+// ASYNC AWAIT
 /**
  * Used for save new document or updated one.
  * @param document The document to save
@@ -407,7 +409,7 @@ module.exports.typeOfBoolean = function (par) {
 
 module.exports.typeOfNumber = function (par) {
 
-    return typeOfType(par, "number")
+    return (typeOfType(par, "number") && (par>=0))
 }
 
 function typeOfType(par, parType) {
@@ -595,15 +597,34 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
  * @param req
  * @param res
  * @param services
+ * @param func
  * @returns {boolean}
  */
-module.exports.servicesAvailable = function (req, res, services){
+module.exports.servicesAvailable = function (req, res, services, func){
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
         let catalogServices = catalog.services.map(x => x._id);
-        return services.every(s => catalogServices.includes(s));
+        func(services.every(s => catalogServices.includes(s)));
+
+    });
+
+}
+
+/**
+ * Check if user exist.
+ * @param req
+ * @param res
+ * @param user_id
+ * @param func
+ */
+module.exports.userExist = function (req, res, user_id, func){
+
+    this.findByIdFirstLevelCollection(req, res, "user", User, "User",
+        mongoose.Types.ObjectId(user_id), (err, user)=>{
+
+        func(user);
 
     });
 
