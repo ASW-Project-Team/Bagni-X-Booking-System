@@ -52,7 +52,7 @@ export class BookingCardComponent implements OnInit {
     }
 
     if (this.booking.umbrellas.length == 1) {
-      description = this.booking.umbrellas[0].rank.description;
+      description = this.booking.umbrellas[0].rank.name;
 
     } else if (this.booking.umbrellas.length > 1) {
       for (let i = 0; i < this.booking.umbrellas.length; i++) {

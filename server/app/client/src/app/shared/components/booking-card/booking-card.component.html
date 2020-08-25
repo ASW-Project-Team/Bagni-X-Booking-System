@@ -1,4 +1,4 @@
-<div class="booking-card"
+<div class="booking-card" matRipple matRippleColor="primary"
      [ngStyle]="isLastCard == true ? {'margin-bottom': 0} : {}">
 
   <div class="main-line">
@@ -18,16 +18,16 @@
         <app-booking-state [booking]="booking"></app-booking-state>
       </div>
       <div class="booking-time">
-        <mat-icon svgIcon="calendar-outline"></mat-icon>
+        <mat-icon svgIcon="calendar-outline" class="time-icon"></mat-icon>
         <div class="time-lines">
-          <p>Dal {{ booking.dateFrom | bookingDate }} </p>
-          <p>Al {{ booking.dateTo | bookingDate }}</p>
+          <p class="time-from-line">Dal {{ booking.dateFrom | bookingDate }} </p>
+          <p class="time-to-line">Al {{ booking.dateTo | bookingDate }}</p>
         </div>
       </div>
     </div>
     <div class="right-details">
       <div class="price-chip">
-        {{ booking.price }}
+        {{ booking.price | currency: 'EUR' }}
       </div>
     </div>
   </div>

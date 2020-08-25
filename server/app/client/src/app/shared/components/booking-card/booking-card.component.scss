@@ -35,17 +35,38 @@
   }
 
   .details-line {
-    .left-details {
-      .booking-state {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 
+    .left-details {
+      min-width: 0;
+
+      .booking-state {
+        @include responsiveProp(margin-bottom, $halfMargin);
       }
       .booking-time {
+        display: flex;
+        align-items: center;
 
+        .time-icon {
+          @include responsiveProp(margin-right, $halfMargin);
+        }
+
+        .time-from-line {
+        }
+
+        .time-to-line {
+          margin: 0;
+        }
       }
     }
     .right-details {
+      flex-shrink: 0;
       .price-chip {
-
+        @include chip;
+        @include responsiveProp(margin-left, $defaultMargin);
       }
     }
   }

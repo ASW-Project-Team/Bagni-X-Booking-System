@@ -1,3 +1,4 @@
-<div class="state-container" [ngClass]="currentState.class">
-  <mat-icon svgIcon="{{ currentState.icon }}"></mat-icon> {{ currentState.name }}
+<div class="state-container">
+  <mat-icon class="state-icon" [ngClass]="currentState.class" svgIcon="{{ currentState.icon }}"></mat-icon>
+  <h2 [ngClass]="currentState.class">{{ currentState.name }}</h2>
 </div>

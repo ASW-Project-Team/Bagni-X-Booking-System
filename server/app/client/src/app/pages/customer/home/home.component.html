@@ -41,7 +41,7 @@
               [price]="rankUmbrella.price + ' €/gg'"
               [more-info]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
               [sale]="rankUmbrella.sales.length > 0"
-              [last-card]="rankUmbrellas.indexOf(rankUmbrella) >= services.length - 1">
+              [is-last-card]="rankUmbrellas.indexOf(rankUmbrella) >= services.length - 1">
             </app-salable-card>
           </li>
         </ul>

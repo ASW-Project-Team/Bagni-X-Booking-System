@@ -38,28 +38,22 @@
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-start;
-    align-items: baseline;
+    align-items: center;
     flex-wrap: wrap;
     margin-top: -4px; // the negative margin compensates the chips' margin top, useful when they wrap
 
-    @mixin chip {
-      border-radius: 48px;
-      background-color: $primaryColor;
-      color: $backgroundColor;
+    @mixin salable-chip {
+      @include chip;
       margin-top: 4px;
-      @include responsiveProp(padding-left, $defaultMargin);
-      @include responsiveProp(padding-right, $defaultMargin);
-      @include responsiveProp(padding-top, $quarterMargin);
-      @include responsiveProp(padding-bottom, $quarterMargin);
       @include responsiveProp(margin-left, $halfMargin);
     }
 
     .price-chip {
-      @include chip;
+      @include salable-chip;
     }
 
     .more-info-chip {
-      @include chip;
+      @include salable-chip;
       background-color: $secondaryColor;
       color: $secondaryControlColor;
     }

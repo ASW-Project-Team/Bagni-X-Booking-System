@@ -17,7 +17,7 @@ export class SalableCardComponent implements OnInit {
   @Input('price') price: string;
   @Input('more-info') moreInfo: string;
   @Input('sale') sale: boolean = false;
-  @Input('last-card') isLastCard: boolean = false;
+  @Input('is-last-card') isLastCard: boolean = false;
 
   constructor() { }
 

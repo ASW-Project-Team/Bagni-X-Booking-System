@@ -18,10 +18,6 @@
     text-decoration: none;
   }
 
-  .mat-icon {
-    vertical-align: baseline;
-  }
-
   .back-action {
     flex-shrink: 0;
     @include responsiveProp(margin-right, $halfMargin);
