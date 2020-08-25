@@ -22,3 +22,19 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   -webkit-line-clamp: $lineCount;
   -webkit-box-orient: vertical;
 }
+
+@mixin singleLineEllispis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin chip {
+  border-radius: 48px;
+  background-color: $primaryColor;
+  color: $backgroundColor;
+  @include responsiveProp(padding-left, $defaultMargin);
+  @include responsiveProp(padding-right, $defaultMargin);
+  @include responsiveProp(padding-top, $quarterMargin);
+  @include responsiveProp(padding-bottom, $quarterMargin);
+}

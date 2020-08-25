@@ -5,7 +5,7 @@
 
 
 // This must be at the top of the file; contains base boilerplate styles
-@import "styles/globals/boilerplates/base-styles";
+//@import "styles/globals/boilerplates/base-styles";
 
 // Normalize.css is a customisable CSS file that makes browsers render all
 // elements more consistently and in line with modern standards.
@@ -15,7 +15,7 @@
 @import "styles/globals/material-custom-theme";
 
 // main color utils, used across the app
-@import "styles/utils/utils";
+@import "styles/utils";
 
 /*
  * Start of Author-defined global styles
@@ -78,4 +78,4 @@ p {
 
 
 // this must be at the end of the file; contains boilerplate helpers
-@import "styles/globals/boilerplates/helper-classes";
+//@import "styles/globals/boilerplates/helper-classes";
