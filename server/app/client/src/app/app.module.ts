@@ -31,6 +31,9 @@ import { NewsComponent } from './pages/customer/news/news.component';
 import { CustomerMainAppbarComponent } from './shared/components/appbars/customer-main-appbar/customer-main-appbar.component';
 import { NestedAppbarComponent } from './shared/components/appbars/nested-appbar/nested-appbar.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { BookingCardComponent } from './shared/components/booking-card/booking-card.component';
+import { BookingStateComponent } from './shared/components/booking-state/booking-state.component';
+import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
 
 @NgModule({
   declarations: [
@@ -48,10 +51,13 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     LoadingScreenComponent,
     NewsCardComponent,
     NewsDatePipe,
+    BookingDatePipe,
     NewsDatePipeExtended,
     NewsComponent,
     CustomerMainAppbarComponent,
     NestedAppbarComponent,
+    BookingCardComponent,
+    BookingStateComponent,
   ],
   imports: [
     BrowserModule,

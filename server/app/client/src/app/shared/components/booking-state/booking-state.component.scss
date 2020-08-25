@@ -1,0 +1,17 @@
+@import "~src/styles/utils";
+
+.state-container {
+
+}
+
+.state-positive {
+  color: $okColor;
+}
+
+.state-negative {
+  color: $errorColor;
+}
+
+.state-warning {
+  color: $warningColor;
+}
