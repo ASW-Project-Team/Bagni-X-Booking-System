@@ -14,7 +14,7 @@ export class NewsFeedComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.getFeed().subscribe(data => {
-      this.feed = data.feed;
+      this.feed = data;
     });
   }
 }

@@ -45,7 +45,7 @@ export class BookingCardComponent implements OnInit {
 
   getDescription(): string {
     let description = '';
-    let rankIds: string[] = [];
+    let rankNames: string[] = [];
 
     if (!this.booking) {
       return description;
@@ -56,14 +56,14 @@ export class BookingCardComponent implements OnInit {
 
     } else if (this.booking.umbrellas.length > 1) {
       for (let i = 0; i < this.booking.umbrellas.length; i++) {
-        if (rankIds.indexOf(this.booking.umbrellas[i].rank._id) === -1) {
-          rankIds.push(this.booking.umbrellas[i].rank._id);
+        if (rankNames.indexOf(this.booking.umbrellas[i].rank.name) === -1) {
+          rankNames.push(this.booking.umbrellas[i].rank.name);
         }
       }
 
-      for (let i = 0; i < rankIds.length; i++) {
-        description += rankIds[i];
-        if (i < rankIds.length - 1) {
+      for (let i = 0; i < rankNames.length; i++) {
+        description += rankNames[i];
+        if (i < rankNames.length - 1) {
           description += ', ';
         }
       }

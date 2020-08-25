@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {Booking} from "../../../shared/models/booking.model";
+import {ApiService} from "../../../core/api.service";
+
 
 @Component({
   selector: 'app-bookings',
@@ -6,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bookings.component.scss']
 })
 export class BookingsComponent implements OnInit {
+  bookings: Booking[] = [];
 
-  constructor() { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
+    this.apiService.getUserBookings().subscribe(data => {
+      this.bookings = data;
+    });
   }
-
 }

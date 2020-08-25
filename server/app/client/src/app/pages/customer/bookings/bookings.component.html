@@ -1,5 +1,22 @@
 <div class="page">
-  <p>Bookings works!</p>
+  <p>Da questa pagina è possibile consultare le prenotazioni portate avanti presso lo stabilimento, e modificarne
+    eventuali dettagli. Le prenotazioni vengono mostrate in ordine cronologico.</p>
+
+  <div *ngIf="!bookings || bookings.length > 0; else loadingScreen">
+    <ul class="bookings-container">
+      <li *ngFor="let booking of bookings">
+        <app-booking-card
+          [routerLink]="['/booking', booking.id]"
+          [booking]="booking">
+        </app-booking-card>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loadingScreen>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen></app-loading-screen>
+  </ng-template>
 
 </div>
 
