@@ -245,10 +245,10 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
-/*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
-       "_id", req.params.id);*/
+    /*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+           "_id", req.params.id);*/
 
-     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
+    collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
         if (!errDocName)
             errDocName = documentName + "not found";
@@ -270,8 +270,8 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
 module.exports.deleteFirstLevelCollectionByUsername = function (req, res, documentName, collFirstLevel,
                                                                 errDocName) {
 
-/*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
-        "username", req.body.username);*/
+    /*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+            "username", req.body.username);*/
 
     collFirstLevel.deleteOne({ "username": req.body.username }, (err, docResult)  => {
 
@@ -297,17 +297,11 @@ module.exports.deleteFirstLevelCollectionByUsername = function (req, res, docume
  */
 /*module.exports.deleteFirstLevelCollectionByProperty = function(req, res, documentName, collFirstLevel, errDocName,
                                                                 propertyName, propertyValue) {
-
-
     collFirstLevel.deleteOne({ propertyName: propertyValue }, (err, docResult)  => {
-
         console.log(propertyName);
         console.log(propertyValue);
-
         if (!errDocName)
             errDocName = documentName + " not found";
-
-
         this.checkError(err, docResult, req, res, errDocName, true);
         this.response(res, "Delete on " + documentName + " completed!");
     });
@@ -460,9 +454,9 @@ module.exports.updatePassword = function(res, password, elem) {
 
     this.checkPassword(res, password, ()=>{
 
-       elem.hashedPassword = this.sha512(password, elem.salt);
+        elem.hashedPassword = this.sha512(password, elem.salt);
 
-       this.correctSave(elem, this.status_created, res);
+        this.correctSave(elem, this.status_created, res);
     });
 }
 
@@ -521,29 +515,29 @@ module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
-        this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
+            this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
-            let umbrellaNumberFree = [];
-            for (let rank in catalog.rank_umbrellas) {
+                let umbrellaNumberFree = [];
+                for (let rank in catalog.rank_umbrellas) {
 
-                if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+                    if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
 
-                    for (let i = catalog.rank_umbrellas[rank].from_umbrella;
-                         i < catalog.rank_umbrellas[rank].to_umbrella;
-                         i++){
+                        for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                             i < catalog.rank_umbrellas[rank].to_umbrella;
+                             i++){
 
-                        if (!umbrellasNumberUsed.includes(i)){
+                            if (!umbrellasNumberUsed.includes(i)){
 
-                            umbrellaNumberFree.push(i);
+                                umbrellaNumberFree.push(i);
+                            }
                         }
                     }
                 }
-            }
 
-            func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
+                func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
+            });
+
         });
-
-    });
 
 }
 
@@ -560,34 +554,34 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
 
-        let umbrellas = [];
+            let umbrellas = [];
 
 
-        for (let umbrellaNumber in umbrellasNumber) {
+            for (let umbrellaNumber in umbrellasNumber) {
 
-            let umbrella = new Umbrella();
+                let umbrella = new Umbrella();
 
-            if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
-                umbrella.number = umbrellasNumber[umbrellaNumber];
+                if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
+                    umbrella.number = umbrellasNumber[umbrellaNumber];
 
-                for (let rank in catalog.rank_umbrellas) {
+                    for (let rank in catalog.rank_umbrellas) {
 
-                    if (catalog.rank_umbrellas.hasOwnProperty(rank)
-                        && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
-                        && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
+                        if (catalog.rank_umbrellas.hasOwnProperty(rank)
+                            && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
+                            && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
 
-                        umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
-                        umbrellas.push(umbrella);
-                        break;
+                            umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
+                            umbrellas.push(umbrella);
+                            break;
+                        }
                     }
                 }
+
             }
 
-        }
+            func(umbrellas);
 
-        func(umbrellas);
-
-    });
+        });
 
 
 }
@@ -605,10 +599,10 @@ module.exports.servicesAvailable = function (req, res, services, func){
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
         mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
-        let catalogServices = catalog.services.map(x => x._id);
-        func(services.every(s => catalogServices.includes(s)));
+            let catalogServices = catalog.services.map(x => x._id);
+            func(services.every(s => catalogServices.includes(s)));
 
-    });
+        });
 
 }
 
@@ -624,9 +618,9 @@ module.exports.userExist = function (req, res, user_id, func){
     this.findByIdFirstLevelCollection(req, res, "user", User, "User",
         mongoose.Types.ObjectId(user_id), (err, user)=>{
 
-        func(user);
+            func(user);
 
-    });
+        });
 
 }
 

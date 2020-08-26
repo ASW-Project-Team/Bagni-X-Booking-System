@@ -27,29 +27,29 @@ module.exports.create_booking = function(req, res) {
 			commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
 				(areUmbrellasFree) => {
 
-				if (areUmbrellasFree) {
-					// create umbrellas
-					commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
+					if (areUmbrellasFree) {
+						// create umbrellas
+						commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
 
-						let booking = new Booking(req.body);
+							let booking = new Booking(req.body);
 
-						booking.umbrellas = umbrellas;
-						booking._id = mongoose.Types.ObjectId();
+							booking.umbrellas = umbrellas;
+							booking._id = mongoose.Types.ObjectId();
 
-						booking.date_from = req.body.from;
-						booking.date_to = req.body.to;
-						// to confirm and to cancel
-						booking.confirmed = false
-						booking.cancelled = false
+							booking.date_from = req.body.from;
+							booking.date_to = req.body.to;
+							// to confirm and to cancel
+							booking.confirmed = false
+							booking.cancelled = false
 
-						// add as first element
-						commonController.correctSave(booking, commonController.status_created, res);
-					})
-				} else {
-					commonController.notify(res, commonController.status_error, "Umbrella aren't free");
-				}
+							// add as first element
+							commonController.correctSave(booking, commonController.status_created, res);
+						})
+					} else {
+						commonController.notify(res, commonController.status_error, "Umbrella aren't free");
+					}
 
-			})
+				})
 
 		} else {
 			commonController.notify(res, commonController.bad_request, "Parameters wrong");
@@ -65,10 +65,10 @@ module.exports.create_booking = function(req, res) {
  */
 module.exports.get_booking = function(req, res) {
 
-    commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
 		req.params.id, (err, docResult)=>{
 			commonController.response(res, docResult);
-	});
+		});
 }
 
 
@@ -82,92 +82,92 @@ module.exports.get_booking = function(req, res) {
 module.exports.modify_booking = function(req, res) {
 
 
-    // FIXME con tutte promise
-    bookingAndUmbrellaServiceUserChecks(req, res);
+	// FIXME con tutte promise
+	bookingAndUmbrellaServiceUserChecks(req, res);
 
 }
 
 async function bookingAndUmbrellaServiceUserChecks(req, res) {
 
-    // Check if bookings exist
-    await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
-        req.params.id, async (err, docResult)=> {
+	// Check if bookings exist
+	await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+		req.params.id, async (err, docResult)=> {
 
-        if (docResult){
-            if (checkParams(req.body.from, req.body.to, req.body.price,
-                req.body.confirmed, req.body.cancelled, docResult)) {
+			if (docResult){
+				if (checkParams(req.body.from, req.body.to, req.body.price,
+					req.body.confirmed, req.body.cancelled, docResult)) {
 
-                await umbrellaServiceAndUserChecks(req, res, docResult)
-            }
-        } else {
-            commonController.parameter_bad_formatted(res)
-        }
-    });
+					await umbrellaServiceAndUserChecks(req, res, docResult)
+				}
+			} else {
+				commonController.parameter_bad_formatted(res)
+			}
+		});
 
 }
 
 async function umbrellaServiceAndUserChecks(req, res, docResult) {
 
-    if (req.body.umbrellas) {
+	if (req.body.umbrellas) {
 
-        // Check if umbrellas are free
-        await commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
-            async (areUmbrellasFree) => {
-                if (areUmbrellasFree){
+		// Check if umbrellas are free
+		await commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
+			async (areUmbrellasFree) => {
+				if (areUmbrellasFree){
 
-                    await serviceAndUserChecks(req, res, docResult);
+					await serviceAndUserChecks(req, res, docResult);
 
-                } else {
-                    commonController.parameter_bad_formatted(res);
-                }
-            });
-    } else {
-        await serviceAndUserChecks(req, res, docResult);
-    }
+				} else {
+					commonController.parameter_bad_formatted(res);
+				}
+			});
+	} else {
+		await serviceAndUserChecks(req, res, docResult);
+	}
 }
 
 async function serviceAndUserChecks(req, res, docResult) {
 
-    if (req.body.services) {
+	if (req.body.services) {
 
-        // Check if user exist
-        await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
+		// Check if user exist
+		await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
 
-            if (areServicesAvailable){
+			if (areServicesAvailable){
 
-                await userExist(req, res, docResult);
-            } else {
-                commonController.parameter_bad_formatted(res);
-            }
-        });
-    } else {
-        await userExist(req, res, docResult)
-    }
+				await userExist(req, res, docResult);
+			} else {
+				commonController.parameter_bad_formatted(res);
+			}
+		});
+	} else {
+		await userExist(req, res, docResult)
+	}
 
 }
 
 async function userExist(req, res, docResult) {
 
-    if (req.body.user_id){
+	if (req.body.user_id){
 
-        // Check if user exist
-        await commonController.userExist(req, res, req.body.user_id, async (isUserPresent)=>{
+		// Check if user exist
+		await commonController.userExist(req, res, req.body.user_id, async (isUserPresent)=>{
 
-            if (isUserPresent) {
+			if (isUserPresent) {
 
-                await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-                    req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
-                    req.body.services, docResult);
+				await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
+					req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
+					req.body.services, docResult);
 
-            } else {
-                commonController.parameter_bad_formatted(res);
-            }
-        });
-    } else {
-        await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-            req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
-            req.body.services, docResult);
-    }
+			} else {
+				commonController.parameter_bad_formatted(res);
+			}
+		});
+	} else {
+		await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
+			req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
+			req.body.services, docResult);
+	}
 }
 
 /**
@@ -208,7 +208,7 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 }
 
 async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, user_id,
-                            umbrellas, services, doc){
+							umbrellas, services, doc){
 
 	if (user_id)
 		doc.user_id = user_id
@@ -261,7 +261,7 @@ module.exports.read_bookings = function(req, res) {
 				docResult.filter(x => mongoose.Types.ObjectId(req.body.user_id) === x.user_id);
 			else
 				commonController.returnPages(req.body.page_id, req.body.page_size, req, res, docResult, collectionName)
-	});
+		});
 
 }
 
@@ -274,5 +274,3 @@ module.exports.delete_booking = function(req, res) {
 
 	commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
 }
-
-
