@@ -2,16 +2,13 @@
   <p>Da questa pagina è possibile consultare il feed, ovvero la sezione dedicata alle news dello stabilimento. Rimani
     sempre aggiornato sulle ultime novità!</p>
 
-  <div *ngIf="!feed || feed.length > 0; else loadingScreen">
-    <ul class="feed-container">
-      <li *ngFor="let news of feed">
+  <div *ngIf="!newsFeed || newsFeed.length > 0; else loadingScreen">
+    <ul class="news-feed-container">
+      <li *ngFor="let news of newsFeed">
         <app-news-card
           [routerLink]="['/news', news._id, {title: news.title}]"
-          [title]="news.title"
-          [description]="news.description"
-          [imageUrl]="news.image"
-          [date]="news.date"
-          [last-card]="feed.indexOf(news) >= feed.length - 1">
+          [news]="news.title"
+          [is-last-card]="newsFeed.indexOf(news) >= newsFeed.length - 1">
         </app-news-card>
       </li>
     </ul>

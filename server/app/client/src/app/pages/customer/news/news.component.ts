@@ -8,13 +8,13 @@ import {News} from "../../../shared/models/news.model";
   styleUrls: ['./news.component.scss']
 })
 export class NewsComponent implements OnInit {
-  feed: News[] = [];
+  newsFeed: News[] = [];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.apiService.getAllNews().subscribe(data => {
-      this.feed = data;
+      this.newsFeed = data;
     });
   }
 }

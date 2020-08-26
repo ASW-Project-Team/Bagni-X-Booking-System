@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {News} from "../../models/news.model";
 
 /**
  * Card that represente a news from the feed.
@@ -10,11 +11,8 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./news-card.component.scss']
 })
 export class NewsCardComponent implements OnInit {
-  @Input('imageUrl') imageUrl: string;
-  @Input('title') title: string;
-  @Input('description') description: string;
-  @Input('date') date: Date;
-  @Input('last-card') lastCard: boolean = false;
+  @Input('news') news: News;
+  @Input('is-last-card') isLastCard: boolean = false;
 
   constructor() { }
 

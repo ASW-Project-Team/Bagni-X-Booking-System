@@ -1,4 +1,6 @@
-export const homeMock: any = {
+import {HomeData} from "../../shared/models/home-data.model";
+
+export const homeMock: HomeData = {
   mainCard: {
     _id: "1",
     title: "La tua spiaggia, a portata di click!",
