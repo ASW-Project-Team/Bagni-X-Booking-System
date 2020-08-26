@@ -7,7 +7,7 @@
       <li *ngFor="let news of newsFeed">
         <app-news-card
           [routerLink]="['/news', news._id, {title: news.title}]"
-          [news]="news.title"
+          [news]="news"
           [is-last-card]="newsFeed.indexOf(news) >= newsFeed.length - 1">
         </app-news-card>
       </li>
