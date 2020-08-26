@@ -1,24 +1,17 @@
 @import "~src/styles/utils";
 
-.image {
+p {
   @include responsiveProp(margin-bottom, $defaultMargin);
 }
 
-h1.title {
-  text-align: center;
-  @include responsiveProp(margin-bottom, $quarterMargin);
+
+.feed-container {
+  box-sizing: border-box;
+
+  p {
+    margin: 0;
+  }
 }
 
-p.date {
-  text-align: center;
-  margin-bottom: 0;
-}
 
-.divider {
-  height: 1px;
-  background-color: #cccccc;
-  width: 160px;
-  margin: 0 auto;
-  @include responsiveProp(margin-top, $defaultMargin);
-  @include responsiveProp(margin-bottom, $defaultMargin);
-}
+

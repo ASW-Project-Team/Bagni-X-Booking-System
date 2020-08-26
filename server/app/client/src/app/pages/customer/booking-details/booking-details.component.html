@@ -1,0 +1,29 @@
+<div class="page">
+  <div *ngIf="downloadedBooking; else loadingScreen">
+    <div class="booking-state" class="booking-state">
+      <app-booking-state-extended [booking]="downloadedBooking"></app-booking-state-extended>
+    </div>
+    <div class="booking-time">
+      <mat-icon svgIcon="calendar-outline" class="time-icon"></mat-icon>
+      <p class="time--line">Dal {{ downloadedBooking.dateFrom | bookingDate }},
+        al {{ downloadedBooking.dateTo | bookingDate }}</p>
+    </div>
+
+    <div class="summary">
+      <app-booking-summary [booking]="downloadedBooking"></app-booking-summary>
+    </div>
+
+
+    <h1>ID prenotazione</h1>
+    <p>{{ downloadedBooking.id }}</p>
+  </div>
+
+  <ng-template #loadingScreen>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen></app-loading-screen>
+  </ng-template>
+</div>
+
+<!-- Header and fab go last, to make them appear over content -->
+<app-nested-appbar title="{{ getTitleIfAvailable() }}" back-route="/bookings" back-page-name="Prenotazioni"
+                   [actions]="[deleteAction]"></app-nested-appbar>

@@ -30,7 +30,7 @@ export class ApiService {
     return this.http.get('https://localhost:4200/api/home');
   }
 
-  public getFeed(): Observable<any> {
+  public getAllNews(): Observable<any> {
     if(isDevMode()) {
       return this.mockGenerator.observableMock(newsFeedMock);
     }
