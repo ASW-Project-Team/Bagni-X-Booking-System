@@ -1,4 +1,4 @@
-import {Booking} from "../booking.model";
+import {BookingModel} from "../booking.model";
 
 export interface BookingState {
   name: string,
@@ -9,7 +9,7 @@ export interface BookingState {
 
 export class BookingStateHandler {
 
-  constructor(private booking: Booking) {}
+  constructor(private booking: BookingModel) {}
 
   possibleStates: BookingState[] = [
     {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Booking} from "../../../shared/models/booking.model";
+import {Booking, BookingModel} from "../../../shared/models/booking.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -13,8 +13,10 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
   styleUrls: ['./booking-details.component.scss']
 })
 export class BookingDetailsComponent implements OnInit {
+  // params
   bookingId: string;
   bookingTitle: string;
+
   downloadedBooking: Booking;
   deleteAction: AppbarAction;
 
@@ -56,51 +58,27 @@ export class BookingDetailsComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.bookingId = params.id;
-      //this.bookingTitle = params.title;
-      this.api.getBooking(this.bookingId).subscribe(booking => {
-        this.downloadedBooking = booking;
+      this.bookingTitle = params.title;
+
+      this.api.getBooking(this.bookingId).subscribe(bookingData => {
+        this.downloadedBooking = new Booking(bookingData);
       });
     });
   }
 
 
   /**
-   * Generates the title of the card, basing on the booked umbrellas.
+   * Compute appbar title basing on the available information.
    */
-  getTitleIfAvailable(): string {
+  getAppbarTitle() : string {
     if (this.downloadedBooking) {
-      return this.getDownloadedTitle();
+      return this.downloadedBooking.getTitle();
     } else if (this.bookingTitle) {
       return this.bookingTitle;
     } else {
       return '';
     }
   }
-
-  private getDownloadedTitle(): string {
-    let title = '';
-
-    if (!this.downloadedBooking) {
-      return title;
-    }
-
-    if (this.downloadedBooking.umbrellas.length == 1) {
-      title = 'Ombrellone n°' + this.downloadedBooking.umbrellas[0].number;
-
-    } else if (this.downloadedBooking.umbrellas.length > 1) {
-      title = 'Ombrelloni n°';
-
-      for (let i = 0; i < this.downloadedBooking.umbrellas.length; i++) {
-        title += this.downloadedBooking.umbrellas[i].number;
-        if (i < this.downloadedBooking.umbrellas.length - 1) {
-          title += ', ';
-        }
-      }
-    }
-
-    return title;
-  }
-
 }
 
 

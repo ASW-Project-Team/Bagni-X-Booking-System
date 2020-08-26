@@ -1,16 +1,16 @@
 <h1>Riassunto</h1>
 
 <ul>
-  <li *ngFor="let line of computeCostLines()">
-    <div class="cost-line">
-      <div class="cost-description">{{line.name}}</div>
-      <h2 class="cost-amount">{{line.cost | currency: 'EUR'}}</h2>
+  <li *ngFor="let item of booking.computeCostItems()">
+    <div class="cost-item">
+      <div class="cost-description">{{ item.description }}</div>
+      <h2 class="cost-amount">{{ item.amount | currency: 'EUR' }}</h2>
     </div>
   </li>
 </ul>
 <div class="divider"></div>
 
-<div class="cost-line">
-  <div class="cost-description">{{computeTotal().name}}</div>
-  <h2 class="cost-amount">{{computeTotal().cost | currency: 'EUR'}}</h2>
+<div class="cost-item">
+  <div class="cost-description">{{ booking.computeTotal().description }}</div>
+  <h2 class="cost-amount">{{ booking.computeTotal().amount | currency: 'EUR' }}</h2>
 </div>

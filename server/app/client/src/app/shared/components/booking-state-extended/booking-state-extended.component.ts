@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Booking} from "../../models/booking.model";
-import {BookingState, BookingStateHandler} from "../../models/component-specific/booking-state.model";
+import {BookingState} from "../../models/component-specific/booking-state.model";
 
 @Component({
   selector: 'app-booking-state-extended',
@@ -14,7 +14,6 @@ export class BookingStateExtendedComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    const bookingStateHandler = new BookingStateHandler(this.booking);
-    this.currentState = bookingStateHandler.getCurrentState();
+    this.currentState = this.booking.getState();
   }
 }

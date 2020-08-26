@@ -1,4 +1,6 @@
-export const bookingsMock = [
+import {BookingModel} from "../../shared/models/booking.model";
+
+export const bookingsMock: BookingModel[] = [
   {
     id: "0",
     userId: "0123",
@@ -16,9 +18,9 @@ export const bookingsMock = [
           image: "/assets/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
-          price: "12",
-          fromUmbrella: "1",
-          toUmbrella: "20",
+          price: 12,
+          fromUmbrella: 1,
+          toUmbrella: 20,
           sales: [
             {
               _id: "0",
@@ -66,9 +68,9 @@ export const bookingsMock = [
           image: "/assets/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
-          price: "12",
-          fromUmbrella: "1",
-          toUmbrella: "20",
+          price: 12,
+          fromUmbrella: 1,
+          toUmbrella: 20,
           sales: [
             {
               _id: "0",
@@ -81,15 +83,15 @@ export const bookingsMock = [
       },
       {
         id: "1",
-        number: 10,
+        number: 22,
         rank: {
           _id: "0",
           image: "/assets/home-card-2.jpg",
           name: "Seconda fila",
           description: "Ombrelloni in prima fila i più belli.",
-          price: "12",
-          fromUmbrella: "10",
-          toUmbrella: "20",
+          price: 13.50,
+          fromUmbrella: 10,
+          toUmbrella: 20,
           sales: [
             {
               _id: "0",
@@ -114,8 +116,8 @@ export const bookingsMock = [
   }
 ];
 
-export const bookingMock = {
-  id: "0",
+export const bookingMock: BookingModel = {
+  id: "1",
   userId: "0123",
   confirmed: true,
   cancelled: false,
@@ -131,9 +133,9 @@ export const bookingMock = {
         image: "/assets/home-card-1.jpg",
         name: "Prima fila",
         description: "Ombrelloni in prima fila i più belli.",
-        price: "12",
-        fromUmbrella: "1",
-        toUmbrella: "20",
+        price: 12,
+        fromUmbrella: 30,
+        toUmbrella: 40,
         sales: [
           {
             _id: "0",

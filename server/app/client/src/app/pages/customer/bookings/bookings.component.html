@@ -6,7 +6,7 @@
     <ul class="bookings-container">
       <li *ngFor="let booking of bookings">
         <app-booking-card
-          [routerLink]="['/bookings', booking.id]"
+          [routerLink]="['/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
           [is-last-card]="bookings.indexOf(booking) >= bookings.length - 1">
         </app-booking-card>
