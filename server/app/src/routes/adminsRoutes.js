@@ -6,8 +6,8 @@ module.exports.set = function(app) {
     
     app.route('/api/admins/')
         .delete(adminController.delete_admin)
-        .put(adminController.change_password)
-        .post(adminController.create_admin);
+        .put(adminController.change_password);
+        //.post(adminController.create_admin);
 
 
 
