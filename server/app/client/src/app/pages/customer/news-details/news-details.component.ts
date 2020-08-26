@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {AppbarAction} from "../../../shared/components/appbars/nested-appbar/appbar.action";
+import {AppbarAction} from "../../../shared/models/component-specific/appbar.action";
 import {ApiService} from "../../../core/api.service";
 import {News} from "../../../shared/models/news.model";
 import {SharingService} from "../../../core/sharing.service";

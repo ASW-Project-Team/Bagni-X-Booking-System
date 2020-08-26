@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,6 +37,8 @@ import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
 import { BookingDetailsComponent } from './pages/customer/booking-details/booking-details.component';
 import { BookingStateExtendedComponent } from './shared/components/booking-state-extended/booking-state-extended.component';
 import { BookingSummaryComponent } from './shared/components/booking-summary/booking-summary.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dialog.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,7 @@ import { BookingSummaryComponent } from './shared/components/booking-summary/boo
     BookingDetailsComponent,
     BookingStateExtendedComponent,
     BookingSummaryComponent,
+    AlertDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,7 +80,8 @@ import { BookingSummaryComponent } from './shared/components/booking-summary/boo
     MatButtonModule,
     MatProgressSpinnerModule,
     MatRippleModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
   ],
   providers: [
   ],

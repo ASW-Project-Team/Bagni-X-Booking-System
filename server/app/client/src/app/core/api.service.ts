@@ -62,4 +62,12 @@ export class ApiService {
 
     return this.http.get('https://localhost:4200/api/bookings/' + bookingId);
   }
+
+  public deleteBooking(bookingId: string): Observable<any> {
+    if (isDevMode()) {
+      return this.mockGenerator.observableMock({});
+    }
+
+    return this.http.delete('https://localhost:4200/api/bookings/' + bookingId);
+  }
 }

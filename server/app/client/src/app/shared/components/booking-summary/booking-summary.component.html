@@ -1,2 +1,16 @@
 <h1>Riassunto</h1>
-<p>Riassunto todo</p>
+
+<ul>
+  <li *ngFor="let line of computeCostLines()">
+    <div class="cost-line">
+      <div class="cost-description">{{line.name}}</div>
+      <h2 class="cost-amount">{{line.cost | currency: 'EUR'}}</h2>
+    </div>
+  </li>
+</ul>
+<div class="divider"></div>
+
+<div class="cost-line">
+  <div class="cost-description">{{computeTotal().name}}</div>
+  <h2 class="cost-amount">{{computeTotal().cost | currency: 'EUR'}}</h2>
+</div>

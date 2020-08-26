@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {Booking} from "../../../shared/models/booking.model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {AppbarAction} from "../../../shared/components/appbars/nested-appbar/appbar.action";
+import {AppbarAction} from "../../../shared/models/component-specific/appbar.action";
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: 'app-booking-details',
@@ -19,15 +21,37 @@ export class BookingDetailsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog,
+              private router: Router) { }
 
   ngOnInit(): void {
+    let context = this;
     this.deleteAction = {
       id: "0",
       name: "Annulla prenotazione",
       icon: 'trash-can-outline',
       isMdi: true,
-      execute: function () { /* todo */ }
+      execute: function () {
+        context.dialog.open(AlertDialogComponent, {
+          data: {
+            content: "Sei sicuro di voler annullare la tua prenotazione? L'azione non è reversibile.",
+            positiveAction: {
+              text: "Sì, annulla",
+              execute: function() {
+                context.api.deleteBooking(context.bookingId).subscribe(resp => {
+                 context.router.navigate(['/bookings']);
+                  context.snackBar.open("Prenotazione annullata.", null, { duration: 4000 });
+                });
+              }
+            },
+            negativeAction: {
+              text: "No",
+              execute: function() { }
+            }
+          }
+        });
+      }
     };
 
     this.route.params.subscribe(params => {
@@ -78,3 +102,5 @@ export class BookingDetailsComponent implements OnInit {
   }
 
 }
+
+
