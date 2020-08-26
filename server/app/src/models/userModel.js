@@ -18,7 +18,7 @@ const initializeModel = function(mongoose) {
         // contacts
         name: String,
         surname: String,
-        phone: {type: String, default: null}, // fixme add validator from server
+        phone: {type: String, default: null},
         address: {type: String, default: null},
 
         // authentication
