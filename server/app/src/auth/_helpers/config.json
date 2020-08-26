@@ -1,5 +1,0 @@
-{
-  "connectionString": "mongodb://localhost/node-mongo-registration-login-api",
-  "secretAdmin": "admin",
-  "secretUser": "user"
-}

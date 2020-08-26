@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
 const commonController = require("./commonController");
-const userService = require('../auth/_helpers/utils');
+const utils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 // Before this queries we have to check the permissions to interact with db
 
@@ -85,13 +85,7 @@ exports.update_user = function(req, res) {
 };
 
 exports.authenticate = function(req, res, next) {
-    userService.authenticate(req.body)
+    utils.authenticate(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
-        .catch(err => next(err));
-}
-
-exports.register = function(req, res, next) {
-    this.create_user(req.body)
-        .then(() => res.json({}))
         .catch(err => next(err));
 }

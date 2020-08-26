@@ -1,31 +1,8 @@
 const mongoose = require('mongoose');
 const Admin = require("../models/adminModel")(mongoose);
 const commonController = require("./commonController");
-
-
-module.exports.authenticate_admin = function(req, res) {
-    findAdmin(req, res, req.body.username, req.body.password,
-        (elemFounded) => {
-
-        if (elemFounded.hashedPassword === commonController.sha512(req.body.password, elemFounded.salt))
-            commonController.response(res, "Authenticated");
-        else
-            commonController.serve_plain_404(req, res, "admin");
-    }, () =>{
-
-            commonController.serve_plain_404(req, res, "admin");
-
-    });
-/*    commonController.findAllFromCollection(req, res, "admin", Admin, "",
-        (err, docResult) => {
-            let admin = docResult.filter(x => x.username === req.body.username
-                             && commonController.sha512(req.body.password, x.salt) === x.hashedPassword);
-            if (admin)
-                commonController.response(res, "Authenticated");
-            else
-                commonController.serve_plain_404(req, res, "admin");
-        })*/
-};
+const utils = require('../authentication/utils');
+const bcrypt = require('bcryptjs');
 
 /**
  * Create a admin that isn't root. This admin topology can't create new admin.
@@ -43,8 +20,12 @@ module.exports.create_admin = function(req, res) {
 
             let admin = new Admin(req.body)
             admin._id = mongoose.Types.ObjectId();
-            admin.salt = commonController.genRandomString(commonController.salt_length);
-            admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+
+            if(req.body.password){
+                admin.hash = bcrypt.hashSync(req.body.password, 10);
+            }
+            //todo admin.salt = commonController.genRandomString(commonController.salt_length);
+            //admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
             commonController.correctSave(admin, commonController.status_created, res)
         })
@@ -117,4 +98,15 @@ function findAdmin(req, res, username, password, funcFounded, funcNotFounded) {
         }
 
     }, req.body.username, req.body.password)
+}
+
+/**
+ * @param {any} req
+ * @param {Response<any>|Request<ParamsDictionary, any, any, QueryString.ParsedQs>} res
+ * @param {NextFunction|Response<any>} next
+ */
+exports.authenticate = function(req, res, next) {
+    utils.authenticate(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+        .catch(err => next(err));
 }

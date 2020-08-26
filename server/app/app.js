@@ -7,11 +7,8 @@ const path = require('path');
 const compression = require("compression");
 const DOCKER = false;
 
-
-// auth
-const jwt = require('./src/auth/_helpers/jwt');
-const errorHandler = require('./src/auth/_helpers/error-handler');
-// end auth
+// authentication middleware
+const jwt = require('./src/authentication/jwtMiddleware');
 
 global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
 const port = 3000;
@@ -36,11 +33,8 @@ const main = function () {
 
     app.use(express.static(ANGULAR_CLIENT_PATH));
 
-    // auth
+    // authentication middleware
     app.use(jwt());
-    //app.use('/users', require('./src/auth/users/users.controller'));
-    app.use(errorHandler);
-    // end auth
 
     const routes = require('./src/routes/routes');
     routes.set(app);

@@ -195,7 +195,7 @@ if [ "$originalArgOne" = 'mongod' ]; then
 	# pre-check a few factors to see if it's even worth bothering with initdb
 	shouldPerformInitdb=
 	if [ "$MONGO_INITDB_ROOT_USERNAME" ] && [ "$MONGO_INITDB_ROOT_PASSWORD" ]; then
-		# if we have a username/password, let's set "--auth"
+		# if we have a username/password, let's set "--authentication"
 		_mongod_hack_ensure_arg '--auth' "$@"
 		set -- "${mongodHackedArgs[@]}"
 		shouldPerformInitdb='true'
@@ -246,7 +246,7 @@ if [ "$originalArgOne" = 'mongod' ]; then
 		_mongod_hack_ensure_arg_val --port 27017 "${mongodHackedArgs[@]}"
 		_mongod_hack_ensure_no_arg --bind_ip_all "${mongodHackedArgs[@]}"
 
-		# remove "--auth" and "--replSet" for our initial startup (see https://docs.mongodb.com/manual/tutorial/enable-authentication/#start-mongodb-without-access-control)
+		# remove "--authentication" and "--replSet" for our initial startup (see https://docs.mongodb.com/manual/tutorial/enable-authentication/#start-mongodb-without-access-control)
 		# https://github.com/docker-library/mongo/issues/211
 		_mongod_hack_ensure_no_arg --auth "${mongodHackedArgs[@]}"
 		if [ "$MONGO_INITDB_ROOT_USERNAME" ] && [ "$MONGO_INITDB_ROOT_PASSWORD" ]; then
