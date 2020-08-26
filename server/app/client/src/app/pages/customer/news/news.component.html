@@ -1,12 +1,17 @@
 <div class="page">
-  <div *ngIf="downloadedNews; else loadingScreen">
-    <div class="image">
-      <app-img-landscape [src]="downloadedNews.image"></app-img-landscape>
-    </div>
-    <h1 class="title">{{downloadedNews.title}}</h1>
-    <p class="date">{{downloadedNews.date | newsDateExtended}}</p>
-    <div class="divider"></div>
-    <p class="article">{{downloadedNews.description}}</p>
+  <p>Da questa pagina è possibile consultare il feed, ovvero la sezione dedicata alle news dello stabilimento. Rimani
+    sempre aggiornato sulle ultime novità!</p>
+
+  <div *ngIf="!newsFeed || newsFeed.length > 0; else loadingScreen">
+    <ul class="news-feed-container">
+      <li *ngFor="let news of newsFeed">
+        <app-news-card
+          [routerLink]="['/news', news._id, {title: news.title}]"
+          [news]="news"
+          [is-last-card]="newsFeed.indexOf(news) >= newsFeed.length - 1">
+        </app-news-card>
+      </li>
+    </ul>
   </div>
 
   <ng-template #loadingScreen>
@@ -16,4 +21,5 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar title="{{getTitleIfAvailable()}}" back-route="/news" back-page-name="Feed" [actions]="[shareAction]"></app-nested-appbar>
+<app-customer-main-appbar></app-customer-main-appbar>
+<app-fab title="Prenota" icon-name="calendar-plus" route="/new-booking"></app-fab>

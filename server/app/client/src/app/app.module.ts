@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/customer/home/home.component';
-import { NewsFeedComponent } from './pages/customer/news-feed/news-feed.component';
+import { NewsComponent } from './pages/customer/news/news.component';
 import { BookingsComponent } from './pages/customer/bookings/bookings.component';
 import { ProfileComponent } from './pages/customer/profile/profile.component';
 import { MainAppbarComponent } from './shared/components/appbars/main-appbar/main-appbar.component';
@@ -27,19 +27,24 @@ import { LoadingScreenComponent } from './shared/components/loading-screen/loadi
 import { NewsCardComponent } from './shared/components/news-card/news-card.component';
 import {NewsDatePipe, NewsDatePipeExtended} from "./shared/pipes/news-date.pipe";
 import { MatRippleModule } from '@angular/material/core';
-import { NewsComponent } from './pages/customer/news/news.component';
+import { NewsDetailsComponent } from './pages/customer/news-details/news-details.component';
 import { CustomerMainAppbarComponent } from './shared/components/appbars/customer-main-appbar/customer-main-appbar.component';
 import { NestedAppbarComponent } from './shared/components/appbars/nested-appbar/nested-appbar.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { BookingCardComponent } from './shared/components/booking-card/booking-card.component';
 import { BookingStateComponent } from './shared/components/booking-state/booking-state.component';
 import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
+import { BookingDetailsComponent } from './pages/customer/booking-details/booking-details.component';
+import { BookingStateExtendedComponent } from './shared/components/booking-state-extended/booking-state-extended.component';
+import { BookingSummaryComponent } from './shared/components/booking-summary/booking-summary.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    NewsFeedComponent,
+    NewsComponent,
     BookingsComponent,
     ProfileComponent,
     MainAppbarComponent,
@@ -53,11 +58,15 @@ import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
     NewsDatePipe,
     BookingDatePipe,
     NewsDatePipeExtended,
-    NewsComponent,
+    NewsDetailsComponent,
     CustomerMainAppbarComponent,
     NestedAppbarComponent,
     BookingCardComponent,
     BookingStateComponent,
+    BookingDetailsComponent,
+    BookingStateExtendedComponent,
+    BookingSummaryComponent,
+    AlertDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,7 +80,8 @@ import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
     MatButtonModule,
     MatProgressSpinnerModule,
     MatRippleModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
   ],
   providers: [
   ],

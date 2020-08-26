@@ -1,0 +1,32 @@
+@import "~src/styles/utils";
+
+.state-extended-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .state-icon {
+    @include responsiveProp(margin-right, $halfMargin);
+  }
+
+  .state-text {
+    display: flex;
+    flex-direction: column;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+.state-positive {
+  color: $okColor;
+}
+
+.state-negative {
+  color: $errorColor;
+}
+
+.state-warning {
+  color: $warningColor;
+}

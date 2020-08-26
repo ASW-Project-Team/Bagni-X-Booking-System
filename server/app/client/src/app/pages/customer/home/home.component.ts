@@ -3,6 +3,7 @@ import {HomeCard} from "../../../shared/models/home-card.model";
 import {ApiService} from "../../../core/api.service";
 import {Service} from "../../../shared/models/service.model";
 import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
+import {HomeData} from "../../../shared/models/home-data.model";
 
 @Component({
   selector: 'app-home',
@@ -11,19 +12,13 @@ import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
 })
 export class HomeComponent implements OnInit {
 
-  mainCard: HomeCard;
-  homeCards: HomeCard[] = [];
-  services: Service[] = [];
-  rankUmbrellas: RankUmbrella[] = [];
+  homeData: HomeData;
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.apiService.getHome().subscribe(data => {
-      this.mainCard = data.mainCard;
-      this.homeCards = data.homeCards;
-      this.services = data.services;
-      this.rankUmbrellas = data.rankUmbrellas;
+      this.homeData = data;
     });
   }
 

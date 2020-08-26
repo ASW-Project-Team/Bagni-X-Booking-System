@@ -1,21 +1,21 @@
 <div class="page">
   <!-- Main card -->
-  <div *ngIf="mainCard && homeCards.length > 0; else loadingScreen">
+  <div *ngIf="homeData.mainCard && homeData.homeCards.length > 0; else loadingScreen">
     <div class="main-card-container">
       <div class="image-container"
-           [ngStyle]="{'background-image': 'url(' + mainCard.image }">
+           [ngStyle]="{'background-image': 'url(' + homeData.mainCard.image }">
       </div>
       <div class="white-filter-container"></div>
       <div class="title-container">
         <mat-icon class="title-icon" color="primary">beach_access</mat-icon>
-        <h1 class="title"> {{mainCard.title}} </h1>
-        <div> {{mainCard.description}} </div>
+        <h1 class="title"> {{ homeData.mainCard.title }} </h1>
+        <div> {{ homeData.mainCard.description }} </div>
       </div>
     </div>
 
     <!-- Other cards -->
     <ul>
-      <li *ngFor="let homeCard of homeCards">
+      <li *ngFor="let homeCard of homeData.homeCards">
         <div [ngClass]="homeCard._id % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
           <div class="home-card">
             <div class="home-card-image">
@@ -29,11 +29,11 @@
     </ul>
 
     <!-- rankUmbrellas cards -->
-    <div class="rank-card" [ngClass]="homeCards.length % 2 == 0 ? 'odd-card-wide-container' : 'even-card-wide-container'">
+    <div class="rank-card" [ngClass]="homeData.homeCards.length % 2 == 0 ? 'odd-card-wide-container' : 'even-card-wide-container'">
       <div class="home-card">
         <h1>Cosa puoi prenotare?</h1>
         <ul class="home-card">
-          <li *ngFor="let rankUmbrella of rankUmbrellas">
+          <li *ngFor="let rankUmbrella of homeData.rankUmbrellas">
             <app-salable-card
               [title]="rankUmbrella.name"
               [description]="rankUmbrella.description"
@@ -41,7 +41,7 @@
               [price]="rankUmbrella.price + ' €/gg'"
               [more-info]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
               [sale]="rankUmbrella.sales.length > 0"
-              [is-last-card]="rankUmbrellas.indexOf(rankUmbrella) >= services.length - 1">
+              [is-last-card]="homeData.rankUmbrellas.indexOf(rankUmbrella) >= homeData.services.length - 1">
             </app-salable-card>
           </li>
         </ul>
@@ -49,17 +49,17 @@
     </div>
 
     <!-- services cards -->
-    <div class="service-card" [ngClass]="homeCards.length % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
+    <div class="service-card" [ngClass]="homeData.homeCards.length % 2 == 0 ? 'even-card-wide-container' : 'odd-card-wide-container'">
       <div class="home-card">
         <h1>I nostri servizi</h1>
         <ul >
-          <li *ngFor="let service of services">
+          <li *ngFor="let service of homeData.services">
             <app-salable-card
               [title]="service.title"
               [description]="service.description"
               [imageUrl]="service.image"
               [price]="service.price == 0 ? 'Incluso' : service.price + ' €/gg'"
-              [last-card]="services.indexOf(service) >= services.length - 1">
+              [is-last-card]="homeData.services.indexOf(service) >= homeData.services.length - 1">
             </app-salable-card>
           </li>
         </ul>

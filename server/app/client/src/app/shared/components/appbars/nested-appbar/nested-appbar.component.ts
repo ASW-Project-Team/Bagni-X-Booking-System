@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AppbarAction} from "./appbar.action";
+import {AppbarAction} from "../../../models/component-specific/appbar.action";
 
 @Component({
   selector: 'app-nested-appbar',

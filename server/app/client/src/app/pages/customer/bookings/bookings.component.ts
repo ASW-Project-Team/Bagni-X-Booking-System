@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Booking} from "../../../shared/models/booking.model";
+import {Booking, BookingModel} from "../../../shared/models/booking.model";
 import {ApiService} from "../../../core/api.service";
 
 
@@ -15,7 +15,9 @@ export class BookingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.getUserBookings().subscribe(data => {
-      this.bookings = data;
+      data.forEach(bookingData => {
+        this.bookings.push(new Booking(bookingData));
+      });
     });
   }
 }
