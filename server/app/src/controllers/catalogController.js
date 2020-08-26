@@ -40,8 +40,9 @@ module.exports.create_rank = function (req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            if (req.body.price>=0
-                && req.body.from_umbrella >=0
+            if (commonController.typeOfNumber(req.body.price)
+                && commonController.typeOfNumber(req.body.from_umbrella)
+                && commonController.typeOfNumber(req.body.to_umbrella)
                 && req.body.to_umbrella >= req.body.from_umbrella){
 
                 if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.from_umbrella, req.body.to_umbrella)) {
@@ -77,20 +78,13 @@ module.exports.update_rank = function (req, res) {
 
         commonController.updateCollection(catalog, catalog.rank_umbrellas, req, res, req.params.id,(rankTarget) => {
 
-            if (req.body.name
-                && commonController.typeOfString(req.body.name))
-                rankTarget.name = req.body.name
+            if (!(req.body.name) || (commonController.typeOfString(req.body.name))
+                && (!(req.body.description) || commonController.typeOfString(req.body.description))
+                && (!(req.body.price) || commonController.typeOfNumber(req.body.price))
+                && (!(req.body.from_umbrella) || commonController.typeOfNumber(req.body.from_umbrella))
+                && (!(req.body.to_umbrella) || commonController.typeOfNumber(req.body.to_umbrella))){
 
-            if (req.body.description
-                && commonController.typeOfString(req.body.description))
-                rankTarget.description = req.body.description
-
-            if (req.body.price || req.body.price >= 0)
-                rankTarget.price = req.body.price
-
-            if (req.body.from_umbrella >=0
-                && req.body.to_umbrella >= req.body.from_umbrella) {
-
+                // FIXME I have to save the changes
                 let oldFromUmbrella = rankTarget.from_umbrella;
                 let oldToUmbrella = rankTarget.to_umbrella;
 
@@ -102,16 +96,28 @@ module.exports.update_rank = function (req, res) {
                     rankTarget.from_umbrella = req.body.from_umbrella;
                     rankTarget.to_umbrella = req.body.to_umbrella
 
+                    if (req.body.name)
+                        rankTarget.name = req.body.name
+
+                    if (req.body.description)
+                        rankTarget.description = req.body.description
+
+                    if (req.body.price)
+                        rankTarget.price = req.body.price
+
+                    if (req.body.sales)
+                        rankTarget.sales = req.body.sales
+
+                    commonController.correctSave(rankTarget, commonController.status_completed, res)
+
                 } else {
 
                     rankTarget.from_umbrella = oldFromUmbrella;
                     rankTarget.to_umbrella = oldToUmbrella;
+                    commonController.parameter_bad_formatted(res);
                 }
+
             }
-
-
-            if (req.body.sales)
-                rankTarget.sales = req.body.sales
 
         });
     });
@@ -130,8 +136,9 @@ module.exports.create_service = function(req, res) {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
-            if (req.body.price >= 0
-                && (typeof req.body.umbrella_related === "boolean")){
+            if (commonController.typeOfNumber(req.body.price)
+                && (commonController.typeOfBoolean(req.body.umbrella_related))
+                && (!(req.body.description) || (commonController.typeOfString(req.body.description)))){
 
                 let service = new Service(req.body);
                 service._id = mongoose.Types.ObjectId();
@@ -141,7 +148,6 @@ module.exports.create_service = function(req, res) {
                 commonController.correctSave(catalog, commonController.status_created, res);
             }
         }, req.body.umbrella_related, req.body.price);
-
 
     });
 }
@@ -183,16 +189,22 @@ module.exports.update_service = function (req, res) {
     checkCatalog(req, res, "Service", (err, catalog)  => {
 
         commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
-            if (req.body.price || req.body.price >= 0)
-                serviceTarget.price = req.body.price;
 
-            if (req.body.description
-                && commonController.typeOfString(req.body.description))
-                serviceTarget.description = req.body.description;
+            if (!(req.body.price) || commonController.typeOfNumber(req.body.price)
+                && (!(req.body.umbrella_related) || commonController.typeOfString(req.body.umbrella_related))
+                && (!(req.body.description) || commonController.typeOfString(req.body.description))){
 
-            if (req.body.umbrella_related
-                && commonController.typeOfBoolean(req.body.umbrella_related))
-                serviceTarget.umbrella_related = req.body.umbrella_related;
+                if (req.body.price)
+                    serviceTarget.price = req.body.price;
+
+                if (req.body.description)
+                    serviceTarget.description = req.body.description;
+
+                if (req.body.umbrella_related)
+                    serviceTarget.umbrella_related = req.body.umbrella_related;
+            }
+
+
         });
     });
 }
