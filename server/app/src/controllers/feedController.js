@@ -44,9 +44,14 @@ module.exports.create_feed = function(req, res) {
  */
 module.exports.read_feed = function(req, res) {
 
-	commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>{
-		commonController.returnPages(req.body.page_id, req.body.page_size, req, res, feed, "Feed");
-	})
+	if (req.params.id){
+		commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "", req.params.id,
+			(err,news) => commonController.response(res, news));
+	} else {
+		commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>
+			commonController.returnPages(req.body.page_id, req.body.page_size, req, res, feed, "Feed"))
+	}
+
 };
 
 /**
@@ -74,6 +79,9 @@ module.exports.update_feed = function(req, res) {
 
 			if (req.body.article)
 				docResult.article = req.body.article
+
+			if (req.body.image_url)
+				docResult.image_url = req.body.image_url
 
 			commonController.correctSave(docResult, commonController.status_completed, res);
 		} else {

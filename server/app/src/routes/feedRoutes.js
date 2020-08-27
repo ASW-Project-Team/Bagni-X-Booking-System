@@ -7,6 +7,7 @@ module.exports.set = function(app) {
 		.post(feedController.create_feed);
 
 	app.route('/api/news/:id')
+		.get(feedController.read_feed)
 		.put(feedController.update_feed)
 		.delete(feedController.delete_feed);
 };
