@@ -5,7 +5,6 @@ info:
   version: "0.1"
 servers:
   - url: http://localhost:3000
-
 components:
   securitySchemes:
     specificUserAuth:
@@ -23,11 +22,10 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-    rootAdminAuth:
+    rootAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
 
 paths:
   /api/customers/{user-id}:
@@ -52,21 +50,21 @@ paths:
             application/json:
               schema:
                 type: object
-                  properties:
-                    id:
-                      type: string
-                    email:
-                      type: string
-                    name:
-                      type: string
-                    surname:
-                      type: string
-                    phone:
-                      type: string
-                    address:
-                      type: string
-                    registered:
-                      type: boolean
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  name:
+                    type: string
+                  surname:
+                    type: string
+                  phone:
+                    type: string
+                  address:
+                    type: string
+                  registered:
+                    type: boolean
         "400":
           description: FAIL
         "401":
@@ -96,21 +94,21 @@ paths:
           application/json:
             schema:
               type: object
-                properties:
-                  email:
-                    type: string
-                  name:
-                    type: string
-                  surname:
-                    type: string
-                  phone:
-                    type: string
-                  address:
-                    type: string
-                  password:
-                    type: string
-                  deleted:
-                    type: boolean
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                surname:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                password:
+                  type: string
+                deleted:
+                  type: boolean
       responses:
         "200":
           description: The modification has been accepted by the server.
@@ -132,27 +130,27 @@ paths:
           application/json:
             schema:
               type: object
-                properties:
-                  email:
-                    type: string
-                  name:
-                    type: string
-                  surname:
-                    type: string
-                  phone:
-                    type: string
-                  address:
-                    type: string
-                  password:
-                    type: string
-                  registered:
-                    type: boolean
-                required:
-                  - name
-                  - surname
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                surname:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                password:
+                  type: string
+                registered:
+                  type: boolean
+              required:
+                - name
+                - surname
                   - email
-                  - password
-                  - registered
+                - password
+                - registered
       responses:
         "201":
           description: The user has been correctly created.
@@ -164,21 +162,21 @@ paths:
       security:
         - adminAuth: []
         - rootAuth: []
-        parameters:
-          - name: page-id
-            in: query
-            description: >
-              It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
-            schema:
-              type: integer
-            required: false
-          - name: page-size
-              in: query
-              description: >
-                It indicates the maximum size of the results. If omitted, default is 10.
-              schema:
-                type: integer
-              required: false
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
       responses:
         "200":
           description: The user array has been correctly delivered.
@@ -186,28 +184,29 @@ paths:
             application/json:
               schema:
                 type: array
-                  items:
-                    type: object
-                      properties:
-                        id:
-                          type: string
-                        email:
-                          type: string
-                        name:
-                          type: string
-                        surname:
-                          type: string
-                        phone:
-                          type: string
-                        address:
-                          type: string
-                        registered:
-                          type: boolean
-        "401": The admin was not correctly authenticated.
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    name:
+                      type: string
+                    surname:
+                      type: string
+                    phone:
+                      type: string
+                    address:
+                      type: string
+                    registered:
+                      type: boolean
+        "401":
+          description: The admin was not correctly authenticated.
 
   /api/auth/customers/signup/:
     post:
-      summary: This root allows a user to sign up 
+      summary: This root allows a user to sign up
       description: none
       responses:
         "200":
@@ -228,11 +227,11 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-          
-          
+
+
   /api/auth/admin/signup/:
     post:
-      summary: This root allows the admiun to sign up 
+      summary: This root allows the admiun to sign up
       description: none
       responses:
         "200":
@@ -241,7 +240,7 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
-          
+
   /api/auth/admin/signin/:
     post:
       summary: This root allows the admin to login in
@@ -254,7 +253,7 @@ paths:
         "403":
           description: Unauthorized
 
-      
+
   /api/feed/:
     get:
       summary: It returns the of the page-id page
@@ -454,7 +453,7 @@ paths:
   /api/catalog/ranks/{rank-id}/:
     put:
       summary: The rank of the umbrella
-      description: It allows to modify a rank 
+      description: It allows to modify a rank
       responses:
         "200":
           description: OK, all fields of the confirmed booking, included the id
@@ -470,7 +469,7 @@ paths:
           explode: true
           schema:
             type: string
-    
+
     get:
       summary: The rank of the umbrella
       description: It return a specified rank
@@ -482,15 +481,15 @@ paths:
         "403":
           description: Unauthorized
     parameters:
-        - name: rank-id
-          in: path
-          description: The id of the rank
-          required: true
-          explode: true
-          schema:
-            type: string
+      - name: rank-id
+        in: path
+        description: The id of the rank
+        required: true
+        explode: true
+        schema:
+          type: string
 
-  #/api/catalog/sales/:
+  #/catalog/sales/:
   #  get:
   #    parameters:
   #      - name: rank_id
@@ -521,7 +520,7 @@ paths:
   #           type: integer
   #  post:
 
-  #  /api/catalog/sales/:id:
+  #  /catalog/sales/:id:
   #    get:
   #      parameters:
   #        - name: sale_id
@@ -587,13 +586,13 @@ paths:
       summary: The services are some options that a user can insert in a new booking
       description: It returns a specified service
       parameters:
-          - name: service-id
-            in: path
-            description: Service id
-            required: true
-            explode: true
-            schema:
-              type: integer
+        - name: service-id
+          in: path
+          description: Service id
+          required: true
+          explode: true
+          schema:
+            type: integer
       responses:
         "200":
           description: OK
@@ -619,5 +618,5 @@ paths:
           description: FAIL
         "403":
           description: Unauthorized
- #   /api/stats/:
+  #   /stats/:
   #    description: robe
