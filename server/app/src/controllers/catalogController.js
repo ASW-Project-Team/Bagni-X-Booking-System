@@ -224,8 +224,7 @@ module.exports.create_sale = function (req, res) {
 
             commonController.areRequiredFieldsPresent(req, res, () => {
 
-                if ((req.body.percent
-                    || req.body.percent >= 0)
+                if (commonController.typeOfNumber(req.body.percent)
                     && new Date(req.body.date_to).getTime() >= new Date(req.body.date_from).getTime()) {
 
                     let sale = new Sale(req.body);
@@ -262,7 +261,8 @@ module.exports.read_sales = function (req, res) {
             // check hasOwnProperty
             for (let rank in catalog.rank_umbrellas){
                 if (catalog.rank_umbrellas.hasOwnProperty(rank)){
-                    saleResult = commonController.returnNestedDocument(catalog.rank_umbrellas[rank].sales, req, res, req.params.id, err, "Sale");
+                    saleResult = commonController.returnNestedDocument(catalog.rank_umbrellas[rank].sales,
+                        req, res, req.params.id, err, "Sale");
                     if (saleResult !== null)
                         break;
                 }
@@ -298,6 +298,7 @@ module.exports.read_sales = function (req, res) {
     });
 }
 
+// TODO Test if sale found function
 /**
  * Update a specific sale if present. If not present return error.
  * @param req The specific request.
@@ -318,16 +319,32 @@ module.exports.update_sale = function (req, res) {
 
                         saleFound = true;
 
-                        if (req.body.percent || req.body.percent >= 0)
-                            saleResult.percent = req.body.percent
+                        let dateFrom = saleResult.date_from;
+                        let dateTo = saleResult.date_to;
 
-                        if (req.body.date_from
-                            && new Date(req.body.date_from).getTime() >= Date.now())
-                            saleResult.date_from = new Date(req.body.date_from)
+                        if (req.body.date_from)
+                            dateFrom = new Date(req.body.date_from)
 
-                        if (req.body.date_to
-                            && new Date(req.body.date_to).getTime() > new Date(req.body.date_from).getTime())
-                            saleResult.date_to = new Date(req.body.date_to)
+                        if (req.body.date_to)
+                            dateTo = new Date(req.body.date_to)
+
+                        if ((!(req.body.percent) || commonController.typeOfNumber(req.body.percent))
+                            && (dateTo.getTime() >= dateFrom.getTime())){
+
+
+                            if (req.body.percent)
+                                saleResult.percent = req.body.percent
+
+                            if (req.body.date_from)
+                                saleResult.date_from = new Date(req.body.date_from)
+
+                            if (req.body.date_to)
+                                saleResult.date_to = new Date(req.body.date_to)
+
+                            commonController.correctSave(saleResult, commonController.status_completed, res)
+
+                        }
+
                     });
 
                     if (saleFound)
@@ -337,6 +354,8 @@ module.exports.update_sale = function (req, res) {
 
             if (!saleFound)
                 commonController.serve_plain_404(req, res, "Sale");
+        } else {
+            commonController.notify(res, commonController.bad_request, "Id not present")
         }
     });
 }
@@ -350,64 +369,61 @@ module.exports.update_sale = function (req, res) {
  * @param res
  */
 module.exports.get_availability = function (req, res) {
+
     checkCatalog(req, res, "catalog", (errCat, catalog) => {
-        // Get all bookings
-        commonController.findAllFromCollection(req, res, "book", Booking, ""
-            ,(errBook, allBookings) =>{
 
-                // Umbrella not free in that periods
-                // First filter: if book is not finished
-                // Second filter: if bool started in that period
-                let umbrellaNumberUsed = commonController.umbrellaUsed(req, res, req.body.from, req.body.to);
+        // Umbrella not free in that periods
+        // First filter: if book is not finished
+        // Second filter: if bool started in that period
+        let umbrellaNumberUsed = commonController.umbrellaUsed(req, res, req.body.from, req.body.to);
 /*                let umbrellaNumberUsed = allBookings.filter(b => b.date_to.getTime() > new Date(req.body.from).getTime()
-                                                    && b.date_from.getTime() < new Date(req.body.to).getTime()
-                                                    && b.confirmed
-                                                    && !b.cancelled)
-                                                    .flatMap(b => b.umbrellas.map(u => u.number));*/
+                                            && b.date_from.getTime() < new Date(req.body.to).getTime()
+                                            && b.confirmed
+                                            && !b.cancelled)
+                                            .flatMap(b => b.umbrellas.map(u => u.number));*/
 
-                // When this cicle is terminated in rankNumberFree we have all ranks with his umbrellas
-                let rankNumberFree = [];
-                for (let rank in catalog.rank_umbrellas) {
+        // When this cicle is terminated in rankNumberFree we have all ranks with his umbrellas
+        let rankNumberFree = [];
+        for (let rank in catalog.rank_umbrellas) {
 
-                    if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+            if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
 
-                        for (let i = catalog.rank_umbrellas[rank].from_umbrella;
-                             i < catalog.rank_umbrellas[rank].to_umbrella;
-                             i++){
+                for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                     i < catalog.rank_umbrellas[rank].to_umbrella;
+                     i++){
 
-                            if (!umbrellaNumberUsed.includes(i)){
+                    if (!umbrellaNumberUsed.includes(i)){
 
-                                let elementsToAdd = [];
+                        let elementsToAdd = [];
 
-                                let umbrella = new Umbrella();
-                                umbrella.number = i;
+                        let umbrella = new Umbrella();
+                        umbrella.number = i;
 
-                                if (!rankNumberFree[rank]) {
-                                    rankNumberFree[rank] = {};
-                                    rankNumberFree[rank]["id"] = catalog.rank_umbrellas[rank]._id;
-                                    rankNumberFree[rank]["name"] = catalog.rank_umbrellas[rank].name;
-                                    rankNumberFree[rank]["description"] = catalog.rank_umbrellas[rank].description;
-                                    rankNumberFree[rank]["price"] = catalog.rank_umbrellas[rank].price;
-                                    rankNumberFree[rank]["umbrellas"] = [];
-                                } else {
-                                    elementsToAdd = rankNumberFree[rank]["umbrellas"];
-                                }
-
-                                elementsToAdd.push(umbrella);
-
-                                rankNumberFree[rank]["umbrellas"] = elementsToAdd;
-                            }
+                        if (!rankNumberFree[rank]) {
+                            rankNumberFree[rank] = {};
+                            rankNumberFree[rank]["id"] = catalog.rank_umbrellas[rank]._id;
+                            rankNumberFree[rank]["name"] = catalog.rank_umbrellas[rank].name;
+                            rankNumberFree[rank]["description"] = catalog.rank_umbrellas[rank].description;
+                            rankNumberFree[rank]["price"] = catalog.rank_umbrellas[rank].price;
+                            rankNumberFree[rank]["umbrellas"] = [];
+                        } else {
+                            elementsToAdd = rankNumberFree[rank]["umbrellas"];
                         }
+
+                        elementsToAdd.push(umbrella);
+
+                        rankNumberFree[rank]["umbrellas"] = elementsToAdd;
                     }
                 }
+            }
+        }
 
-                let availability = {};
+        let availability = {};
 
-                availability["services"] = catalog.services;
-                availability["ranks"] = rankNumberFree;
+        availability["services"] = catalog.services;
+        availability["ranks"] = rankNumberFree;
 
-                commonController.response(res, availability);
-            })
+        commonController.response(res, availability);
     });
 }
 
