@@ -5,9 +5,7 @@ module.exports.set = function(app) {
         .get(usersController.read_user)
         .put(usersController.update_user);
 
-  /*  app.route('/api/customers/')
-        .post(usersController.create_user);*/
-
-    
+    app.route('/api/customers/')
+        .post(usersController.create_user);
 
 };

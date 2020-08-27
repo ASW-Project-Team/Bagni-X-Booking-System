@@ -4,42 +4,41 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
 const Admin = require("../models/adminModel")(mongoose);
+//const Booking = require("../models/bookingModel")(mongoose);
 
 const config = require('./secret.json');
 
 module.exports = {
-    authenticate,
+    authenticate_user,
+    authenticate_admin,
     create,
     adminById,
     userById
 };
 
 
-async function authenticate({ username, password }) {
+async function authenticate_user({ username, password }) {
     const user = await User.findOne({ username });
-    const admin = await Admin.findOne({ username });
     if(user){
         if (user && bcrypt.compareSync(password, user.hash)) {
-            const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
+            const token = jwt.sign({sub: user.id}, config.secret, {expiresIn: '7d'});
             return {
                 ...user.toJSON(),
                 token
             };
         }
-    }else if(admin){
-        if (admin && bcrypt.compareSync(password, admin.hash)) {
-            const token = jwt.sign({ sub: admin.id }, config.secret, { expiresIn: '7d' });
-            return {
-                ...admin.toJSON(),
-                token
-            };
-        }
-    }else{
-        console.log("Nobody");
     }
-
 }
-
+async function authenticate_admin({ username, password }) {
+    const admin = await Admin.findOne({ username });
+    if (admin && bcrypt.compareSync(password, admin.hash)) {
+        const token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d'});
+        return {
+            ...admin.toJSON(),
+            token
+        };
+    }
+}
 
 async function create(userParam) {
     // validate
@@ -61,6 +60,8 @@ async function create(userParam) {
 async function userById(id) {
     return await User.findById(id);
 }
+
 async function adminById(id) {
     return await Admin.findById(id);
 }
+

@@ -106,7 +106,7 @@ function findAdmin(req, res, username, password, funcFounded, funcNotFounded) {
  * @param {NextFunction|Response<any>} next
  */
 exports.authenticate = function(req, res, next) {
-    utils.authenticate(req.body)
+    utils.authenticate_admin(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
 }
