@@ -2,9 +2,6 @@ const mongoose = require('mongoose');
 const User = require("../models/userModel")(mongoose);
 const commonController = require("./commonController");
 
-// Before this queries we have to check the permissions to interact with db
-
-// TODO
 /**
  * GET a specific user or paginated.
  * @param req
@@ -108,21 +105,42 @@ module.exports.update_user = function(req, res) {
                     docResult.hashedPassword = commonController.sha512(req.body.pass,
                         docResult.salt);
 
-                    applyUsersModify(req, docResult)
+                    applyUsersModify(req, docResult, res)
 
                 });
             } else {
 
-                applyUsersModify(req, docResult)
+                applyUsersModify(req, docResult, res)
 
             }
 
+        } else {
             commonController.parameter_bad_formatted(res)
         }
     });
 };
 
-function applyUsersModify(req, docResult){
+/**
+ * DELETE LOGICALLY a user
+ * @param req
+ * @param res
+ */
+module.exports.delete_user_logically = function (req, res) {
+    commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
+        req.params.id, (err, userResult)=>{
+
+            userResult.deleted = true;
+            commonController.correctSave(userResult, commonController.status_completed, res);
+    });
+}
+
+/**
+ * Apply PUT changes
+ * @param req
+ * @param docResult
+ * @param res
+ */
+function applyUsersModify(req, docResult, res){
 
     if (req.body.name)
         docResult.name = req.body.name

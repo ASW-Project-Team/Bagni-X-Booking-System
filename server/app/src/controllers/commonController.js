@@ -230,8 +230,13 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
  * @param func Callback applied if find is correctly done
  */
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
+
+    let errorDocumentName = documentName
+    if (!errDocName)
+        errorDocumentName = errDocName
+
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
-        if (!this.checkError(err, docResult, req, res, errDocName))
+        if (!this.checkError(err, docResult, req, res, errorDocumentName))
             func(err, docResult, docResultName);
     });
 }
