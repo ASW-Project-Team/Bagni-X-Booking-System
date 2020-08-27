@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Feed = require("../models/feedModel")(mongoose);
 const commonController = require("./commonController");
 
-const feedName = "Feed";
+const feedName = "News";
 
 
 /**
@@ -19,9 +19,11 @@ module.exports.create_feed = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
+		// TODO Check if image_url is present
 		if ((new Date(req.body.date).getTime() >= Date.now())
 			&& commonController.typeOfString(req.body.title)
-			&& (!(req.body.description) || (commonController.typeOfString(req.body.description)))){
+			&& commonController.typeOfString(req.body.image_url)
+			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
 
 			let feed = new Feed(req.body);
 			feed._id = mongoose.Types.ObjectId();
@@ -32,7 +34,7 @@ module.exports.create_feed = function(req, res) {
 			commonController.parameter_bad_formatted(res);
 		}
 
-	}, req.body.date, req.body.title);
+	}, req.body.date, req.body.title, req.body.image_url);
 };
 
 /**
@@ -56,13 +58,13 @@ module.exports.read_feed = function(req, res) {
  */
 module.exports.update_feed = function(req, res) {
 
-	commonController.findByIdFirstLevelCollection(req, res, "news", Feed, "",
+	commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "",
 		req.params.id, (err, docResult) => {
 
 		// If correct parameter change, if not response
 		if (!(req.body.date) || ((new Date(req.body.date).getTime() >= Date.now()))
 			&& (!(req.body.title) || (commonController.typeOfString(req.body.title)))
-			&& (!(req.body.description) || (commonController.typeOfString(req.body.description)))){
+			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
 
 			if (req.body.date)
 				docResult.date = new Date(req.body.date)
@@ -70,8 +72,8 @@ module.exports.update_feed = function(req, res) {
 			if (req.body.title)
 				docResult.title = req.body.title
 
-			if (req.body.description)
-				docResult.description = req.body.description
+			if (req.body.article)
+				docResult.article = req.body.article
 
 			commonController.correctSave(docResult, commonController.status_completed, res);
 		} else {
