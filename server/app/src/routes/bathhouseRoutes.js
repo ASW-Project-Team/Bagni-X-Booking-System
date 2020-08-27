@@ -3,6 +3,6 @@ module.exports.set = function(app) {
     const bathhouseController = require('../controllers/bathhouseController');
 
     app.route('/api/home/')
-    //.get(bathhouseController.read_feed);
+    .get(bathhouseController.getHomeServicesRank);
 
 }

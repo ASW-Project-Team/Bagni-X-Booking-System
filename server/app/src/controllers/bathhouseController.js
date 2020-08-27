@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 
-const HomeCard = require("../models/nestedSchemas/homeCardModel")(mongoose);
-const Services = require("../models/nestedSchemas/serviceModel")(mongoose);
-const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
-
 const Catalog = require("../models/catalogModel")(mongoose);
 const Bathhouse = require("../models/bathhouseModel")(mongoose);
 
@@ -11,8 +7,7 @@ const commonController = require("./commonController");
 
 const CatalogID = "5f40f4125c935b69a7f0626f";
 
-// TODO
-const BathhouseID = "";
+const BathhouseID = "5f41345d9ca3ce59d9777862";
 
 
 module.exports.getHomeServicesRank = function (req, res) {
@@ -26,7 +21,7 @@ module.exports.getHomeServicesRank = function (req, res) {
         docReturn["ranks"] = catalog.rank_umbrellas
 
         commonController.findByIdFirstLevelCollection(req, res, "bathhouse", Bathhouse,
-            "Bathhouse", BathhouseID, (errBath, bathhouse)=>{
+            "bathhouse", BathhouseID, (errBath, bathhouse)=>{
 
            docReturn["main"] = bathhouse.main_home_card
            docReturn["home cards"] = bathhouse.home_cards

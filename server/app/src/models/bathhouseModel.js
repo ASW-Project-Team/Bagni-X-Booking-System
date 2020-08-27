@@ -12,12 +12,12 @@ const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
     const homeCardModel = require("./nestedSchemas/homeCardModel")(mongoose).schema;
 
-    const  bathhouseInfo = new Schema({
+    const  bathhouse = new Schema({
         _id: Schema.Types.ObjectId,
-        name: String, // String is shorthand for {type: String}
+        name: String,
         logo_url: String,
         main_home_card: homeCardModel,
         home_cards: homeCardModel,
     });
-    return mongoose.model('bathhouse_info', bathhouseInfo, 'bathhouse_info');
+    return mongoose.model('bathhouse', bathhouse, 'bathhouse');
 }

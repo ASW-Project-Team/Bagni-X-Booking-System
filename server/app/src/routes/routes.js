@@ -5,12 +5,14 @@ module.exports.set = function(app) {
 	const catalogRoutes = require('./catalogRoutes');
 	const feedRoutes = require('./feedRoutes');
 	const adminRoutes = require('./adminsRoutes');
+	const bathhouseRoutes = require('./bathhouseRoutes');
 
 	usersRoutes.set(app);
 	bookingRoutes.set(app);
 	catalogRoutes.set(app);
 	feedRoutes.set(app);
 	adminRoutes.set(app);
+	bathhouseRoutes.set(app);
 
 	// the generic routes setting must be called last, handling all
 	// remaining routes
