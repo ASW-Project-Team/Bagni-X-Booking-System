@@ -5,11 +5,37 @@ info:
   version: "0.1"
 servers:
   - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    specificUserAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    userAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    adminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    rootAdminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
 paths:
   /api/customers/{user-id}:
     get:
-      summary: It returns the user-id description
-      description: User data
+      summary: It returns user data associated to the given user id.
+      security:
+        - specificUserAuth: []
+        - adminAuth: []
       parameters:
         - name: user-id
           in: path
@@ -21,14 +47,40 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: A JSON object describing the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    name:
+                      type: string
+                    surname:
+                      type: string
+                    phone:
+                      type: string
+                    address:
+                      type: string
+                    registered:
+                      type: boolean
         "400":
           description: FAIL
-        "403":
-          description: Unauthorized
-    put: 
-      summary: It allows the user to modify some data about hisself
-      description: User data
+        "401":
+          description: Unauthorized access, the client is not the authorized user, neither an admin.
+        "404":
+          description: The user with the given id does not exist, or it has been logically deleted.
+
+    put:
+      summary: Request of modification for some fields of the given user.
+      description: >
+        The modification request with the PUT can be executed by the interested user. Logical deletion of
+        the user can be executed by the admin using the DELETE primitive.
+      security:
+        - specificUserAuth: []
       parameters:
         - name: user-id
           in: path
@@ -38,51 +90,120 @@ paths:
           explode: false
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+                  surname:
+                    type: string
+                  phone:
+                    type: string
+                  address:
+                    type: string
+                  password:
+                    type: string
+                  deleted:
+                    type: boolean
       responses:
         "200":
-          description: OK
+          description: The modification has been accepted by the server.
         "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
+          description: Malformed request.
+        "401":
+          description: Unauthorized, the given credentials do not correspond to the correce credentials of the user.
+        "404":
+          description: The user with the given id does not exist, or it has been logically deleted.
 
   /api/customers/:
     post:
-      summary: It creates user
-      description: User data
-      parameters:
-        - name: name
-          in: query
-          description: The user name.
-          required: true
-          explode: false
-          schema:
-            type: boolean
+      summary: It creates a fresh new user.
+      description: >
+        Admins and root can only create unregistered customers; any other cannot create unregistered customers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+                properties:
+                  email:
+                    type: string
+                  name:
+                    type: string
+                  surname:
+                    type: string
+                  phone:
+                    type: string
+                  address:
+                    type: string
+                  password:
+                    type: string
+                  registered:
+                    type: boolean
+                required:
+                  - name
+                  - surname
+                  - email
+                  - password
+                  - registered
+      responses:
+        "201":
+          description: The user has been correctly created.
+        "400":
+          description: Request was not well-formed.
 
-        - name: surname
-          in: query
-          description: The user surname.
-          required: true
-          explode: false
-          schema:
-            type: boolean
-
-        - name: email
-          in: query
-          description: The user email.
-          required: true
-          explode: false
-          schema:
-            type: boolean
-
-
+    get:
+      summary: It returns all active customers, in a paginated fashion.
+      security:
+        - adminAuth: []
+        - rootAuth: []
+        parameters:
+          - name: page-id
+            in: query
+            description: >
+              It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+            schema:
+              type: integer
+            required: false
+          - name: page-size
+              in: query
+              description: >
+                It indicates the maximum size of the results. If omitted, default is 10.
+              schema:
+                type: integer
+              required: false
       responses:
         "200":
-          description: OK
-        "400":
-          description: FAIL
-        "403":
-          description: Unauthorized
+          description: The user array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                  items:
+                    type: object
+                      properties:
+                        id:
+                          type: string
+                        email:
+                          type: string
+                        name:
+                          type: string
+                        surname:
+                          type: string
+                        phone:
+                          type: string
+                        address:
+                          type: string
+                        registered:
+                          type: boolean
+        "401": The admin was not correctly authenticated.
 
   /api/auth/customers/signup/:
     post:
@@ -500,5 +621,3 @@ paths:
           description: Unauthorized
  #   /api/stats/:
   #    description: robe
-
-components: {}
