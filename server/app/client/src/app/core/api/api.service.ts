@@ -1,10 +1,10 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {newsFeedMock, newsMock} from "./mocks/news.mock";
-import {MockGenerator} from "./mocks/mock-generator";
-import {homeMock} from "./mocks/home.mock";
-import {bookingMock, bookingsMock} from "./mocks/bookings.mock";
+import {newsFeedMock, newsMock} from "../mocks/news.mock";
+import {MockGenerator} from "../mocks/mock-generator";
+import {homeMock} from "../mocks/home.mock";
+import {bookingMock, bookingsMock} from "../mocks/bookings.mock";
 
 
 /**

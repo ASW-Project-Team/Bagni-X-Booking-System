@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Booking, BookingModel} from "../../../shared/models/booking.model";
-import {ApiService} from "../../../core/api.service";
+import {ApiService} from "../../../core/api/api.service";
 
 
 @Component({

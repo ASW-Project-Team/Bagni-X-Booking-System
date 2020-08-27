@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {AppbarAction} from "../../../shared/models/component-specific/appbar.action";
-import {ApiService} from "../../../core/api.service";
+import {ApiService} from "../../../core/api/api.service";
 import {News} from "../../../shared/models/news.model";
-import {SharingService} from "../../../core/sharing.service";
+import {SharingService} from "../../../core/sharing/sharing.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
 
 

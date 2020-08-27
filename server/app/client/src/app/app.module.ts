@@ -39,6 +39,8 @@ import { BookingStateExtendedComponent } from './shared/components/booking-state
 import { BookingSummaryComponent } from './shared/components/booking-summary/booking-summary.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dialog.component';
+import { LoginComponent } from './pages/customer/login/login.component';
+import { RegisterComponent } from './pages/customer/register/register.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,8 @@ import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dia
     BookingStateExtendedComponent,
     BookingSummaryComponent,
     AlertDialogComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

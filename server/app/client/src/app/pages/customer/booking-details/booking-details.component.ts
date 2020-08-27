@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Booking, BookingModel} from "../../../shared/models/booking.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ApiService} from "../../../core/api.service";
+import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AppbarAction} from "../../../shared/models/component-specific/appbar.action";
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
