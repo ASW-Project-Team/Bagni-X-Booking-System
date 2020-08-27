@@ -492,11 +492,13 @@ module.exports.umbrellaUsed = function (req, res, to, from, func){
             // First filter: if book is not finished
             // Second filter: if bool started in that period
 
-            let allBookingsFiltered = allBookings.filter(b => b.date_to.getTime() > new Date(from).getTime()
-                && b.date_from.getTime() < new Date(to).getTime()
+            let allBookingsFiltered = allBookings.filter(b => new Date(to).getTime() >= b.date_from.getTime()
+                &&  new Date(from).getTime() <= b.date_to.getTime()
                 && !b.cancelled);
 
-            func(allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number)));
+            let allBookingsUmbrellaMapped = allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number));
+
+            func(allBookingsUmbrellaMapped);
         });
 }
 

@@ -82,7 +82,6 @@ module.exports.get_booking = function(req, res) {
 module.exports.modify_booking = function(req, res) {
 
 
-	// FIXME con tutte promise
 	bookingAndUmbrellaServiceUserChecks(req, res);
 
 }
@@ -188,13 +187,30 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 	if (req.body.umbrellas) {
 
 		// Check if umbrellas are free
-		await commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
+		let to = docResult.date_to
+		if (req.body.to)
+			to = req.body.to
+
+		let from = docResult.date_from
+		if (req.body.from)
+			from = req.body.from
+
+		let oldUmbrellas = docResult.umbrellas
+
+		// If not do this, the old umbrellas are considered busy but we could change this
+		docResult.umbrellas=[]
+		await docResult.save();
+
+		await commonController.umbrellaFree(req, res, to, from, req.body.umbrellas,
 			async (areUmbrellasFree) => {
 				if (areUmbrellasFree){
 
 					await serviceAndUserChecks(req, res, docResult);
-
 				} else {
+					// Return to the precedent situation
+					docResult.umbrellas = oldUmbrellas
+					await docResult.save()
+
 					commonController.parameter_bad_formatted(res);
 				}
 			});
