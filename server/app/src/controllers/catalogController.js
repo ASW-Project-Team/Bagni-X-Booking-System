@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const Catalog = require("../models/catalogModel")(mongoose);
-const Booking = require("../models/bookingModel")(mongoose);
 
 const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
 const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
@@ -22,11 +21,18 @@ const Catalog_id = "5f40f4125c935b69a7f0626f";
  * @param res The response.
  */
 module.exports.read_ranks = function (req, res) {
-    // To check
-    checkCatalog(req, res, "Ranks", (err, catalog, documentName) => {
-        commonController.getDocuments(err, catalog.rank_umbrellas, req, res, documentName, catalog.rank_umbrellas);
-    });
 
+    // TODO check
+    checkCatalog(req,res,"Catalog", (err, catalog)=>{
+
+        if (req.params.id)
+            commonController.getNestedDocument(catalog.rank_umbrellas, req, res, req.params.id,
+                (rank) => commonController.response(res, rank))
+        else
+            commonController.getDocuments(err, catalog.rank_umbrellas, req, res, documentName, catalog.rank_umbrellas);
+
+
+    })
 }
 
 

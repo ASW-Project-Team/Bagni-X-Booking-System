@@ -42,8 +42,8 @@ module.exports.create_feed = function(req, res) {
  */
 module.exports.read_feed = function(req, res) {
 
-	commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, document) =>{
-		commonController.returnPages(req.body.page_id, req.body.page_size, req, res, document, "Feed");
+	commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>{
+		commonController.returnPages(req.body.page_id, req.body.page_size, req, res, feed, "Feed");
 	})
 };
 

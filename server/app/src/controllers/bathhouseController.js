@@ -16,9 +16,23 @@ const BathhouseID = "";
 
 
 module.exports.getHomeServicesRank = function (req, res) {
-    commonController.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
+    let docReturn = {}
+
+    commonController.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        CatalogID, (errCat, catalog)=>{
+
+        docReturn["services"] = catalog.services
+        docReturn["ranks"] = catalog.rank_umbrellas
+
+        commonController.findByIdFirstLevelCollection(req, res, "bathhouse", Bathhouse,
+            "Bathhouse", BathhouseID, (errBath, bathhouse)=>{
+
+           docReturn["main"] = bathhouse.main_home_card
+           docReturn["home cards"] = bathhouse.home_cards
+
+                commonController.response(res, docReturn)
+        });
 
     });
 }

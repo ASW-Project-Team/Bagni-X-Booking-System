@@ -4,21 +4,32 @@ const commonController = require("./commonController");
 
 // Before this queries we have to check the permissions to interact with db
 
-// GET OKAY
+// TODO
 /**
- * GET a specific user
+ * GET a specific user or paginated.
  * @param req
  * @param res
  */
 module.exports.read_user = function(req, res) {
-    commonController.findByIdFirstLevelCollection(req, res, "user",User, "",
-        req.params.id, (err, docResult) =>{
+    if (req.params.id){
+        commonController.findByIdFirstLevelCollection(req, res, "user",User, "",
+            req.params.id, (err, docResult) => {
 
-            if (!req.body.deleted)
-                commonController.response(res, docResult)
-            else
-                commonController.notify(res, commonController.status_error, "Utente eliminato")
-        });
+                if (!req.body.deleted)
+                    commonController.response(res, docResult)
+                else
+                    commonController.notify(res, commonController.status_error,
+                        "The user with the given id does not exist, or it has been logically deleted.")
+            })
+    } else {
+        commonController.findAllFromCollection(req, res, "User",User,"",
+            (err, users)=>{
+
+                // Return tot pages
+                commonController.returnPages(req.body.page_id, req.body.page_size, req, res, users, "Users")
+        })
+    }
+
 };
 
 /**
@@ -42,16 +53,19 @@ module.exports.create_user = function(req, res) {
         if (commonController.typeOfString(req.body.name)
             && commonController.typeOfString(req.body.surname)
             && commonController.typeOfString(req.body.email)
-            && commonController.typeOfString(req.body.pass)
+            && commonController.typeOfString(req.body.password)
+            && commonController.typeOfBoolean(req.body.registered)
             && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))){
 
-            commonController.checkPassword(res, req.body.pass, ()=>{
+            commonController.checkPassword(res, req.body.password, ()=>{
                 let user = new User(req.body);
                 user._id = mongoose.Types.ObjectId();
 
+                user.salt = commonController.genRandomString(commonController.salt_length);
+                user.hashedPassword = commonController.sha512(req.body.password, user.salt);
                 // When user is created isn't registered or deleted
-                user.registered = false;
+
                 user.deleted = false;
 
                 commonController.correctSave(user, commonController.status_created, res);
@@ -61,7 +75,7 @@ module.exports.create_user = function(req, res) {
             commonController.parameter_bad_formatted(res);
         }
 
-    }, req.body.name, req.body.surname, req.body.email, req.body.pass);
+    }, req.body.name, req.body.surname, req.body.email, req.body.password, req.body.registered);
 
 };
 
@@ -96,14 +110,11 @@ module.exports.update_user = function(req, res) {
 
                     applyUsersModify(req, docResult)
 
-                    commonController.correctSave(docResult, commonController.status_completed, res);
-
                 });
             } else {
 
                 applyUsersModify(req, docResult)
 
-                commonController.correctSave(docResult, commonController.status_completed, res);
             }
 
             commonController.parameter_bad_formatted(res)
@@ -134,4 +145,5 @@ function applyUsersModify(req, docResult){
     if (req.body.deleted)
         docResult.deleted = req.body.deleted
 
+    commonController.correctSave(docResult, commonController.status_completed, res);
 }

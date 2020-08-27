@@ -49,7 +49,7 @@ module.exports.unauthorized_401 = function(res) {
  * @param res
  */
 module.exports.parameter_bad_formatted = function(res){
-    this.notify(res, this.bad_request, "Some parameters are badly formatted!")
+    this.notify(res, this.bad_request, "Malformed request.")
 }
 
 /**
