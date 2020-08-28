@@ -69,7 +69,7 @@ module.exports.create_user = function(req, res) {
             });
 
         } else {
-            commonController.parameter_bad_formatted(res);
+            commonController.parameterBadFormatted(res);
         }
 
     }, req.body.name, req.body.surname, req.body.email, req.body.password, req.body.registered);
@@ -115,7 +115,7 @@ module.exports.update_user = function(req, res) {
             }
 
         } else {
-            commonController.parameter_bad_formatted(res)
+            commonController.parameterBadFormatted(res)
         }
     });
 };

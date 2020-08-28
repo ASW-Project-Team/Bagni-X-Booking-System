@@ -48,8 +48,8 @@ module.exports.unauthorized_401 = function(res) {
  * Error caused because some parameters are bad formatted.
  * @param res
  */
-module.exports.parameter_bad_formatted = function(res){
-    this.notify(res, this.bad_request, "Malformed request.")
+module.exports.parameterBadFormatted = function(res){
+    this.notify(res, this.badRequest, "Malformed request.")
 }
 
 /**
@@ -62,15 +62,14 @@ module.exports.notify = function(res, status, jsonObject){
     res.status(status).json(jsonObject);
 }
 
-
-// ASYNC AWAIT
 /**
  * Used for save new document or updated one.
  * @param document The document to save
  * @param status The status that have to be sent in response
  * @param res The response with status and document
+ * @param docToReturn
  */
-module.exports.correctSave = function (document, status, res) {
+module.exports.correctSave = function (document, status, res, docToReturn = undefined) {
     document.save((saveErr, updatedDocument) => {
         if (saveErr) {
             res.send(saveErr);
@@ -80,7 +79,10 @@ module.exports.correctSave = function (document, status, res) {
             updatedDocument.hashedPassword = "";
         }
 
-        res.status(status).json(updatedDocument);
+        if (docToReturn)
+            updatedDocument = docToReturn
+
+        this.notify(res, status, updatedDocument);
     });
 }
 
@@ -160,12 +162,11 @@ module.exports.getDocuments = function (err, collectionToSearch, req, res, docum
  * @param func The callback function that is executed only if id is found. In this callback are inserted
  *          all controls.
  */
-module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func) {
+module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func, returnError) {
 
     this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) => {
         func(documentTarget);
-        this.correctSave(collectionToUpdate, this.status_created, res);
-    });
+    },returnError);
 }
 
 /**
@@ -193,8 +194,9 @@ module.exports.returnNestedDocument = function (collectionToSearch, req, res, id
  * @param res The specific update response
  * @param id The id to search
  * @param func The callback function that is executed only if id is found.
+ * @param returnError
  */
-module.exports.getNestedDocument = function(collectionToSearch, req, res, id, func) {
+module.exports.getNestedDocument = function(collectionToSearch, req, res, id, func, returnError=true) {
 
     if (id) {
         let documentTarget = null;
@@ -212,9 +214,9 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
 
         if (foundElement)
             func(documentTarget);
-        else // So we can manipulate also more than two nested level collection. See sale read or put.
-            return  this.serve_plain_404(req, res, "Elem");
-    } else
+        else if (returnError)// So we can handle also more than two nested level collection. See sale read or put.
+            return this.serve_plain_404(req, res, "Elem");
+    } else if (returnError)
         this.serve_plain_404(req, res, "Id in url");
 
 }
@@ -365,7 +367,7 @@ module.exports.returnPages = function (id, size, req, res, arrayToSearch, collec
 
         // Get the resultant pages
         if (pageId + pageSize >= pages.length ) {
-            pageSize = pages.length - pageId;
+            pageSize = pages.length - pageId +1;
         }
 
         this.response(res, pages.slice(pageId, pageSize));
@@ -476,7 +478,7 @@ module.exports.checkPassword = function(res, password, func){
     if (password.length >= this.password_length){
         func()
     } else {
-        this.notify(res, this.bad_request, "Password too short");
+        this.notify(res, this.badRequest, "Password too short");
     }
 }
 
@@ -525,21 +527,16 @@ module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
             this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
                 let umbrellaNumberFree = [];
-                for (let rank in catalog.rank_umbrellas) {
+                for (const rank of catalog.rank_umbrellas) {
 
-                    if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+                    for (let umbrellaNumber = rank.from_umbrella; umbrellaNumber <= rank.to_umbrella; umbrellaNumber++) {
 
-                        for (let i = catalog.rank_umbrellas[rank].from_umbrella;
-                             i < catalog.rank_umbrellas[rank].to_umbrella;
-                             i++){
-
-                            if (!umbrellasNumberUsed.includes(i)){
-
-                                umbrellaNumberFree.push(i);
-                            }
+                        if (!umbrellasNumberUsed.includes(umbrellaNumber)) {
+                            umbrellaNumberFree.splice(0, 0, umbrellaNumber);
                         }
                     }
                 }
+
 
                 func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
             });
@@ -645,6 +642,6 @@ module.exports.salt_length = 48;
 
 module.exports.status_unauthorized = 401;
 
-module.exports.bad_request = 400;
+module.exports.badRequest = 400;
 
 module.exports.password_length = 8;

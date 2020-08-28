@@ -16,6 +16,7 @@ const initializeModel = function(mongoose) {
     const rankUmbrellaSchema = new Schema({
         _id: Schema.Types.ObjectID,
         name: String,
+        image_url: String,
         description: {type: String, default: null},
         price: Float,
         from_umbrella: Number,

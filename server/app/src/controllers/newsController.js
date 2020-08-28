@@ -31,7 +31,7 @@ module.exports.createNews = function(req, res) {
 
 			commonController.correctSave(feed, commonController.status_created, res);
 		} else {
-			commonController.parameter_bad_formatted(res);
+			commonController.parameterBadFormatted(res);
 		}
 
 	}, req.body.date, req.body.title, req.body.image_url);
@@ -85,7 +85,7 @@ module.exports.updateNews = function(req, res) {
 
 			commonController.correctSave(docResult, commonController.status_completed, res);
 		} else {
-			commonController.parameter_bad_formatted(res);
+			commonController.parameterBadFormatted(res);
 		}
 
 	})
