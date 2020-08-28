@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Feed = require("../models/feedModel")(mongoose);
+const Feed = require("../models/newsModel")(mongoose);
 const commonController = require("./commonController");
 
 const feedName = "News";
@@ -15,7 +15,7 @@ const feedName = "News";
  * 	. Status "Bad request (400)" if almost one parameter is bad formatted.
  * 	. Status "Error (404)" if some required fields isn't insert in request body.
  */
-module.exports.create_feed = function(req, res) {
+module.exports.createNews = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
@@ -42,7 +42,7 @@ module.exports.create_feed = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.read_feed = function(req, res) {
+module.exports.readNews = function(req, res) {
 
 	if (req.params.id){
 		commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "", req.params.id,
@@ -61,7 +61,7 @@ module.exports.read_feed = function(req, res) {
  * 	. Status "Completed (200)" and document if all parameter demanded are corrected formatted.
  * 	. Status "Bad request (400)" if almost one parameter is bad formatted.
  */
-module.exports.update_feed = function(req, res) {
+module.exports.updateNews = function(req, res) {
 
 	commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "",
 		req.params.id, (err, docResult) => {
@@ -97,7 +97,7 @@ module.exports.update_feed = function(req, res) {
  * @param req that have params the id to delete.
  * @param res
  */
-module.exports.delete_feed = function(req, res) {
+module.exports.deleteNews = function(req, res) {
 
 	commonController.deleteFirstLevelCollection(req, res, feedName, Feed, "", req.params.id);
 };
