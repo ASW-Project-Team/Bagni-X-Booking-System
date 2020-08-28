@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-User = require("../models/userModel.js")(mongoose);
+const User = require("../models/userModel.js")(mongoose);
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
-
+const conversionDayInMilliseconds = 86400000
+const dayBeforeDeleteIsPossible = 2
 const collectionName = "bookings"
 
 
@@ -13,21 +14,28 @@ const collectionName = "bookings"
  * @param req
  * @param res
  */
-module.exports.create_booking = function(req, res) {
+module.exports.createBooking = function(req, res) {
 
-	commonController.areRequiredFieldsPresent(req, res, () =>{
+
+	commonController.areRequiredFieldsPresent(req, res, () => {
 
 		// Check if fields are well formatted
 		if (commonController.typeOfNumber(req.body.price)
-			&& new Date(req.body.from).getTime() >= Date.now()
-			&& new Date(req.body.to).getTime() >=  new Date(req.body.from).getTime()
+			&& new Date(req.body.date_from).getTime() >= Date.now()
+			&& new Date(req.body.date_to).getTime() >=  new Date(req.body.date_from).getTime()
+			&& commonController.typeOfString(req.body.user_id)
 			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
 
-			// Check if umbrella are free
-			commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
-				(areUmbrellasFree) => {
+			// User is present if go inside this callback
+			commonController.findByIdFirstLevelCollection(req, res, "User", User,"",req.body.user_id,
+				()=>{
+
+					// Check if umbrella are free
+				commonController.umbrellaFree(req, res, req.body.date_to, req.body.date_from, req.body.umbrellas,
+					(areUmbrellasFree) => {
 
 					if (areUmbrellasFree) {
+
 						// create umbrellas
 						commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
 
@@ -35,9 +43,10 @@ module.exports.create_booking = function(req, res) {
 
 							booking.umbrellas = umbrellas;
 							booking._id = mongoose.Types.ObjectId();
+							booking.user_id = mongoose.Types.ObjectId(req.body.user_id);
 
-							booking.date_from = req.body.from;
-							booking.date_to = req.body.to;
+							booking.date_from = new Date(req.body.date_from);
+							booking.date_to = new Date(req.body.date_to);
 							// to confirm and to cancel
 							booking.confirmed = false
 							booking.cancelled = false
@@ -45,17 +54,14 @@ module.exports.create_booking = function(req, res) {
 							// add as first element
 							commonController.correctSave(booking, commonController.status_created, res);
 						})
-					} else {
+					} else
 						commonController.notify(res, commonController.status_error, "Umbrella aren't free");
-					}
-
 				})
+			})
+		} else
+			commonController.notify(res, commonController.badRequest, "Malformed request!");
 
-		} else {
-			commonController.notify(res, commonController.bad_request, "Parameters wrong");
-		}
-
-	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.from, req.body.to);
+	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.date_from, req.body.date_to);
 };
 
 /**
@@ -63,7 +69,7 @@ module.exports.create_booking = function(req, res) {
  * @param req The GET specific booking request
  * @param res The GET specific booking response
  */
-module.exports.get_booking = function(req, res) {
+module.exports.getBooking = function(req, res) {
 
 	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
 		req.params.id, (err, docResult)=>{
@@ -96,13 +102,13 @@ module.exports.modify_booking = function(req, res) {
  * @param req The specified GET request
  * @param res The specified GET response
  */
-module.exports.read_bookings = function(req, res) {
+module.exports.readBookings = function(req, res) {
 
 	commonController.findAllFromCollection(req, res, collectionName, Booking
 		, "", (err, docResult) => {
-			if (req.body.user_id) {
+			if (req.params.id) {
 
-				let docs = docResult.filter(x => mongoose.Types.ObjectId(req.body.user_id) === x.user_id);
+				let docs = docResult.filter(x => mongoose.Types.ObjectId(req.params.id) === x.user_id);
 
 				if (!docs)
 					commonController.serve_plain_404(req, res, "Bookings")
@@ -121,9 +127,15 @@ module.exports.read_bookings = function(req, res) {
  * @param req The specific DELETE request
  * @param res The specific DELETE response
  */
-module.exports.delete_booking = function(req, res) {
+module.exports.deleteBooking = function(req, res) {
 
-	commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
+	commonController.findByIdFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id,
+		(err, booking)=>{
+			if (Date.now().valueOf() <= (booking.date_from.valueOf() - (conversionDayInMilliseconds * dayBeforeDeleteIsPossible))){
+				commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
+			} else
+				commonController.parameterBadFormatted(res)
+		});
 }
 
 /**
@@ -176,7 +188,7 @@ async function bookingAndUmbrellaServiceUserChecks(req, res) {
 					await umbrellaServiceAndUserChecks(req, res, docResult)
 				}
 			} else {
-				commonController.parameter_bad_formatted(res)
+				commonController.parameterBadFormatted(res)
 			}
 		});
 
@@ -211,7 +223,7 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 					docResult.umbrellas = oldUmbrellas
 					await docResult.save()
 
-					commonController.parameter_bad_formatted(res);
+					commonController.parameterBadFormatted(res);
 				}
 			});
 	} else {
@@ -230,7 +242,7 @@ async function serviceAndUserChecks(req, res, docResult) {
 
 				await userExist(req, res, docResult);
 			} else {
-				commonController.parameter_bad_formatted(res);
+				commonController.parameterBadFormatted(res);
 			}
 		});
 	} else {
@@ -253,7 +265,7 @@ async function userExist(req, res, docResult) {
 					req.body.services, docResult);
 
 			} else {
-				commonController.parameter_bad_formatted(res);
+				commonController.parameterBadFormatted(res);
 			}
 		});
 	} else {

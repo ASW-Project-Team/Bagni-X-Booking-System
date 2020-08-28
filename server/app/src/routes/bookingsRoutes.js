@@ -4,13 +4,16 @@ module.exports.set = function(app) {
 
 
 	app.route('/api/new-booking/checkout/')
-		.post(bookingsController.create_booking)
+		.post(bookingsController.createBooking)
 
-	app.route('/api/bookings')
-		.get(bookingsController.read_bookings);
+	app.route('/api/bookings/customer/:id')
+		.get(bookingsController.readBookings);
+
+	app.route('/api/bookings/')
+		.get(bookingsController.readBookings);
 
 	app.route('/api/bookings/:id')
-		.get(bookingsController.get_booking)
-		.delete(bookingsController.delete_booking)
+		.get(bookingsController.getBooking)
+		.delete(bookingsController.deleteBooking)
 		.put(bookingsController.modify_booking);
 };

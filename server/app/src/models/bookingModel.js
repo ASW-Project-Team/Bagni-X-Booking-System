@@ -22,7 +22,7 @@ const initializeModel = function(mongoose) {
         price: {type: Float, $gt: 0.0},
         date_from: {type: Date, $gte: Date.now()},
         date_to: {type: Date, $gte: Date.now()},
-        services: [{type: serviceModel, default: null}] // default beach volley
+        services: [{type: serviceModel, default: null}]
     });
 
     return mongoose.model('booking', bookingSchema, 'bookings');
