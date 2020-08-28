@@ -561,23 +561,20 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
             let umbrellas = [];
 
 
-            for (let umbrellaNumber in umbrellasNumber) {
+            for (const umbrellaNumber of umbrellasNumber) {
 
                 let umbrella = new Umbrella();
 
-                if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
-                    umbrella.number = umbrellasNumber[umbrellaNumber];
+                umbrella.number = umbrellasNumber[umbrellaNumber];
 
-                    for (let rank in catalog.rank_umbrellas) {
+                for (const rank of catalog.rank_umbrellas) {
 
-                        if (catalog.rank_umbrellas.hasOwnProperty(rank)
-                            && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
-                            && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
+                    if ((umbrella.number <= rank.to_umbrella)
+                        && (umbrella.number >= rank.from_umbrella)) {
 
-                            umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
-                            umbrellas.push(umbrella);
-                            break;
-                        }
+                        umbrella.ranks = rank;
+                        umbrellas.splice(0,0,umbrella);
+                        break;
                     }
                 }
 

@@ -1,5 +1,7 @@
 let model;
 
+const RanksModel = require("./rankUmbrellaModel")(mongoose)
+
 module.exports = function(mongoose) {
     if (!!!model)
         model = initializeModel(mongoose);
@@ -16,7 +18,7 @@ const initializeModel = function(mongoose) {
     const umbrellaSchema = new Schema({ // price depends from rank
         _id: Schema.Types.ObjectID,
         number: Number,
-        rank_id: Schema.Types.ObjectID
+        ranks: [RanksModel]
     });
     return mongoose.model('umbrella', umbrellaSchema);
 }

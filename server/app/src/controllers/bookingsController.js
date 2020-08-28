@@ -200,12 +200,12 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 
 		// Check if umbrellas are free
 		let to = docResult.date_to
-		if (req.body.to)
-			to = req.body.to
+		if (req.body.date_to)
+			to = req.body.date_to
 
 		let from = docResult.date_from
-		if (req.body.from)
-			from = req.body.from
+		if (req.body.date_from)
+			from = req.body.date_from
 
 		let oldUmbrellas = docResult.umbrellas
 
