@@ -16,7 +16,7 @@ import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ImgLandscapeComponent } from './shared/components/img-landscape/img-landscape.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,6 +41,10 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dialog.component';
 import { LoginComponent } from './pages/customer/login/login.component';
 import { RegisterComponent } from './pages/customer/register/register.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
+import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -75,7 +79,7 @@ import { RegisterComponent } from './pages/customer/register/register.component'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     BrowserAnimationsModule,
     HttpClientModule,
     MatIconModule,
@@ -86,8 +90,12 @@ import { RegisterComponent } from './pages/customer/register/register.component'
     MatRippleModule,
     MatSnackBarModule,
     MatDialogModule,
+    ReactiveFormsModule,
+    MatInputModule,
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

@@ -2,7 +2,7 @@
   <p>Da questa pagina è possibile consultare il feed, ovvero la sezione dedicata alle news dello stabilimento. Rimani
     sempre aggiornato sulle ultime novità!</p>
 
-  <div *ngIf="!newsFeed || newsFeed.length > 0; else loadingScreen">
+  <div *ngIf="newsFeed && newsFeed.length > 0; else loadingScreen">
     <ul class="news-feed-container">
       <li *ngFor="let news of newsFeed">
         <app-news-card

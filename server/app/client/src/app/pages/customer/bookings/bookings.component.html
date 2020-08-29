@@ -2,7 +2,7 @@
   <p>Da questa pagina è possibile consultare le prenotazioni portate avanti presso lo stabilimento, e modificarne
     eventuali dettagli. Le prenotazioni vengono mostrate in ordine cronologico.</p>
 
-  <div *ngIf="!bookings || bookings.length > 0; else loadingScreen">
+  <div *ngIf="bookings && bookings.length > 0; else loadingScreen">
     <ul class="bookings-container">
       <li *ngFor="let booking of bookings">
         <app-booking-card

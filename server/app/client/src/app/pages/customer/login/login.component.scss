@@ -1,0 +1,68 @@
+@import "~src/styles/utils";
+
+.page {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .description {
+    @include responsiveProp(margin-bottom, $defaultMargin);
+    @include forDesktopOnly {
+      width: 360px;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .title {
+      color: $primaryColor;
+    }
+  }
+
+  .login-form {
+    .inputs-container {
+      mat-form-field {
+        width: 100%;
+
+        @include forDesktopOnly {
+          width: 360px;
+        }
+      }
+    }
+
+    .login-button {
+      padding: 0 $marginDesktop;
+      border-radius: 50px;
+      @include responsiveProp(height, $fabHeight);
+      @include subheadFont;
+      color: $backgroundColor;
+      width: 100%;
+      @include responsiveProp(margin-bottom, $defaultMargin);
+
+      @include forDesktopOnly {
+        width: 360px;
+      }
+    }
+
+    .register-button {
+      padding: 0 $marginDesktop;
+      border-radius: 50px;
+      @include responsiveProp(height, $fabHeight);
+      @include subheadFont;
+      color: $secondaryControlColor;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+
+      @include forDesktopOnly {
+        width: 360px;
+      }
+    }
+  }
+
+}

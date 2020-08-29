@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../core/auth/auth.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {first} from "rxjs/operators";
 
 @Component({
   selector: 'app-login',
@@ -9,33 +10,58 @@ import {Router} from "@angular/router";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  emailControl: FormControl;
+  passwordControl: FormControl;
 
-  ngOnInit(): void {
-  }
+  loading: boolean = false;
+  submitted: boolean = false;
+  returnUrl: string;
+  error: string = '';
 
-  form:FormGroup;
-
-  constructor(private fb:FormBuilder,
+  constructor(private formBuilder: FormBuilder,
+              private route: ActivatedRoute,
               private authService: AuthService,
               private router: Router) {
-
-    this.form = this.fb.group({
-      email: ['',Validators.required],
-      password: ['',Validators.required]
-    });
+    // redirect to home if already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(["/home"]);
+    }
   }
 
-  login() {
-    const val = this.form.value;
 
-    if (val.email && val.password) {
-      this.authService.login(val.email, val.password)
-        .subscribe(
-          () => {
-            console.log("User is logged in");
-            this.router.navigateByUrl('/');
-          }
-        );
+  ngOnInit(): void {
+    this.emailControl = new FormControl('',[Validators.required, Validators.email])
+    this.passwordControl = new FormControl('',[Validators.required, Validators.email])
+
+    this.loginForm = new FormGroup({
+      emailControl: this.emailControl,
+      passwordControl: this.passwordControl
+    });
+
+    // get return url from route parameters, or default to '/home'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+  }
+
+
+  login() {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    this.loading = true;
+    this.authService.login(this.loginForm.controls.username.value, this.loginForm.controls.password.value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
   }
 }

@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { UserAuthGuard } from './user-auth.guard';
 
-describe('AuthGuardService', () => {
-  let service: UserAuthGuard;
+describe('UserAuthGuard', () => {
+  let guard: UserAuthGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(UserAuthGuard);
+    guard = TestBed.inject(UserAuthGuard);
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(guard).toBeTruthy();
   });
 });
