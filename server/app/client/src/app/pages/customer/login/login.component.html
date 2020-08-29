@@ -1,15 +1,20 @@
 <div class="page">
-  <div class="description">
-    <img src="/assets/logo.png" alt="BagniX Logo"/>
-    <h1 class="title">Bagni X</h1>
-    Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+  <div class="description-container">
+    <div class="logo-container">
+      <img src="/assets/logo.png" alt="BagniX Logo"/>
+      <h1 class="title">Bagni X</h1>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="description">
+      Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+    </div>
   </div>
 
   <form [formGroup]="loginForm" class="login-form">
     <div class="inputs-container">
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Email</mat-label>
-        <input matInput [formControl]="emailControl" placeholder="Ex. pat@example.com">
+        <input matInput [formControl]="emailControl" placeholder="Es. mario.rossi@example.com">
         <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
           Please enter a valid email address
         </mat-error>
@@ -20,7 +25,7 @@
 
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Password</mat-label>
-        <input matInput [formControl]="passwordControl" type="password" placeholder="mySuperPassword!">
+        <input matInput [formControl]="passwordControl" type="password" placeholder="Es. mySuperPassword!">
         <mat-error *ngIf="passwordControl.hasError('required')">
           Password is <strong>required</strong>
         </mat-error>

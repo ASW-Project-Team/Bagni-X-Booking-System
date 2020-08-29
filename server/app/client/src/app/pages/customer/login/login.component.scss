@@ -6,40 +6,66 @@
   flex-direction: column;
   align-items: center;
 
-  .description {
+  @include forDesktopOnly {
+    width: 360px;
+  }
+
+
+  .description-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
     @include responsiveProp(margin-bottom, $defaultMargin);
-    @include forDesktopOnly {
-      width: 360px;
+
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      img {
+        width: 80px;
+        height: 80px;
+      }
+
+      .title {
+        color: $primaryColor;
+      }
     }
 
-    img {
-      width: 80px;
-      height: 80px;
+    .vertical-divider {
+      @include responsiveProp(margin-left, $defaultMargin);
+      @include responsiveProp(margin-right, $defaultMargin);
+      width: 1px;
+      background-color: #cccccc;
+      height: 100px;
     }
 
-    .title {
-      color: $primaryColor;
+    .description {
+      text-align: left;
     }
   }
 
   .login-form {
     .inputs-container {
-      mat-form-field {
+      .input-field {
         width: 100%;
-
-        @include forDesktopOnly {
-          width: 360px;
-        }
       }
     }
 
-    .login-button {
+    @mixin button {
       padding: 0 $marginDesktop;
       border-radius: 50px;
       @include responsiveProp(height, $fabHeight);
-      @include subheadFont;
+      @include titleFont;
       color: $backgroundColor;
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       @include responsiveProp(margin-bottom, $defaultMargin);
 
       @include forDesktopOnly {
@@ -47,21 +73,13 @@
       }
     }
 
-    .register-button {
-      padding: 0 $marginDesktop;
-      border-radius: 50px;
-      @include responsiveProp(height, $fabHeight);
-      @include subheadFont;
-      color: $secondaryControlColor;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
+    .login-button {
+      @include button;
+    }
 
-      @include forDesktopOnly {
-        width: 360px;
-      }
+    .register-button {
+      @include button;
+      color: $secondaryControlColor;
     }
   }
 
