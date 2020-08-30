@@ -1,6 +1,6 @@
 let model;
 
-const RanksModel = require("./rankUmbrellaModel")(mongoose)
+
 
 module.exports = function(mongoose) {
     if (!!!model)
@@ -12,9 +12,9 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
+    const RanksModel = require("./rankUmbrellaModel")(mongoose).schema
 
     // used in bathhouse
-    // TODO rank_id in rank
     const umbrellaSchema = new Schema({ // price depends from rank
         _id: Schema.Types.ObjectID,
         number: Number,
