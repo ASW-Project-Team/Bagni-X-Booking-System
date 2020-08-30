@@ -7,7 +7,7 @@ const commonController = require("./commonController");
  * @param req
  * @param res
  */
-module.exports.read_user = function(req, res) {
+module.exports.readUser = function(req, res) {
     if (req.params.id){
         commonController.findByIdFirstLevelCollection(req, res, "user",User, "",
             req.params.id, (err, docResult) => {
@@ -15,7 +15,7 @@ module.exports.read_user = function(req, res) {
                 if (!req.body.deleted)
                     commonController.response(res, docResult)
                 else
-                    commonController.notify(res, commonController.status_error,
+                    commonController.notify(res, commonController.statusError,
                         "The user with the given id does not exist, or it has been logically deleted.")
             })
     } else {
@@ -23,7 +23,7 @@ module.exports.read_user = function(req, res) {
             (err, users)=>{
 
                 // Return tot pages
-                commonController.returnPages(req.body.page_id, req.body.page_size, req, res, users, "Users")
+                commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, users, "Users")
         })
     }
 
@@ -43,13 +43,13 @@ module.exports.read_user = function(req, res) {
  *  . If body params are all correct responds with "Status created (200)" and the json for user
  *  . If not responds with "Status Bad Format (400)".
  */
-module.exports.create_user = function(req, res) {
+module.exports.createUser = function(req, res) {
     commonController.areRequiredFieldsPresent(req, res, () => {
 
         // FIXME More checks for email
         if (commonController.typeOfString(req.body.name)
             && commonController.typeOfString(req.body.surname)
-            && commonController.typeOfString(req.body.email)
+            && commonController.checkEmail(req.body.email)
             && commonController.typeOfString(req.body.password)
             && commonController.typeOfBoolean(req.body.registered)
             && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
@@ -59,13 +59,13 @@ module.exports.create_user = function(req, res) {
                 let user = new User(req.body);
                 user._id = mongoose.Types.ObjectId();
 
-                user.salt = commonController.genRandomString(commonController.salt_length);
+                user.salt = commonController.genRandomString(commonController.saltLength);
                 user.hashedPassword = commonController.sha512(req.body.password, user.salt);
                 // When user is created isn't registered or deleted
 
                 user.deleted = false;
 
-                commonController.correctSave(user, commonController.status_created, res);
+                commonController.correctSave(user, commonController.statusCreated, res);
             });
 
         } else {
@@ -89,13 +89,13 @@ module.exports.create_user = function(req, res) {
  *  . If body params are all correct responds with "Status completed (201)" and the json for user
  *  . If not responds with "Status Bad Format (400)".
  */
-module.exports.update_user = function(req, res) {
+module.exports.updateUser = function(req, res) {
     commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
         req.params.id, (err, docResult)=>{
 
         if ((!(req.body.name) ||commonController.typeOfString(req.body.name))
             && (!(req.body.surname) || commonController.typeOfString(req.body.surname))
-            && (!(req.body.email) ||commonController.typeOfString(req.body.email))
+            && (!(req.body.email) ||commonController.checkEmail(req.body.email))
             && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))
             && (!(req.body.pass) || commonController.typeOfString(req.body.pass))) {
@@ -125,12 +125,12 @@ module.exports.update_user = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.delete_user_logically = function (req, res) {
+module.exports.deleteUserLogically = function (req, res) {
     commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
         req.params.id, (err, userResult)=>{
 
             userResult.deleted = true;
-            commonController.correctSave(userResult, commonController.status_completed, res);
+            commonController.correctSave(userResult, commonController.statusCompleted, res);
     });
 }
 
@@ -163,5 +163,5 @@ function applyUsersModify(req, docResult, res){
     if (req.body.deleted)
         docResult.deleted = req.body.deleted
 
-    commonController.correctSave(docResult, commonController.status_completed, res);
+    commonController.correctSave(docResult, commonController.statusCompleted, res);
 }

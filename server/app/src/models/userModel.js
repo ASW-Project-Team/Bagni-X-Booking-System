@@ -22,9 +22,9 @@ const initializeModel = function(mongoose) {
         address: {type: String, default: null},
 
         // authentication
-        email: String, // used for authentication  // fixme add validator from server
-        salt: { type: String, default: null },
-        hashedPassword: {type: String, default: null},
+        email: String,
+        salt: String,
+        hashedPassword: String,
 
         // other values
         registered: {type: Boolean, default: true}, // used to discriminate users that corresponds to an account
