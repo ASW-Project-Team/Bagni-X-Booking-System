@@ -1,5 +1,5 @@
 module.exports.set = function(app) {
-	const usersRoutes = require('./usersRoutes');
+	const customersRoutes = require('./customersRoutes');
 	const bookingRoutes = require('./bookingsRoutes');
 	const genericRoutes = require('./genericRoutes');
 	const catalogRoutes = require('./catalogRoutes');
@@ -7,7 +7,7 @@ module.exports.set = function(app) {
 	const adminRoutes = require('./adminsRoutes');
 	const bathhouseRoutes = require('./bathhouseRoutes');
 
-	usersRoutes.set(app);
+	customersRoutes.set(app);
 	bookingRoutes.set(app);
 	catalogRoutes.set(app);
 	newsRoutes.set(app);

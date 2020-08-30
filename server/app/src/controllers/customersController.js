@@ -1,5 +1,6 @@
-const Customer = require("../models/customerModel")(mongoose);
 const mongoose = require('mongoose');
+
+const Customer = require("../models/customerModel")(mongoose);
 const commonController = require("./commonController");
 
 /**
