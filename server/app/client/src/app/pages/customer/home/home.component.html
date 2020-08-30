@@ -1,6 +1,6 @@
 <div class="page">
   <!-- Main card -->
-  <div *ngIf="homeData.mainCard && homeData.homeCards.length > 0; else loadingScreen">
+  <div *ngIf="homeData; else loadingScreen">
     <div class="main-card-container">
       <div class="image-container"
            [ngStyle]="{'background-image': 'url(' + homeData.mainCard.image }">

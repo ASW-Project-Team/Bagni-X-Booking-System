@@ -32,10 +32,13 @@
       </mat-form-field>
     </div>
 
-    <button mat-raised-button color="primary" [disabled]="loading" class="login-button" (click)="login()">Login</button>
-    <a mat-raised-button color="accent" class="register-button" href="#" routerLink="/register">Registrati</a>
+    <div class="warning-container" *ngIf="loading"><mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner> <span>Effettuando il login...</span></div>
+    <div class="warning-container" *ngIf="error"><mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>{{error}}</div>
 
-    <div *ngIf="error" class="error">{{error}}</div>
+    <button mat-raised-button color="primary" [disabled]="loading" class="login-button" (click)="login()">
+      Login
+    </button>
+    <a mat-raised-button color="accent" class="register-button" href="#" routerLink="/register">Registrati</a>
   </form>
 </div>
 

@@ -1,10 +1,8 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {newsFeedMock, newsMock} from "../mocks/news.mock";
-import {MockGenerator} from "../mocks/mock-generator";
-import {homeMock} from "../mocks/home.mock";
-import {bookingMock, bookingsMock} from "../mocks/bookings.mock";
+import {environment} from "../../../environments/environment";
+import {AuthService} from "../auth/auth.service";
 
 
 /**
@@ -16,58 +14,31 @@ import {bookingMock, bookingsMock} from "../mocks/bookings.mock";
 })
 export class ApiService {
 
-  mockGenerator: MockGenerator;
-
-  constructor(private http: HttpClient) {
-    this.mockGenerator = new MockGenerator();
-  }
+  constructor(private http: HttpClient,
+              private authService: AuthService) { }
 
   public getHome(): Observable<any> {
-    if(isDevMode()) {
-      return this.mockGenerator.observableMock(homeMock);
-    }
-
-    return this.http.get('https://localhost:4200/api/home');
+    return this.http.get(`${environment.apiUrl}/api/home`);
   }
 
   public getAllNews(): Observable<any> {
-    if(isDevMode()) {
-      return this.mockGenerator.observableMock(newsFeedMock);
-    }
-
-    return this.http.get('https://localhost:4200/api/news-feed');
+    return this.http.get(`${environment.apiUrl}/api/news`);
   }
 
-  public getNews(id: string): Observable<any> {
-    if (isDevMode()) {
-      return this.mockGenerator.observableMock(newsMock);
-    }
-
-    return this.http.get('https://localhost:4200/api/news/' + id);
+  public getNews(newsId: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/news/${newsId}`);
   }
-
 
   public getUserBookings(): Observable<any> {
-    if (isDevMode()) {
-      return this.mockGenerator.observableMock(bookingsMock);
-    }
-
-    return this.http.get('https://localhost:4200/api/bookings/' /*userid come queryparam*/);
+    const userId: string = this.authService.currentCustomerValue().id;
+    return this.http.get(`${environment.apiUrl}/api/bookings/user/${userId}`);
   }
 
   public getBooking(bookingId: string): Observable<any> {
-    if (isDevMode()) {
-      return this.mockGenerator.observableMock(bookingMock);
-    }
-
-    return this.http.get('https://localhost:4200/api/bookings/' + bookingId);
+    return this.http.get(`${environment.apiUrl}/api/bookings/${bookingId}`);
   }
 
   public deleteBooking(bookingId: string): Observable<any> {
-    if (isDevMode()) {
-      return this.mockGenerator.observableMock({});
-    }
-
-    return this.http.delete('https://localhost:4200/api/bookings/' + bookingId);
+    return this.http.delete(`${environment.apiUrl}/api/bookings/${bookingId}`);
   }
 }

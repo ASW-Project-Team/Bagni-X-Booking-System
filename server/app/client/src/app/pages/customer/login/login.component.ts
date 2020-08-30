@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.emailControl = new FormControl('',[Validators.required, Validators.email])
-    this.passwordControl = new FormControl('',[Validators.required, Validators.email])
+    this.passwordControl = new FormControl('',[Validators.required])
 
     this.loginForm = new FormGroup({
       emailControl: this.emailControl,
@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
   }
 
 
-  login() {
+  public login(): void {
     this.submitted = true;
 
     // stop here if form is invalid
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.login(this.loginForm.controls.username.value, this.loginForm.controls.password.value)
+    this.authService.login(this.emailControl.value, this.passwordControl.value)
       .pipe(first())
       .subscribe(
         data => {

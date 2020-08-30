@@ -26,6 +26,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+
       img {
         width: 80px;
         height: 80px;
@@ -56,6 +57,20 @@
       }
     }
 
+    .warning-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      @include responsiveProp(margin-bottom, $defaultMargin);
+      text-align: left;
+
+      .warning-icon {
+        @include responsiveProp(margin-right, $defaultMargin);
+      }
+    }
+
     @mixin button {
       padding: 0 $marginDesktop;
       border-radius: 50px;
@@ -64,6 +79,7 @@
       color: $backgroundColor;
       width: 100%;
       display: flex;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       @include responsiveProp(margin-bottom, $defaultMargin);
@@ -81,6 +97,6 @@
       @include button;
       color: $secondaryControlColor;
     }
-  }
 
+  }
 }

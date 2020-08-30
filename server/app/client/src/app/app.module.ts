@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,6 +45,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
 import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
 import { MatInputModule } from '@angular/material/input';
+import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor";
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { MatInputModule } from '@angular/material/input';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    fakeBackendProvider // todo remove in production
   ],
   bootstrap: [AppComponent]
 })

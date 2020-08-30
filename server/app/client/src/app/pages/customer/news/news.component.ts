@@ -8,7 +8,7 @@ import {News} from "../../../shared/models/news.model";
   styleUrls: ['./news.component.scss']
 })
 export class NewsComponent implements OnInit {
-  newsFeed: News[] = [];
+  newsFeed: News[];
 
   constructor(private apiService: ApiService) { }
 

@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   public login(email: string, password: string ): Observable<Customer> {
-    return this._http.post<Customer>(`${environment.apiUrl}/auth/customers/login`, { email, password })
+    return this._http.post<Customer>(`${environment.apiUrl}/api/auth/customers/login`, { email, password })
       .pipe(map(customer => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('currentCustomer', JSON.stringify(customer));

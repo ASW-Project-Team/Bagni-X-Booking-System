@@ -9,12 +9,13 @@ import {ApiService} from "../../../core/api/api.service";
   styleUrls: ['./bookings.component.scss']
 })
 export class BookingsComponent implements OnInit {
-  bookings: Booking[] = [];
+  bookings: Booking[];
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.apiService.getUserBookings().subscribe(data => {
+      this.bookings = [];
       data.forEach(bookingData => {
         this.bookings.push(new Booking(bookingData));
       });

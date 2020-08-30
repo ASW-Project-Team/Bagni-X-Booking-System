@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Subscription, timer} from 'rxjs';
 
 
@@ -13,6 +13,7 @@ import {Subscription, timer} from 'rxjs';
   styleUrls: ['./loading-screen.component.scss']
 })
 export class LoadingScreenComponent implements OnInit {
+  @Input('small-height') smallHeight: boolean = false;
 
   loadingPhrases: String[] = [
     "Aprendo gli ombrelloni...",
