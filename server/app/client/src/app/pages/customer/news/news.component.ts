@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiService} from "../../../core/api.service";
+import {ApiService} from "../../../core/api/api.service";
 import {News} from "../../../shared/models/news.model";
 
 @Component({
@@ -8,7 +8,7 @@ import {News} from "../../../shared/models/news.model";
   styleUrls: ['./news.component.scss']
 })
 export class NewsComponent implements OnInit {
-  newsFeed: News[] = [];
+  newsFeed: News[];
 
   constructor(private apiService: ApiService) { }
 

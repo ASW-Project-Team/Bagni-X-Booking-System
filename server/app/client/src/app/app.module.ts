@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,7 +16,7 @@ import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ImgLandscapeComponent } from './shared/components/img-landscape/img-landscape.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,6 +39,13 @@ import { BookingStateExtendedComponent } from './shared/components/booking-state
 import { BookingSummaryComponent } from './shared/components/booking-summary/booking-summary.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dialog.component';
+import { LoginComponent } from './pages/customer/login/login.component';
+import { RegisterComponent } from './pages/customer/register/register.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
+import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
+import { MatInputModule } from '@angular/material/input';
+import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor";
 
 @NgModule({
   declarations: [
@@ -67,11 +74,13 @@ import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dia
     BookingStateExtendedComponent,
     BookingSummaryComponent,
     AlertDialogComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
     BrowserAnimationsModule,
     HttpClientModule,
     MatIconModule,
@@ -82,8 +91,13 @@ import { AlertDialogComponent } from './shared/components/alert-dialog/alert-dia
     MatRippleModule,
     MatSnackBarModule,
     MatDialogModule,
+    ReactiveFormsModule,
+    MatInputModule,
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    fakeBackendProvider // todo remove in production
   ],
   bootstrap: [AppComponent]
 })

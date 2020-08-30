@@ -1,4 +1,4 @@
-@import "~src/styles/utils";
+@import "../../../../styles/utils";
 
 .booking-state {
   @include responsiveProp(margin-bottom, $defaultMargin);
