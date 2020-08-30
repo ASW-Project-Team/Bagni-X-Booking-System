@@ -14,7 +14,7 @@ const initializeModel = function(mongoose) {
     // it's possible also nested declaration?
     let newsSchema = new Schema({
         _id: Schema.Types.ObjectId,
-        image_url:String,
+        imageUrl:String,
         date: Date,
         title: String,
         article: {type: String, default: null}

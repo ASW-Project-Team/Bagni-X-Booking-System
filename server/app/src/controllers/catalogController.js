@@ -9,7 +9,7 @@ const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 
 const commonController = require("./commonController");
 
-const Catalog_id = "5f40f4125c935b69a7f0626f";
+const CatalogId = "5f40f4125c935b69a7f0626f";
 // Before this queries we have to check the permissions to interact with db
 
 
@@ -25,10 +25,10 @@ module.exports.readRanks = function (req, res) {
     checkCatalog(req,res,"Catalog", (err, catalog)=>{
 
         if (req.params.id)
-            commonController.getNestedDocument(catalog.rank_umbrellas, req, res, req.params.id,
+            commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.params.id,
                 (rank) => commonController.response(res, rank))
         else
-            commonController.getDocuments(err, catalog.rank_umbrellas, req, res, "Ranks", catalog.rank_umbrellas);
+            commonController.getDocuments(err, catalog.rankUmbrellas, req, res, "Ranks", catalog.rankUmbrellas);
 
     })
 }
@@ -45,27 +45,27 @@ module.exports.createRank = function (req, res) {
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
             if (commonController.typeOfNumber(req.body.price)
-                && commonController.typeOfNumber(req.body.from_umbrella)
-                && commonController.typeOfNumber(req.body.to_umbrella)
-                && req.body.to_umbrella >= req.body.from_umbrella){
+                && commonController.typeOfNumber(req.body.fromUmbrella)
+                && commonController.typeOfNumber(req.body.toUmbrella)
+                && req.body.toUmbrella >= req.body.fromUmbrella){
 
-                if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.from_umbrella, req.body.to_umbrella)) {
+                if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.fromUmbrella, req.body.toUmbrella)) {
 
                     let rank = new Rank(req.body);
                     rank._id = mongoose.Types.ObjectId();
-                    catalog.rank_umbrellas.splice(0, 0, rank);
+                    catalog.rankUmbrellas.splice(0, 0, rank);
 
-                    commonController.correctSave(catalog, commonController.status_created, res);
+                    commonController.correctSave(catalog, commonController.statusCreated, res);
 
                 } else {
-                    commonController.notify(res, commonController.status_error, "Umbrellas belongs to another rank");
+                    commonController.notify(res, commonController.statusError, "Umbrellas belongs to another rank");
                 }
 
             } else {
                 commonController.parameterBadFormatted(res);
             }
 
-        }, req.body.name, req.body.price, req.body.from_umbrella, req.body.to_umbrella);
+        }, req.body.name, req.body.price, req.body.fromUmbrella, req.body.toUmbrella);
 
     });
 }
@@ -80,23 +80,23 @@ module.exports.createRank = function (req, res) {
 module.exports.updateRank = function (req, res) {
     checkCatalog(req, res, "Rank", (err, catalog)  => {
 
-        commonController.updateCollection(catalog, catalog.rank_umbrellas, req, res, req.params.id,async (rankTarget) => {
+        commonController.updateCollection(catalog, catalog.rankUmbrellas, req, res, req.params.id,async (rankTarget) => {
 
 
             if ((!(req.body.name) || commonController.typeOfString(req.body.name))
                 && (!(req.body.description) || commonController.typeOfString(req.body.description))
                 && (!(req.body.price) || commonController.typeOfNumber(req.body.price))
-                && (!(req.body.from_umbrella) || commonController.typeOfNumber(req.body.from_umbrella))
-                && (!(req.body.to_umbrella) || commonController.typeOfNumber(req.body.to_umbrella))
+                && (!(req.body.fromUmbrella) || commonController.typeOfNumber(req.body.fromUmbrella))
+                && (!(req.body.toUmbrella) || commonController.typeOfNumber(req.body.toUmbrella))
                 && (!(req.body.sales)) || checkSale(req.body.sales)){
 
-                let fromUmbrella = rankTarget.from_umbrella
-                if (req.body.from_umbrella)
-                    fromUmbrella = req.body.from_umbrella
+                let fromUmbrella = rankTarget.fromUmbrella
+                if (req.body.fromUmbrella)
+                    fromUmbrella = req.body.fromUmbrella
 
-                let toUmbrella = rankTarget.to_umbrella
-                if (req.body.to_umbrella)
-                    toUmbrella = req.body.to_umbrella
+                let toUmbrella = rankTarget.toUmbrella
+                if (req.body.toUmbrella)
+                    toUmbrella = req.body.toUmbrella
 
 
                 if (toUmbrella >= fromUmbrella
@@ -122,8 +122,8 @@ function checkSale(sales){
 
     for (const saleResult of sales){
 
-        let dateFrom = new Date(saleResult.date_from);
-        let dateTo = new Date(saleResult.date_to);
+        let dateFrom = new Date(saleResult.dateFrom);
+        let dateTo = new Date(saleResult.dateTo);
 
         if (!(commonController.typeOfNumber(saleResult.percent)
             && (dateTo)
@@ -145,11 +145,11 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
     if (req.body.name)
         rankTarget.name = req.body.name
 
-    if (req.body.from_umbrella)
-        rankTarget.from_umbrella = req.body.from_umbrella
+    if (req.body.fromUmbrella)
+        rankTarget.fromUmbrella = req.body.fromUmbrella
 
-    if (req.body.to_umbrella)
-        rankTarget.to_umbrella = req.body.to_umbrella
+    if (req.body.toUmbrella)
+        rankTarget.toUmbrella = req.body.toUmbrella
 
     if (req.body.description)
         rankTarget.description = req.body.description
@@ -167,8 +167,8 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
 
             saleToAdd["_id"] = mongoose.Types.ObjectId()
             saleToAdd["percent"] = sale.percent
-            saleToAdd["date_from"] = new Date(sale.date_from)
-            saleToAdd["date_to"] = new Date(sale.date_to)
+            saleToAdd["dateFrom"] = new Date(sale.dateFrom)
+            saleToAdd["dateTo"] = new Date(sale.dateTo)
 
             salesToAdd.splice(0,0, saleToAdd)
         }
@@ -176,13 +176,13 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
         rankTarget.sales = salesToAdd
     }
 
-    commonController.correctSave(catalog, commonController.status_completed, res, rankTarget)
+    commonController.correctSave(catalog, commonController.statusCompleted, res, rankTarget)
 }
 
 /**
  * Create a service. Need some required fields:
  *  . price of the service
- *  . umbrella_related indicates if is service is general or related to umbrella
+ *  . umbrellaRelated indicates if is service is general or related to umbrella
  * @param req
  * @param res
  */
@@ -192,7 +192,7 @@ module.exports.createService = function(req, res) {
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
             if (commonController.typeOfNumber(req.body.price)
-                && (commonController.typeOfBoolean(req.body.umbrella_related))
+                && (commonController.typeOfBoolean(req.body.umbrellaRelated))
                 && (!(req.body.description) || (commonController.typeOfString(req.body.description)))){
 
                 let service = new Service(req.body);
@@ -200,11 +200,11 @@ module.exports.createService = function(req, res) {
 
                 catalog.services.splice(0, 0, service);
 
-                commonController.correctSave(catalog, commonController.status_created, res, service);
+                commonController.correctSave(catalog, commonController.statusCreated, res, service);
             } else
                 commonController.parameterBadFormatted(res)
 
-        }, req.body.umbrella_related, req.body.price);
+        }, req.body.umbrellaRelated, req.body.price);
 
     });
 }
@@ -212,10 +212,10 @@ module.exports.createService = function(req, res) {
 /**
  * The query GET return two possible scenario:
  *  . if "id" is present in the params, the query have to find the specified service
- *  . if "id" is not present, the query have to return some services based on body params "page_id" and "page_size"
- *      Query Param "page_id": indicate position ...
+ *  . if "id" is not present, the query have to return some services based on body params "pageId" and "pageSize"
+ *      Query Param "pageId": indicate position ...
  *          If not specified we assume id is 1 (the oldest page)
- *      Query Param "page_size": the number of page that have to be shown
+ *      Query Param "pageSize": the number of page that have to be shown
  *          If not specified we assume 10 pages
  * @param req
  * @param res
@@ -229,7 +229,7 @@ module.exports.readServices = function (req, res) {
             commonController.returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
         } else {
             // Return tot pages
-            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, catalog.services, "Services");
+            commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, catalog.services, "Services");
         }
     });
 }
@@ -248,7 +248,7 @@ module.exports.updateService = function (req, res) {
         commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
 
             if (!(req.body.price) || commonController.typeOfNumber(req.body.price)
-                && (!(req.body.umbrella_related) || commonController.typeOfString(req.body.umbrella_related))
+                && (!(req.body.umbrellaRelated) || commonController.typeOfString(req.body.umbrellaRelated))
                 && (!(req.body.description) || commonController.typeOfString(req.body.description))){
 
                 if (req.body.price)
@@ -257,10 +257,10 @@ module.exports.updateService = function (req, res) {
                 if (req.body.description)
                     serviceTarget.description = req.body.description;
 
-                if (req.body.umbrella_related)
-                    serviceTarget.umbrella_related = req.body.umbrella_related;
+                if (req.body.umbrellaRelated)
+                    serviceTarget.umbrellaRelated = req.body.umbrellaRelated;
 
-                commonController.correctSave(catalog, commonController.status_completed, res, serviceTarget);
+                commonController.correctSave(catalog, commonController.statusCompleted, res, serviceTarget);
             }
 
 
@@ -271,32 +271,31 @@ module.exports.updateService = function (req, res) {
 /**
  * Create a sale for a specific rank. Fields needed:
  *  . "percent" of sale
- *  . "date_from" the sale start
- *  . "date_to" the sale start
+ *  . "dateFrom" the sale start
+ *  . "dateTo" the sale start
  * @param req The specific request.
  * @param res The specific response.
  */
 module.exports.createSale = function (req, res) {
     checkCatalog(req, res, "Sale", (err, catalog) => {
 
-        //TODO change 404 in 401
-        commonController.getNestedDocument(catalog.rank_umbrellas, req, res, req.body.rank_id, (rank) => {
+        commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.body.rankId, (rank) => {
 
             commonController.areRequiredFieldsPresent(req, res, () => {
 
                 if (commonController.typeOfNumber(req.body.percent)
-                    && new Date(req.body.date_to).getTime() >= new Date(req.body.date_from).getTime()) {
+                    && new Date(req.body.dateTo).getTime() >= new Date(req.body.dateFrom).getTime()) {
 
                     let sale = new Sale(req.body);
                     sale._id = mongoose.Types.ObjectId();
 
                     rank.sales.splice(0,0, sale);
 
-                    commonController.correctSave(catalog, commonController.status_created, res, sale);
+                    commonController.correctSave(catalog, commonController.statusCreated, res, sale);
                 } else
                     commonController.parameterBadFormatted(res)
 
-            }, req.body.percent, req.body.date_from, req.body.date_to);
+            }, req.body.percent, req.body.dateFrom, req.body.dateTo);
 
         });
 
@@ -307,7 +306,7 @@ module.exports.createSale = function (req, res) {
 /**
  * Two possible scenario:
  *  . if param "id" is present: Read a single sale if "id" exist, error otherwise.
- *  . Read from "page_id" to "page_id" + "page_size" sales.
+ *  . Read from "pageId" to "pageId" + "pageSize" sales.
  * @param req The read sale request.
  * @param res The read sale response.
  */
@@ -320,7 +319,7 @@ module.exports.readSales = function (req, res) {
             let saleResult = null;
 
             // check hasOwnProperty
-            for (const rank of catalog.rank_umbrellas){
+            for (const rank of catalog.rankUmbrellas){
                 saleResult = commonController.returnNestedDocument(rank.sales,
                     req, res, req.params.id, err, "Sale")
                 if (saleResult !== null)
@@ -328,26 +327,26 @@ module.exports.readSales = function (req, res) {
             }
 
             if (!saleResult)
-                commonController.serve_plain_404(req, res, "Sale");
+                commonController.servePlain404(req, res, "Sale");
 
         } else {
 
             let allSale = [];
 
-            for (const rank of catalog.rank_umbrellas) {
+            for (const rank of catalog.rankUmbrellas) {
                 for (const sale of rank.sales) {
                     allSale.splice(0, 0, sale);
                 }
             }
 
 
-            let allSaleRequested = allSale.filter(x => x.date_to.getTime() >= Date.now())
+            let allSaleRequested = allSale.filter(x => x.dateTo.getTime() >= Date.now())
                 .sort(function (a,b) {
-                    return new Date(a.date_to) - new Date(b.date_to);
+                    return new Date(a.dateTo) - new Date(b.dateTo);
                 }
             );
 
-            commonController.returnPages(req.body.page_id, req.body.page_size, req, res, allSaleRequested, "Sales");
+            commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, allSaleRequested, "Sales");
 
         }
 
@@ -360,7 +359,7 @@ module.exports.readSales = function (req, res) {
  * @param req The specific request.
  * @param res The specific response.
  */
-module.exports.update_sale = function (req, res) {
+module.exports.updateSale = function (req, res) {
     checkCatalog(req, res, "Sale", async (err, catalog)  => {
 
         // If par is present find the specified param ...
@@ -368,20 +367,20 @@ module.exports.update_sale = function (req, res) {
 
             let saleFound = false;
 
-            for (const rank of catalog.rank_umbrellas){
+            for (const rank of catalog.rankUmbrellas){
                 await commonController.updateCollection(catalog, rank.sales, req, res,
                     req.params.id,  (saleResult) => {
 
                     saleFound = true;
 
-                    let dateFrom = saleResult.date_from;
-                    let dateTo = saleResult.date_to;
+                    let dateFrom = saleResult.dateFrom;
+                    let dateTo = saleResult.dateTo;
 
-                    if (req.body.date_from)
-                        dateFrom = new Date(req.body.date_from)
+                    if (req.body.dateFrom)
+                        dateFrom = new Date(req.body.dateFrom)
 
-                    if (req.body.date_to)
-                        dateTo = new Date(req.body.date_to)
+                    if (req.body.dateTo)
+                        dateTo = new Date(req.body.dateTo)
 
                     if ((!(req.body.percent) || commonController.typeOfNumber(req.body.percent))
                         && (dateTo.getTime() >= dateFrom.getTime())
@@ -390,13 +389,13 @@ module.exports.update_sale = function (req, res) {
                         if (req.body.percent)
                             saleResult.percent = req.body.percent
 
-                        if (req.body.date_from)
-                            saleResult.date_from = new Date(req.body.date_from)
+                        if (req.body.dateFrom)
+                            saleResult.dateFrom = new Date(req.body.dateFrom)
 
-                        if (req.body.date_to)
-                            saleResult.date_to = new Date(req.body.date_to)
+                        if (req.body.dateTo)
+                            saleResult.dateTo = new Date(req.body.dateTo)
 
-                       commonController.correctSave(catalog, commonController.status_completed, res, saleResult)
+                       commonController.correctSave(catalog, commonController.statusCompleted, res, saleResult)
 
                     }
 
@@ -408,7 +407,7 @@ module.exports.update_sale = function (req, res) {
             }
 
             if (!saleFound)
-                commonController.serve_plain_404(req, res, "Sale");
+                commonController.servePlain404(req, res, "Sale");
         } else {
             commonController.notify(res, commonController.badRequest, "Id not present")
         }
@@ -423,24 +422,24 @@ module.exports.update_sale = function (req, res) {
  * @param req
  * @param res
  */
-module.exports.get_availability = function (req, res) {
+module.exports.getAvailability = function (req, res) {
 
     checkCatalog(req, res, "catalog", async (errCat, catalog) => {
 
         // Umbrella not free in that periods
         // First filter: if book is not finished
         // Second filter: if bool started in that period
-        await commonController.umbrellaUsed(req, res, req.body.date_from, req.body.date_to, (umbrellaNumberUsed)=>{
+        await commonController.umbrellaUsed(req, res, req.body.dateFrom, req.body.dateTo, (umbrellaNumberUsed)=>{
 
             let rankNumberFree = [];
             let rankNumber = -1
 
-            for (const rank of catalog.rank_umbrellas) {
+            for (const rank of catalog.rankUmbrellas) {
 
                 rankNumber++
                 if (rank) {
 
-                    for (let umbrellaNumber = rank.from_umbrella; umbrellaNumber <= rank.to_umbrella; umbrellaNumber++){
+                    for (let umbrellaNumber = rank.fromUmbrella; umbrellaNumber <= rank.toUmbrella; umbrellaNumber++){
 
                         if (!umbrellaNumberUsed.includes(umbrellaNumber)){
 
@@ -455,7 +454,7 @@ module.exports.get_availability = function (req, res) {
                                 rankNumberFree[rankNumber]["name"] = rank.name;
                                 rankNumberFree[rankNumber]["description"] = rank.description;
                                 rankNumberFree[rankNumber]["price"] = rank.price;
-                                rankNumberFree[rankNumber]["image_url"] = rank.price;
+                                rankNumberFree[rankNumber]["imageUrl"] = rank.price;
                                 rankNumberFree[rankNumber]["availableUmbrellas"] = [];
                             } else {
                                 elementsToAdd = rankNumberFree[rankNumber]["availableUmbrellas"];
@@ -490,22 +489,22 @@ module.exports.get_availability = function (req, res) {
 function checkCatalog(req, res, documentName, func) {
 
     commonController.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
-        Catalog_id, func);
+        CatalogId, func);
 }
 
 /**
  * Check if umbrellas belongs to some ranks already present.
  * @param catalog
- * @param from_umbrella
- * @param to_umbrella
+ * @param fromUmbrella
+ * @param toUmbrella
  * @returns {boolean}
  */
-function checkIfUmbrellasHaveAlreadyRanks(catalog, from_umbrella, to_umbrella) {
+function checkIfUmbrellasHaveAlreadyRanks(catalog, fromUmbrella, toUmbrella) {
     let counter = 0;
 
-    for (const rank of catalog.rank_umbrellas) {
-        if ((from_umbrella <= rank.to_umbrella)
-            && (to_umbrella >= rank.from_umbrella)){
+    for (const rank of catalog.rankUmbrellas) {
+        if ((fromUmbrella <= rank.toUmbrella)
+            && (toUmbrella >= rank.fromUmbrella)){
 
             counter++
         }

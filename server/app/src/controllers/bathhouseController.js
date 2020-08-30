@@ -18,13 +18,13 @@ module.exports.getHomeServicesRank = function (req, res) {
         CatalogID, (errCat, catalog)=>{
 
         docReturn["services"] = catalog.services
-        docReturn["ranks"] = catalog.rank_umbrellas
+        docReturn["ranks"] = catalog.rankUmbrellas
 
         commonController.findByIdFirstLevelCollection(req, res, "bathhouse", Bathhouse,
             "bathhouse", BathhouseID, (errBath, bathhouse)=>{
 
-           docReturn["main"] = bathhouse.main_home_card
-           docReturn["home cards"] = bathhouse.home_cards
+           docReturn["main"] = bathhouse.mainHomeCard
+           docReturn["home cards"] = bathhouse.homeCards
 
                 commonController.response(res, docReturn)
         });

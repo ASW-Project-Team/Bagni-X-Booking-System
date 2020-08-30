@@ -19,22 +19,22 @@ module.exports.createNews = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		// TODO Check if image_url is present
+		// TODO Check if imageUrl is present
 		if ((new Date(req.body.date).getTime() >= Date.now())
 			&& commonController.typeOfString(req.body.title)
-			&& commonController.typeOfString(req.body.image_url)
+			&& commonController.typeOfString(req.body.imageUrl)
 			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
 
 			let feed = new Feed(req.body);
 			feed._id = mongoose.Types.ObjectId();
 			feed.date = new Date(req.body.date);
 
-			commonController.correctSave(feed, commonController.status_created, res);
+			commonController.correctSave(feed, commonController.statusCreated, res);
 		} else {
 			commonController.parameterBadFormatted(res);
 		}
 
-	}, req.body.date, req.body.title, req.body.image_url);
+	}, req.body.date, req.body.title, req.body.imageUrl);
 };
 
 /**
@@ -49,7 +49,7 @@ module.exports.readNews = function(req, res) {
 			(err,news) => commonController.response(res, news));
 	} else {
 		commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>
-			commonController.returnPages(req.body.page_id, req.body.page_size, req, res, feed, "Feed"))
+			commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, feed, "Feed"))
 	}
 
 };
@@ -80,10 +80,10 @@ module.exports.updateNews = function(req, res) {
 			if (req.body.article)
 				docResult.article = req.body.article
 
-			if (req.body.image_url)
-				docResult.image_url = req.body.image_url
+			if (req.body.imageUrl)
+				docResult.imageUrl = req.body.imageUrl
 
-			commonController.correctSave(docResult, commonController.status_completed, res);
+			commonController.correctSave(docResult, commonController.statusCompleted, res);
 		} else {
 			commonController.parameterBadFormatted(res);
 		}

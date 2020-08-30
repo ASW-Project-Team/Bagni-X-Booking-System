@@ -15,9 +15,9 @@ const initializeModel = function(mongoose) {
     const  bathhouse = new Schema({
         _id: Schema.Types.ObjectId,
         name: String,
-        logo_url: String,
-        main_home_card: homeCardModel,
-        home_cards: homeCardModel,
+        logoUrl: String,
+        mainHomeCard: homeCardModel,
+        homeCards: homeCardModel,
     });
     return mongoose.model('bathhouse', bathhouse, 'bathhouse');
 }

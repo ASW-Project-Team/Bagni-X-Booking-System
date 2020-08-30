@@ -15,5 +15,5 @@ module.exports.set = function(app) {
 	app.route('/api/bookings/:id')
 		.get(bookingsController.getBooking)
 		.delete(bookingsController.deleteBooking)
-		.put(bookingsController.modify_booking);
+		.put(bookingsController.modifyBooking);
 };

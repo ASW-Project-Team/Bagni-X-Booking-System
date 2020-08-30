@@ -15,7 +15,7 @@ const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
 
     let CatalogSchema = new Schema({
-        rank_umbrellas: [{type: rankUmbrellaModel, default: null}], // includes also sales
+        rankUmbrellas: [{type: rankUmbrellaModel, default: null}], // includes also sales
         services: [{type: serviceModel, default: null}]
     });
     return mongoose.model('catalog', CatalogSchema, 'catalog');

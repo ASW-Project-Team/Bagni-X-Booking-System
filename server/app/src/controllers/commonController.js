@@ -14,8 +14,8 @@ const CatalogID = "5f40f4125c935b69a7f0626f";
  * @param res
  * @param objName
  */
-module.exports.serve_plain_404 = function(req, res, objName) {
-    this.notify(res, this.status_error, objName + " not found!")
+module.exports.servePlain404 = function(req, res, objName) {
+    this.notify(res, this.statusError, objName + " not found!")
 };
 
 /**
@@ -23,24 +23,24 @@ module.exports.serve_plain_404 = function(req, res, objName) {
  * @param res
  * @param document
  */
-module.exports.already_present = function(res, document) {
-    this.notify(res, this.status_error, document + " already present!")
+module.exports.alreadyPresent = function(res, document) {
+    this.notify(res, this.statusError, document + " already present!")
 }
 
 /**
  * Error caused because not all required fields are inserted.
  * @param res
  */
-module.exports.field_require_404 = function(res) {
-    this.notify(res,this.status_error,"Some required fields aren't found!")
+module.exports.fieldRequire404 = function(res) {
+    this.notify(res,this.statusError,"Some required fields aren't found!")
 };
 
 /**
  * Error caused because not authorized to an access.
  * @param res
  */
-module.exports.unauthorized_401 = function(res) {
-    this.notify(res,this.status_unauthorized,"Access negated!")
+module.exports.unauthorized401 = function(res) {
+    this.notify(res,this.statusUnauthorized,"Access negated!")
 };
 
 
@@ -122,7 +122,7 @@ module.exports.checkError = function (err, documents, req, res, documentName, de
     else {
         if (!deleteOperation && !documents) {
             errSave = true;
-            this.serve_plain_404(req, res, documentName);
+            this.servePlain404(req, res, documentName);
         }
     }
 
@@ -135,7 +135,7 @@ module.exports.checkError = function (err, documents, req, res, documentName, de
  * @param documents The documents used
  */
 module.exports.response = function (res, documents) {
-    res.status(this.status_completed).json(documents);
+    res.status(this.statusCompleted).json(documents);
 }
 
 /**
@@ -215,9 +215,9 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
         if (foundElement)
             func(documentTarget);
         else if (returnError)// So we can handle also more than two nested level collection. See sale read or put.
-            return this.serve_plain_404(req, res, "Elem");
+            return this.servePlain404(req, res, "Elem");
     } else if (returnError)
-        this.serve_plain_404(req, res, "Id in url");
+        this.servePlain404(req, res, "Id in url");
 
 }
 
@@ -346,12 +346,12 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
  */
 module.exports.returnPages = function (id, size, req, res, arrayToSearch, collectionName) {
 
-    let pageId = this.default_page_id;
+    let pageId = this.defaultPageId;
     if (id) {
         pageId = id;
     }
 
-    let pageSize = this.default_page_size;
+    let pageSize = this.defaultPageSize;
     if (size) {
         pageSize = size;
     }
@@ -361,7 +361,7 @@ module.exports.returnPages = function (id, size, req, res, arrayToSearch, collec
 
     if (pageId >= pages.length) {
 
-        this.serve_plain_404(req, res, collectionName);
+        this.servePlain404(req, res, collectionName);
 
     } else {
 
@@ -394,7 +394,7 @@ module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsReq
     if (toSave) {
         func();
     } else {
-        this.field_require_404(res)
+        this.fieldRequire404(res)
     }
 }
 
@@ -463,7 +463,7 @@ module.exports.updatePassword = function(res, password, elem) {
 
         elem.hashedPassword = this.sha512(password, elem.salt);
 
-        this.correctSave(elem, this.status_created, res);
+        this.correctSave(elem, this.statusCreated, res);
     });
 }
 
@@ -475,7 +475,7 @@ module.exports.updatePassword = function(res, password, elem) {
  */
 module.exports.checkPassword = function(res, password, func){
 
-    if (password.length >= this.password_length){
+    if (password.length >= this.passwordLength){
         func()
     } else {
         this.notify(res, this.badRequest, "Password too short");
@@ -499,8 +499,8 @@ module.exports.umbrellaUsed = function (req, res, to, from, func){
             // First filter: if book is not finished
             // Second filter: if bool started in that period
 
-            let allBookingsFiltered = allBookings.filter(b => new Date(to).getTime() >= b.date_from.getTime()
-                &&  new Date(from).getTime() <= b.date_to.getTime()
+            let allBookingsFiltered = allBookings.filter(b => new Date(to).getTime() >= b.dateFrom.getTime()
+                &&  new Date(from).getTime() <= b.dateTo.getTime()
                 && !b.cancelled);
 
             let allBookingsUmbrellaMapped = allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number));
@@ -527,9 +527,9 @@ module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
             this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
                 let umbrellaNumberFree = [];
-                for (const rank of catalog.rank_umbrellas) {
+                for (const rank of catalog.rankUmbrellas) {
 
-                    for (let umbrellaNumber = rank.from_umbrella; umbrellaNumber <= rank.to_umbrella; umbrellaNumber++) {
+                    for (let umbrellaNumber = rank.fromUmbrella; umbrellaNumber <= rank.toUmbrella; umbrellaNumber++) {
 
                         if (!umbrellasNumberUsed.includes(umbrellaNumber)) {
                             umbrellaNumberFree.splice(0, 0, umbrellaNumber);
@@ -567,10 +567,10 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 
                 umbrella.number = umbrellasNumber[umbrellaNumber];
 
-                for (const rank of catalog.rank_umbrellas) {
+                for (const rank of catalog.rankUmbrellas) {
 
-                    if ((umbrella.number <= rank.to_umbrella)
-                        && (umbrella.number >= rank.from_umbrella)) {
+                    if ((umbrella.number <= rank.toUmbrella)
+                        && (umbrella.number >= rank.fromUmbrella)) {
 
                         umbrella.ranks = rank;
                         umbrellas.splice(0,0,umbrella);
@@ -588,7 +588,7 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 }
 
 /**
- * Check if service_ids exists or not.
+ * Check if all of serviceId's array exists or not.
  * @param req
  * @param res
  * @param services
@@ -611,13 +611,13 @@ module.exports.servicesAvailable = function (req, res, services, func){
  * Check if user exist.
  * @param req
  * @param res
- * @param user_id
+ * @param userId
  * @param func
  */
-module.exports.userExist = function (req, res, user_id, func){
+module.exports.userExist = function (req, res, userId, func){
 
     this.findByIdFirstLevelCollection(req, res, "user", User, "User",
-        mongoose.Types.ObjectId(user_id), (err, user)=>{
+        userId, (err, user)=>{
 
             func(user);
 
@@ -625,20 +625,31 @@ module.exports.userExist = function (req, res, user_id, func){
 
 }
 
-module.exports.status_created = 201;
+/**
+ * Check if email is a valid regex.
+ * @param email
+ * @returns {boolean}
+ */
+module.exports.checkEmail = function(email){
 
-module.exports.status_completed = 200;
+    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 
-module.exports.status_error = 404;
+}
 
-module.exports.default_page_id = 0;
+module.exports.statusCreated = 201;
 
-module.exports.default_page_size = 10;
+module.exports.statusCompleted = 200;
 
-module.exports.salt_length = 48;
+module.exports.statusError = 404;
 
-module.exports.status_unauthorized = 401;
+module.exports.defaultPageId = 0;
+
+module.exports.defaultPageSize = 10;
+
+module.exports.saltLength = 48;
+
+module.exports.statusUnauthorized = 401;
 
 module.exports.badRequest = 400;
 
-module.exports.password_length = 8;
+module.exports.passwordLength = 8;

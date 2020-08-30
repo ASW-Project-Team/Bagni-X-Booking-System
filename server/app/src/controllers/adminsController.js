@@ -12,7 +12,7 @@ const commonController = require("./commonController");
  *        If username and password are right responds also with a Json object with username,
  *        authenticate=true and jwt.
  */
-module.exports.authenticate_admin = function(req, res) {
+module.exports.authenticateAdmin = function(req, res) {
 
     findAdmin(req, res, req.body.username, req.body.password,
         (elemFounded) => {
@@ -29,12 +29,12 @@ module.exports.authenticate_admin = function(req, res) {
             }
             else{
 
-                commonController.unauthorized_401(res);
+                commonController.unauthorized401(res);
             }
 
         }, () =>{
 
-            commonController.unauthorized_401(res);
+            commonController.unauthorized401(res);
 
 
         });
@@ -46,7 +46,7 @@ module.exports.authenticate_admin = function(req, res) {
             if (admin)
                 commonController.response(res, "Authenticated");
             else
-                commonController.serve_plain_404(req, res, "admin");
+                commonController.servePlain404(req, res, "admin");
         })*/
 };
 
@@ -55,11 +55,11 @@ module.exports.authenticate_admin = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.create_admin = function(req, res) {
+module.exports.createAdmin = function(req, res) {
     findAdmin(req, res, req.body.username, req.body.password,
         () => {
 
-        commonController.already_present(res, "admin");
+        commonController.alreadyPresent(res, "admin");
 
         }, () => {
 
@@ -70,10 +70,10 @@ module.exports.create_admin = function(req, res) {
 
             let admin = new Admin(req.body)
             admin._id = mongoose.Types.ObjectId();
-            admin.salt = commonController.genRandomString(commonController.salt_length);
+            admin.salt = commonController.genRandomString(commonController.saltLength);
             admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
-            commonController.correctSave(admin, commonController.status_created, res)
+            commonController.correctSave(admin, commonController.statusCreated, res)
 
         })
         /*    if (req.body.password.length>=8){
@@ -82,13 +82,13 @@ module.exports.create_admin = function(req, res) {
 
                 let admin = new Admin(req.body)
                 admin._id = mongoose.Types.ObjectId();
-                admin.salt = commonController.genRandomString(commonController.salt_length);
+                admin.salt = commonController.genRandomString(commonController.saltLength);
                 admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
-                commonController.correctSave(admin, commonController.status_created, res)
+                commonController.correctSave(admin, commonController.statusCreated, res)
             } else {
 
-                commonController.notify(res, commonController.bad_request, "Password too short");
+                commonController.notify(res, commonController.badRequest, "Password too short");
             }*/
     })
 };
@@ -99,7 +99,7 @@ module.exports.create_admin = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.delete_admin = function(req, res) {
+module.exports.deleteAdmin = function(req, res) {
     if (req.body.username){
         commonController.deleteFirstLevelCollectionByUsername(req, res, "admins", Admin,
             "", req.body.username);
@@ -117,7 +117,7 @@ module.exports.delete_admin = function(req, res) {
  *  . 200 and object if username is found
  *  . 404 if username isn't found.
  */
-module.exports.change_password = function(req, res) {
+module.exports.changePassword = function(req, res) {
 
     findAdmin(req, res, req.body.username, req.body.password,
         (adminFounded) => {
@@ -126,7 +126,7 @@ module.exports.change_password = function(req, res) {
 
         }, () =>{
 
-            commonController.serve_plain_404(req, res, "admin")
+            commonController.servePlain404(req, res, "admin")
 
         })
 };

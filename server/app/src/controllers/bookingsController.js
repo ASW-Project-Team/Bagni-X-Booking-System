@@ -21,17 +21,17 @@ module.exports.createBooking = function(req, res) {
 
 		// Check if fields are well formatted
 		if (commonController.typeOfNumber(req.body.price)
-			&& new Date(req.body.date_from).getTime() >= Date.now()
-			&& new Date(req.body.date_to).getTime() >=  new Date(req.body.date_from).getTime()
-			&& commonController.typeOfString(req.body.user_id)
+			&& new Date(req.body.dateFrom).getTime() >= Date.now()
+			&& new Date(req.body.dateTo).getTime() >=  new Date(req.body.dateFrom).getTime()
+			&& commonController.typeOfString(req.body.userId)
 			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
 
 			// User is present if go inside this callback
-			commonController.findByIdFirstLevelCollection(req, res, "User", User,"",req.body.user_id,
+			commonController.findByIdFirstLevelCollection(req, res, "User", User,"",req.body.userId,
 				()=>{
 
 					// Check if umbrella are free
-				commonController.umbrellaFree(req, res, req.body.date_to, req.body.date_from, req.body.umbrellas,
+				commonController.umbrellaFree(req, res, req.body.dateTo, req.body.dateFrom, req.body.umbrellas,
 					(areUmbrellasFree) => {
 
 					if (areUmbrellasFree) {
@@ -43,25 +43,25 @@ module.exports.createBooking = function(req, res) {
 
 							booking.umbrellas = umbrellas;
 							booking._id = mongoose.Types.ObjectId();
-							booking.user_id = mongoose.Types.ObjectId(req.body.user_id);
+							booking.userId = mongoose.Types.ObjectId(req.body.userId);
 
-							booking.date_from = new Date(req.body.date_from);
-							booking.date_to = new Date(req.body.date_to);
+							booking.dateFrom = new Date(req.body.dateFrom);
+							booking.dateTo = new Date(req.body.dateTo);
 							// to confirm and to cancel
 							booking.confirmed = false
 							booking.cancelled = false
 
 							// add as first element
-							commonController.correctSave(booking, commonController.status_created, res);
+							commonController.correctSave(booking, commonController.statusCreated, res);
 						})
 					} else
-						commonController.notify(res, commonController.status_error, "Umbrella aren't free");
+						commonController.notify(res, commonController.statusError, "Umbrella aren't free");
 				})
 			})
 		} else
 			commonController.notify(res, commonController.badRequest, "Malformed request!");
 
-	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.date_from, req.body.date_to);
+	}, req.body.userId, req.body.umbrellas, req.body.price, req.body.dateFrom, req.body.dateTo);
 };
 
 /**
@@ -85,7 +85,7 @@ module.exports.getBooking = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.modify_booking = function(req, res) {
+module.exports.modifyBooking = function(req, res) {
 
 
 	bookingAndUmbrellaServiceUserChecks(req, res);
@@ -97,7 +97,7 @@ module.exports.modify_booking = function(req, res) {
  * GET bookings.
  * Two possible scenarios:
  * 	. get a specific user and get all his bookings
- * 	. get page_id and page_size: in this case return bookings from id to size.
+ * 	. get pageId and pageSize: in this case return bookings from id to size.
  * 		In this case there are default value both for id and size.
  * @param req The specified GET request
  * @param res The specified GET response
@@ -108,16 +108,16 @@ module.exports.readBookings = function(req, res) {
 		, "", (err, docResult) => {
 			if (req.params.id) {
 
-				let docs = docResult.filter(x => mongoose.Types.ObjectId(req.params.id) === x.user_id);
+				let docs = docResult.filter(x => mongoose.Types.ObjectId(req.params.id) === x.userId);
 
 				if (!docs)
-					commonController.serve_plain_404(req, res, "Bookings")
+					commonController.servePlain404(req, res, "Bookings")
 				else
 					commonController.response(res, docs)
 
 			}
 			else
-				commonController.returnPages(req.body.page_id, req.body.page_size, req, res, docResult, collectionName)
+				commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, docResult, collectionName)
 		});
 
 }
@@ -131,7 +131,7 @@ module.exports.deleteBooking = function(req, res) {
 
 	commonController.findByIdFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id,
 		(err, booking)=>{
-			if (Date.now().valueOf() <= (booking.date_from.valueOf() - (conversionDayInMilliseconds * dayBeforeDeleteIsPossible))){
+			if (Date.now().valueOf() <= (booking.dateFrom.valueOf() - (conversionDayInMilliseconds * dayBeforeDeleteIsPossible))){
 				commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
 			} else
 				commonController.parameterBadFormatted(res)
@@ -156,8 +156,8 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 		&& (!(confirmed) || commonController.typeOfBoolean(confirmed))
 		&& (!(cancelled) || commonController.typeOfBoolean(cancelled))){
 
-		let from = doc.date_from;
-		let to = doc.date_to;
+		let from = doc.dateFrom;
+		let to = doc.dateTo;
 
 		if ((reqFrom)
 			&& (new Date(reqFrom).getTime() >= Date.now()))
@@ -182,7 +182,7 @@ async function bookingAndUmbrellaServiceUserChecks(req, res) {
 		req.params.id, async (err, docResult)=> {
 
 			if (docResult){
-				if (checkParams(req.body.from, req.body.to, req.body.price,
+				if (checkParams(req.body.dateFrom, req.body.dateTo, req.body.price,
 					req.body.confirmed, req.body.cancelled, docResult)) {
 
 					await umbrellaServiceAndUserChecks(req, res, docResult)
@@ -199,13 +199,13 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 	if (req.body.umbrellas) {
 
 		// Check if umbrellas are free
-		let to = docResult.date_to
-		if (req.body.date_to)
-			to = req.body.date_to
+		let to = docResult.dateTo
+		if (req.body.dateTo)
+			to = req.body.dateTo
 
-		let from = docResult.date_from
-		if (req.body.date_from)
-			from = req.body.date_from
+		let from = docResult.dateFrom
+		if (req.body.dateFrom)
+			from = req.body.dateFrom
 
 		let oldUmbrellas = docResult.umbrellas
 
@@ -253,15 +253,15 @@ async function serviceAndUserChecks(req, res, docResult) {
 
 async function userExist(req, res, docResult) {
 
-	if (req.body.user_id){
+	if (req.body.userId){
 
 		// Check if user exist
-		await commonController.userExist(req, res, req.body.user_id, async (isUserPresent)=>{
+		await commonController.userExist(req, res, req.body.userId, async (isUserPresent)=>{
 
 			if (isUserPresent) {
 
-				await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-					req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
+				await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+					req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
 					req.body.services, docResult);
 
 			} else {
@@ -269,24 +269,24 @@ async function userExist(req, res, docResult) {
 			}
 		});
 	} else {
-		await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-			req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
+		await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+			req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
 			req.body.services, docResult);
 	}
 }
 
 
-async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, user_id,
+async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, userId,
 							umbrellas, services, doc){
 
-	if (user_id)
-		doc.user_id = user_id
+	if (userId)
+		doc.userId = userId
 
 	if (reqFrom)
-		doc.date_from = new Date(reqFrom)
+		doc.dateFrom = new Date(reqFrom)
 
 	if (reqTo)
-		doc.date_to = new Date(reqTo)
+		doc.dateTo = new Date(reqTo)
 
 	if (confirmed)
 		doc.confirmed = confirmed
@@ -304,11 +304,11 @@ async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelle
 
 		await commonController.createUmbrellas(req, res, umbrellas,(umbrellasReturned)=>{
 			doc.umbrellas = umbrellasReturned;
-			commonController.correctSave(doc, commonController.status_completed, res);
+			commonController.correctSave(doc, commonController.statusCompleted, res);
 		})
 	} else {
 
-		await commonController.correctSave(doc, commonController.status_completed, res);
+		await commonController.correctSave(doc, commonController.statusCompleted, res);
 	}
 
 }

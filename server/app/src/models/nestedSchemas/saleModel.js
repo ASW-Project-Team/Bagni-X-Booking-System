@@ -18,8 +18,8 @@ const initializeModel = function(mongoose) {
             type: Number,
             min: [0, 'Too small'],
         },
-        date_from: {type: Date, $gte: Date.now()},
-        date_to: {type: Date, $gte: Date.now()}
+        dateFrom: {type: Date, $gte: Date.now()},
+        dateTo: {type: Date, $gte: Date.now()}
     });
 
     return mongoose.model('sale', saleSchema);

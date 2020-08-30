@@ -15,13 +15,13 @@ const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
     const bookingSchema = new Schema({
         _id: Schema.Types.ObjectID,
-        user_id: Schema.Types.ObjectID,
+        userId: Schema.Types.ObjectID,
         umbrellas: [umbrellaModel],
         confirmed: {type: Boolean, default: false},
         cancelled: {type: Boolean, default: false},
         price: {type: Float, $gt: 0.0},
-        date_from: {type: Date, $gte: Date.now()},
-        date_to: {type: Date, $gte: Date.now()},
+        dateFrom: {type: Date, $gte: Date.now()},
+        dateTo: {type: Date, $gte: Date.now()},
         services: [{type: serviceModel, default: null}]
     });
 

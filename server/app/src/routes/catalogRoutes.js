@@ -15,7 +15,7 @@ module.exports.set = function(app) {
 
     app.route('/api/catalog/sales/:id')
         .get(catalogController.readSales)
-        .put(catalogController.update_sale);
+        .put(catalogController.updateSale);
 
     app.route('/api/catalog/services/')
         .get(catalogController.readServices)
@@ -26,7 +26,7 @@ module.exports.set = function(app) {
         .get(catalogController.readServices);
 
     app.route('/api/new-booking/availability/')
-        .get(catalogController.get_availability);
+        .get(catalogController.getAvailability);
 
 
 }
