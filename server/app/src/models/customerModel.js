@@ -12,7 +12,7 @@ const initializeModel = function(mongoose) {
     let Schema = mongoose.Schema;
 
     // it's possible also nested declaration?
-    let userSchema = new Schema({
+    let customerSchema = new Schema({
         _id: mongoose.Types.ObjectId,
 
         // contacts
@@ -30,5 +30,5 @@ const initializeModel = function(mongoose) {
         registered: {type: Boolean, default: true}, // used to discriminate users that corresponds to an account
         deleted: {type: Boolean, default: false},
     });
-    return mongoose.model('user', userSchema, 'users');
+    return mongoose.model('customer', customerSchema, 'customers');
 };

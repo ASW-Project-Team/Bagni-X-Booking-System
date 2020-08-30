@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require("../models/userModel.js")(mongoose);
+const Customer = require("../models/customerModel.js")(mongoose);
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
@@ -26,8 +26,8 @@ module.exports.createBooking = function(req, res) {
 			&& commonController.typeOfString(req.body.userId)
 			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
 
-			// User is present if go inside this callback
-			commonController.findByIdFirstLevelCollection(req, res, "User", User,"",req.body.userId,
+			// Customer is present if go inside this callback
+			commonController.findByIdFirstLevelCollection(req, res, "Customer", Customer,"",req.body.userId,
 				()=>{
 
 					// Check if umbrella are free
@@ -88,7 +88,7 @@ module.exports.getBooking = function(req, res) {
 module.exports.modifyBooking = function(req, res) {
 
 
-	bookingAndUmbrellaServiceUserChecks(req, res);
+	bookingAndUmbrellaServiceCustomerChecks(req, res);
 
 }
 
@@ -96,7 +96,7 @@ module.exports.modifyBooking = function(req, res) {
 /**
  * GET bookings.
  * Two possible scenarios:
- * 	. get a specific user and get all his bookings
+ * 	. get a specific customer and get all his bookings
  * 	. get pageId and pageSize: in this case return bookings from id to size.
  * 		In this case there are default value both for id and size.
  * @param req The specified GET request
@@ -175,7 +175,7 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 	return paramsOk;
 }
 
-async function bookingAndUmbrellaServiceUserChecks(req, res) {
+async function bookingAndUmbrellaServiceCustomerChecks(req, res) {
 
 	// Check if bookings exist
 	await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
@@ -185,7 +185,7 @@ async function bookingAndUmbrellaServiceUserChecks(req, res) {
 				if (checkParams(req.body.dateFrom, req.body.dateTo, req.body.price,
 					req.body.confirmed, req.body.cancelled, docResult)) {
 
-					await umbrellaServiceAndUserChecks(req, res, docResult)
+					await umbrellaServiceAndCustomerChecks(req, res, docResult)
 				}
 			} else {
 				commonController.parameterBadFormatted(res)
@@ -194,7 +194,7 @@ async function bookingAndUmbrellaServiceUserChecks(req, res) {
 
 }
 
-async function umbrellaServiceAndUserChecks(req, res, docResult) {
+async function umbrellaServiceAndCustomerChecks(req, res, docResult) {
 
 	if (req.body.umbrellas) {
 
@@ -217,7 +217,7 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 			async (areUmbrellasFree) => {
 				if (areUmbrellasFree){
 
-					await serviceAndUserChecks(req, res, docResult);
+					await serviceAndCustomerChecks(req, res, docResult);
 				} else {
 					// Return to the precedent situation
 					docResult.umbrellas = oldUmbrellas
@@ -227,38 +227,38 @@ async function umbrellaServiceAndUserChecks(req, res, docResult) {
 				}
 			});
 	} else {
-		await serviceAndUserChecks(req, res, docResult);
+		await serviceAndCustomerChecks(req, res, docResult);
 	}
 }
 
-async function serviceAndUserChecks(req, res, docResult) {
+async function serviceAndCustomerChecks(req, res, docResult) {
 
 	if (req.body.services) {
 
-		// Check if user exist
+		// Check if customer exist
 		await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
 
 			if (areServicesAvailable){
 
-				await userExist(req, res, docResult);
+				await customerExist(req, res, docResult);
 			} else {
 				commonController.parameterBadFormatted(res);
 			}
 		});
 	} else {
-		await userExist(req, res, docResult)
+		await customerExist(req, res, docResult)
 	}
 
 }
 
-async function userExist(req, res, docResult) {
+async function customerExist(req, res, docResult) {
 
 	if (req.body.userId){
 
 		// Check if user exist
-		await commonController.userExist(req, res, req.body.userId, async (isUserPresent)=>{
+		await commonController.customerExist(req, res, req.body.userId, async (isCustomerPresent)=>{
 
-			if (isUserPresent) {
+			if (isCustomerPresent) {
 
 				await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
 					req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,

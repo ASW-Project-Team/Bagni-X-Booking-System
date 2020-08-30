@@ -1,36 +1,36 @@
+const Customer = require("../models/customerModel")(mongoose);
 const mongoose = require('mongoose');
-const User = require("../models/userModel")(mongoose);
 const commonController = require("./commonController");
 
 /**
- * GET a specific user or paginated.
+ * GET a specific customer or paginated.
  * @param req
  * @param res
  */
-module.exports.readUser = function(req, res) {
+module.exports.readCustomer = function(req, res) {
     if (req.params.id){
-        commonController.findByIdFirstLevelCollection(req, res, "user",User, "",
+        commonController.findByIdFirstLevelCollection(req, res, "Customer",Customer, "",
             req.params.id, (err, docResult) => {
 
                 if (!req.body.deleted)
                     commonController.response(res, docResult)
                 else
                     commonController.notify(res, commonController.statusError,
-                        "The user with the given id does not exist, or it has been logically deleted.")
+                        "The customer with the given id does not exist, or it has been logically deleted.")
             })
     } else {
-        commonController.findAllFromCollection(req, res, "User",User,"",
-            (err, users)=>{
+        commonController.findAllFromCollection(req, res, "Customer",Customer,"",
+            (err, customers)=>{
 
                 // Return tot pages
-                commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, users, "Users")
+                commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, customers, "Customers")
         })
     }
 
 };
 
 /**
- * POST a new user
+ * POST a new customer
  * @param req that in body have required fields:
  *  . name
  *  . surname
@@ -40,13 +40,12 @@ module.exports.readUser = function(req, res) {
  *  . phone
  *  . address
  * @param res:
- *  . If body params are all correct responds with "Status created (200)" and the json for user
+ *  . If body params are all correct responds with "Status created (200)" and the json for customer
  *  . If not responds with "Status Bad Format (400)".
  */
-module.exports.createUser = function(req, res) {
+module.exports.createCustomer = function(req, res) {
     commonController.areRequiredFieldsPresent(req, res, () => {
 
-        // FIXME More checks for email
         if (commonController.typeOfString(req.body.name)
             && commonController.typeOfString(req.body.surname)
             && commonController.checkEmail(req.body.email)
@@ -56,16 +55,16 @@ module.exports.createUser = function(req, res) {
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))){
 
             commonController.checkPassword(res, req.body.password, ()=>{
-                let user = new User(req.body);
-                user._id = mongoose.Types.ObjectId();
+                let customer = new Customer(req.body);
+                customer._id = mongoose.Types.ObjectId();
 
-                user.salt = commonController.genRandomString(commonController.saltLength);
-                user.hashedPassword = commonController.sha512(req.body.password, user.salt);
-                // When user is created isn't registered or deleted
+                customer.salt = commonController.genRandomString(commonController.saltLength);
+                customer.hashedPassword = commonController.sha512(req.body.password, customer.salt);
+                // When customer is created isn't registered or deleted
 
-                user.deleted = false;
+                customer.deleted = false;
 
-                commonController.correctSave(user, commonController.statusCreated, res);
+                commonController.correctSave(customer, commonController.statusCreated, res);
             });
 
         } else {
@@ -77,7 +76,7 @@ module.exports.createUser = function(req, res) {
 };
 
 /**
- * UPDATE a specific User
+ * UPDATE a specific Customer
  * @param req that in body could have fields:
  *  . name
  *  . surname
@@ -86,11 +85,11 @@ module.exports.createUser = function(req, res) {
  *  . phone
  *  . address
  * @param res:
- *  . If body params are all correct responds with "Status completed (201)" and the json for user
+ *  . If body params are all correct responds with "Status completed (201)" and the json for customer
  *  . If not responds with "Status Bad Format (400)".
  */
-module.exports.updateUser = function(req, res) {
-    commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
+module.exports.updateCustomer = function(req, res) {
+    commonController.findByIdFirstLevelCollection(req, res, "customer", Customer, "",
         req.params.id, (err, docResult)=>{
 
         if ((!(req.body.name) ||commonController.typeOfString(req.body.name))
@@ -105,12 +104,12 @@ module.exports.updateUser = function(req, res) {
                     docResult.hashedPassword = commonController.sha512(req.body.pass,
                         docResult.salt);
 
-                    applyUsersModify(req, docResult, res)
+                    applyCustomersModify(req, docResult, res)
 
                 });
             } else {
 
-                applyUsersModify(req, docResult, res)
+                applyCustomersModify(req, docResult, res)
 
             }
 
@@ -121,16 +120,16 @@ module.exports.updateUser = function(req, res) {
 };
 
 /**
- * DELETE LOGICALLY a user
+ * DELETE LOGICALLY a Customer
  * @param req
  * @param res
  */
-module.exports.deleteUserLogically = function (req, res) {
-    commonController.findByIdFirstLevelCollection(req, res, "user", User, "",
-        req.params.id, (err, userResult)=>{
+module.exports.deleteCustomerLogically = function (req, res) {
+    commonController.findByIdFirstLevelCollection(req, res, "customerser", Customer, "",
+        req.params.id, (err, customerResult)=>{
 
-            userResult.deleted = true;
-            commonController.correctSave(userResult, commonController.statusCompleted, res);
+            customerResult.deleted = true;
+            commonController.correctSave(customerResult, commonController.statusCompleted, res);
     });
 }
 
@@ -140,7 +139,7 @@ module.exports.deleteUserLogically = function (req, res) {
  * @param docResult
  * @param res
  */
-function applyUsersModify(req, docResult, res){
+function applyCustomersModify(req, docResult, res){
 
     if (req.body.name)
         docResult.name = req.body.name

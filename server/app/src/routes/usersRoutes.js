@@ -1,14 +1,14 @@
 module.exports.set = function(app) {
-    const usersController = require('../controllers/usersController');
+    const usersController = require('../controllers/customersController');
 
     app.route('/api/customers/:id')
         .get(usersController.readUser)
-        .put(usersController.updateUser)
-        .delete(usersController.deleteUserLogically);
+        .put(usersController.updateCustomer)
+        .delete(usersController.deleteCustomerLogically);
 
     app.route('/api/customers/')
         .get(usersController.readUser)
-        .post(usersController.createUser);
+        .post(usersController.createCustomer);
 
 
 

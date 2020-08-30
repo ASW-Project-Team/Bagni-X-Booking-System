@@ -3,7 +3,7 @@ const crypto = require('crypto')
 
 const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
-const User = require('../models/userModel')(mongoose);
+const Customer = require('../models/customerModel')(mongoose);
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
 const CatalogID = "5f40f4125c935b69a7f0626f";
 
@@ -614,12 +614,12 @@ module.exports.servicesAvailable = function (req, res, services, func){
  * @param userId
  * @param func
  */
-module.exports.userExist = function (req, res, userId, func){
+module.exports.customerExist = function (req, res, userId, func){
 
-    this.findByIdFirstLevelCollection(req, res, "user", User, "User",
-        userId, (err, user)=>{
+    this.findByIdFirstLevelCollection(req, res, "Customer", Customer, "Customer",
+        userId, (err, customer)=>{
 
-            func(user);
+            func(customer);
 
         });
 
