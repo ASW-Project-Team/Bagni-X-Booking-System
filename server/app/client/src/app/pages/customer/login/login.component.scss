@@ -6,9 +6,6 @@
   flex-direction: column;
   align-items: center;
 
-  @include forDesktopOnly {
-    width: 360px;
-  }
 
 
   .description-container {
@@ -51,9 +48,24 @@
   }
 
   .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     .inputs-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+
       .input-field {
+        @include responsiveProp(padding-right, $halfMargin);
+        @include responsiveProp(padding-left, $halfMargin);
         width: 100%;
+        @include forDesktopOnly {
+          width: 264px;
+        }
       }
     }
 
@@ -95,7 +107,8 @@
 
     .register-button {
       @include button;
-      color: $secondaryControlColor;
+      background-color: $backgroundColor;
+      color: $primaryColor;
     }
 
   }
