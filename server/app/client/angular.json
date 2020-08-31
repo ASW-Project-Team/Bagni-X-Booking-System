@@ -24,12 +24,13 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
-              "src/favicon.ico",
               "src/humans.txt",
               "src/robots.txt",
-              "src/assets",
-              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets" },
-              "src/manifest.webmanifest"
+              "src/assets/",
+              "src/manifest.webmanifest",
+              "src/browserconfig.xml",
+              { "glob": "**/*", "input": "src/assets/icons/", "output": "./" },
+              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets" }
             ],
             "styles": [
               "src/styles.scss"
@@ -94,12 +95,13 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/favicon.ico",
               "src/humans.txt",
               "src/robots.txt",
-              "src/assets",
-              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets" },
-              "src/manifest.webmanifest"
+              "src/assets/",
+              "src/manifest.webmanifest",
+              "src/browserconfig.xml",
+              { "glob": "**/*", "input": "src/assets/icons/", "output": "./" },
+              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets" }
             ],
             "styles": [
               "src/styles.scss"

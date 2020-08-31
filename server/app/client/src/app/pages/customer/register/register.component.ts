@@ -51,11 +51,11 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required,
-        Validators.pattern("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\\[\\]:;<>,.?\\/~_+-=|]).{8,32}$"),
+        Validators.pattern("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\\[\\]:;<>,.?\\/~_+-=|]).{8,32}$"),
         Validators.minLength(8)
       ]],
       confirmPassword: ['', Validators.required],
-      phone: ['', Validators.pattern("^((\\\\+39-?)|0)?[0-9]{6,10}$")],
+      phone: ['', Validators.pattern("^((\\+)[0-9]{2}(-)?)?[0-9]{6,11}$")],
       address: [''],
     }, {validator: RegisterComponent.passwordMatchValidator});
 

@@ -14,7 +14,7 @@
     <div class="inputs-container">
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Email</mat-label>
-        <input matInput [formControl]="emailControl" placeholder="Es. mario.rossi@example.com">
+        <input matInput [formControl]="emailControl" type="email" placeholder="Es. mario.rossi@example.com">
         <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
           Inserisci un indirizzo email valido
         </mat-error>
@@ -25,7 +25,8 @@
 
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Password</mat-label>
-        <input matInput [formControl]="passwordControl" type="password" placeholder="Es. mySuperPassword!">
+        <input matInput [formControl]="passwordControl" [type]="hidePw ? 'password' : 'text'" placeholder="Es. mySuperPassword!">
+        <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
         <mat-error *ngIf="passwordControl.hasError('required')">
           Il campo è <strong>obbligatorio</strong>
         </mat-error>

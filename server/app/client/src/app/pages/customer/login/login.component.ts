@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   submitted: boolean = false;
   returnUrl: string;
   error: string = '';
+  hidePw = true;
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
