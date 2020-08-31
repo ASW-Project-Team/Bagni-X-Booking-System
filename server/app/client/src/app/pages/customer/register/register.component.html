@@ -14,7 +14,7 @@
     <div class="inputs-container">
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Nome</mat-label>
-        <input matInput formControlName="name" placeholder="Es. Mario">
+        <input matInput formControlName="name" type="text" placeholder="Es. Mario">
         <mat-error *ngIf="regForm.get('name').hasError('required')">
           Il campo è <strong>obbligatorio</strong>
         </mat-error>
@@ -22,7 +22,7 @@
 
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Cognome</mat-label>
-        <input matInput formControlName="surname" placeholder="Es. Rossi">
+        <input matInput formControlName="surname" type="text"  placeholder="Es. Rossi">
         <mat-error *ngIf="regForm.get('surname').hasError('required')">
           Il campo è <strong>obbligatorio</strong>
         </mat-error>
@@ -80,7 +80,7 @@
 
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Indirizzo</mat-label>
-        <input matInput formControlName="address" placeholder="Es. Viale della Vittoria, 46">
+        <input matInput formControlName="address" type="text" placeholder="Es. Viale della Vittoria, 46">
         <mat-hint>
           Il campo è <strong>facoltativo</strong>
         </mat-hint>
