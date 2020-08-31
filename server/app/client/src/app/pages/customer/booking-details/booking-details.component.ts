@@ -42,8 +42,9 @@ export class BookingDetailsComponent implements OnInit {
               text: "Sì, annulla",
               execute: function() {
                 context.api.deleteBooking(context.bookingId).subscribe(resp => {
-                 context.router.navigate(['/bookings']);
-                  context.snackBar.open("Prenotazione annullata.", null, { duration: 4000 });
+                 context.router.navigate(['/bookings']).then(() => {
+                   context.snackBar.open("Prenotazione annullata.", null, { duration: 4000 });
+                 });
                 });
               }
             },

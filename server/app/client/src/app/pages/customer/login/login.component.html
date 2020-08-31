@@ -10,16 +10,16 @@
     </div>
   </div>
 
-  <form [formGroup]="loginForm" class="login-form">
+  <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
     <div class="inputs-container">
       <mat-form-field appearance="outline" class="input-field">
         <mat-label>Email</mat-label>
         <input matInput [formControl]="emailControl" placeholder="Es. mario.rossi@example.com">
         <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
-          Please enter a valid email address
+          Inserisci un indirizzo email valido
         </mat-error>
         <mat-error *ngIf="emailControl.hasError('required')">
-          Email is <strong>required</strong>
+          Il campo è <strong>obbligatorio</strong>
         </mat-error>
       </mat-form-field>
 
@@ -27,18 +27,27 @@
         <mat-label>Password</mat-label>
         <input matInput [formControl]="passwordControl" type="password" placeholder="Es. mySuperPassword!">
         <mat-error *ngIf="passwordControl.hasError('required')">
-          Password is <strong>required</strong>
+          Il campo è <strong>obbligatorio</strong>
         </mat-error>
       </mat-form-field>
     </div>
 
-    <div class="warning-container" *ngIf="loading"><mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner> <span>Effettuando il login...</span></div>
-    <div class="warning-container" *ngIf="error"><mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>{{error}}</div>
+    <div class="warning-container" *ngIf="loading">
+      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
+      <span>Effettuando il login...</span>
+    </div>
+    <div class="warning-container" *ngIf="error">
+      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
+      <span>{{error}}</span>
+    </div>
 
-    <button mat-raised-button color="primary" [disabled]="loading" class="login-button" (click)="login()">
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="login-button">
       Login
     </button>
-    <a mat-raised-button color="accent" class="register-button" href="#" routerLink="/register">Registrati</a>
+    <a mat-raised-button class="register-button" href="#"
+       [routerLink]="['/register']" [queryParams]="{'returnUrl': returnUrl}">
+      Registrati
+    </a>
   </form>
 </div>
 

@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../core/auth/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {first} from "rxjs/operators";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,19 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private snackBar: MatSnackBar) {
     // redirect to home if already logged in
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(["/home"]);
+      this.router.navigate(["/home"]).then(() => {
+        const customerEmail = this.authService.currentCustomerValue().email;
+        this.snackBar.open(
+        `Sei già loggato come ${customerEmail}! per effettuare l'accesso con un altro account,
+                 esegui prima il logout da questo.`,
+          null,
+          { duration: 4000 }
+        );
+      });
     }
   }
 
@@ -44,7 +54,7 @@ export class LoginComponent implements OnInit {
   }
 
 
-  public login(): void {
+  public onSubmit(): void {
     this.submitted = true;
 
     // stop here if form is invalid
@@ -57,7 +67,14 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate([this.returnUrl]).then(() => {
+            const customerName = this.authService.currentCustomerValue().name;
+            this.snackBar.open(
+              `Login completato. Benvenuto, ${customerName}!`,
+              null,
+              { duration: 4000 }
+            );
+          });
         },
         error => {
           this.error = error;

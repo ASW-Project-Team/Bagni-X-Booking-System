@@ -38,6 +38,16 @@ export class AuthService {
       }));
   }
 
+  public register(customer: Customer): Observable<Customer> {
+    return this._http.post<Customer>(`${environment.apiUrl}/api/auth/customers/register`, customer)
+      .pipe(map(customer => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        localStorage.setItem('currentCustomer', JSON.stringify(customer));
+        this._currentCustomerSubject.next(customer);
+        return customer;
+      }));
+  }
+
   public logout(): void {
     // remove user from local storage to log user out
     localStorage.removeItem("currentCustomer");
