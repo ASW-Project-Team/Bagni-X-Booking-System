@@ -116,13 +116,8 @@ module.exports.readBookings = function(req, res) {
 					commonController.response(res, docs)
 
 			}
-			else{
-				console.log(req.query.pageId)
-				console.log(req.query.pageSize)
-
+			else
 				commonController.returnPages(req.query.pageId, req.query.pageSize, req, res, docResult, collectionName)
-
-			}
 		});
 
 }
