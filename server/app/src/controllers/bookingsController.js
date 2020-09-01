@@ -3,6 +3,8 @@ const Customer = require("../models/customerModel.js")(mongoose);
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
+const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose)
+
 const conversionDayInMilliseconds = 86400000
 const dayBeforeDeleteIsPossible = 2
 const collectionName = "bookings"
@@ -160,6 +162,73 @@ module.exports.deleteBooking = function(req, res) {
 				commonController.parameterBadFormatted(res)
 		});
 }
+
+/**
+ * Return:
+ *  . services available.
+ *  . ranks with the available umbrellas in that period. If not don't return that rank.
+ * @param req
+ * @param res
+ */
+module.exports.getAvailability = function (req, res) {
+
+	commonController.findCatalog(req, res, "Catalog", async (errCat, catalog) => {
+
+		// Umbrella not free in that periods
+		// First filter: if book is not finished
+		// Second filter: if bool started in that period
+		commonController.umbrellaUsed(req, res, req.query["date-to"], req.query["date-from"], (umbrellaNumberUsed)=>{
+
+			let rankNumberFree = [];
+			let rankNumber = -1
+
+			for (const rank of catalog.rankUmbrellas) {
+
+				rankNumber++
+				if (rank) {
+
+					for (let umbrellaNumber = rank.fromUmbrella; umbrellaNumber <= rank.toUmbrella; umbrellaNumber++){
+
+						if (!umbrellaNumberUsed.includes(umbrellaNumber)){
+
+							let elementsToAdd = [];
+
+							let umbrella = new Umbrella();
+							umbrella.number = umbrellaNumber;
+
+							if (!rankNumberFree[rankNumber]) {
+								rankNumberFree[rankNumber] = {};
+								rankNumberFree[rankNumber]["id"] = rank._id;
+								rankNumberFree[rankNumber]["name"] = rank.name;
+								rankNumberFree[rankNumber]["description"] = rank.description;
+								rankNumberFree[rankNumber]["price"] = rank.price;
+								rankNumberFree[rankNumber]["imageUrl"] = rank.imageUrl;
+								rankNumberFree[rankNumber]["fromUmbrella"] = rank.fromUmbrella;
+								rankNumberFree[rankNumber]["toUmbrella"] = rank.toUmbrella
+								rankNumberFree[rankNumber]["availableUmbrellas"] = [];
+							} else {
+								elementsToAdd = rankNumberFree[rankNumber]["availableUmbrellas"];
+							}
+
+							elementsToAdd.splice(0,0,umbrella);
+
+							rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
+						}
+					}
+				}
+			}
+
+			let availability = {};
+
+			availability["services"] = catalog.services;
+			availability["ranks"] = rankNumberFree;
+
+			commonController.response(res, availability);
+		});
+	});
+
+}
+
 
 /**
  * Check if params are correct.

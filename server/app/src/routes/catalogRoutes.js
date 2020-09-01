@@ -25,8 +25,7 @@ module.exports.set = function(app) {
         .put(catalogController.updateService)
         .get(catalogController.readServices);
 
-    app.route('/api/new-booking/availability/')
-        .get(catalogController.getAvailability);
+
 
 
 }

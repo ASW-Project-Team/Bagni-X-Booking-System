@@ -1,15 +1,8 @@
 const mongoose = require('mongoose');
 
-const Catalog = require("../models/catalogModel")(mongoose);
-const Bathhouse = require("../models/bathhouseModel")(mongoose);
-
 const HomeCard = require("../models/nestedSchemas/homeCardModel")(mongoose);
 
 const commonController = require("./commonController");
-
-const CatalogID = "5f40f4125c935b69a7f0626f";
-
-const BathhouseID = "5f41345d9ca3ce59d9777862";
 
 
 /**

@@ -522,7 +522,7 @@ module.exports.umbrellaUsed = function (req, res, to, from, func){
             // Second filter: if bool started in that period
 
             let allBookingsFiltered = allBookings.filter(b => new Date(to).getTime() >= b.dateFrom.getTime()
-                &&  new Date(from).getTime() <= b.dateTo.getTime()
+                && new Date(from).getTime() <= b.dateTo.getTime()
                 && !b.cancelled);
 
             let allBookingsUmbrellaMapped = allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number));

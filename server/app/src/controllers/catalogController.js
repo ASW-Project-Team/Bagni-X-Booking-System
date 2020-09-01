@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 
-const Catalog = require("../models/catalogModel")(mongoose);
 
 const Rank = require("../models/nestedSchemas/rankUmbrellaModel")(mongoose);
 const Service = require("../models/nestedSchemas/serviceModel")(mongoose);
 const Sale = require("../models/nestedSchemas/saleModel")(mongoose);
-const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 
 const commonController = require("./commonController");
 
@@ -412,69 +410,6 @@ module.exports.updateSale = function (req, res) {
 }
 
 
-/**
- * Return:
- *  . services available.
- *  . ranks with the available umbrellas in that period. If not don't return that rank.
- * @param req
- * @param res
- */
-module.exports.getAvailability = function (req, res) {
-
-    commonController.findCatalog(req, res, "Catalog", async (errCat, catalog) => {
-
-        // Umbrella not free in that periods
-        // First filter: if book is not finished
-        // Second filter: if bool started in that period
-        await commonController.umbrellaUsed(req, res, req.body.dateFrom, req.body.dateTo, (umbrellaNumberUsed)=>{
-
-            let rankNumberFree = [];
-            let rankNumber = -1
-
-            for (const rank of catalog.rankUmbrellas) {
-
-                rankNumber++
-                if (rank) {
-
-                    for (let umbrellaNumber = rank.fromUmbrella; umbrellaNumber <= rank.toUmbrella; umbrellaNumber++){
-
-                        if (!umbrellaNumberUsed.includes(umbrellaNumber)){
-
-                            let elementsToAdd = [];
-
-                            let umbrella = new Umbrella();
-                            umbrella.number = umbrellaNumber;
-
-                            if (!rankNumberFree[rankNumber]) {
-                                rankNumberFree[rankNumber] = {};
-                                rankNumberFree[rankNumber]["id"] = rank._id;
-                                rankNumberFree[rankNumber]["name"] = rank.name;
-                                rankNumberFree[rankNumber]["description"] = rank.description;
-                                rankNumberFree[rankNumber]["price"] = rank.price;
-                                rankNumberFree[rankNumber]["imageUrl"] = rank.price;
-                                rankNumberFree[rankNumber]["availableUmbrellas"] = [];
-                            } else {
-                                elementsToAdd = rankNumberFree[rankNumber]["availableUmbrellas"];
-                            }
-
-                            elementsToAdd.splice(0,0,umbrella);
-
-                            rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
-                        }
-                    }
-                }
-            }
-
-            let availability = {};
-
-            availability["services"] = catalog.services;
-            availability["ranks"] = rankNumberFree;
-
-            commonController.response(res, availability);
-        });
-    });
-
-}
 
 
 
