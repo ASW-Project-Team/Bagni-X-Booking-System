@@ -99,7 +99,7 @@ module.exports.getBooking = function(req, res) {
 	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "",
 		req.params.id, (err, docResult)=>{
 			commonController.response(res, docResult);
-		});
+	});
 }
 
 
@@ -302,7 +302,7 @@ async function umbrellaServiceAndCustomerChecks(req, res, docResult) {
 		let oldUmbrellas = docResult.umbrellas
 
 		// If not do this, the old umbrellas are considered busy but we could change this
-		docResult.umbrellas=[]
+		docResult.umbrellas = []
 		await docResult.save();
 
 		await commonController.umbrellaFree(req, res, to, from, req.body.umbrellas,

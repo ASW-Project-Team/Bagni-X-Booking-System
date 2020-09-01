@@ -137,7 +137,9 @@ module.exports.deleteHomeCard = function (req, res) {
         if (req.params.id){
 
             bathhouse.homeCards = bathhouse.homeCards.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(req.params.id)))
-            commonController.correctSave(bathhouse, commonController.statusCompleted, res);
+            bathhouse.save()
+
+            commonController.response(res, commonController.deleteOperationCompleted)
         } else
             commonController.parameterBadFormatted(res)
     });

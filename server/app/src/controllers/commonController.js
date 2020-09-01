@@ -628,6 +628,23 @@ module.exports.servicesAvailable = function (req, res, services, func){
 }
 
 /**
+ * Return if services are all corrects
+ * @param req
+ * @param res
+ * @param services
+ * @param func
+ */
+module.exports.servicesAvailable = function (req, res, services, func){
+
+    this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "",
+        CatalogID,  (err, catalog)=>{
+
+            const catalogServices = catalog.services.map(x => x._id);
+            func(services.every(s => catalogServices.includes(s._id)));
+    });
+}
+
+/**
  * Return a complete service
  * @param req
  * @param res
@@ -738,9 +755,11 @@ module.exports.findBathhouse = function(req, res, func) {
  */
 module.exports.findCatalog = function(req, res, documentName, func) {
 
-    this.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
+    this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "Catalog",
         CatalogID, func);
 }
+
+module.exports.deleteOperationCompleted = "Delete operation completed"
 
 module.exports.statusCreated = 201;
 

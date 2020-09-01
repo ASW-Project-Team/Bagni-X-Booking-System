@@ -16,7 +16,7 @@ module.exports.authenticateAdmin = function(req, res) {
     findAdmin(req, res, req.body.username, req.body.password,
         (elemFounded) => {
 
-        if (req.body.password && commonController.typeOfString(req.body.password)
+        if (commonController.typeOfString(req.body.password)
         && (elemFounded.hashedPassword === commonController.sha512(req.body.password, elemFounded.salt))){
 
             let response = {}

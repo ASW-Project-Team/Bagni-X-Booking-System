@@ -43,18 +43,31 @@ module.exports.createRank = function (req, res) {
             if (commonController.typeOfNumber(req.body.price)
                 && commonController.typeOfNumber(req.body.fromUmbrella)
                 && commonController.typeOfNumber(req.body.toUmbrella)
-                && req.body.toUmbrella >= req.body.fromUmbrella){
+                && req.body.toUmbrella >= req.body.fromUmbrella
+                && commonController.typeOfString(req.body.name)
+                && (!(req.body.description) || commonController.typeOfString(req.body.description))
+                && (!(req.body.sales) || checkSales(req.body.sales))){
 
-                if (checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.fromUmbrella, req.body.toUmbrella)) {
+                if (!checkIfUmbrellasHaveAlreadyRanks(catalog, req.body.fromUmbrella, req.body.toUmbrella)) {
 
                     let rank = new Rank(req.body);
                     rank._id = mongoose.Types.ObjectId();
+
+                    let sales = []
+
+                    for (const sale of req.body.sales) {
+                        sales.splice(0,0,sale)
+                        sales[0]._id = mongoose.Types.ObjectId()
+                    }
+
+                    rank.sales = sales
+
                     catalog.rankUmbrellas.splice(0, 0, rank);
 
                     commonController.correctSave(catalog, commonController.statusCreated, res);
 
                 } else {
-                    commonController.notify(res, commonController.statusError, "Umbrellas belongs to another rank");
+                    commonController.notify(res, commonController.badRequest, "Umbrellas belongs to another rank!");
                 }
 
             } else {
@@ -84,7 +97,7 @@ module.exports.updateRank = function (req, res) {
                 && (!(req.body.price) || commonController.typeOfNumber(req.body.price))
                 && (!(req.body.fromUmbrella) || commonController.typeOfNumber(req.body.fromUmbrella))
                 && (!(req.body.toUmbrella) || commonController.typeOfNumber(req.body.toUmbrella))
-                && (!(req.body.sales)) || checkSale(req.body.sales)){
+                && (!(req.body.sales)) || checkSales(req.body.sales)){
 
                 let fromUmbrella = rankTarget.fromUmbrella
                 if (req.body.fromUmbrella)
@@ -112,7 +125,7 @@ module.exports.updateRank = function (req, res) {
     });
 }
 
-function checkSale(sales){
+function checkSales(sales){
 
     let saleCheck = true;
 
@@ -132,25 +145,24 @@ function checkSale(sales){
         }
     }
 
-
     return saleCheck;
 }
 
 function updateAppliedForRanks(req, res, rankTarget, catalog){
 
-    if (req.body.name)
+    if (commonController.typeOfString(req.body.name))
         rankTarget.name = req.body.name
 
-    if (req.body.fromUmbrella)
+    if (commonController.typeOfNumber(req.body.fromUmbrella))
         rankTarget.fromUmbrella = req.body.fromUmbrella
 
-    if (req.body.toUmbrella)
+    if (commonController.typeOfNumber(req.body.toUmbrella))
         rankTarget.toUmbrella = req.body.toUmbrella
 
-    if (req.body.description)
+    if (commonController.typeOfString(req.body.description))
         rankTarget.description = req.body.description
 
-    if (req.body.price)
+    if (commonController.typeOfNumber(req.body.price))
         rankTarget.price = req.body.price
 
     if (req.body.sales) {
@@ -173,6 +185,27 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
     }
 
     commonController.correctSave(catalog, commonController.statusCompleted, res, rankTarget)
+}
+
+/**
+ * DELETE a Rank
+ * @param req
+ * @param res
+ */
+module.exports.deleteRank = function (req, res) {
+
+    commonController.findCatalog(req, res, "Catalog", async (err, catalog)=>{
+
+        if (req.params.id){
+
+            catalog.rankUmbrellas = catalog.rankUmbrellas.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(req.params.id)))
+            await catalog.save()
+
+            commonController.response(res, commonController.deleteOperationCompleted)
+        } else
+            commonController.parameterBadFormatted(res)
+    })
+
 }
 
 /**
@@ -247,13 +280,13 @@ module.exports.updateService = function (req, res) {
                 && (!(req.body.umbrellaRelated) || commonController.typeOfString(req.body.umbrellaRelated))
                 && (!(req.body.description) || commonController.typeOfString(req.body.description))){
 
-                if (req.body.price)
+                if (commonController.typeOfNumber(req.body.price))
                     serviceTarget.price = req.body.price;
 
                 if (req.body.description)
                     serviceTarget.description = req.body.description;
 
-                if (req.body.umbrellaRelated)
+                if (commonController.typeOfBoolean(req.body.umbrellaRelated))
                     serviceTarget.umbrellaRelated = req.body.umbrellaRelated;
 
                 commonController.correctSave(catalog, commonController.statusCompleted, res, serviceTarget);

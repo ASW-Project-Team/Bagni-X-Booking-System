@@ -1,13 +1,14 @@
 module.exports.set = function(app) {
     const catalogController = require('../controllers/catalogController');
 
-    app.route('/api/catalog/ranks/')
+    app.route('/api/catalog/rank-umbrellas/:id')
+        .get(catalogController.readRanks)
+        .put(catalogController.updateRank)
+        .delete(catalogController.deleteRank);
+
+    app.route('/api/catalog/rank-umbrellas/')
         .get(catalogController.readRanks)
         .post(catalogController.createRank);
-
-    app.route('/api/catalog/ranks/:id')
-        .get(catalogController.readRanks)
-        .put(catalogController.updateRank);
 
     app.route('/api/catalog/sales/')
         .get(catalogController.readSales)
