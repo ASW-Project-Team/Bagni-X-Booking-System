@@ -31,9 +31,15 @@ async function authenticate_customer({ username, password }) {
 }
 
 async function authenticate_admin({ username, password }) {
+    let token;
+
     const admin = await Admin.findOne({ username });
     if (admin && bcrypt.compareSync(password, admin.hash)) {
-        const token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'admin'});
+        if(admin.root){
+            token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'root'});
+        }else{
+            token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'admin'});
+        }
         return {
             ...admin.toJSON(),
             token

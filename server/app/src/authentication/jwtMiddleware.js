@@ -39,55 +39,64 @@ async function tokenCorrect(req, payload, done) {
                               //'/api/catalog/ranks/'
                                 ];
 
-    // Roots that an admin can't navigate
-    let pathNotAllowedAdmin = [];
-
     let splittedUrl = urlRequest.split('/');
 
-    if(audience === 'customer') {
-        const customer = await utils.userById(payload.sub);
-        if (customer) {
-            // Roots that only admin can navigate or the id isn't correct
-            if (pathNotAllowedCustomer.includes(urlRequest) ||
-                isRequestCorrect(splittedUrl, id)) {
+    switch(audience) {
+        case 'customer':
+            // Security level: customer
+            // Roots that only admin can navigate
+            if (pathNotAllowedCustomer.includes(urlRequest)){
                 return done(null, true);
             }
-            // The customer can't insert a news
+            // Roots that only the specific customer can navigate
+            if(isRequestCorrect(splittedUrl, id)) {
+                return done(null, true);
+            }
+            // Customers can't create, modify or delete news
             if (splittedUrl[2] !== undefined) {
                 if (splittedUrl[2] === 'news' && (methodRequest === 'POST' || methodRequest === 'PUT' || methodRequest === 'DELETE')) {
-                    console.log("USER");
                     return done(null, true);
                 }
             }
-        }else{
-            // revoke token if customer no longer exists
-            return done(null, true);
-        }
-    }else if (audience === 'admin'){
-        const admin = await utils.adminById(payload.sub); // todo possibile refactor?
-        if(admin){
-            // Roots that only customer can navigate
-            if(pathNotAllowedAdmin.includes(req.originalUrl)){
-                return done(null, true);
-            }
+            break;
+        case 'admin':
+            // Security level: admin
             // The admin can't modify a user
             if(splittedUrl[2] !== undefined) {
                 if (splittedUrl[2] === 'customers' && methodRequest === 'PUT') {
                     return done(null, true);
                 }
             }
-            // The admin must be root to create a user
+            // The admin must be root to create another admin
             if(splittedUrl[4] !== undefined ) {
-                if (!(splittedUrl[4] === 'register' && admin.root)) {
+                if ((splittedUrl[4] === 'register')) {
+                    console.log("ERR");
                     return done(null, true);
                 }
             }
-        }else{
-            // revoke token if admin no longer exists
+            break;
+        case 'root':
+            // Security level: root admin
+            // The root admin can't modify a user
+            if(splittedUrl[2] !== undefined) {
+                if (splittedUrl[2] === 'customers' && methodRequest === 'PUT') {
+                    return done(null, true);
+                }
+            }
+            break;
+        default:
+            // no
+            return done(null, true);
+    }
+
+    // Security check
+    // if the user no longer exits in the db, the token is revoked
+    const customer = await utils.userById(payload.sub);
+    if (!(customer)) {
+        const admin = await utils.adminById(payload.sub);
+        if(!(admin)){
             return done(null, true);
         }
-    }else{
-            return done(null, true);
     }
     done();
 };
