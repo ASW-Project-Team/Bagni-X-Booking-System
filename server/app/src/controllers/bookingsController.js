@@ -23,12 +23,11 @@ module.exports.createBooking = function(req, res) {
 		if (commonController.typeOfNumber(req.body.price)
 			&& new Date(req.body.dateFrom).getTime() >= Date.now()
 			&& new Date(req.body.dateTo).getTime() >=  new Date(req.body.dateFrom).getTime()
-			&& commonController.typeOfString(req.body.userId)
-			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
+			&& commonController.typeOfString(req.body.userId)) {
 
 			// Customer is present if go inside this callback
 			commonController.findByIdFirstLevelCollection(req, res, "Customer", Customer,"",req.body.userId,
-				()=>{
+				() => {
 
 					// Check if umbrella are free
 				commonController.umbrellaFree(req, res, req.body.dateTo, req.body.dateFrom, req.body.umbrellas,
@@ -39,20 +38,23 @@ module.exports.createBooking = function(req, res) {
 						// create umbrellas
 						commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
 
-							let booking = new Booking(req.body);
+							if (req.body.services){
 
-							booking.umbrellas = umbrellas;
-							booking._id = mongoose.Types.ObjectId();
-							booking.userId = mongoose.Types.ObjectId(req.body.userId);
+								commonController.servicesAvailable(req, res, req.body.services, (areServicesAvailable)=>{
 
-							booking.dateFrom = new Date(req.body.dateFrom);
-							booking.dateTo = new Date(req.body.dateTo);
-							// to confirm and to cancel
-							booking.confirmed = false
-							booking.cancelled = false
+									if (areServicesAvailable){
+										commonController.constructServices(req, res, req.body.services, (services)=>
+											applyBooking(req, res, umbrellas, services)
+										)
 
-							// add as first element
-							commonController.correctSave(booking, commonController.statusCreated, res);
+									} else
+										commonController.notify(res, commonController.badRequest, "Service not available")
+
+								})
+							} else {
+
+								applyBooking(req, res, umbrellas, "")
+							}
 						})
 					} else
 						commonController.notify(res, commonController.statusError, "Umbrella aren't free");
@@ -64,6 +66,27 @@ module.exports.createBooking = function(req, res) {
 	}, req.body.userId, req.body.umbrellas, req.body.price, req.body.dateFrom, req.body.dateTo);
 };
 
+function applyBooking(req, res, umbrellas, services){
+
+	let booking = new Booking(req.body);
+
+	if (services)
+		booking.services = services
+
+	booking.umbrellas = umbrellas;
+	booking._id = mongoose.Types.ObjectId();
+	booking.userId = mongoose.Types.ObjectId(req.body.userId);
+
+	booking.dateFrom = new Date(req.body.dateFrom);
+	booking.dateTo = new Date(req.body.dateTo);
+	// to confirm and to cancel
+	booking.confirmed = false
+	booking.cancelled = false
+
+	// add as first element
+	commonController.correctSave(booking, commonController.statusCreated, res);
+}
+
 /**
  * Get the booking specified in id
  * @param req The GET specific booking request
@@ -71,7 +94,7 @@ module.exports.createBooking = function(req, res) {
  */
 module.exports.getBooking = function(req, res) {
 
-	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "",
 		req.params.id, (err, docResult)=>{
 			commonController.response(res, docResult);
 		});
@@ -97,7 +120,7 @@ module.exports.modifyBooking = function(req, res) {
  * GET bookings.
  * Two possible scenarios:
  * 	. get a specific customer and get all his bookings
- * 	. get pageId and pageSize: in this case return bookings from id to size.
+ * 	. get page-id and page-size: in this case return bookings from id to size.
  * 		In this case there are default value both for id and size.
  * @param req The specified GET request
  * @param res The specified GET response
@@ -105,19 +128,19 @@ module.exports.modifyBooking = function(req, res) {
 module.exports.readBookings = function(req, res) {
 
 	commonController.findAllFromCollection(req, res, collectionName, Booking
-		, "", (err, docResult) => {
+		, "", (err, bookings) => {
 			if (req.params.id) {
 
-				let docs = docResult.filter(x => mongoose.Types.ObjectId(req.params.id) === x.userId);
+				let bookingsFiltered = bookings.filter(x => x.userId.equals(req.params.id));
 
-				if (!docs)
-					commonController.servePlain404(req, res, "Bookings")
+				if (!bookingsFiltered)
+					commonController.servePlain404(req, res, collectionName)
 				else
-					commonController.response(res, docs)
+					commonController.response(res, bookingsFiltered)
 
 			}
 			else
-				commonController.returnPages(req.query.pageId, req.query.pageSize, req, res, docResult, collectionName)
+				commonController.returnPages(parseInt(req.query["page-id"]), parseInt(req.query["page-size"]), req, res, bookings, collectionName)
 		});
 
 }
@@ -132,7 +155,7 @@ module.exports.deleteBooking = function(req, res) {
 	commonController.findByIdFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id,
 		(err, booking)=>{
 			if (Date.now().valueOf() <= (booking.dateFrom.valueOf() - (conversionDayInMilliseconds * dayBeforeDeleteIsPossible))){
-				commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
+				commonController.deleteFirstLevelCollectionById(req, res, collectionName, Booking, "", req.params.id);
 			} else
 				commonController.parameterBadFormatted(res)
 		});
@@ -240,7 +263,11 @@ async function serviceAndCustomerChecks(req, res, docResult) {
 
 			if (areServicesAvailable){
 
-				await customerExist(req, res, docResult);
+				await commonController.constructServices(req, res, req.body.services,
+					async (services)=>{
+						req.body.services = services
+						await customerExist(req, res, docResult);
+					})
 			} else {
 				commonController.parameterBadFormatted(res);
 			}

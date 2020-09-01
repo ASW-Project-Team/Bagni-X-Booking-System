@@ -18,7 +18,7 @@ const initializeModel = function(mongoose) {
     const umbrellaSchema = new Schema({ // price depends from rank
         _id: Schema.Types.ObjectID,
         number: Number,
-        ranks: [RanksModel]
+        rank: RanksModel
     });
     return mongoose.model('umbrella', umbrellaSchema);
 }

@@ -99,5 +99,5 @@ module.exports.updateNews = function(req, res) {
  */
 module.exports.deleteNews = function(req, res) {
 
-	commonController.deleteFirstLevelCollection(req, res, feedName, Feed, "", req.params.id);
+	commonController.deleteFirstLevelCollectionById(req, res, feedName, Feed, "", req.params.id);
 };

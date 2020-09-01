@@ -17,7 +17,7 @@ const initializeModel = function(mongoose) {
         name: String,
         logoUrl: String,
         mainHomeCard: homeCardModel,
-        homeCards: homeCardModel,
+        homeCards: [homeCardModel]
     });
     return mongoose.model('bathhouse', bathhouse, 'bathhouse');
 }

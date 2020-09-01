@@ -12,13 +12,13 @@ const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
 
     // price could change thanks to sales used in catalog
-    const homeCardSchema = new Schema({
+    const homeCard = new Schema({
         _id: Schema.Types.ObjectID,
-        image: {type: String, default: ""},// url
+        image: String, // TODO check for url
         title: String,
         header: Boolean,
-        description: String
+        description: {type: String, default: null}
     });
 
-    return mongoose.model('homeCard', homeCardSchema);
+    return mongoose.model('homeCard', homeCard);
 }

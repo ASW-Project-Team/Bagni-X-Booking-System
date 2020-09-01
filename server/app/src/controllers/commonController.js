@@ -5,7 +5,11 @@ const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
 const Customer = require('../models/customerModel')(mongoose);
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
+const Bathhouse = require("../models/bathhouseModel")(mongoose);
+
 const CatalogID = "5f40f4125c935b69a7f0626f";
+const BathhouseID = "5f41345d9ca3ce59d9777862";
+
 
 
 /**
@@ -24,7 +28,7 @@ module.exports.servePlain404 = function(req, res, objName) {
  * @param document
  */
 module.exports.alreadyPresent = function(res, document) {
-    this.notify(res, this.statusError, document + " already present!")
+    this.notify(res, this.badRequest, document + " already present!")
 }
 
 /**
@@ -161,8 +165,9 @@ module.exports.getDocuments = function (err, collectionToSearch, req, res, docum
  * @param id The id to search
  * @param func The callback function that is executed only if id is found. In this callback are inserted
  *          all controls.
+ * @param returnError boolean parameter to understand if getNestedCollection have to return errors or not.
  */
-module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func, returnError) {
+module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func, returnError=true) {
 
     this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) => {
         func(documentTarget);
@@ -234,7 +239,7 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
 
     let errorDocumentName = documentName
-    if (!errDocName)
+    if (errDocName)
         errorDocumentName = errDocName
 
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
@@ -251,14 +256,14 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param collFirstLevel Collection where is searched the id.
  * @param errDocName Document name used only in case of error.
  */
-module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
+module.exports.deleteFirstLevelCollectionById = function (req, res, documentName, collFirstLevel, errDocName) {
     /*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
            "_id", req.params.id);*/
 
     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
         if (!errDocName)
-            errDocName = documentName + "not found";
+            errDocName = documentName;
 
 
         if (!this.checkError(err, docResult, req, res, errDocName, true))
@@ -347,12 +352,12 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
 module.exports.returnPages = function (id, size, req, res, arrayToSearch, collectionName) {
 
     let pageId = this.defaultPageId;
-    if (id) {
+    if (id && this.typeOfNumber(id)) {
         pageId = id;
     }
 
     let pageSize = this.defaultPageSize;
-    if (size) {
+    if (size && this.typeOfNumber(size)) {
         pageSize = size;
     }
 
@@ -469,16 +474,33 @@ module.exports.updatePassword = function(res, password, elem) {
 
 /**
  * Check if password have almost the requested length.
- * @param res: If shorter than requested length return Bad Request
+ * @param res: If password have not the characteristic correct respond with Bad Request
+ *              otherwise do func()
  * @param password
  * @param func
  */
-module.exports.checkPassword = function(res, password, func){
+module.exports.checkPassword = function(res, password, func) {
 
-    if (password.length >= this.passwordLength){
+    if (/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/.test(password)){
         func()
     } else {
-        this.notify(res, this.badRequest, "Password too short");
+        this.notify(res, this.badRequest, "Password not correct");
+    }
+}
+
+/**
+ * Check for phone number.
+ * @param res: if phone number haven't the characteristic requested respond with Bad Request
+ *              otherwise do function
+ * @param phoneNumber
+ * @param func in case res haven't error
+ */
+module.exports.checkPhone = function(res, phoneNumber, func) {
+
+    if (/^((\+)[0-9]{2}(-)?)?[0-9]{6,11}$/.test(phoneNumber)){
+        func()
+    } else {
+        this.notify(res, this.badRequest, "Phone number not existent");
     }
 }
 
@@ -522,7 +544,7 @@ module.exports.umbrellaUsed = function (req, res, to, from, func){
 module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
+        CatalogID, (err, catalog)=>{
 
             this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
 
@@ -556,7 +578,7 @@ module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
 module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 
     this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
+        CatalogID, (err, catalog)=> {
 
             let umbrellas = [];
 
@@ -565,14 +587,14 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 
                 let umbrella = new Umbrella();
 
-                umbrella.number = umbrellasNumber[umbrellaNumber];
+                umbrella.number = umbrellaNumber;
 
                 for (const rank of catalog.rankUmbrellas) {
 
                     if ((umbrella.number <= rank.toUmbrella)
                         && (umbrella.number >= rank.fromUmbrella)) {
 
-                        umbrella.ranks = rank;
+                        umbrella.rank = rank;
                         umbrellas.splice(0,0,umbrella);
                         break;
                     }
@@ -588,23 +610,60 @@ module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
 }
 
 /**
- * Check if all of serviceId's array exists or not.
+ * Return if services are all corrects
  * @param req
  * @param res
  * @param services
  * @param func
- * @returns {boolean}
  */
 module.exports.servicesAvailable = function (req, res, services, func){
 
-    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
-        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
 
-            let catalogServices = catalog.services.map(x => x._id);
-            func(services.every(s => catalogServices.includes(s)));
+    this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "",
+        CatalogID,  (err, catalog)=>{
 
-        });
+        const catalogServices = catalog.services.map(x => x._id);
+        func(services.every(s => catalogServices.includes(s._id)));
+    });
+}
 
+/**
+ * Return a complete service
+ * @param req
+ * @param res
+ * @param services
+ * @param func
+ */
+module.exports.constructServices = function(req, res, services, func) {
+
+    this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "",
+        CatalogID, async (err, catalog)=>{
+
+        let servicesComplete = []
+
+        for (const service of services) {
+            for (const serviceCatalog of catalog.services) {
+
+                let serviceFound = this.dfs(serviceCatalog, service._id)
+
+                if (serviceFound) {
+
+                    if (!service.hasOwnProperty("price"))
+                        service.price = serviceFound.price
+
+                    if (!service.hasOwnProperty("umbrellaRelated"))
+                        service.umbrellaRelated = serviceFound.umbrellaRelated
+
+                    if (!service.hasOwnProperty("description"))
+                        service.description = serviceFound.description
+
+                    servicesComplete.splice(0,0,service)
+                }
+            }
+        }
+
+        func(servicesComplete)
+    });
 }
 
 /**
@@ -634,6 +693,53 @@ module.exports.checkEmail = function(email){
 
     return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 
+}
+
+/**
+ * DELETE a nested Elements
+ * @param req
+ * @param res:
+ *          . 200 if element is erased correctly
+ *          . 400 if not id.
+ * @param id
+ * @param collectionFirstLevel
+ * @param collectionToRemoveElement
+ */
+/*module.exports.deleteNested = function (req, res, id, collectionFirstLevel, collectionToRemoveElement) {
+
+    if (id){
+
+        collectionToRemoveElement = collectionToRemoveElement.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(id)))
+        this.correctSave(collectionFirstLevel, this.statusCompleted, res);
+    } else
+        this.parameterBadFormatted(res)
+}*/
+
+/**
+ * This method find bathhouse.
+ * @param req
+ * @param res
+ * @param func
+ */
+module.exports.findBathhouse = function(req, res, func) {
+    this.findByIdFirstLevelCollection(req, res, "bathhouse", Bathhouse,
+        "bathhouse", BathhouseID, (errBath, bathhouse)=>
+
+            func(errBath, bathhouse)
+    );
+}
+
+/**
+ * A function that automatize control of id.
+ * @param req The specific request
+ * @param res The specific response
+ * @param documentName The document that have to be founded.
+ * @param func The callback executed only if document exist and is found.
+ */
+module.exports.findCatalog = function(req, res, documentName, func) {
+
+    this.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
+        CatalogID, func);
 }
 
 module.exports.statusCreated = 201;

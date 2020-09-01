@@ -1,17 +1,18 @@
 module.exports.set = function(app) {
     const adminController = require('../controllers/adminsController');
 
-    app.route('/api/admins/authenticate/')
+    app.route('/api/auth/admin/login')
         .get(adminController.authenticateAdmin);
 
-
-    app.route('/api/admins/change_password/')
-        .put(adminController.changePassword);
-
-
-    app.route('/api/admins/')
-        .delete(adminController.deleteAdmin)
+    app.route('/api/auth/admin/register')
         .post(adminController.createAdmin);
 
+    app.route('/api/admins/')
+        .get(adminController.returnAdmins);
+
+    app.route('/api/admins/:id')
+        .get(adminController.returnAdmins)
+        .put(adminController.modifyAdmin)
+        .delete(adminController.deleteAdmin);
 
 };

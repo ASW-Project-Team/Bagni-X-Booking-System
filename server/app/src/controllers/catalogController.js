@@ -9,9 +9,7 @@ const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose);
 
 const commonController = require("./commonController");
 
-const CatalogId = "5f40f4125c935b69a7f0626f";
 // Before this queries we have to check the permissions to interact with db
-
 
 /**
  * Return all ranks if present. If there aren't any ranks return "Rank not found".
@@ -22,7 +20,7 @@ const CatalogId = "5f40f4125c935b69a7f0626f";
  */
 module.exports.readRanks = function (req, res) {
 
-    checkCatalog(req,res,"Catalog", (err, catalog)=>{
+    commonController.findCatalog(req,res,"Catalog", (err, catalog)=>{
 
         if (req.params.id)
             commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.params.id,
@@ -40,7 +38,7 @@ module.exports.readRanks = function (req, res) {
  * @param res The create umbrella response.
  */
 module.exports.createRank = function (req, res) {
-    checkCatalog(req, res, "Rank", (err, catalog)  => {
+    commonController.findCatalog(req, res, "Rank", (err, catalog)  => {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
@@ -78,7 +76,7 @@ module.exports.createRank = function (req, res) {
  * @param res The response.
  */
 module.exports.updateRank = function (req, res) {
-    checkCatalog(req, res, "Rank", (err, catalog)  => {
+    commonController.findCatalog(req, res, "Rank", (err, catalog)  => {
 
         commonController.updateCollection(catalog, catalog.rankUmbrellas, req, res, req.params.id,async (rankTarget) => {
 
@@ -187,7 +185,7 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
  * @param res
  */
 module.exports.createService = function(req, res) {
-    checkCatalog(req, res, "Service", (err, catalog)  => {
+    commonController.findCatalog(req, res, "Service", (err, catalog)  => {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
@@ -222,7 +220,7 @@ module.exports.createService = function(req, res) {
  */
 module.exports.readServices = function (req, res) {
 
-    checkCatalog(req, res, "Service", (err, catalog, documentName) => {
+    commonController.findCatalog(req, res, "Service", (err, catalog, documentName) => {
         // If par is present find the specified param ...
         if (req.params.id) {
 
@@ -243,7 +241,7 @@ module.exports.readServices = function (req, res) {
  * @param res The update service response
  */
 module.exports.updateService = function (req, res) {
-    checkCatalog(req, res, "Service", (err, catalog)  => {
+    commonController.findCatalog(req, res, "Service", (err, catalog)  => {
 
         commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
 
@@ -277,7 +275,7 @@ module.exports.updateService = function (req, res) {
  * @param res The specific response.
  */
 module.exports.createSale = function (req, res) {
-    checkCatalog(req, res, "Sale", (err, catalog) => {
+    commonController.findCatalog(req, res, "Sale", (err, catalog) => {
 
         commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.body.rankId, (rank) => {
 
@@ -311,7 +309,7 @@ module.exports.createSale = function (req, res) {
  * @param res The read sale response.
  */
 module.exports.readSales = function (req, res) {
-    checkCatalog(req, res, "Sale", (err, catalog)  => {
+    commonController.findCatalog(req, res, "Sale", (err, catalog)  => {
 
         // If par is present find the specified param ...
         if (req.params.id) {
@@ -353,14 +351,13 @@ module.exports.readSales = function (req, res) {
     });
 }
 
-// TODO Test if sale found function
 /**
  * Update a specific sale if present. If not present return error.
  * @param req The specific request.
  * @param res The specific response.
  */
 module.exports.updateSale = function (req, res) {
-    checkCatalog(req, res, "Sale", async (err, catalog)  => {
+    commonController.findCatalog(req, res, "Sale", async (err, catalog)  => {
 
         // If par is present find the specified param ...
         if (req.params.id) {
@@ -424,7 +421,7 @@ module.exports.updateSale = function (req, res) {
  */
 module.exports.getAvailability = function (req, res) {
 
-    checkCatalog(req, res, "catalog", async (errCat, catalog) => {
+    commonController.findCatalog(req, res, "Catalog", async (errCat, catalog) => {
 
         // Umbrella not free in that periods
         // First filter: if book is not finished
@@ -479,18 +476,7 @@ module.exports.getAvailability = function (req, res) {
 
 }
 
-/**
- * A function that automatize control of id.
- * @param req The specific request
- * @param res The specific response
- * @param documentName The document that have to be founded.
- * @param func The callback executed only if document exist and is found.
- */
-function checkCatalog(req, res, documentName, func) {
 
-    commonController.findByIdFirstLevelCollection(req, res, documentName, Catalog, "Catalog",
-        CatalogId, func);
-}
 
 /**
  * Check if umbrellas belongs to some ranks already present.

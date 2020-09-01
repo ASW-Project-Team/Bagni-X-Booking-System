@@ -1,8 +1,14 @@
 module.exports.set = function(app) {
-    // due to not possible two or more require at the same collection
     const bathhouseController = require('../controllers/bathhouseController');
 
     app.route('/api/home/')
-    .get(bathhouseController.getHomeServicesRank);
+        .get(bathhouseController.getHomeServicesRank);
 
+    app.route('/api/home-card/:id')
+        .get(bathhouseController.getHomeCard)
+        .put(bathhouseController.modifyHomeCard)
+        .delete(bathhouseController.deleteHomeCard);
+
+    app.route('/api/home-card/')
+        .post(bathhouseController.insertHomeCard);
 }
