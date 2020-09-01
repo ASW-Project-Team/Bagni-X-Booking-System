@@ -46,6 +46,7 @@ import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
 import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
 import { MatInputModule } from '@angular/material/input';
 import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor";
+import { OptionsItemComponent } from './shared/components/options-item/options-item.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor"
     AlertDialogComponent,
     LoginComponent,
     RegisterComponent,
+    OptionsItemComponent,
   ],
   imports: [
     BrowserModule,

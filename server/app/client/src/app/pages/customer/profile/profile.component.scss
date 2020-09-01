@@ -1,1 +1,28 @@
 @import "~src/styles/utils";
+
+.profile-summary {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  @include responsiveProp(padding-top, $defaultMargin);
+  @include responsiveProp(padding-bottom, $defaultMargin);
+
+  .icon {
+    @include mat-icon-size(72px);
+
+    @include forDesktopOnly {
+      @include mat-icon-size(96px);
+    }
+  }
+
+  .text {
+    @include responsiveProp(margin-left, $halfMargin);
+    @include responsiveProp(margin-right, $defaultMargin);
+
+    h1 {
+      @include responsiveProp(margin-bottom, $quarterMargin);
+    }
+  }
+}

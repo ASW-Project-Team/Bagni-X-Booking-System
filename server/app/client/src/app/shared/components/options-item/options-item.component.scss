@@ -1,0 +1,36 @@
+@import "~src/styles/utils";
+
+.options-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  @include responsiveProp(padding-top, $defaultMargin);
+
+  .icon {
+    color: $secondaryControlColor;
+    @include responsiveProp(margin-right, $defaultMargin);
+
+    // compensates top padding of the item
+    margin-top: - #{$marginSmartphone};
+    @include forDesktopOnly {
+      margin-top: - #{$marginDesktop};
+    }
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;
+
+    p.description {
+      @include responsiveProp(margin-bottom, $defaultMargin);
+    }
+
+    .divider {
+      @include horizontalDivider;
+      width: 100%;
+    }
+  }
+}

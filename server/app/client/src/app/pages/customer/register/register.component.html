@@ -1,14 +1,7 @@
 <div class="page">
-  <div class="description-container">
-    <div class="logo-container">
-      <img src="/assets/logo.png" alt="BagniX Logo"/>
-      <h1 class="title">Bagni X</h1>
-    </div>
-    <div class="vertical-divider"></div>
-    <div class="description">
-      Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
-    </div>
-  </div>
+  <p>
+    Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
+  </p>
 
   <form [formGroup]="regForm" class="registration-form" (ngSubmit)="onSubmit()">
     <div class="inputs-container">
@@ -103,5 +96,5 @@
 </div>
 
 <!-- Header goes last, to make them appear over content -->
-<app-nested-appbar title="Registrati" back-route="/login" back-page-name="Login" [actions]="[]"></app-nested-appbar>
+<app-customer-main-appbar></app-customer-main-appbar>
 
