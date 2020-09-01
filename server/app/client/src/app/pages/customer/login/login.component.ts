@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
     });
 
     // get return url from route parameters, or default to '/home'
-    if(this.route.snapshot.queryParams['returnUrl']) {
+    if (this.route.snapshot.queryParams['returnUrl']) {
       this.returnUrlExternallySet = true;
       this.returnUrl = this.route.snapshot.queryParams['returnUrl']
     } else {

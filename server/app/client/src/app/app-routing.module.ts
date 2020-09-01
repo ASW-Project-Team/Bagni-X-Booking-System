@@ -11,6 +11,8 @@ import {BookingDetailsComponent} from "./pages/customer/booking-details/booking-
 import {UserAuthGuard} from "./core/guards/user-auth.guard";
 import {LoginComponent} from "./pages/customer/login/login.component";
 import {RegisterComponent} from "./pages/customer/register/register.component";
+import {NewBookingComponent} from "./pages/customer/new-booking/new-booking.component";
+
 
 // populate app routes
 const routes: Routes = [
@@ -20,18 +22,17 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'news', component: NewsComponent },
   { path: 'news/:id', component: NewsDetailsComponent },
-  { path: 'bookings', component: BookingsComponent, canActivate: [UserAuthGuard] },
-  { path: 'bookings/:id', component: BookingDetailsComponent, canActivate: [UserAuthGuard] },
-  { path: 'new-booking', component: BookingsComponent, canActivate: [UserAuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [UserAuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-
+  { path: 'bookings', component: BookingsComponent, canActivate: [UserAuthGuard] },
+  { path: 'bookings/:id', component: BookingDetailsComponent, canActivate: [UserAuthGuard] },
+  { path: 'new-booking', component: NewBookingComponent, canActivate: [UserAuthGuard] },
 
   // todo admin
 
-  { path: '404', component: PageNotFoundComponent },
-  { path: '**', redirectTo: '404' }
+  //{ path: '404', component: PageNotFoundComponent },
+  //{ path: '**', redirectTo: '404' }
 ];
 
 @NgModule({

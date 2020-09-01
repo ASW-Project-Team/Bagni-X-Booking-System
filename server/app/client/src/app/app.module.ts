@@ -47,6 +47,11 @@ import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
 import { MatInputModule } from '@angular/material/input';
 import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor";
 import { OptionsItemComponent } from './shared/components/options-item/options-item.component';
+import { NbPeriodComponent } from './pages/customer/nb-period/nb-period.component';
+import { NbCustomizeComponent } from './pages/customer/nb-customize/nb-customize.component';
+import { NbCheckoutComponent } from './pages/customer/nb-checkout/nb-checkout.component';
+import { NewBookingComponent } from './pages/customer/new-booking/new-booking.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 @NgModule({
   declarations: [
@@ -78,6 +83,10 @@ import { OptionsItemComponent } from './shared/components/options-item/options-i
     LoginComponent,
     RegisterComponent,
     OptionsItemComponent,
+    NbPeriodComponent,
+    NbCustomizeComponent,
+    NbCheckoutComponent,
+    NewBookingComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +104,7 @@ import { OptionsItemComponent } from './shared/components/options-item/options-i
     MatDialogModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatStepperModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
