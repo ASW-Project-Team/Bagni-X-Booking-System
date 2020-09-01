@@ -10,11 +10,11 @@ function jwt() {
         .unless({ path: [
                             // Public routes that don't require authentication
                             '/api/home/',
-                            '/api/feed/',
                             '/api/auth/customers/register/',
                             '/api/auth/customers/login/',
                             '/api/auth/admin/login/',
-                            new RegExp('/api/feed/*')
+                            { url: '/api/news/', methods: ['GET'] },
+                            { url: new RegExp('/api/news/*'), methods: ['GET']}
                         ]
     });
 }
@@ -29,6 +29,9 @@ async function tokenCorrect(req, payload, done) {
     // The id of the user inside the token
     let id = payload.sub;
 
+    // The audience (security purposes)
+    let audience = payload.aud;
+
     // Roots that a customer can't navigate
     let pathNotAllowedCustomer = [ '/api/customers/',
                                    '/api/auth/admin/register/',
@@ -41,38 +44,50 @@ async function tokenCorrect(req, payload, done) {
 
     let splittedUrl = urlRequest.split('/');
 
-    const customer = await utils.userById(payload.sub);
-    if(customer){
-        // Roots that only admin can navigate or the id isn't correct
-        if(pathNotAllowedCustomer.includes(urlRequest) ||
-            isRequestCorrect(splittedUrl, id)){
+    if(audience === 'customer') {
+        const customer = await utils.userById(payload.sub);
+        if (customer) {
+            // Roots that only admin can navigate or the id isn't correct
+            if (pathNotAllowedCustomer.includes(urlRequest) ||
+                isRequestCorrect(splittedUrl, id)) {
                 return done(null, true);
-        }
-    }
-
-    const admin = await utils.adminById(payload.sub);
-    if(admin){
-        // Roots that only customer can navigate
-        if(pathNotAllowedAdmin.includes(req.originalUrl)){
+            }
+            // The customer can't insert a news
+            if (splittedUrl[2] !== undefined) {
+                if (splittedUrl[2] === 'news' && (methodRequest === 'POST' || methodRequest === 'PUT' || methodRequest === 'DELETE')) {
+                    console.log("USER");
+                    return done(null, true);
+                }
+            }
+        }else{
+            // revoke token if customer no longer exists
             return done(null, true);
         }
-        // The admin can't modify a user
-        if(splittedUrl[2] !== undefined) {
-            if (splittedUrl[2] === 'customers' && methodRequest === 'PUT') {
+    }else if (audience === 'admin'){
+        const admin = await utils.adminById(payload.sub); // todo possibile refactor?
+        if(admin){
+            // Roots that only customer can navigate
+            if(pathNotAllowedAdmin.includes(req.originalUrl)){
                 return done(null, true);
             }
-        }
-        // The admin must be root to create a user
-        if(splittedUrl[4] !== undefined ) {
-            if (!(splittedUrl[4] === 'register' && admin.root)) {
-                return done(null, true);
+            // The admin can't modify a user
+            if(splittedUrl[2] !== undefined) {
+                if (splittedUrl[2] === 'customers' && methodRequest === 'PUT') {
+                    return done(null, true);
+                }
             }
+            // The admin must be root to create a user
+            if(splittedUrl[4] !== undefined ) {
+                if (!(splittedUrl[4] === 'register' && admin.root)) {
+                    return done(null, true);
+                }
+            }
+        }else{
+            // revoke token if admin no longer exists
+            return done(null, true);
         }
-    }
-
-    // revoke token if customer or admin no longer exists
-    if (!admin && !customer) {
-        return done(null, true);
+    }else{
+            return done(null, true);
     }
     done();
 };

@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto')
 
+const Booking = require('../models/bookingModel')(mongoose);
+const Catalog = require('../models/catalogModel')(mongoose);
+const User = require('../models/userModel')(mongoose);
+const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
+const CatalogID = "5f40f4125c935b69a7f0626f";
+
+
 /**
  * Error for object not found.
  * @param req
@@ -8,7 +15,7 @@ const crypto = require('crypto')
  * @param objName
  */
 module.exports.serve_plain_404 = function(req, res, objName) {
-    res.status(this.status_error).json(objName + ' not found');
+    this.notify(res, this.status_error, objName + " not found!")
 };
 
 /**
@@ -17,7 +24,7 @@ module.exports.serve_plain_404 = function(req, res, objName) {
  * @param document
  */
 module.exports.already_present = function(res, document) {
-    res.status(this.status_error).json(document + " already present!");
+    this.notify(res, this.status_error, document + " already present!")
 }
 
 /**
@@ -25,10 +32,38 @@ module.exports.already_present = function(res, document) {
  * @param res
  */
 module.exports.field_require_404 = function(res) {
-    res.status(this.status_error).json("All fields are required, someone  not found!");
+    this.notify(res,this.status_error,"Some required fields aren't found!")
+};
+
+/**
+ * Error caused because not authorized to an access.
+ * @param res
+ */
+module.exports.unauthorized_401 = function(res) {
+    this.notify(res,this.status_unauthorized,"Access negated!")
 };
 
 
+/**
+ * Error caused because some parameters are bad formatted.
+ * @param res
+ */
+module.exports.parameter_bad_formatted = function(res){
+    this.notify(res, this.bad_request, "Malformed request.")
+}
+
+/**
+ * General structure for response to sell.
+ * @param res The response.
+ * @param status The response of status.
+ * @param jsonObject The string or json object to send.
+ */
+module.exports.notify = function(res, status, jsonObject){
+    res.status(status).json(jsonObject);
+}
+
+
+// ASYNC AWAIT
 /**
  * Used for save new document or updated one.
  * @param document The document to save
@@ -40,6 +75,11 @@ module.exports.correctSave = function (document, status, res) {
         if (saveErr) {
             res.send(saveErr);
         }
+
+        if (updatedDocument.hashedPassword) {
+            updatedDocument.hashedPassword = "";
+        }
+
         res.status(status).json(updatedDocument);
     });
 }
@@ -70,13 +110,21 @@ module.exports.dfs = function (obj, targetId) {
  *                        returned because don't exist yet.
  */
 module.exports.checkError = function (err, documents, req, res, documentName, deleteOperation = false) {
-    if (err)
+
+    let errSave = false;
+
+    if (err) {
+        errSave = true;
         res.send(err);
+    }
     else {
         if (!deleteOperation && !documents) {
+            errSave = true;
             this.serve_plain_404(req, res, documentName);
         }
     }
+
+    return errSave;
 }
 
 /**
@@ -98,8 +146,8 @@ module.exports.response = function (res, documents) {
  * @param documentsToReturn
  */
 module.exports.getDocuments = function (err, collectionToSearch, req, res, documentName, documentsToReturn) {
-    this.checkError(err, collectionToSearch, req, res, documentName);
-    this.response(res, documentsToReturn);
+    if (!this.checkError(err, collectionToSearch, req, res, documentName))
+        this.response(res, documentsToReturn);
 }
 
 /**
@@ -182,9 +230,14 @@ module.exports.getNestedDocument = function(collectionToSearch, req, res, id, fu
  * @param func Callback applied if find is correctly done
  */
 module.exports.findByIdFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName, id, func) {
+
+    let errorDocumentName = documentName
+    if (!errDocName)
+        errorDocumentName = errDocName
+
     collFirstLevel.findById(mongoose.Types.ObjectId(id), (err, docResult, docResultName) => {
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, docResultName);
+        if (!this.checkError(err, docResult, req, res, errorDocumentName))
+            func(err, docResult, docResultName);
     });
 }
 
@@ -197,17 +250,17 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollection = function (req, res, documentName, collFirstLevel, errDocName) {
-/*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
-       "_id", req.params.id);*/
+    /*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+           "_id", req.params.id);*/
 
-     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
+    collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
         if (!errDocName)
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -222,8 +275,8 @@ module.exports.deleteFirstLevelCollection = function (req, res, documentName, co
 module.exports.deleteFirstLevelCollectionByUsername = function (req, res, documentName, collFirstLevel,
                                                                 errDocName) {
 
-/*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
-        "username", req.body.username);*/
+    /*    this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
+            "username", req.body.username);*/
 
     collFirstLevel.deleteOne({ "username": req.body.username }, (err, docResult)  => {
 
@@ -232,8 +285,8 @@ module.exports.deleteFirstLevelCollectionByUsername = function (req, res, docume
             errDocName = documentName + "not found";
 
 
-        this.checkError(err, docResult, req, res, errDocName, true);
-        this.response(res, "Delete on " + documentName + " completed!");
+        if (!this.checkError(err, docResult, req, res, errDocName, true))
+            this.response(res, "Delete on " + documentName + " completed!");
     });
 }
 
@@ -249,17 +302,11 @@ module.exports.deleteFirstLevelCollectionByUsername = function (req, res, docume
  */
 /*module.exports.deleteFirstLevelCollectionByProperty = function(req, res, documentName, collFirstLevel, errDocName,
                                                                 propertyName, propertyValue) {
-
-
     collFirstLevel.deleteOne({ propertyName: propertyValue }, (err, docResult)  => {
-
         console.log(propertyName);
         console.log(propertyValue);
-
         if (!errDocName)
             errDocName = documentName + " not found";
-
-
         this.checkError(err, docResult, req, res, errDocName, true);
         this.response(res, "Delete on " + documentName + " completed!");
     });
@@ -278,11 +325,11 @@ module.exports.findAllFromCollection = function (req, res, documentName, collFir
     collFirstLevel.find({}, (err, docResult) => {
 
         if (!errDocName){
-            errDocName = documentName + "not found";
+            errDocName = documentName + " not found";
         }
 
-        this.checkError(err, docResult, req, res, errDocName);
-        func(err, docResult, documentName);
+        if (!this.checkError(err, docResult, req, res, errDocName))
+            func(err, docResult, documentName);
     });
 }
 
@@ -361,7 +408,7 @@ module.exports.typeOfBoolean = function (par) {
 
 module.exports.typeOfNumber = function (par) {
 
-    return typeOfType(par, "number")
+    return (typeOfType(par, "number") && (par>=0))
 }
 
 function typeOfType(par, parType) {
@@ -399,6 +446,191 @@ module.exports.sha512 = function(password, salt){
 
 };
 
+/**
+ * Update password if succeed password check.
+ * There is a supposition that field to update is hashedPassword
+ * @param res two scenario:
+ *  . if too short return Bad Request
+ *  . otherwise return the Object without password visible
+ * @param password
+ * @param elem
+ */
+module.exports.updatePassword = function(res, password, elem) {
+
+    this.checkPassword(res, password, ()=>{
+
+        elem.hashedPassword = this.sha512(password, elem.salt);
+
+        this.correctSave(elem, this.status_created, res);
+    });
+}
+
+/**
+ * Check if password have almost the requested length.
+ * @param res: If shorter than requested length return Bad Request
+ * @param password
+ * @param func
+ */
+module.exports.checkPassword = function(res, password, func){
+
+    if (password.length >= this.password_length){
+        func()
+    } else {
+        this.notify(res, this.bad_request, "Password too short");
+    }
+}
+
+/**
+ * Umbrella number of booked umbrellas.
+ * @param req
+ * @param res
+ * @param to
+ * @param from
+ * @param func
+ * @returns {*[]}
+ */
+module.exports.umbrellaUsed = function (req, res, to, from, func){
+
+    this.findAllFromCollection(req, res, "book", Booking, ""
+        ,(errBook, allBookings) => {
+            // Umbrella not free in that periods
+            // First filter: if book is not finished
+            // Second filter: if bool started in that period
+
+            let allBookingsFiltered = allBookings.filter(b => new Date(to).getTime() >= b.date_from.getTime()
+                &&  new Date(from).getTime() <= b.date_to.getTime()
+                && !b.cancelled);
+
+            let allBookingsUmbrellaMapped = allBookingsFiltered.flatMap(b => b.umbrellas.map(u => u.number));
+
+            func(allBookingsUmbrellaMapped);
+        });
+}
+
+/**
+ * Umbrella number of free umbrellas.
+ * @param req
+ * @param res
+ * @param to
+ * @param from
+ * @param umbrellas
+ * @param func
+ * @returns {*[]}
+ */
+module.exports.umbrellaFree = function (req, res, to, from, umbrellas, func){
+
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
+
+            this.umbrellaUsed(req, res, to, from, (umbrellasNumberUsed)=>{
+
+                let umbrellaNumberFree = [];
+                for (let rank in catalog.rank_umbrellas) {
+
+                    if (catalog.rank_umbrellas.hasOwnProperty(rank)) {
+
+                        for (let i = catalog.rank_umbrellas[rank].from_umbrella;
+                             i < catalog.rank_umbrellas[rank].to_umbrella;
+                             i++){
+
+                            if (!umbrellasNumberUsed.includes(i)){
+
+                                umbrellaNumberFree.push(i);
+                            }
+                        }
+                    }
+                }
+
+                func(umbrellas.every(u => umbrellaNumberFree.includes(u)));
+            });
+
+        });
+
+}
+
+/**
+ * Create umbrellas from numbers.
+ * @param req
+ * @param res
+ * @param umbrellasNumber
+ * @param func
+ * @returns {[]}
+ */
+module.exports.createUmbrellas = function(req, res, umbrellasNumber, func){
+
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=> {
+
+            let umbrellas = [];
+
+
+            for (let umbrellaNumber in umbrellasNumber) {
+
+                let umbrella = new Umbrella();
+
+                if (umbrellasNumber.hasOwnProperty(umbrellaNumber)){
+                    umbrella.number = umbrellasNumber[umbrellaNumber];
+
+                    for (let rank in catalog.rank_umbrellas) {
+
+                        if (catalog.rank_umbrellas.hasOwnProperty(rank)
+                            && (umbrella.number <= catalog.rank_umbrellas[rank].to_umbrella)
+                            && (umbrella.number >= catalog.rank_umbrellas[rank].from_umbrella)) {
+
+                            umbrella.rank_id = catalog.rank_umbrellas[rank]._id;
+                            umbrellas.push(umbrella);
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            func(umbrellas);
+
+        });
+
+
+}
+
+/**
+ * Check if service_ids exists or not.
+ * @param req
+ * @param res
+ * @param services
+ * @param func
+ * @returns {boolean}
+ */
+module.exports.servicesAvailable = function (req, res, services, func){
+
+    this.findByIdFirstLevelCollection(req, res, "catalog", Catalog, "Catalog",
+        mongoose.Types.ObjectId(CatalogID), (err, catalog)=>{
+
+            let catalogServices = catalog.services.map(x => x._id);
+            func(services.every(s => catalogServices.includes(s)));
+
+        });
+
+}
+
+/**
+ * Check if user exist.
+ * @param req
+ * @param res
+ * @param user_id
+ * @param func
+ */
+module.exports.userExist = function (req, res, user_id, func){
+
+    this.findByIdFirstLevelCollection(req, res, "user", User, "User",
+        mongoose.Types.ObjectId(user_id), (err, user)=>{
+
+            func(user);
+
+        });
+
+}
+
 module.exports.status_created = 201;
 
 module.exports.status_completed = 200;
@@ -410,3 +642,9 @@ module.exports.default_page_id = 0;
 module.exports.default_page_size = 10;
 
 module.exports.salt_length = 48;
+
+module.exports.status_unauthorized = 401;
+
+module.exports.bad_request = 400;
+
+module.exports.password_length = 8;

@@ -3,7 +3,7 @@ module.exports.set = function(app) {
 	const bookingRoutes = require('./bookingsRoutes');
 	const genericRoutes = require('./genericRoutes');
 	const catalogRoutes = require('./catalogRoutes');
-	const feedRoutes = require('./feedRoutes');
+	const feedRoutes = require('./newsRoutes');
 	const adminRoutes = require('./adminsRoutes');
 	const authRoutes = require('./authRoutes')
 	usersRoutes.set(app);

@@ -9,7 +9,7 @@ const Admin = require("../models/adminModel")(mongoose);
 const config = require('./secret.json');
 
 module.exports = {
-    authenticate_user,
+    authenticate_customer,
     authenticate_admin,
     create,
     adminById,
@@ -17,11 +17,11 @@ module.exports = {
 };
 
 
-async function authenticate_user({ username, password }) {
+async function authenticate_customer({ username, password }) {
     const user = await User.findOne({ username });
     if(user){
         if (user && bcrypt.compareSync(password, user.hash)) {
-            const token = jwt.sign({sub: user.id}, config.secret, {expiresIn: '7d'});
+            const token = jwt.sign({sub: user.id} , config.secret, {expiresIn: '7d', audience: 'customer'});
             return {
                 ...user.toJSON(),
                 token
@@ -29,10 +29,11 @@ async function authenticate_user({ username, password }) {
         }
     }
 }
+
 async function authenticate_admin({ username, password }) {
     const admin = await Admin.findOne({ username });
     if (admin && bcrypt.compareSync(password, admin.hash)) {
-        const token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d'});
+        const token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'admin'});
         return {
             ...admin.toJSON(),
             token

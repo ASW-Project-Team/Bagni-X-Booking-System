@@ -85,7 +85,7 @@ exports.update_user = function(req, res) {
 };
 
 exports.authenticate= function(req, res, next) {
-    utils.authenticate_user(req.body)
+    utils.authenticate_customer(req.body)
         .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
         .catch(err => next(err));
 }
