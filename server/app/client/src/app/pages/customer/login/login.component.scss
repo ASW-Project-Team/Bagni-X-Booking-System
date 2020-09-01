@@ -1,65 +1,18 @@
 @import "~src/styles/utils";
 
 .page {
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
 
+  .description {
+    margin-bottom: $marginSmartphone;
+    width: 100%;
+    max-width: $textboxWidthDesktop + $marginDesktop * 4;
 
-  @include forDesktopOnly {
-    flex-direction: row;
-  }
-
-  .description-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    @include responsiveProp(margin, $defaultMargin);
-    box-sizing: border-box;
-    max-width: 400px;
-    min-width: 0;
-    flex-shrink: 1;
-
-    .logo-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-
-      @include responsiveProp(margin-bottom, $defaultMargin);
-
-      img {
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
-        @include responsiveProp(margin-right, $halfMargin);
-      }
-
-      .title-container {
-        flex-shrink: 1;
-        min-width: 0;
-
-        h1 {
-          @include titleFont;
-          @include singleLineEllispis;
-          margin: 0;
-          color: $primaryColor;
-          text-align: left;
-
-          @include forDesktopOnly {
-            font-size: 32px;
-          }
-        }
-
-      }
-    }
-
-    .description {
-      text-align: left;
+    @include forDesktopOnly {
+      text-align: center;
     }
   }
 
@@ -67,26 +20,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: $defaultShadow;
     box-sizing: border-box;
-    background-color: $backgroundColor;
     width: 100%;
-    @include responsiveProp(padding, $defaultMargin);
-    @include responsiveProp(border-radius, $defaultMargin);
-    @include forDesktopOnly {
-      width: 400px;
-      flex-shrink: 0;
-      margin-right: $marginDesktop;
-    }
 
-    .inputs-container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-
-      .input-field {
-        width: 100%;
-      }
+    .input-field {
+      padding: 0;
+      @include responsiveProp(width, $textboxWidth);
     }
 
     .warning-container {
@@ -103,29 +42,10 @@
       }
     }
 
-    @mixin button {
-      padding: 0 $marginDesktop;
-      border-radius: 50px;
-      @include responsiveProp(height, $fabHeight);
-      @include titleFont;
-      color: $backgroundColor;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-    }
-
     .login-button {
       @include button;
-      @include responsiveProp(margin-bottom, $defaultMargin);
-    }
-
-    .register-button {
-      @include button;
-      background-color: $secondaryColor;
-      color: $secondaryControlColor;
-      margin-bottom: 0;
+      width: 100%;
+      max-width: $textboxWidthDesktop;
     }
   }
 }

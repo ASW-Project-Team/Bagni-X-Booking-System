@@ -18,6 +18,10 @@ $footerHeightSmartphone: $fabHeightSmartphone + $marginSmartphone * 2;
 $footerHeightDesktop: $fabHeightDesktop + $marginDesktop * 2;
 $cardImageSizeSmartphone: 80px;
 $cardImageSizeDesktop: 100px;
+$buttonHeightSmartphone: 48px;
+$buttonHeightDesktop: 64px;
+$textboxWidthSmartphone: 100%;
+$textboxWidthDesktop: 260px;
 
 
 // mapped desktop-smartphone values
@@ -29,6 +33,8 @@ $fabHeight: ("smartphone": $fabHeightSmartphone, "desktop": $fabHeightDesktop);
 $footerHeight: ("smartphone": $footerHeightSmartphone, "desktop": $footerHeightDesktop);
 $pageWidth: ("smartphone": $pageWidthSmartphone, "desktop": $pageWidthDesktop);
 $cardImageSize: ("smartphone": $cardImageSizeSmartphone, "desktop": $cardImageSizeDesktop);
+$buttonHeight: ("smartphone": $buttonHeightSmartphone, "desktop": $buttonHeightDesktop);
+$textboxWidth: ("smartphone": $textboxWidthSmartphone, "desktop": $textboxWidthDesktop);
 
 
 // This mixin encapsulates and simplifies media queries for big screens.

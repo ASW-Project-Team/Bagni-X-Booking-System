@@ -1,8 +1,10 @@
 <div class="page">
-  <p>
-    Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
-  </p>
+  <div class="description">
+      <span>
+            Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
+      </span>
 
+  </div>
   <form [formGroup]="regForm" class="registration-form" (ngSubmit)="onSubmit()">
     <div class="inputs-container">
       <mat-form-field appearance="outline" class="input-field">
@@ -21,7 +23,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field long-input">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
         <mat-error
