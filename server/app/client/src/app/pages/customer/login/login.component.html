@@ -7,7 +7,12 @@
       </div>
     </div>
     <div class="description">
-      Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+      <span *ngIf="returnUrlExternallySet">
+        Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+      </span>
+      <span *ngIf="!returnUrlExternallySet">
+        Accedi al sito per usufruire del servizio di prenotazione del nostro stabilimento!
+      </span>
     </div>
   </div>
 
@@ -54,6 +59,6 @@
 </div>
 
 <!-- Header goes last, to make them appear over content -->
-<app-nested-appbar title="Effettua il login" back-route="/home" back-page-name="Ritorna alla pagina precedente"
-                   [actions]="[]"></app-nested-appbar>
+<app-customer-main-appbar></app-customer-main-appbar>
+
 

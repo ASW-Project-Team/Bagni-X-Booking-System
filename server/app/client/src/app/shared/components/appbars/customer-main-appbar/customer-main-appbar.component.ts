@@ -29,13 +29,6 @@ export class CustomerMainAppbarComponent implements OnInit {
       route: "/bookings",
       isMdi: true,
       icon: "calendar-check-outline"
-    },
-    {
-      id: "profile",
-      name: "Profilo",
-      route: "/profile",
-      isMdi: true,
-      icon: "account-circle-outline"
     }
   ];
 

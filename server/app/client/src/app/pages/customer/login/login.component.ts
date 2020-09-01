@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   loading: boolean = false;
   submitted: boolean = false;
   returnUrl: string;
+  returnUrlExternallySet: boolean = false;
   error: string = '';
   hidePw = true;
 
@@ -51,7 +52,13 @@ export class LoginComponent implements OnInit {
     });
 
     // get return url from route parameters, or default to '/home'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+    if(this.route.snapshot.queryParams['returnUrl']) {
+      this.returnUrlExternallySet = true;
+      this.returnUrl = this.route.snapshot.queryParams['returnUrl']
+    } else {
+      this.returnUrl = '/home';
+    }
+
   }
 
 

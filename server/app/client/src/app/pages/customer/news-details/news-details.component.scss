@@ -15,8 +15,7 @@ p.date {
 }
 
 .divider {
-  height: 1px;
-  background-color: #cccccc;
+  @include horizontalDivider;
   width: 160px;
   margin: 0 auto;
   @include responsiveProp(margin-top, $defaultMargin);

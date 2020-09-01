@@ -1,54 +1,16 @@
 @import "~src/styles/utils";
 
 .page {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
-  .description-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-
+  p {
     @include responsiveProp(margin-bottom, $defaultMargin);
-
-
-    .logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-
-      img {
-        width: 80px;
-        height: 80px;
-      }
-
-      .title {
-        color: $primaryColor;
-      }
-    }
-
-    .vertical-divider {
-      @include responsiveProp(margin-left, $defaultMargin);
-      @include responsiveProp(margin-right, $defaultMargin);
-      width: 1px;
-      background-color: #cccccc;
-      height: 100px;
-    }
-
-    .description {
-      text-align: left;
-    }
   }
 
   .registration-form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 
     .inputs-container {
       display: flex;

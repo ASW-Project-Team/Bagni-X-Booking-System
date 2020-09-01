@@ -24,6 +24,7 @@ html, body {
   height: 100%;
   margin: 0;
   @include bodyFont;
+  color: $secondaryControlColor;
 }
 
 .page {
@@ -35,7 +36,6 @@ html, body {
   @include responsiveProp(padding, $defaultMargin);
   @include responsiveProp(width, $pageWidth);
   padding-top: $appBarHeightSmartphone + $marginSmartphone; // this must be after the responsive padding rule
-
 
   @include forDesktopOnly {
     padding-top: $appBarHeightDesktop + $marginDesktop;
@@ -52,21 +52,23 @@ ul {
 
 // Font used for generic titles.
 h1 {
-  margin-top: 0;
   @include titleFont;
+  color: $primaryControlColor;
   @include responsiveProp(margin-bottom, $halfMargin);
+  margin-top: 0;
 }
 
 // Font used for an important body text, such as a card title.
 h2 {
-  margin-top: 0;
   @include subheadFont;
+  color: $primaryControlColor;
   @include responsiveProp(margin-bottom, $quarterMargin);
+  margin-top: 0;
 }
 
 p {
-  margin-top: 0;
   @include bodyFont;
+  margin-top: 0;
   @include responsiveProp(margin-bottom, $quarterMargin);
 }
 

@@ -55,6 +55,13 @@ export class AuthService {
   }
 
 
+  public deleteCustomer(): Observable<any> {
+    localStorage.removeItem("currentCustomer");
+    this._currentCustomerSubject.next(null);
+    return this._http.delete(`${environment.apiUrl}/api/customers/${this._currentCustomerSubject.value.id}`);
+  }
+
+
   public isLoggedIn() {
     let currentCustomer = this.currentCustomerValue();
     return currentCustomer && currentCustomer.jwt;

@@ -53,6 +53,7 @@ footer {
 
       a {
         @include subheadFont;
+        color: $primaryControlColor;
       }
     }
   }

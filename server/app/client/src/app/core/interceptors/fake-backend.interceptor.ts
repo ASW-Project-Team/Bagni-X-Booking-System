@@ -52,6 +52,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getBooking(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.deleteBooking(request);
+      case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
+        return FakeBackendInterceptor.deleteCustomer(request);
 
       // todo ecc.
 
@@ -147,6 +149,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     return FakeBackendInterceptor.createOkResponse(booking);
+  }
+
+
+  private static deleteCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse();
   }
 
 
