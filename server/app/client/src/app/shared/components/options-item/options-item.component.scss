@@ -7,13 +7,12 @@
   justify-content: flex-start;
   @include responsiveProp(padding-top, $defaultMargin);
 
-
   .icon {
-    @include responsiveProp(margin-right, $defaultMargin);
     color: $secondaryControlColor;
     @include responsiveProp(margin-right, $defaultMargin);
-    margin-top: - #{$marginSmartphone};
 
+    // compensates top padding of the item
+    margin-top: - #{$marginSmartphone};
     @include forDesktopOnly {
       margin-top: - #{$marginDesktop};
     }
@@ -30,9 +29,8 @@
     }
 
     .divider {
+      @include horizontalDivider;
       width: 100%;
-      height: 1px;
-      background-color: #cccccc;
     }
   }
 }

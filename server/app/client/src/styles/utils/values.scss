@@ -1,3 +1,6 @@
+@import "sizes";
+@import "colors";
+
 /**
  * Various other variable and utils.
  */
@@ -43,4 +46,9 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   font-size: $size;
   height: $size;
   width: $size;
+}
+
+@mixin horizontalDivider {
+  height: 1px;
+  background-color: $dividerColor;
 }

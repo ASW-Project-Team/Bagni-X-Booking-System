@@ -9,7 +9,7 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   customer: Customer;
