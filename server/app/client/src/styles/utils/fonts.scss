@@ -13,7 +13,7 @@
   color: $primaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 
@@ -24,7 +24,7 @@
   color: $primaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
@@ -35,6 +35,17 @@
   color: $secondaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 20px;
+    font-size: 16px;
+  }
+}
+
+
+@mixin bodyFontNoColor {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+
+  @include forDesktopOnly {
+    font-size: 16px;
   }
 }

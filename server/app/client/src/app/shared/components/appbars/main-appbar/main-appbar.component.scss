@@ -6,7 +6,7 @@
   position: fixed;
   display: flex;
   align-items: center;
-  padding:0 8px 0 16px;
+  padding: 0 8px 0 16px;
   flex-direction: row;
   box-sizing: border-box;
   top: 0;
@@ -35,10 +35,6 @@
     }
   }
 
-  .active {
-    color: $primaryColor;
-    background: $secondaryColor;
-  }
 
   .extended-navigation {
     margin-left: auto; // keeps element aligned to the right
@@ -52,14 +48,53 @@
       ul {
         display: flex; // used for horizontal alignment
         flex-direction: row;
+        align-items: center;
 
-        li a {
-          margin-left: 8px;
-          border-radius: 24px;
-          transition: 0.2s;
+        li {
+          a.menu-page {
+            margin-left: 8px;
+            border-radius: 24px;
+            transition: 0.2s;
 
-          &:hover {
-            background: $secondaryColor;
+            &:hover {
+              background: $secondaryColor;
+            }
+
+            &.active {
+              color: $primaryColor;
+              background: $secondaryColor;
+            }
+          }
+
+          a.user-page {
+            height: 40px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            color: $secondaryControlColor;
+            @include responsiveProp(margin-left, $halfMargin);
+            @include responsiveProp(padding-left, $halfMargin);
+            @include responsiveProp(padding-right, $halfMargin);
+            border-radius: 24px;
+            background: $tertiaryColor;
+            transition: 0.2s;
+
+            &:hover {
+              background: $secondaryColor;
+            }
+
+            .icon {
+              @include responsiveProp(margin-right, $quarterMargin);
+            }
+
+            .title {
+              @include bodyFontNoColor;
+            }
+
+            &.active {
+              color: $primaryColor;
+              background: $secondaryColor;
+            }
           }
         }
       }

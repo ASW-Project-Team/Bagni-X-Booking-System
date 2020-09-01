@@ -38,3 +38,9 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   @include responsiveProp(padding-top, $quarterMargin);
   @include responsiveProp(padding-bottom, $quarterMargin);
 }
+
+@mixin mat-icon-size($size: 24px) {
+  font-size: $size;
+  height: $size;
+  width: $size;
+}

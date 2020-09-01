@@ -1,14 +1,10 @@
 <div class="page">
-  <div class="description-container">
-    <div class="logo-container">
-      <img src="/assets/logo.png" alt="BagniX Logo"/>
-      <h1 class="title">Bagni X</h1>
-    </div>
-    <div class="vertical-divider"></div>
-    <div class="description">
-      Per utilizzare questa funzione, devi effettuare l'accesso al sito.
-    </div>
-  </div>
+  <p *ngIf="returnUrlExternallySet">
+    Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+  </p>
+  <p *ngIf="!returnUrlExternallySet">
+    Accedi al sito per usufruire del servizio di prenotazione del nostro stabilimento!
+  </p>
 
   <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
     <div class="inputs-container">
@@ -53,6 +49,6 @@
 </div>
 
 <!-- Header goes last, to make them appear over content -->
-<app-nested-appbar title="Effettua il login" back-route="/home" back-page-name="Ritorna alla pagina precedente"
-                   [actions]="[]"></app-nested-appbar>
+<app-customer-main-appbar></app-customer-main-appbar>
+
 

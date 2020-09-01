@@ -22,7 +22,6 @@ export class RegisterComponent implements OnInit {
   regForm: FormGroup;
   loading: boolean = false;
   submitted: boolean = false;
-  returnUrl: string;
   error: string = '';
 
   constructor(private formBuilder: FormBuilder,
@@ -58,9 +57,6 @@ export class RegisterComponent implements OnInit {
       phone: ['', Validators.pattern("^((\\+)[0-9]{2}(-)?)?[0-9]{6,11}$")],
       address: [''],
     }, {validator: RegisterComponent.passwordMatchValidator});
-
-    // get return url from route parameters, or default to '/home'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
   }
   hidePw = true;
   hideConfirm = true;
@@ -95,7 +91,7 @@ export class RegisterComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate([this.returnUrl]).then(() => {
+          this.router.navigate(['/profile']).then(() => {
             const customerName = this.authService.currentCustomerValue().name;
             this.snackBar.open(
               `Registrazione completata. Benvenuto, ${customerName}!`,
