@@ -4,36 +4,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
-  p {
-    @include responsiveProp(margin-bottom, $defaultMargin);
+  .description {
+    margin-bottom: $marginSmartphone;
+    width: 100%;
+    max-width: $textboxWidthDesktop + $marginDesktop * 4;
+
+    @include forDesktopOnly {
+      text-align: center;
+    }
   }
 
   .login-form {
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-sizing: border-box;
+    width: 100%;
 
-    .inputs-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-
-      @include forDesktopOnly {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-
-      .input-field {
-        @include responsiveProp(padding-right, $halfMargin);
-        @include responsiveProp(padding-left, $halfMargin);
-        width: 100%;
-        @include forDesktopOnly {
-          width: 264px;
-        }
-      }
+    .input-field {
+      padding: 0;
+      @include responsiveProp(width, $textboxWidth);
     }
 
     .warning-container {
@@ -50,33 +42,10 @@
       }
     }
 
-    @mixin button {
-      padding: 0 $marginDesktop;
-      border-radius: 50px;
-      @include responsiveProp(height, $fabHeight);
-      @include titleFont;
-      color: $backgroundColor;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      @include responsiveProp(margin-bottom, $defaultMargin);
-
-      @include forDesktopOnly {
-        width: 360px;
-      }
-    }
-
     .login-button {
       @include button;
+      width: 100%;
+      max-width: $textboxWidthDesktop;
     }
-
-    .register-button {
-      @include button;
-      background-color: $backgroundColor;
-      color: $primaryColor;
-    }
-
   }
 }

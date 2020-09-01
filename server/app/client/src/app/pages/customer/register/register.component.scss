@@ -1,9 +1,20 @@
 @import "~src/styles/utils";
 
 .page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 
-  p {
-    @include responsiveProp(margin-bottom, $defaultMargin);
+  .description {
+    margin-bottom: $marginSmartphone;
+    width: 100%;
+    max-width: $textboxWidthDesktop * 2 + $marginDesktop;
+
+    @include forDesktopOnly {
+      text-align: center;
+    }
   }
 
   .registration-form {
@@ -18,14 +29,24 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      max-width: $textboxWidthDesktop * 2 + $marginDesktop * 2;
       @include responsiveProp(margin-bottom, $defaultMargin);
 
       .input-field {
-        @include responsiveProp(padding-right, $halfMargin);
-        @include responsiveProp(padding-left, $halfMargin);
-        width: 100%;
+        padding: 0;
+        @include responsiveProp(width, $textboxWidth);
+
         @include forDesktopOnly {
-          width: 264px;
+          padding: 0 $marginDesktop / 2;
+        }
+      }
+
+      .long-input {
+        width: 100%;
+
+        @include forDesktopOnly {
+          width: $textboxWidthDesktop * 2 + $marginDesktop;
         }
       }
     }
@@ -44,27 +65,10 @@
       }
     }
 
-    @mixin button {
-      padding: 0 $marginDesktop;
-      border-radius: 50px;
-      @include responsiveProp(height, $fabHeight);
-      @include titleFont;
-      color: $backgroundColor;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      @include responsiveProp(margin-bottom, $defaultMargin);
-
-      @include forDesktopOnly {
-        width: 360px;
-      }
-    }
-
     .registration-button {
       @include button;
+      width: 100%;
+      max-width: $textboxWidthDesktop;
     }
-
   }
 }
