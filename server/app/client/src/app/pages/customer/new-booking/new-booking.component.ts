@@ -1,9 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {STEPPER_GLOBAL_OPTIONS, StepperSelectionEvent} from "@angular/cdk/stepper";
 import {Booking} from "../../../shared/models/booking.model";
-import {MatStepper} from "@angular/material/stepper";
 import {NbPeriodComponent} from "../nb-period/nb-period.component";
 import {AuthService} from "../../../core/auth/auth.service";
 import {AvailabilityData} from "../../../shared/models/availability-data.model";
@@ -37,8 +36,8 @@ export class NewBookingComponent implements OnInit {
     this.backPageName = this._route.snapshot.queryParams['backPageName'] || 'Home';
     this.booking = new Booking({
       userId: this._authService.currentCustomerValue().id,
-      dateFrom: new Date(),
-      dateTo: new Date(),
+      dateFrom: NewBookingComponent.createTodayAtMidnight(),
+      dateTo: NewBookingComponent.createTodayAtMidnight(),
       umbrellas: [],
       services: [],
       confirmed: false,
@@ -46,7 +45,6 @@ export class NewBookingComponent implements OnInit {
       price: 0.0
     });
   }
-
 
   /**
    * This event is triggered when the stepper changes page. It activates
@@ -58,6 +56,7 @@ export class NewBookingComponent implements OnInit {
     if (event.previouslySelectedIndex == 0) {
       // invalidate availability, if the user switches from period
       this.availability = undefined;
+      this.periodStep.updateBookingDates();
       this._apiService.getAvailability(this.booking.dateFrom, this.booking.dateTo).subscribe(data => {
         this.availability = data;
       });
@@ -69,5 +68,12 @@ export class NewBookingComponent implements OnInit {
       this.booking.services = [];
       this.booking.price = 0.0;
     }
+  }
+
+  // helpers
+  private static createTodayAtMidnight(): Date {
+    let todayAtMidnight = new Date();
+    todayAtMidnight.setHours(0,0,0,0);
+    return todayAtMidnight;
   }
 }
