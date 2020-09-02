@@ -1,0 +1,57 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+h2 {
+  margin: 0;
+}
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  @include responsiveProp(margin-bottom, $quarterMargin);
+
+  .next-button {
+    @include button;
+    @include responsiveProp(width, $textboxWidth);
+  }
+}
+
+
+.date-range-content {
+  p {
+    @include responsiveProp(margin-bottom, $halfMargin);
+  }
+
+  @include responsiveProp(padding-top, $halfMargin);
+  @include responsiveProp(padding-bottom, $halfMargin);
+  padding-left: 28px;
+
+  .date-range-field-extended {
+    padding: 0;
+    width: 100%;
+  }
+
+  .half-day-fields {
+    display: flex;
+    flex-direction: column;
+
+    @include forDesktopOnly {
+      flex-direction: row;
+      margin-right: - #{$marginDesktop};
+    }
+
+    .half-day-field {
+      box-sizing: border-box;
+      width: 100%;
+
+      @include forDesktopOnly {
+        width: 50%;
+        margin-right: $marginDesktop;
+      }
+    }
+  }
+}

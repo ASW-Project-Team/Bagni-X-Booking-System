@@ -33,7 +33,7 @@ import { NestedAppbarComponent } from './shared/components/appbars/nested-appbar
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { BookingCardComponent } from './shared/components/booking-card/booking-card.component';
 import { BookingStateComponent } from './shared/components/booking-state/booking-state.component';
-import {BookingDatePipe} from "./shared/pipes/booking-date.pipe";
+import {BookingDatePipe, BookingDatePipeExtended} from "./shared/pipes/booking-date.pipe";
 import { BookingDetailsComponent } from './pages/customer/booking-details/booking-details.component';
 import { BookingStateExtendedComponent } from './shared/components/booking-state-extended/booking-state-extended.component';
 import { BookingSummaryComponent } from './shared/components/booking-summary/booking-summary.component';
@@ -52,6 +52,13 @@ import { NbCustomizeComponent } from './pages/customer/nb-customize/nb-customize
 import { NbCheckoutComponent } from './pages/customer/nb-checkout/nb-checkout.component';
 import { NewBookingComponent } from './pages/customer/new-booking/new-booking.component';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from "@angular/material/core";
+import {MatSelectModule} from '@angular/material/select';
+import { registerLocaleData } from '@angular/common';
+import localeIt from '@angular/common/locales/it';
+
 
 @NgModule({
   declarations: [
@@ -87,6 +94,7 @@ import {MatStepperModule} from '@angular/material/stepper';
     NbCustomizeComponent,
     NbCheckoutComponent,
     NewBookingComponent,
+    BookingDatePipeExtended,
   ],
   imports: [
     BrowserModule,
@@ -104,17 +112,23 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatDialogModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatStepperModule
+    MatStepperModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    { provide: LOCALE_ID, useValue: "it" },
     fakeBackendProvider // todo remove in production
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer){
+    registerLocaleData(localeIt, 'it');
     matIconRegistry.addSvgIconSet(
       domSanitizer.bypassSecurityTrustResourceUrl('../assets/mdi.svg')
     );

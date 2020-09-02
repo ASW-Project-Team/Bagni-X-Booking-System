@@ -1,17 +1,17 @@
 <div class="page">
-  <mat-horizontal-stepper [linear]="true" labelPosition="bottom" #stepper>
+  <mat-horizontal-stepper [linear]="true" labelPosition="bottom" (selectionChange)="selectionChange($event)" #stepper>
 
     <mat-step [stepControl]="periodStep.formGroup">
         <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
         <app-nb-period [(booking)]="booking" #periodStep></app-nb-period>
     </mat-step>
 
-    <mat-step [stepControl]="customizeStep.formGroup">
-      <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
+    <mat-step [stepControl]="customizeStep.formGroup" [completed]="false">
+      <ng-template matStepLabel><span class="step-label">Personalizza</span></ng-template>
       <app-nb-customize [(booking)]="booking" #customizeStep></app-nb-customize>
     </mat-step>
 
-    <mat-step>
+    <mat-step [completed]="false">
       <ng-template matStepLabel><span class="step-label">Chekout</span></ng-template>
       <app-nb-checkout [booking]="booking"></app-nb-checkout>
     </mat-step>

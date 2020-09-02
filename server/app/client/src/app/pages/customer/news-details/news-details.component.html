@@ -4,7 +4,7 @@
       <app-img-landscape [src]="downloadedNews.image"></app-img-landscape>
     </div>
     <h1 class="title">{{downloadedNews.title}}</h1>
-    <p class="date">{{downloadedNews.date | newsDateExtended}}</p>
+    <p class="date">{{downloadedNews.date | newsDateExtended | titlecase}}</p>
     <div class="divider"></div>
     <p class="article">{{downloadedNews.description}}</p>
   </div>
