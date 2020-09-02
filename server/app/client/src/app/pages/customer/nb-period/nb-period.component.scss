@@ -21,7 +21,7 @@ h2 {
 }
 
 
-.date-range-content {
+.date-range-type-content {
   p {
     @include responsiveProp(margin-bottom, $halfMargin);
   }
@@ -30,7 +30,7 @@ h2 {
   @include responsiveProp(padding-bottom, $halfMargin);
   padding-left: 28px;
 
-  .date-range-field-extended {
+  .date-range-type-field-extended {
     padding: 0;
     width: 100%;
   }

@@ -5,6 +5,7 @@ import {STEPPER_GLOBAL_OPTIONS, StepperSelectionEvent} from "@angular/cdk/steppe
 import {Booking} from "../../../shared/models/booking.model";
 import {MatStepper} from "@angular/material/stepper";
 import {NbPeriodComponent} from "../nb-period/nb-period.component";
+import {AuthService} from "../../../core/auth/auth.service";
 
 @Component({
   selector: 'app-new-booking',
@@ -22,12 +23,23 @@ export class NewBookingComponent implements OnInit {
   @ViewChild('periodStep') periodStep: NbPeriodComponent;
 
 
-  constructor(private _route: ActivatedRoute, private _formBuilder: FormBuilder) {
-  }
+  constructor(private _route: ActivatedRoute,
+              private _formBuilder: FormBuilder,
+              private _authService: AuthService) { }
 
   ngOnInit(): void {
     this.backRoute = this._route.snapshot.queryParams['backRoute'] || '/home';
     this.backPageName = this._route.snapshot.queryParams['backPageName'] || 'Home';
+    this.booking = new Booking({
+      userId: this._authService.currentCustomerValue().id,
+      dateFrom: new Date(),
+      dateTo: new Date(),
+      umbrellas: [],
+      services: [],
+      confirmed: false,
+      cancelled: false,
+      price: 0.0
+    });
   }
 
   selectionChange(event: StepperSelectionEvent) {

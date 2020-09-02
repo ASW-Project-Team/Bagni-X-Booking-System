@@ -10,25 +10,42 @@ import {MatRadioChange} from "@angular/material/radio";
   styleUrls: ['./nb-period.component.scss']
 })
 export class NbPeriodComponent implements OnInit {
-  formGroup: FormGroup;
   @Input() booking: Booking;
   @Output() bookingChange: EventEmitter<Booking> = new EventEmitter<Booking>();
-  seasonMinDate: Date;// todo get from server?
+  formGroup: FormGroup;
+  seasonMinDate: Date;
   seasonMaxDate: Date;
-  dateRangeTypes: string[] = ['period', 'day', 'halfDay'];
   currentDateFrom: Date;
   currentDateTo: Date;
 
+  readonly DATE_RANGE_TYPES = {
+    period: 'period',
+    day: 'day',
+    halfDay: 'halfDay'
+  }
 
-  constructor(private _formBuilder: FormBuilder) {
-    this.currentDateFrom = new Date();
-    this.currentDateTo = new Date();
-    this.currentDateTo.setDate(new Date().getDate() + 1);
+  readonly HALF_DAY_PERIODS = {
+    morning: 'morning',
+    afternoon: 'afternoon'
+  }
+
+
+  constructor(private _formBuilder: FormBuilder) { }
+
+
+  /**
+   * Initializes the component, assigning initialization values.
+   */
+  ngOnInit(): void {
+    this.currentDateFrom = this.booking.dateFrom;
+    this.currentDateTo = this.booking.dateTo;
+
+    // todo get from server?
     this.seasonMinDate = new Date('2020-5-15');
     this.seasonMaxDate = new Date('2020-10-1');
 
     this.formGroup = this._formBuilder.group({
-      dateRangeType: ['period', Validators.required],
+      dateRangeType: [this.DATE_RANGE_TYPES.period, Validators.required],
       periodDateRange: this._formBuilder.group({
         periodDateFrom: [this.currentDateFrom, Validators.required],
         periodDateTo: [this.currentDateTo, Validators.required],
@@ -36,24 +53,32 @@ export class NbPeriodComponent implements OnInit {
       dailyDatePicker: [{value: this.currentDateFrom, disabled: true}, Validators.required],
       halfDay: this._formBuilder.group({
         halfDayDatePicker: [{value: this.currentDateFrom, disabled: true}, Validators.required],
-        halfDayPeriod: [{value: 'morning', disabled: true}, Validators.required]
+        halfDayPeriod: [{value: this.HALF_DAY_PERIODS.morning, disabled: true}, Validators.required]
       })
     });
   }
 
-  dateRangeChange(event: MatRadioChange) {
+
+  /**
+   * When the user selects a different date range type, the associated fields
+   * are enabled.
+   * @param event: data about the new data range type
+   */
+  dateRangeTypeChange(event: MatRadioChange) {
     switch(event.value) {
-      case this.dateRangeTypes[0]:
+      case this.DATE_RANGE_TYPES.period:
         this.formGroup.get('periodDateRange').enable();
         this.formGroup.get('dailyDatePicker').disable();
         this.formGroup.get('halfDay').disable();
         break;
-      case this.dateRangeTypes[1]:
+
+      case this.DATE_RANGE_TYPES.day:
         this.formGroup.get('periodDateRange').disable();
         this.formGroup.get('dailyDatePicker').enable();
         this.formGroup.get('halfDay').disable();
         break;
-      case this.dateRangeTypes[2]:
+
+      case this.DATE_RANGE_TYPES.halfDay:
         this.formGroup.get('periodDateRange').disable();
         this.formGroup.get('dailyDatePicker').disable();
         this.formGroup.get('halfDay').enable();
@@ -62,14 +87,55 @@ export class NbPeriodComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-
-  }
-
+  /**
+   * If the form is valid, and the user clicks into the next step
+   * (or into the button to earn it), the following function is fired
+   * from new-booking component, emitting the new booking value with
+   * updated dates.
+   */
   updateBookingDates() {
-    // todo extract values
-    this.bookingChange.emit(new Booking(bookingsMock[0]));
-    console.log('changes submitted!')
+    let dateFrom: Date;
+    let dateTo: Date;
+
+    switch(this.formGroup.get('dateRangeType').value) {
+      case this.DATE_RANGE_TYPES.period:
+        // adds a day to t
+        dateFrom = new Date(this.formGroup.get('periodDateRange.periodDateFrom').value);
+        dateTo = this.addDay(new Date(this.formGroup.get('periodDateRange.periodDateTo').value));
+        break;
+
+      case this.DATE_RANGE_TYPES.day:
+        dateFrom = new Date(this.formGroup.get('dailyDatePicker').value);
+        dateTo = this.addDay(dateFrom);
+        break;
+
+      case this.DATE_RANGE_TYPES.halfDay:
+        if (this.formGroup.get('halfDay.halfDayPeriod').value == this.HALF_DAY_PERIODS.morning) {
+          dateFrom = new Date(this.formGroup.get('halfDay.halfDayDatePicker').value);
+          dateTo = this.addHalfDay(dateFrom);
+        } else {
+          dateFrom = this.addHalfDay(new Date(this.formGroup.get('halfDay.halfDayDatePicker').value));
+          dateTo = this.addHalfDay(dateFrom);
+        }
+        break;
+    }
+
+    this.booking.dateFrom = dateFrom;
+    this.booking.dateTo = dateTo;
+    this.bookingChange.emit(this.booking);
   }
 
+
+  // utilities
+
+  addDay(date: Date): Date {
+    date.setDate(date.getDate() + 1);
+    return date;
+  }
+
+  addHalfDay(date: Date): Date {
+    date.setTime(date.getTime() + 12*60*60*1000);
+    return date;
+  }
 }
+
