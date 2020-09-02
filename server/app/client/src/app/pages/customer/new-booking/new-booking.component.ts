@@ -6,6 +6,8 @@ import {Booking} from "../../../shared/models/booking.model";
 import {MatStepper} from "@angular/material/stepper";
 import {NbPeriodComponent} from "../nb-period/nb-period.component";
 import {AuthService} from "../../../core/auth/auth.service";
+import {AvailabilityData} from "../../../shared/models/availability-data.model";
+import {ApiService} from "../../../core/api/api.service";
 
 @Component({
   selector: 'app-new-booking',
@@ -19,13 +21,16 @@ export class NewBookingComponent implements OnInit {
   backRoute: string;
   backPageName: string;
   booking: Booking;
+  availability: AvailabilityData;
 
   @ViewChild('periodStep') periodStep: NbPeriodComponent;
 
 
   constructor(private _route: ActivatedRoute,
               private _formBuilder: FormBuilder,
-              private _authService: AuthService) { }
+              private _authService: AuthService,
+              private _apiService: ApiService) { }
+
 
   ngOnInit(): void {
     this.backRoute = this._route.snapshot.queryParams['backRoute'] || '/home';
@@ -42,12 +47,27 @@ export class NewBookingComponent implements OnInit {
     });
   }
 
+
+  /**
+   * This event is triggered when the stepper changes page. It activates
+   * some actions in the cange, such as the availability query, or the booking
+   * data invalidation when going back to the period step.
+   * @param event: contains data about the previously selected, and newly selected step.
+   */
   selectionChange(event: StepperSelectionEvent) {
     if (event.previouslySelectedIndex == 0) {
-      this.periodStep.updateBookingDates();
-      // todo start availability query, invalidate customize form if not possible
+      // invalidate availability, if the user switches from period
+      this.availability = undefined;
+      this._apiService.getAvailability(this.booking.dateFrom, this.booking.dateTo).subscribe(data => {
+        this.availability = data;
+      });
     }
 
-    // todo if going back to period, invalidate all, or make impossible to jump period->checkout (ex. invalidating)
+    if (event.selectedIndex == 0) {
+      // if going back to period, invalidate booking
+      this.booking.umbrellas = [];
+      this.booking.services = [];
+      this.booking.price = 0.0;
+    }
   }
 }

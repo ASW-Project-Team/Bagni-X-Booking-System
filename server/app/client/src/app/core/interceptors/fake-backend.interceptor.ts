@@ -13,6 +13,7 @@ import {Customer} from "../../shared/models/customer";
 import {newsFeedMock} from "../mocks/news.mock";
 import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
+import {availabilityMock} from "../mocks/availability.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -54,6 +55,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.deleteBooking(request);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.deleteCustomer(request);
+      case url.endsWith('api/new-booking/availability') && method === 'GET':
+        return FakeBackendInterceptor.getAvailability(request);
 
       // todo ecc.
 
@@ -154,6 +157,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   private static deleteCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse();
+  }
+
+  private static getAvailability(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(availabilityMock);
   }
 
 

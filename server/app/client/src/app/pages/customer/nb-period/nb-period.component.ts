@@ -99,17 +99,22 @@ export class NbPeriodComponent implements OnInit {
 
     switch(this.formGroup.get('dateRangeType').value) {
       case this.DATE_RANGE_TYPES.period:
-        // adds a day to t
+        // in the range case, it assigns the first date as the date from,
+        // meanwhile a day is added to the dateTo value, to include the last day completely
         dateFrom = new Date(this.formGroup.get('periodDateRange.periodDateFrom').value);
         dateTo = this.addDay(new Date(this.formGroup.get('periodDateRange.periodDateTo').value));
         break;
 
       case this.DATE_RANGE_TYPES.day:
+        // in the daily case, it assigns the date as the date from,
+        // meanwhile for the dateTo, a day is added to the first value, to include the day completely
         dateFrom = new Date(this.formGroup.get('dailyDatePicker').value);
         dateTo = this.addDay(dateFrom);
         break;
 
       case this.DATE_RANGE_TYPES.halfDay:
+        // in the half-day case, the date is assigned in a manner that covers morning or afternoon hours.
+        // Precise hour values are just indicative, to represent the first or the last part of the day.
         if (this.formGroup.get('halfDay.halfDayPeriod').value == this.HALF_DAY_PERIODS.morning) {
           dateFrom = new Date(this.formGroup.get('halfDay.halfDayDatePicker').value);
           dateTo = this.addHalfDay(dateFrom);
