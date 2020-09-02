@@ -18,8 +18,8 @@ const initializeModel = function(mongoose) {
         // contacts
         name: String,
         surname: String,
-        phone: {type: String, default: null},
-        address: {type: String, default: null},
+        phone: String,
+        address: String,
 
         // authentication
         email: String,

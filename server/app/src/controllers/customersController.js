@@ -24,7 +24,8 @@ module.exports.readCustomer = function(req, res) {
             (err, customers)=>{
 
                 // Return tot pages
-                commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, customers, "Customers")
+                commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, customers,
+                    "Customers")
         })
     }
 
@@ -91,26 +92,26 @@ module.exports.createCustomer = function(req, res) {
  */
 module.exports.updateCustomer = function(req, res) {
     commonController.findByIdFirstLevelCollection(req, res, "customer", Customer, "",
-        req.params.id, (err, docResult)=>{
+        req.params.id, (err, customer)=>{
 
         if ((!(req.body.name) ||commonController.typeOfString(req.body.name))
             && (!(req.body.surname) || commonController.typeOfString(req.body.surname))
             && (!(req.body.email) ||commonController.checkEmail(req.body.email))
             && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))
-            && (!(req.body.pass) || commonController.typeOfString(req.body.pass))) {
+            && (!(req.body.password) || commonController.typeOfString(req.body.password))) {
 
-            if (req.body.pass){
-                commonController.checkPassword(res, req.body.pass,()=>{
-                    docResult.hashedPassword = commonController.sha512(req.body.pass,
-                        docResult.salt);
+            if (req.body.password){
+                commonController.checkPassword(res, req.body.password,()=>{
+                    customer.hashedPassword = commonController.sha512(req.body.password,
+                        customer.salt);
 
-                    applyCustomersModify(req, docResult, res)
+                    applyCustomersModify(req, customer, res)
 
                 });
             } else {
 
-                applyCustomersModify(req, docResult, res)
+                applyCustomersModify(req, customer, res)
 
             }
 
