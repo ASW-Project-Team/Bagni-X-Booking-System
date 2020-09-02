@@ -436,55 +436,40 @@ module.exports.sha512 = function(password, salt){
 
 };
 
-/**
- * Update password if succeed password check.
- * There is a supposition that field to update is hashedPassword
- * @param res two scenario:
- *  . if too short return Bad Request
- *  . otherwise return the Object without password visible
- * @param password
- * @param elem
- */
-module.exports.updatePassword = function(res, password, elem) {
-
-    this.checkPassword(res, password, ()=>{
-
-        elem.hashedPassword = this.sha512(password, elem.salt);
-
-        this.correctSave(elem, this.statusCreated, res);
-    });
-}
 
 /**
  * Check if password have almost the requested length.
- * @param res: If password have not the characteristic correct respond with Bad Request
- *              otherwise do func()
  * @param password
- * @param func
  */
-module.exports.checkPassword = function(res, password, func) {
+module.exports.checkPassword = function(password) {
 
-    if (/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/.test(password)){
+/*    if (/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/.test(password)){
         func()
     } else {
         this.notify(res, this.badRequest, "Password not correct");
-    }
+    }*/
+    return /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/.test(password)
+}
+
+/**
+ * Check if email is a valid regex.
+ * @param email
+ * @returns {boolean}
+ */
+module.exports.checkEmail = function(email){
+
+    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+
 }
 
 /**
  * Check for phone number.
- * @param res: if phone number haven't the characteristic requested respond with Bad Request
- *              otherwise do function
  * @param phoneNumber
- * @param func in case res haven't error
+ * @returns {boolean}
  */
-module.exports.checkPhone = function(res, phoneNumber, func) {
+module.exports.checkPhone = function(phoneNumber) {
 
-    if (/^((\+)[0-9]{2}(-)?)?[0-9]{6,11}$/.test(phoneNumber)){
-        func()
-    } else {
-        this.notify(res, this.badRequest, "Phone number not existent");
-    }
+    return /^((\+)[0-9]{2}(-)?)?[0-9]{6,11}$/.test(phoneNumber)
 }
 
 /**
@@ -684,16 +669,6 @@ module.exports.customerExist = function (req, res, userId, func){
 
 }
 
-/**
- * Check if email is a valid regex.
- * @param email
- * @returns {boolean}
- */
-module.exports.checkEmail = function(email){
-
-    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
-
-}
 
 /**
  * DELETE a nested Elements

@@ -13,7 +13,7 @@ const commonController = require("./commonController");
  */
 module.exports.authenticateAdmin = function(req, res) {
 
-    findAdmin(req, res, req.body.username, req.body.password,
+    findAdmin(req, res, req.body.username,
         (elemFounded) => {
 
         if (commonController.typeOfString(req.body.password)
@@ -26,15 +26,12 @@ module.exports.authenticateAdmin = function(req, res) {
             //response["jwt"] =
 
             commonController.response(res, response);
-        }
-        else{
-
+        } else
             // Email and password aren't corrected.
             commonController.parameterBadFormatted(res);
-        }
 
         // User don't exist.
-    }, () => commonController.parameterBadFormatted(res))
+    },() => commonController.parameterBadFormatted(res))
 };
 
 /**
@@ -47,30 +44,26 @@ module.exports.authenticateAdmin = function(req, res) {
  */
 module.exports.createAdmin = function(req, res) {
 
-    findAdmin(req, res, req.body.username, req.body.password,
+    findAdmin(req, res, req.body.username,
+        () => commonController.alreadyPresent(res, "admin"),
         () => {
+        if (commonController.typeOfString(req.body.password)
+                && commonController.checkPassword(req.body.password)){
 
-            if (req.body.password && commonController.typeOfString(req.body.password)){
-                commonController.checkPassword(res, req.body.password, ()=>{
+                // If someone pass root = true
+                req.body.root = false
 
-                    // If someone pass root = true
-                    req.body.root = false
+                let admin = new Admin(req.body)
+                admin._id = mongoose.Types.ObjectId();
+                admin.salt = commonController.genRandomString(commonController.saltLength);
+                admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
-                    let admin = new Admin(req.body)
-                    admin._id = mongoose.Types.ObjectId();
-                    admin.salt = commonController.genRandomString(commonController.saltLength);
-                    admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+                commonController.correctSave(admin, commonController.statusCreated, res)
 
-                    commonController.correctSave(admin, commonController.statusCreated, res)
 
-                })
-        } else
+            } else
                 commonController.parameterBadFormatted(res)
-            }, () =>
-
-            commonController.alreadyPresent(res, "admin")
-
-    )
+    })
 };
 
 
@@ -110,15 +103,11 @@ module.exports.modifyAdmin = function(req, res){
             (admin)=>{
 
             if ((!(req.body.username) || commonController.typeOfString(req.body.username))
-                && (!(req.body.password) || commonController.typeOfString(req.body.password))){
+                && (!(req.body.password) || commonController.checkPassword(req.body.password))){
 
-                if (req.body.password){
-                    commonController.checkPassword(res, req.body.password, ()=>{
 
-                        applyAdmin(req.body.username, req.body.password, admin, req, res, req.params.id)
-                    })
-                } else
-                    applyAdmin(req.body.username, req.body.password, admin, req, res, req.params.id)
+                applyAdmin(req.body.username, req.body.password, admin, req, res, req.params.id)
+
             } else
                 commonController.parameterBadFormatted(res)
             });
@@ -158,21 +147,17 @@ module.exports.returnAdmins = function (req, res) {
  * @param funcNotFounded
  */
 function findAdmin(req, res, username, funcFounded, funcNotFounded) {
-    commonController.areRequiredFieldsPresent(req, res, () =>{
 
+    commonController.areRequiredFieldsPresent(req, res, () =>{
 
         if (commonController.typeOfString(username)) {
 
-
             Admin.find({"username": username}, (err, docs) => {
 
-                if (docs.length !== 0){
-
+                if (docs[0])
                     funcFounded(docs[0]);
-                } else {
-
+                else
                     funcNotFounded();
-                }
             });
         }
 
