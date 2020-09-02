@@ -4,7 +4,7 @@ import {CostItem} from "./component-specific/booking-summary.model";
 import {BookingState, BookingStateHandler} from "./component-specific/booking-state.model";
 
 export interface BookingModel {
-  id: string,
+  id?: string,
   userId: string,
   umbrellas: Umbrella[],
   confirmed: boolean,

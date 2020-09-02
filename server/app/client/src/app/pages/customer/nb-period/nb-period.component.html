@@ -1,1 +1,11 @@
-<p>nb-period works!</p>
+<form [formGroup]="formGroup">
+  <p>nb-period works!</p>
+  <mat-form-field>
+  <mat-label>Name</mat-label>
+  <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+</mat-form-field>
+</form>
+
+<div>
+  <button mat-button matStepperNext>Next</button>
+</div>

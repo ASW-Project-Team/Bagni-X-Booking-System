@@ -1,49 +1,21 @@
 <div class="page">
   <mat-horizontal-stepper [linear]="true" labelPosition="bottom" #stepper>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup">
-        <ng-template matStepLabel>Periodo</ng-template>
-        <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-        </mat-form-field>
-        <div>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
+
+    <mat-step [stepControl]="periodStep.formGroup">
+        <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
+        <app-nb-period [(booking)]="booking" #periodStep></app-nb-period>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Personalizza</ng-template>
-        <mat-form-field>
-          <mat-label>Address</mat-label>
-          <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                 required>
-        </mat-form-field>
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
+
+    <mat-step [stepControl]="customizeStep.formGroup">
+      <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
+      <app-nb-customize [(booking)]="booking" #customizeStep></app-nb-customize>
     </mat-step>
+
     <mat-step>
-      <ng-template matStepLabel>Chekout</ng-template>
-      <p>You are now done.</p>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button (click)="stepper.reset()">Reset</button>
-      </div>
+      <ng-template matStepLabel><span class="step-label">Chekout</span></ng-template>
+      <app-nb-checkout [booking]="booking"></app-nb-checkout>
     </mat-step>
   </mat-horizontal-stepper>
 </div>
 
-<mat-toolbar class="appbar">
-  <div class="back-action">
-    <a href="#" mat-icon-button
-       routerLinkActive="active" color="primary"
-       routerLink="{{ backRoute }}" title="{{ backPageName | titlecase }}">
-      <mat-icon color="primary" svgIcon="arrow-left"></mat-icon>
-    </a>
-  </div>
-  <h1 class="title">Prenota</h1>
-</mat-toolbar>
+<app-nested-appbar title="Prenota" back-route="{{ backRoute }}" back-page-name="{{ backPageName }}"></app-nested-appbar>

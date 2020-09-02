@@ -1,32 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {STEPPER_GLOBAL_OPTIONS} from "@angular/cdk/stepper";
+import {Booking} from "../../../shared/models/booking.model";
 
 @Component({
   selector: 'app-new-booking',
   templateUrl: './new-booking.component.html',
-  styleUrls: ['./new-booking.component.scss']
+  styleUrls: ['./new-booking.component.scss'],
+  providers: [{
+    provide: STEPPER_GLOBAL_OPTIONS, useValue: {displayDefaultIndicatorType: false}
+  }]
 })
 export class NewBookingComponent implements OnInit {
   backRoute: string;
   backPageName: string;
-
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
+  booking: Booking;
 
 
-  constructor(private route: ActivatedRoute, private _formBuilder: FormBuilder) { }
+  constructor(private _route: ActivatedRoute, private _formBuilder: FormBuilder) {
+  }
 
   ngOnInit(): void {
-    this.backRoute = this.route.snapshot.queryParams['backRoute'] || '/home';
-    this.backPageName = this.route.snapshot.queryParams['backPageName'] || 'Home';
-
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
+    this.backRoute = this._route.snapshot.queryParams['backRoute'] || '/home';
+    this.backPageName = this._route.snapshot.queryParams['backPageName'] || 'Home';
   }
 
 }

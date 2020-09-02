@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Booking} from "../../../shared/models/booking.model";
 
 @Component({
   selector: 'app-nb-checkout',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nb-checkout.component.scss']
 })
 export class NbCheckoutComponent implements OnInit {
+  @Input() booking: Booking;
 
   constructor() { }
 
