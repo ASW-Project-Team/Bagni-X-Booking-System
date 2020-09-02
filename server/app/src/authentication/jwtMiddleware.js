@@ -35,6 +35,7 @@ async function tokenCorrect(req, payload, done) {
     // Roots that a customer can't navigate
     let pathNotAllowedCustomer = [ '/api/customers/',
                                    '/api/auth/admin/register/',
+                                    //{url: new Regex('/api/news/*'), methods:['POST', 'PUT', 'DELETE']}
                               //'/api/bookings/',
                               //'/api/catalog/ranks/'
                                 ];

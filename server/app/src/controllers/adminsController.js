@@ -45,28 +45,6 @@ module.exports.delete_admin = function(req, res) {
     }
 };
 
-
-/**
- * Change password
- * @param req
- * @param res
- */
-module.exports.change_password = function(req, res) {
-
-    findAdmin(req, res, req.body.username, req.body.password,
-        (elemFounded) => {
-
-            elemFounded.hashedPassword = commonController.sha512(req.body.password, elemFounded.salt)
-
-            commonController.correctSave(elemFounded, commonController.status_created, res)
-
-        }, () =>{
-
-            commonController.serve_plain_404(req, res, "admin")
-
-        })
-};
-
 /**
  * Find an admin by his username.
  * @param req
