@@ -50,27 +50,27 @@ module.exports.createAdmin = function(req, res) {
     findAdmin(req, res, req.body.username, req.body.password,
         () => {
 
-        commonController.alreadyPresent(res, "admin");
-        }, () => {
+            if (req.body.password && commonController.typeOfString(req.body.password)){
+                commonController.checkPassword(res, req.body.password, ()=>{
 
-        if (req.body.password && commonController.typeOfString(req.body.password)){
-            commonController.checkPassword(res, req.body.password, ()=>{
+                    // If someone pass root = true
+                    req.body.root = false
 
-                // If someone pass root = true
-                req.body.root = false
+                    let admin = new Admin(req.body)
+                    admin._id = mongoose.Types.ObjectId();
+                    admin.salt = commonController.genRandomString(commonController.saltLength);
+                    admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
 
-                let admin = new Admin(req.body)
-                admin._id = mongoose.Types.ObjectId();
-                admin.salt = commonController.genRandomString(commonController.saltLength);
-                admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+                    commonController.correctSave(admin, commonController.statusCreated, res)
 
-                commonController.correctSave(admin, commonController.statusCreated, res)
-
-            })
+                })
         } else
-            commonController.parameterBadFormatted(res)
+                commonController.parameterBadFormatted(res)
+            }, () =>
 
-    })
+            commonController.alreadyPresent(res, "admin")
+
+    )
 };
 
 
@@ -161,7 +161,7 @@ function findAdmin(req, res, username, funcFounded, funcNotFounded) {
     commonController.areRequiredFieldsPresent(req, res, () =>{
 
 
-        if (username && commonController.typeOfString(username)) {
+        if (commonController.typeOfString(username)) {
 
 
             Admin.find({"username": username}, (err, docs) => {
