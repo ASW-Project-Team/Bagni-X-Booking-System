@@ -18,7 +18,7 @@ const commonController = require("./commonController");
  */
 module.exports.readRanks = function (req, res) {
 
-    commonController.findCatalog(req,res,"Catalog", (err, catalog)=>{
+    commonController.findCatalog(req,res, (err, catalog)=>{
 
         if (req.params.id)
             commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.params.id,
@@ -36,7 +36,7 @@ module.exports.readRanks = function (req, res) {
  * @param res The create umbrella response.
  */
 module.exports.createRank = function (req, res) {
-    commonController.findCatalog(req, res, "Rank", (err, catalog)  => {
+    commonController.findCatalog(req, res, (err, catalog)  => {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
@@ -87,9 +87,9 @@ module.exports.createRank = function (req, res) {
  * @param res The response.
  */
 module.exports.updateRank = function (req, res) {
-    commonController.findCatalog(req, res, "Rank", (err, catalog)  => {
+    commonController.findCatalog(req, res,  (err, catalog)  => {
 
-        commonController.updateCollection(catalog, catalog.rankUmbrellas, req, res, req.params.id,async (rankTarget) => {
+        commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.params.id,async (rankTarget) => {
 
 
             if ((!(req.body.name) || commonController.typeOfString(req.body.name))
@@ -194,17 +194,9 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
  */
 module.exports.deleteRank = function (req, res) {
 
-    commonController.findCatalog(req, res, "Catalog", async (err, catalog)=>{
-
-        if (req.params.id){
-
-            catalog.rankUmbrellas = catalog.rankUmbrellas.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(req.params.id)))
-            await catalog.save()
-
-            commonController.response(res, commonController.deleteOperationCompleted)
-        } else
-            commonController.parameterBadFormatted(res)
-    })
+    commonController.deleteInCatalog(req, res, req.params.id, (catalog) =>
+        catalog.rankUmbrellas = catalog.rankUmbrellas.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(req.params.id)))
+    )
 
 }
 
@@ -216,7 +208,7 @@ module.exports.deleteRank = function (req, res) {
  * @param res
  */
 module.exports.createService = function(req, res) {
-    commonController.findCatalog(req, res, "Service", (err, catalog)  => {
+    commonController.findCatalog(req, res,  (err, catalog)  => {
 
         commonController.areRequiredFieldsPresent(req, res, () =>{
 
@@ -251,14 +243,14 @@ module.exports.createService = function(req, res) {
  */
 module.exports.readServices = function (req, res) {
 
-    commonController.findCatalog(req, res, "Service", (err, catalog, documentName) => {
+    commonController.findCatalog(req, res,  (err, catalog, documentName) => {
         // If par is present find the specified param ...
         if (req.params.id) {
 
             commonController.returnNestedDocument(catalog.services, req, res, req.params.id, err, documentName);
         } else {
             // Return tot pages
-            commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, catalog.services, "Services");
+            commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, catalog.services, "Services");
         }
     });
 }
@@ -272,9 +264,9 @@ module.exports.readServices = function (req, res) {
  * @param res The update service response
  */
 module.exports.updateService = function (req, res) {
-    commonController.findCatalog(req, res, "Service", (err, catalog)  => {
+    commonController.findCatalog(req, res,  (err, catalog)  => {
 
-        commonController.updateCollection(catalog, catalog.services, req, res, req.params.id,(serviceTarget) =>{
+        commonController.getNestedDocument(catalog.services, req, res, req.params.id,(serviceTarget) =>{
 
             if (!(req.body.price) || commonController.typeOfNumber(req.body.price)
                 && (!(req.body.umbrellaRelated) || commonController.typeOfString(req.body.umbrellaRelated))
@@ -298,6 +290,22 @@ module.exports.updateService = function (req, res) {
 }
 
 /**
+ * DELETE a specific Service.
+ * @param req: contains id in url-path
+ * @param res:
+ *          200: The Service has been correctly removed.
+ *          400: Malformed request.
+ *          401: The admin was not correctly authenticated.
+ *          404: A Service with the given id does not exist.
+ */
+module.exports.deleteService = function(req, res) {
+
+    commonController.deleteInCatalog(req, res, req.params.id, (catalog) =>
+        catalog.services = catalog.services.filter(elem => !elem._id.equals(mongoose.Types.ObjectId(req.params.id))))
+
+}
+
+/**
  * Create a sale for a specific rank. Fields needed:
  *  . "percent" of sale
  *  . "dateFrom" the sale start
@@ -306,13 +314,16 @@ module.exports.updateService = function (req, res) {
  * @param res The specific response.
  */
 module.exports.createSale = function (req, res) {
-    commonController.findCatalog(req, res, "Sale", (err, catalog) => {
+    commonController.findCatalog(req, res,  (err, catalog) => {
 
         commonController.getNestedDocument(catalog.rankUmbrellas, req, res, req.body.rankId, (rank) => {
 
             commonController.areRequiredFieldsPresent(req, res, () => {
 
                 if (commonController.typeOfNumber(req.body.percent)
+                    && commonController.typeOfString(req.body.dateFrom)
+                    && commonController.typeOfString(req.body.dateTo)
+                    && new Date(req.body.dateFrom).getTime() >= Date.now()
                     && new Date(req.body.dateTo).getTime() >= new Date(req.body.dateFrom).getTime()) {
 
                     let sale = new Sale(req.body);
@@ -340,7 +351,7 @@ module.exports.createSale = function (req, res) {
  * @param res The read sale response.
  */
 module.exports.readSales = function (req, res) {
-    commonController.findCatalog(req, res, "Sale", (err, catalog)  => {
+    commonController.findCatalog(req, res,  (err, catalog)  => {
 
         // If par is present find the specified param ...
         if (req.params.id) {
@@ -350,7 +361,7 @@ module.exports.readSales = function (req, res) {
             // check hasOwnProperty
             for (const rank of catalog.rankUmbrellas){
                 saleResult = commonController.returnNestedDocument(rank.sales,
-                    req, res, req.params.id, err, "Sale")
+                    req, res, req.params.id, err, "Sale", false)
                 if (saleResult !== null)
                     break;
             }
@@ -388,15 +399,18 @@ module.exports.readSales = function (req, res) {
  * @param res The specific response.
  */
 module.exports.updateSale = function (req, res) {
-    commonController.findCatalog(req, res, "Sale", async (err, catalog)  => {
+    commonController.findCatalog(req, res,  async (err, catalog)  => {
 
         // If par is present find the specified param ...
-        if (req.params.id) {
+        if (req.params.id
+            && (!req.body.percent || commonController.typeOfNumber(req.body.percent))
+            && (!req.body.dateFrom || commonController.typeOfString(req.body.dateFrom))
+            && (!req.body.dateTo || commonController.typeOfString(req.body.dateTo))) {
 
             let saleFound = false;
 
             for (const rank of catalog.rankUmbrellas){
-                await commonController.updateCollection(catalog, rank.sales, req, res,
+                await commonController.getNestedDocument(rank.sales, req, res,
                     req.params.id,  (saleResult) => {
 
                     saleFound = true;
@@ -410,22 +424,22 @@ module.exports.updateSale = function (req, res) {
                     if (req.body.dateTo)
                         dateTo = new Date(req.body.dateTo)
 
-                    if ((!(req.body.percent) || commonController.typeOfNumber(req.body.percent))
-                        && (dateTo.getTime() >= dateFrom.getTime())
+                    if ((dateTo.getTime() >= dateFrom.getTime())
                         && (dateFrom.getTime() >= Date.now())){
 
                         if (req.body.percent)
                             saleResult.percent = req.body.percent
 
                         if (req.body.dateFrom)
-                            saleResult.dateFrom = new Date(req.body.dateFrom)
+                            saleResult.dateFrom = dateFrom
 
                         if (req.body.dateTo)
-                            saleResult.dateTo = new Date(req.body.dateTo)
+                            saleResult.dateTo = dateTo
 
                        commonController.correctSave(catalog, commonController.statusCompleted, res, saleResult)
 
-                    }
+                    } else
+                        commonController.parameterBadFormatted(res)
 
                 },false);
 
@@ -442,8 +456,27 @@ module.exports.updateSale = function (req, res) {
     });
 }
 
+/**
+ * DELETE sale that have the specific id
+ * @param req: id in path
+ * @param res:
+ *            200: The Sale has been correctly removed.
+ *            400: Malformed request.
+ *            401: The admin was not correctly authenticated.
+ *            404: A Service with the given id does not exist.
+ */
+module.exports.deleteSale = function (req, res) {
 
+    commonController.deleteInCatalog(req, res, req.params.id, (catalog) =>{
 
+        let counter = 0;
+
+        for (let rank of catalog.rankUmbrellas){
+            catalog.rankUmbrellas[counter].sales = rank.sales.filter(sl => (!sl._id.equals(req.params.id)))
+            counter++;
+        }
+    })
+}
 
 
 /**

@@ -16,15 +16,17 @@ module.exports.set = function(app) {
 
     app.route('/api/catalog/sales/:id')
         .get(catalogController.readSales)
-        .put(catalogController.updateSale);
+        .put(catalogController.updateSale)
+        .delete(catalogController.deleteSale);
 
     app.route('/api/catalog/services/')
         .get(catalogController.readServices)
         .post(catalogController.createService);
 
     app.route('/api/catalog/services/:id')
+        .get(catalogController.readServices)
         .put(catalogController.updateService)
-        .get(catalogController.readServices);
+        .delete(catalogController.deleteService);
 
 
 

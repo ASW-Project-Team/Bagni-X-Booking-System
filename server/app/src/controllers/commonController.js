@@ -136,10 +136,10 @@ module.exports.checkError = function (err, documents, req, res, documentName, de
 /**
  * Positive response to an operation
  * @param res The response given with status created and documents used
- * @param documents The documents used
+ * @param jsonResponse The documents used
  */
-module.exports.response = function (res, documents) {
-    res.status(this.statusCompleted).json(documents);
+module.exports.response = function (res, jsonResponse) {
+    res.status(this.statusCompleted).json(jsonResponse);
 }
 
 /**
@@ -157,24 +157,6 @@ module.exports.getDocuments = function (err, collectionToSearch, req, res, docum
 }
 
 /**
- * Function that update a class. The controls are specified externally because each control is different.
- * @param collectionToUpdate The firstLevelCollection that have to update.
- * @param collectionToSearch The collection (also nested) that documents belongs
- * @param req The specific update request
- * @param res The specific update response
- * @param id The id to search
- * @param func The callback function that is executed only if id is found. In this callback are inserted
- *          all controls.
- * @param returnError boolean parameter to understand if getNestedCollection have to return errors or not.
- */
-module.exports.updateCollection = function (collectionToUpdate, collectionToSearch, req, res, id, func, returnError=true) {
-
-    this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) => {
-        func(documentTarget);
-    },returnError);
-}
-
-/**
  * Used to do GET for nested documents. It's return the elements that query wants.
  * This function have different scenario:
  *  . if "id" is present return the specific document.
@@ -185,11 +167,12 @@ module.exports.updateCollection = function (collectionToUpdate, collectionToSear
  * @param id The id to search.
  * @param err The error is used if document isn't present.
  * @param documentName The name of document used if doc is not present.
+ * @param returnError If the method have to return error or not
  */
-module.exports.returnNestedDocument = function (collectionToSearch, req, res, id, err, documentName) {
+module.exports.returnNestedDocument = function (collectionToSearch, req, res, id, err, documentName, returnError=true) {
     this.getNestedDocument(collectionToSearch, req, res, id, (documentTarget) =>  {
         this.getDocuments(err, collectionToSearch, req, res, documentName, documentTarget);
-    });
+    }, returnError);
 }
 
 /**
@@ -750,13 +733,34 @@ module.exports.findBathhouse = function(req, res, func) {
  * A function that automatize control of id.
  * @param req The specific request
  * @param res The specific response
- * @param documentName The document that have to be founded.
  * @param func The callback executed only if document exist and is found.
  */
-module.exports.findCatalog = function(req, res, documentName, func) {
+module.exports.findCatalog = function(req, res, func) {
 
     this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "Catalog",
         CatalogID, func);
+}
+
+/**
+ * A specific nested DELETE in Catalog
+ * @param req
+ * @param res
+ * @param id
+ * @param func
+ */
+module.exports.deleteInCatalog = function(req, res, id, func){
+
+    this.findCatalog(req, res,  (err, catalog)=>{
+
+        if (id){
+
+            func(catalog)
+            catalog.save()
+
+            this.response(res, this.deleteOperationCompleted)
+        } else
+            this.parameterBadFormatted(res)
+    })
 }
 
 module.exports.deleteOperationCompleted = "Delete operation completed"

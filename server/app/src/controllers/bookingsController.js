@@ -172,7 +172,7 @@ module.exports.deleteBooking = function(req, res) {
  */
 module.exports.getAvailability = function (req, res) {
 
-	commonController.findCatalog(req, res, "Catalog", async (errCat, catalog) => {
+	commonController.findCatalog(req, res,  async (errCat, catalog) => {
 
 		// Umbrella not free in that periods
 		// First filter: if book is not finished

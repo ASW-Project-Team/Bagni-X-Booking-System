@@ -21,7 +21,7 @@ module.exports.getHomeServicesRank = function (req, res) {
 
     let docReturn = {}
 
-    commonController.findCatalog(req, res, "catalog", (errCat, catalog)=>{
+    commonController.findCatalog(req, res, (errCat, catalog)=>{
 
         docReturn["services"] = catalog.services
         docReturn["rankUmbrellas"] = catalog.rankUmbrellas
