@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Customer = require("../models/customerModel")(mongoose);
 const commonController = require("./commonController");
 
+
 /**
  * GET a specific customer or paginated.
  * @param req
@@ -46,36 +47,42 @@ module.exports.readCustomer = function(req, res) {
  *  . If not responds with "Status Bad Format (400)".
  */
 module.exports.createCustomer = function(req, res) {
+
     commonController.areRequiredFieldsPresent(req, res, () => {
 
         if (commonController.typeOfString(req.body.name)
             && commonController.typeOfString(req.body.surname)
             && commonController.checkEmail(req.body.email)
-            && commonController.typeOfString(req.body.password)
+            && commonController.checkPassword(req.body.password)
             && commonController.typeOfBoolean(req.body.registered)
-            && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
+            && (!(req.body.phone) || (commonController.checkPhone(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))){
 
-            commonController.checkPassword(res, req.body.password, ()=>{
-                let customer = new Customer(req.body);
-                customer._id = mongoose.Types.ObjectId();
+            if (req.body.email){
+                findEmailInPostMethod(req.body.email, res,
+                    () => applyCustomer(res, req))
+            } else
+                applyCustomer(res, req)
 
-                customer.salt = commonController.genRandomString(commonController.saltLength);
-                customer.hashedPassword = commonController.sha512(req.body.password, customer.salt);
-                // When customer is created isn't registered or deleted
-
-                customer.deleted = false;
-
-                commonController.correctSave(customer, commonController.statusCreated, res);
-            });
-
-        } else {
-            commonController.parameterBadFormatted(res);
-        }
+        } else
+            commonController.parameterBadFormatted(res)
 
     }, req.body.name, req.body.surname, req.body.email, req.body.password, req.body.registered);
 
 };
+
+function applyCustomer(res, req){
+    let customer = new Customer(req.body);
+    customer._id = mongoose.Types.ObjectId();
+
+    customer.salt = commonController.genRandomString(commonController.saltLength)
+    customer.hashedPassword = commonController.sha512(req.body.password, customer.salt)
+
+    // When customer is created isn't registered or deleted
+    customer.deleted = false;
+
+    commonController.correctSave(customer, commonController.statusCreated, res)
+}
 
 /**
  * UPDATE a specific Customer
@@ -96,24 +103,22 @@ module.exports.updateCustomer = function(req, res) {
 
         if ((!(req.body.name) ||commonController.typeOfString(req.body.name))
             && (!(req.body.surname) || commonController.typeOfString(req.body.surname))
-            && (!(req.body.email) ||commonController.checkEmail(req.body.email))
-            && (!(req.body.phone) || (commonController.typeOfString(req.body.phone)))
+            && (!req.body.email
+                || commonController.checkEmail(req.body.email))
+            && (!(req.body.phone) || (commonController.checkPhone(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))
-            && (!(req.body.password) || commonController.typeOfString(req.body.password))) {
+            && (!(req.body.password) || commonController.checkPassword(req.body.password))) {
 
-            if (req.body.password){
-                commonController.checkPassword(res, req.body.password,()=>{
-                    customer.hashedPassword = commonController.sha512(req.body.password,
-                        customer.salt);
+            if (req.body.password)
+                customer.hashedPassword = commonController.sha512(req.body.password, customer.salt);
 
-                    applyCustomersModify(req, customer, res)
-
-                });
-            } else {
-
+            if (req.body.email){
+                findEmailInPutMethod(req.body.email, req.params.id, res,
+                    ()=> {
+                        applyCustomersModify(req, customer, res)
+                    })
+            } else
                 applyCustomersModify(req, customer, res)
-
-            }
 
         } else {
             commonController.parameterBadFormatted(res)
@@ -143,26 +148,59 @@ module.exports.deleteCustomerLogically = function (req, res) {
  */
 function applyCustomersModify(req, docResult, res){
 
-    if (req.body.name)
-        docResult.name = req.body.name
+    commonController.checkAndActForUpdate(docResult, req,"" ,
+        "name", "surname", "phone", "email", "address", "registered", "deleted")
+        .then(commonController.correctSave(docResult, commonController.statusCompleted, res))
+}
 
-    if (req.body.surname)
-        docResult.surname = req.body.surname
+/**
+ * Return if email is already present.
+ * @param email
+ * @param res
+ * @param funcNotFounded function if email isn't founded
+ * @returns {boolean}
+ */
+async function findEmailInPostMethod(email, res, funcNotFounded) {
 
-    if (req.body.phone)
-        docResult.phone = req.body.phone
+    await findEmail(email,undefined, res, funcNotFounded)
 
-    if (req.body.email)
-        docResult.email = req.body.email
+}
 
-    if (req.body.address)
-        docResult.address = req.body.address
+async function findEmail(email, id, res, funcNotFounded) {
 
-    if (req.body.registered)
-        docResult.registered = req.body.registered
+    await Customer.find({"email": email}, (err, customer) => {
 
-    if (req.body.deleted)
-        docResult.deleted = req.body.deleted
+        let emailFind = false
 
-    commonController.correctSave(docResult, commonController.statusCompleted, res);
+        if (customer[0]){
+            for (let i in customer){
+                if (customer.hasOwnProperty(i)
+                    && (!(id) || !customer[i]._id.equals(id))
+                    && !customer[i].deleted) {
+
+                    emailFind = true
+                    break;
+                }
+            }
+        }
+
+        if (!emailFind)
+            funcNotFounded()
+        else
+            commonController.parameterBadFormatted(res)
+
+    });
+}
+
+/**
+ * Find if in a DB a user different from the customer that do the PUT request have already that email.
+ * @param email of the customer who do the PUT operation
+ * @param id of the customer who do the PUT operation
+ * @param res
+ * @param funcNotFounded
+ * @returns {Promise<void>}
+ */
+async function findEmailInPutMethod(email, id, res, funcNotFounded) {
+
+    await findEmail(email, id, res, funcNotFounded)
 }

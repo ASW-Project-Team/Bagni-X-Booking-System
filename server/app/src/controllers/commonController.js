@@ -240,8 +240,6 @@ module.exports.findByIdFirstLevelCollection = function (req, res, documentName, 
  * @param errDocName Document name used only in case of error.
  */
 module.exports.deleteFirstLevelCollectionById = function (req, res, documentName, collFirstLevel, errDocName) {
-    /*   this.deleteFirstLevelCollectionByProperty(req, res, documentName, collFirstLevel, errDocName,
-           "_id", req.params.id);*/
 
     collFirstLevel.deleteOne({ "_id": req.params.id }, (err, docResult)  => {
 
@@ -252,6 +250,24 @@ module.exports.deleteFirstLevelCollectionById = function (req, res, documentName
         if (!this.checkError(err, docResult, req, res, errDocName, true))
             this.response(res, "Delete on " + documentName + " completed!");
     });
+}
+
+/**
+ * Used for update faster.
+ * @param document
+ * @param req
+ * @param specificParamUpdate
+ * @param parametersName
+ */
+module.exports.checkAndActForUpdate = async function(document, req, specificParamUpdate, ...parametersName){
+
+    if (specificParamUpdate)
+        await specificParamUpdate()
+
+    for (const param of parametersName){
+        document[param] = req.body[param]
+    }
+
 }
 
 /**

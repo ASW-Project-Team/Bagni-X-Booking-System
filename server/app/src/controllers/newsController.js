@@ -19,7 +19,6 @@ module.exports.createNews = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		// TODO Check if imageUrl is present
 		if ((new Date(req.body.date).getTime() >= Date.now())
 			&& commonController.typeOfString(req.body.title)
 			&& commonController.typeOfString(req.body.imageUrl)
@@ -27,6 +26,7 @@ module.exports.createNews = function(req, res) {
 
 			let feed = new Feed(req.body);
 			feed._id = mongoose.Types.ObjectId();
+
 			feed.date = new Date(req.body.date);
 
 			commonController.correctSave(feed, commonController.statusCreated, res);
@@ -49,7 +49,7 @@ module.exports.readNews = function(req, res) {
 			(err,news) => commonController.response(res, news));
 	} else {
 		commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>
-			commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, feed, "Feed"))
+			commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, feed, "Feed"))
 	}
 
 };
@@ -69,11 +69,16 @@ module.exports.updateNews = function(req, res) {
 		// If correct parameter change, if not response
 		if (!(req.body.date) || ((new Date(req.body.date).getTime() >= Date.now()))
 			&& (!(req.body.title) || (commonController.typeOfString(req.body.title)))
-			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
+			&& (!(req.body.article) || (commonController.typeOfString(req.body.article))
+			&& (!(req.body.imageUrl) || commonController.typeOfString(req.body.imageUrl)))){
 
-			if (req.body.date)
-				docResult.date = new Date(req.body.date)
+			commonController.checkAndActForUpdate(docResult, req, ()=>{
+				if (req.body.date)
+					docResult.date = new Date(req.body.date)
+			}, "title", "article", "imageUrl")
+				.then(commonController.correctSave(docResult, commonController.statusCompleted, res))
 
+/*
 			if (req.body.title)
 				docResult.title = req.body.title
 
@@ -83,7 +88,7 @@ module.exports.updateNews = function(req, res) {
 			if (req.body.imageUrl)
 				docResult.imageUrl = req.body.imageUrl
 
-			commonController.correctSave(docResult, commonController.statusCompleted, res);
+			commonController.correctSave(docResult, commonController.statusCompleted, res);*/
 		} else {
 			commonController.parameterBadFormatted(res);
 		}
