@@ -57,6 +57,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.deleteCustomer(request);
       case url.endsWith('api/new-booking/availability') && method === 'GET':
         return FakeBackendInterceptor.getAvailability(request);
+      case url.endsWith('api/new-booking/checkout') && method === 'POST':
+        return FakeBackendInterceptor.generateBooking(request);
 
       // todo ecc.
 
@@ -161,6 +163,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   private static getAvailability(request: HttpRequest<unknown>): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(availabilityMock);
+  }
+
+  private static generateBooking(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse();
   }
 
 

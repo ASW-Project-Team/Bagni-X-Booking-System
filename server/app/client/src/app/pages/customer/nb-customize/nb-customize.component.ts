@@ -18,7 +18,7 @@ export class NbCustomizeComponent implements OnInit {
   availableRankings: RankUmbrella[];
   availableServices: Service[];
 
-  customizationValid: boolean = false;
+  @Output() customizationValidatorChange = new EventEmitter<boolean>();
 
   constructor() {
 
@@ -45,13 +45,14 @@ export class NbCustomizeComponent implements OnInit {
       this.booking.services = [];
       this.booking.price = 0.0;
       this.bookingChange.emit(this.booking);
+      this.customizationValidatorChange.emit(false);
     }
   }
 
   insertUmbrella(item: SalableModel) {
     let umbrella = item as Umbrella;
     this.booking.umbrellas.push(umbrella);
-    this.customizationValid = true;
+    this.customizationValidatorChange.emit(true);
     this.bookingChange.emit(this.booking);
   }
 
@@ -64,7 +65,7 @@ export class NbCustomizeComponent implements OnInit {
     }
 
     if (this.booking.umbrellas.length <= 0) {
-      this.customizationValid = false;
+      this.customizationValidatorChange.emit(false);
     }
     this.bookingChange.emit(this.booking);
   }

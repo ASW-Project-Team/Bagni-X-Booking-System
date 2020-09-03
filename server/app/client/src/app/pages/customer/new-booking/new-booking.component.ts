@@ -20,6 +20,7 @@ export class NewBookingComponent implements OnInit {
   backRoute: string;
   backPageName: string;
   booking: Booking;
+  customizationValidator: boolean = false;
 
   @ViewChild('periodStep') periodStep: NbPeriodComponent;
   @ViewChild('customizeStep') customizeStep: NbCustomizeComponent;
@@ -44,6 +45,10 @@ export class NewBookingComponent implements OnInit {
     });
   }
 
+  customizationValidatorChange(value: boolean) {
+    this.customizationValidator = value;
+  }
+
   /**
    * This event is triggered when the stepper changes page. It activates
    * some actions in the cange, such as the availability query, or the booking
@@ -57,6 +62,10 @@ export class NewBookingComponent implements OnInit {
       this._apiService.getAvailability(this.booking.dateFrom, this.booking.dateTo).subscribe(data => {
         this.customizeStep.setAvailableItems(data)
       });
+    }
+
+    if (event.selectedIndex == 0) {
+      this.customizeStep.setAvailableItems(undefined);
     }
   }
 

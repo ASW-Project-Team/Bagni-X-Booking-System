@@ -6,9 +6,9 @@
         <app-nb-period [(booking)]="booking" #periodStep></app-nb-period>
     </mat-step>
 
-    <mat-step [completed]="customizeStep.customizationValid">
+    <mat-step [completed]="customizationValidator">
       <ng-template matStepLabel><span class="step-label">Personalizza</span></ng-template>
-      <app-nb-customize [(booking)]="booking" #customizeStep></app-nb-customize>
+      <app-nb-customize [(booking)]="booking" (customizationValidatorChange)="customizationValidatorChange($event)" #customizeStep></app-nb-customize>
     </mat-step>
 
     <mat-step [completed]="false">

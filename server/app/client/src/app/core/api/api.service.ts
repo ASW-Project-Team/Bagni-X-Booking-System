@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {AuthService} from "../auth/auth.service";
+import {Booking} from "../../shared/models/booking.model";
 
 
 /**
@@ -48,5 +49,9 @@ export class ApiService {
         'date-from': dateFrom.toISOString(),
         'date-to': dateTo.toISOString()
       }});
+  }
+
+  public generateBooking(booking: Booking): Observable<any> {
+    return this._http.post(`${environment.apiUrl}/api/new-booking/checkout`, booking);
   }
 }
