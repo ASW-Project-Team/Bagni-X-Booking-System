@@ -19,7 +19,7 @@ const initializeModel = function(mongoose) {
         // authentication
         username: String, // TODO add validator from server
         salt:String,
-        hashedPassword: String
+        hash: String
     });
     return mongoose.model('admin', adminSchema, 'admins');
 };

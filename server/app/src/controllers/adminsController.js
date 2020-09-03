@@ -177,8 +177,8 @@ function applyAdmin(username, password, admin, req, res, id) {
         if (username)
             admin.username = username
 
-        if (password)
-            admin.hashedPassword = commonController.sha512(password, admin.salt)
+        //if (password)
+            //admin.hash = commonController.sha512(password, admin.salt)
 
         commonController.correctSave(admin, commonController.statusCompleted, res)
     })

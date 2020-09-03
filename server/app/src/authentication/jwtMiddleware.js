@@ -85,7 +85,7 @@ async function tokenCorrect(req, payload, done) {
                 }
             }
             break;
-        default:
+        default:7
             // no
             return done(null, true);
     }

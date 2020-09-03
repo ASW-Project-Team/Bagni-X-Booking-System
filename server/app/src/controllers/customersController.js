@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Customer = require("../models/customerModel")(mongoose);
 const commonController = require("./commonController");
-
+const utils = require("../authentication/utils")
 
 /**
  * GET a specific customer or paginated.
@@ -203,4 +203,10 @@ async function findEmail(email, id, res, funcNotFounded) {
 async function findEmailInPutMethod(email, id, res, funcNotFounded) {
 
     await findEmail(email, id, res, funcNotFounded)
+}
+
+exports.authenticate= function(req, res, next) {
+    utils.authenticate_customer(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
+        .catch(err => next(err));
 }

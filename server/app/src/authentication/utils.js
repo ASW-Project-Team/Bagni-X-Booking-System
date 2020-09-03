@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const mongoose = require('mongoose');
-const User = require("../models/userModel")(mongoose);
+const Customer = require("../models/customerModel")(mongoose);
 const Admin = require("../models/adminModel")(mongoose);
 //const Booking = require("../models/bookingModel")(mongoose);
 
@@ -18,12 +18,12 @@ module.exports = {
 
 
 async function authenticate_customer({ username, password }) {
-    const user = await User.findOne({ username });
-    if(user){
-        if (user && bcrypt.compareSync(password, user.hash)) {
-            const token = jwt.sign({sub: user.id} , config.secret, {expiresIn: '7d', audience: 'customer'});
+    const customer = await Customer.findOne({ username });
+    if(customer){
+        if (customer && bcrypt.compareSync(password, customer.hash)) {
+            const token = jwt.sign({sub: customer.id} , config.secret, {expiresIn: '7d', audience: 'customer'});
             return {
-                ...user.toJSON(),
+                ...customer.toJSON(),
                 token
             };
         }
@@ -49,11 +49,11 @@ async function authenticate_admin({ username, password }) {
 
 async function create(userParam) {
     // validate
-    if (await User.findOne({ username: userParam.username })) {
+    if (await Customer.findOne({ username: userParam.username })) {
         throw 'E-mail address ' + userParam.username + ' is already taken';
     }
 
-    const user = new User(userParam);
+    const user = new Customer(userParam);
 
     // hash password
     if (userParam.password) {
@@ -65,7 +65,7 @@ async function create(userParam) {
 }
 
 async function userById(id) {
-    return await User.findById(id);
+    return await Customer.findById(id);
 }
 
 async function adminById(id) {
