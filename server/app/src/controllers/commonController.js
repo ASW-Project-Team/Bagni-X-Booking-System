@@ -79,8 +79,8 @@ module.exports.correctSave = function (document, status, res, docToReturn = unde
             res.send(saveErr);
         }
 
-        if (updatedDocument.hashedPassword) {
-            updatedDocument.hashedPassword = "";
+        if (updatedDocument.hash) {
+            updatedDocument.hash = "";
         }
 
         if (docToReturn)
@@ -420,7 +420,6 @@ module.exports.typeOfNumber = function (par) {
 function typeOfType(par, parType) {
 
     let isCorrectType = false;
-
     if (typeof par === parType)
         isCorrectType = true;
 

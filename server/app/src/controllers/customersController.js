@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Customer = require("../models/customerModel")(mongoose);
 const commonController = require("./commonController");
 const utils = require("../authentication/utils")
+const bcrypt = require('bcryptjs');
 
 /**
  * GET a specific customer or paginated.
@@ -57,7 +58,6 @@ module.exports.createCustomer = function(req, res) {
             && commonController.typeOfBoolean(req.body.registered)
             && (!(req.body.phone) || (commonController.checkPhone(req.body.phone)))
             && (!(req.body.address) || (commonController.typeOfString(req.body.address)))){
-
             if (req.body.email){
                 findEmailInPostMethod(req.body.email, res,
                     () => applyCustomer(res, req))
@@ -76,8 +76,8 @@ function applyCustomer(res, req){
     customer._id = mongoose.Types.ObjectId();
 
     customer.salt = commonController.genRandomString(commonController.saltLength)
-    customer.hashedPassword = commonController.sha512(req.body.password, customer.salt)
-
+    //customer.hashedPassword = commonController.sha512(req.body.password, customer.salt)
+    customer.hash = bcrypt.hashSync(req.body.password, 10);
     // When customer is created isn't registered or deleted
     customer.deleted = false;
 
