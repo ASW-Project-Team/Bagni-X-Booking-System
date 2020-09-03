@@ -78,17 +78,6 @@ module.exports.updateNews = function(req, res) {
 			}, "title", "article", "imageUrl")
 				.then(commonController.correctSave(docResult, commonController.statusCompleted, res))
 
-/*
-			if (req.body.title)
-				docResult.title = req.body.title
-
-			if (req.body.article)
-				docResult.article = req.body.article
-
-			if (req.body.imageUrl)
-				docResult.imageUrl = req.body.imageUrl
-
-			commonController.correctSave(docResult, commonController.statusCompleted, res);*/
 		} else {
 			commonController.parameterBadFormatted(res);
 		}
