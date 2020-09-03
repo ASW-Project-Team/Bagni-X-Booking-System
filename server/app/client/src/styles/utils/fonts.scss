@@ -3,7 +3,6 @@
  */
 
 // The base font is Montserrat from Google Fonts
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600&display=swap');
 @import "sizes";
 @import "colors";
 
@@ -11,10 +10,9 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 18px;
-  color: $primaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 
@@ -22,10 +20,9 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 14px;
-  color: $primaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
@@ -33,9 +30,8 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 200;
   font-size: 14px;
-  color: $secondaryControlColor;
 
   @include forDesktopOnly {
-    font-size: 20px;
+    font-size: 16px;
   }
 }

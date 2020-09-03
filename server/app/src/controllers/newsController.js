@@ -19,22 +19,22 @@ module.exports.createNews = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		// TODO Check if image_url is present
 		if ((new Date(req.body.date).getTime() >= Date.now())
 			&& commonController.typeOfString(req.body.title)
-			&& commonController.typeOfString(req.body.image_url)
+			&& commonController.typeOfString(req.body.imageUrl)
 			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
 
 			let feed = new Feed(req.body);
 			feed._id = mongoose.Types.ObjectId();
+
 			feed.date = new Date(req.body.date);
 
-			commonController.correctSave(feed, commonController.status_created, res);
+			commonController.correctSave(feed, commonController.statusCreated, res);
 		} else {
-			commonController.parameter_bad_formatted(res);
+			commonController.parameterBadFormatted(res);
 		}
 
-	}, req.body.date, req.body.title, req.body.image_url);
+	}, req.body.date, req.body.title, req.body.imageUrl);
 };
 
 /**
@@ -49,7 +49,7 @@ module.exports.readNews = function(req, res) {
 			(err,news) => commonController.response(res, news));
 	} else {
 		commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>
-			commonController.returnPages(req.body.page_id, req.body.page_size, req, res, feed, "Feed"))
+			commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, feed, "Feed"))
 	}
 
 };
@@ -66,29 +66,23 @@ module.exports.updateNews = function(req, res) {
 	commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "",
 		req.params.id, (err, docResult) => {
 
-			// If correct parameter change, if not response
-			if (!(req.body.date) || ((new Date(req.body.date).getTime() >= Date.now()))
-				&& (!(req.body.title) || (commonController.typeOfString(req.body.title)))
-				&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
+		// If correct parameter change, if not response
+		if (!(req.body.date) || ((new Date(req.body.date).getTime() >= Date.now()))
+			&& (!(req.body.title) || (commonController.typeOfString(req.body.title)))
+			&& (!(req.body.article) || (commonController.typeOfString(req.body.article))
+			&& (!(req.body.imageUrl) || commonController.typeOfString(req.body.imageUrl)))){
 
+			commonController.checkAndActForUpdate(docResult, req, ()=>{
 				if (req.body.date)
 					docResult.date = new Date(req.body.date)
+			}, "title", "article", "imageUrl")
+				.then(commonController.correctSave(docResult, commonController.statusCompleted, res))
 
-				if (req.body.title)
-					docResult.title = req.body.title
+		} else {
+			commonController.parameterBadFormatted(res);
+		}
 
-				if (req.body.article)
-					docResult.article = req.body.article
-
-				if (req.body.image_url)
-					docResult.image_url = req.body.image_url
-
-				commonController.correctSave(docResult, commonController.status_completed, res);
-			} else {
-				commonController.parameter_bad_formatted(res);
-			}
-
-		})
+	})
 }
 
 
@@ -99,5 +93,5 @@ module.exports.updateNews = function(req, res) {
  */
 module.exports.deleteNews = function(req, res) {
 
-	commonController.deleteFirstLevelCollection(req, res, feedName, Feed, "", req.params.id);
+	commonController.deleteFirstLevelCollectionById(req, res, feedName, Feed, "", req.params.id);
 };

@@ -1,0 +1,19 @@
+@import "~src/styles/utils";
+
+.landscape-container {
+  width:100%;
+}
+
+.landscape-image-wrapper {
+  position: relative;
+  padding-bottom: 56.2%;
+}
+
+.landscape-image-wrapper img {
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  box-shadow: $defaultShadow;
+  @include responsiveProp(border-radius, $defaultMargin);
+}

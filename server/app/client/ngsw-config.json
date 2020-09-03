@@ -10,6 +10,9 @@
           "/favicon.ico",
           "/index.html",
           "/manifest.webmanifest",
+          "/browserconfig.xml",
+          "/humans.txt",
+          "/robots.txt",
           "/*.css",
           "/*.js"
         ]

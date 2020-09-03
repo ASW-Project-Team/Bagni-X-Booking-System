@@ -1,0 +1,78 @@
+@import "~src/styles/utils";
+
+.booking-card {
+  box-sizing: border-box;
+  box-shadow: $defaultShadow;
+  background: $backgroundColor;
+  width: 100%;
+  @include responsiveProp(padding, $defaultMargin);
+  @include responsiveProp(margin-bottom, $defaultMargin);
+  @include responsiveProp(border-radius, $defaultMargin);
+
+  .main-line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    @include responsiveProp(margin-bottom, $defaultMargin);
+
+    .image {
+      @include responsiveProp(width, $cardImageSize);
+      @include responsiveProp(height, $cardImageSize);
+      @include responsiveProp(margin-right, $defaultMargin);
+      @include responsiveProp(border-radius, $halfMargin);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      flex-shrink: 0;
+    }
+
+    .lines {
+      h2.title {}
+      p.description {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .details-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .left-details {
+      min-width: 0;
+
+      .booking-state {
+        @include responsiveProp(margin-bottom, $halfMargin);
+      }
+      .booking-time {
+        display: flex;
+        align-items: center;
+
+        .time-icon {
+          @include responsiveProp(margin-right, $halfMargin);
+        }
+
+        .time-from-line {
+        }
+
+        .time-to-line {
+          margin: 0;
+        }
+      }
+    }
+    .right-details {
+      flex-shrink: 0;
+      .price-chip {
+        @include chip;
+        @include responsiveProp(margin-left, $defaultMargin);
+      }
+    }
+  }
+}
+
+
+.last-card {
+  margin-bottom: 0;
+}

@@ -1,0 +1,23 @@
+@import "../../../../styles/utils";
+
+.booking-state {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.booking-time {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  @include responsiveProp(margin-bottom, $defaultMargin);
+
+  .time-icon {
+    @include responsiveProp(margin-right, $halfMargin);
+  }
+  p {
+    margin: 0;
+  }
+}
+
+.summary {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}

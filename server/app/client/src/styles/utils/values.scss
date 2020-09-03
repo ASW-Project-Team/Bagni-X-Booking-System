@@ -1,3 +1,6 @@
+@import "sizes";
+@import "colors";
+
 /**
  * Various other variable and utils.
  */
@@ -21,4 +24,44 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   display: -webkit-box;
   -webkit-line-clamp: $lineCount;
   -webkit-box-orient: vertical;
+}
+
+@mixin singleLineEllispis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin chip {
+  border-radius: 48px;
+  background-color: $primaryColor;
+  color: $backgroundColor;
+  @include responsiveProp(padding-left, $defaultMargin);
+  @include responsiveProp(padding-right, $defaultMargin);
+  @include responsiveProp(padding-top, $quarterMargin);
+  @include responsiveProp(padding-bottom, $quarterMargin);
+}
+
+@mixin mat-icon-size($size: 24px) {
+  font-size: $size;
+  height: $size;
+  width: $size;
+}
+
+@mixin horizontalDivider {
+  height: 1px;
+  background-color: $dividerColor;
+}
+
+@mixin button {
+  padding: 0 $marginDesktop;
+  border-radius: 64px;
+  @include responsiveProp(height, $buttonHeight);
+  @include titleFont;
+  color: $backgroundColor;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

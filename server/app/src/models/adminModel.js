@@ -17,9 +17,9 @@ const initializeModel = function(mongoose) {
         root: {type: Boolean, default: false}, // the root user can create or delete admin users (NB: cannot add other root admins)
 
         // authentication
-        username: String, // used for authentication  // fixme add validator from server
-        salt: { type: String, default: null },
-        hash: String
+        username: String, // TODO add validator from server
+        salt:String,
+        hashedPassword: String
     });
     return mongoose.model('admin', adminSchema, 'admins');
 };

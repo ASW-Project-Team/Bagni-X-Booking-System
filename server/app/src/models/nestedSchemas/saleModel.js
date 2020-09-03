@@ -16,10 +16,10 @@ const initializeModel = function(mongoose) {
         _id: Schema.Types.ObjectID,
         percent: {
             type: Number,
-            min: [0, 'Too small'], // CHECK if better $gt
+            min: [0, 'Too small'],
         },
-        date_from: {type: Date, $gte: Date.now()}, // fixme $gte not correct
-        date_to: {type: Date, $gte: Date.now()}, // fixme date_to > date_from
+        dateFrom: {type: Date, $gte: Date.now()},
+        dateTo: {type: Date, $gte: Date.now()}
     });
 
     return mongoose.model('sale', saleSchema);
