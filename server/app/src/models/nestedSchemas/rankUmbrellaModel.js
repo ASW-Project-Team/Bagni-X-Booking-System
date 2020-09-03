@@ -16,10 +16,11 @@ const initializeModel = function(mongoose) {
     const rankUmbrellaSchema = new Schema({
         _id: Schema.Types.ObjectID,
         name: String,
+        imageUrl: String,
         description: {type: String, default: null},
         price: Float,
-        from_umbrella: Number,
-        to_umbrella: Number,
+        fromUmbrella: Number,
+        toUmbrella: Number,
         sales: [{type: saleModel, default: null}]
     });
     return mongoose.model('rankUmbrella', rankUmbrellaSchema);

@@ -10,13 +10,14 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
+    const RanksModel = require("./rankUmbrellaModel")(mongoose).schema
 
     // used in bathhouse
-    const umbrellaSchema = new Schema({ // price depends from rank
+    const umbrella = new Schema({ // price depends from rank
         _id: Schema.Types.ObjectID,
         number: Number,
-        rank_id: Schema.Types.ObjectID
+        rank: RanksModel
     });
-    return mongoose.model('umbrella', umbrellaSchema);
+    return mongoose.model('umbrella', umbrella);
 }
 

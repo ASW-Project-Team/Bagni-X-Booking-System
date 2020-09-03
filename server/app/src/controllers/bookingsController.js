@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
-User = require("../models/userModel.js")(mongoose);
+const Customer = require("../models/customerModel.js")(mongoose);
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
+const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose)
 
+const conversionDayInMilliseconds = 86400000
+const dayBeforeDeleteIsPossible = 2
 const collectionName = "bookings"
 
 
@@ -13,62 +16,90 @@ const collectionName = "bookings"
  * @param req
  * @param res
  */
-module.exports.create_booking = function(req, res) {
+module.exports.createBooking = function(req, res) {
 
-	commonController.areRequiredFieldsPresent(req, res, () =>{
+
+	commonController.areRequiredFieldsPresent(req, res, () => {
 
 		// Check if fields are well formatted
 		if (commonController.typeOfNumber(req.body.price)
-			&& new Date(req.body.from).getTime() >= Date.now()
-			&& new Date(req.body.to).getTime() >=  new Date(req.body.from).getTime()
-			&& ((!req.body.services) || (commonController.servicesAvailable(req, res, req.body.services)))) {
+			&& new Date(req.body.dateFrom).getTime() >= Date.now()
+			&& new Date(req.body.dateTo).getTime() >=  new Date(req.body.dateFrom).getTime()
+			&& commonController.typeOfString(req.body.userId)) {
 
-			// Check if umbrella are free
-			commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
-				(areUmbrellasFree) => {
+			// Customer is present if go inside this callback
+			commonController.findByIdFirstLevelCollection(req, res, "Customer", Customer,"",req.body.userId,
+				() => {
+
+					// Check if umbrella are free
+				commonController.umbrellaFree(req, res, req.body.dateTo, req.body.dateFrom, req.body.umbrellas,
+					(areUmbrellasFree) => {
 
 					if (areUmbrellasFree) {
+
 						// create umbrellas
 						commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
 
-							let booking = new Booking(req.body);
+							if (req.body.services){
 
-							booking.umbrellas = umbrellas;
-							booking._id = mongoose.Types.ObjectId();
+								commonController.servicesAvailable(req, res, req.body.services, (areServicesAvailable)=>{
 
-							booking.date_from = req.body.from;
-							booking.date_to = req.body.to;
-							// to confirm and to cancel
-							booking.confirmed = false
-							booking.cancelled = false
+									if (areServicesAvailable){
+										commonController.constructServices(req, res, req.body.services, (services)=>
+											applyBooking(req, res, umbrellas, services)
+										)
 
-							// add as first element
-							commonController.correctSave(booking, commonController.status_created, res);
+									} else
+										commonController.notify(res, commonController.badRequest, "Service not available")
+
+								})
+							} else {
+
+								applyBooking(req, res, umbrellas, "")
+							}
 						})
-					} else {
-						commonController.notify(res, commonController.status_error, "Umbrella aren't free");
-					}
-
+					} else
+						commonController.notify(res, commonController.statusError, "Umbrella aren't free");
 				})
+			})
+		} else
+			commonController.notify(res, commonController.badRequest, "Malformed request!");
 
-		} else {
-			commonController.notify(res, commonController.bad_request, "Parameters wrong");
-		}
-
-	}, req.body.user_id, req.body.umbrellas, req.body.price, req.body.from, req.body.to);
+	}, req.body.userId, req.body.umbrellas, req.body.price, req.body.dateFrom, req.body.dateTo);
 };
+
+function applyBooking(req, res, umbrellas, services){
+
+	let booking = new Booking(req.body);
+
+	if (services)
+		booking.services = services
+
+	booking.umbrellas = umbrellas;
+	booking._id = mongoose.Types.ObjectId();
+	booking.userId = mongoose.Types.ObjectId(req.body.userId);
+
+	booking.dateFrom = new Date(req.body.dateFrom);
+	booking.dateTo = new Date(req.body.dateTo);
+	// to confirm and to cancel
+	booking.confirmed = false
+	booking.cancelled = false
+
+	// add as first element
+	commonController.correctSave(booking, commonController.statusCreated, res);
+}
 
 /**
  * Get the booking specified in id
  * @param req The GET specific booking request
  * @param res The GET specific booking response
  */
-module.exports.get_booking = function(req, res) {
+module.exports.getBooking = function(req, res) {
 
-	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "",
 		req.params.id, (err, docResult)=>{
 			commonController.response(res, docResult);
-		});
+	});
 }
 
 
@@ -79,96 +110,125 @@ module.exports.get_booking = function(req, res) {
  * @param req
  * @param res
  */
-module.exports.modify_booking = function(req, res) {
+module.exports.modifyBooking = function(req, res) {
 
 
-	// FIXME con tutte promise
-	bookingAndUmbrellaServiceUserChecks(req, res);
+	bookingAndUmbrellaServiceCustomerChecks(req, res);
 
 }
 
-async function bookingAndUmbrellaServiceUserChecks(req, res) {
 
-	// Check if bookings exist
-	await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
-		req.params.id, async (err, docResult)=> {
+/**
+ * GET bookings.
+ * Two possible scenarios:
+ * 	. get a specific customer and get all his bookings
+ * 	. get page-id and page-size: in this case return bookings from id to size.
+ * 		In this case there are default value both for id and size.
+ * @param req The specified GET request
+ * @param res The specified GET response
+ */
+module.exports.readBookings = function(req, res) {
 
-			if (docResult){
-				if (checkParams(req.body.from, req.body.to, req.body.price,
-					req.body.confirmed, req.body.cancelled, docResult)) {
+	commonController.findAllFromCollection(req, res, collectionName, Booking
+		, "", (err, bookings) => {
+			if (req.params.id) {
 
-					await umbrellaServiceAndUserChecks(req, res, docResult)
+				let bookingsFiltered = bookings.filter(x => x.userId.equals(req.params.id));
+
+				if (!bookingsFiltered)
+					commonController.servePlain404(req, res, collectionName)
+				else
+					commonController.response(res, bookingsFiltered)
+
+			}
+			else
+				commonController.returnPages(parseInt(req.query["page-id"]), parseInt(req.query["page-size"]), req, res, bookings, collectionName)
+		});
+
+}
+
+/**
+ * DELETE Booking specified by id
+ * @param req The specific DELETE request
+ * @param res The specific DELETE response
+ */
+module.exports.deleteBooking = function(req, res) {
+
+	commonController.findByIdFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id,
+		(err, booking)=>{
+			if (Date.now().valueOf() <= (booking.dateFrom.valueOf() - (conversionDayInMilliseconds * dayBeforeDeleteIsPossible))){
+				commonController.deleteFirstLevelCollectionById(req, res, collectionName, Booking, "", req.params.id);
+			} else
+				commonController.parameterBadFormatted(res)
+		});
+}
+
+/**
+ * Return:
+ *  . services available.
+ *  . ranks with the available umbrellas in that period. If not don't return that rank.
+ * @param req
+ * @param res
+ */
+module.exports.getAvailability = function (req, res) {
+
+	commonController.findCatalog(req, res,  async (errCat, catalog) => {
+
+		// Umbrella not free in that periods
+		// First filter: if book is not finished
+		// Second filter: if bool started in that period
+		commonController.umbrellaUsed(req, res, req.query["date-to"], req.query["date-from"], (umbrellaNumberUsed)=>{
+
+			let rankNumberFree = [];
+			let rankNumber = -1
+
+			for (const rank of catalog.rankUmbrellas) {
+
+				rankNumber++
+				if (rank) {
+
+					for (let umbrellaNumber = rank.fromUmbrella; umbrellaNumber <= rank.toUmbrella; umbrellaNumber++){
+
+						if (!umbrellaNumberUsed.includes(umbrellaNumber)){
+
+							let elementsToAdd = [];
+
+							let umbrella = new Umbrella();
+							umbrella.number = umbrellaNumber;
+
+							if (!rankNumberFree[rankNumber]) {
+								rankNumberFree[rankNumber] = {};
+								rankNumberFree[rankNumber]["id"] = rank._id;
+								rankNumberFree[rankNumber]["name"] = rank.name;
+								rankNumberFree[rankNumber]["description"] = rank.description;
+								rankNumberFree[rankNumber]["price"] = rank.price;
+								rankNumberFree[rankNumber]["imageUrl"] = rank.imageUrl;
+								rankNumberFree[rankNumber]["fromUmbrella"] = rank.fromUmbrella;
+								rankNumberFree[rankNumber]["toUmbrella"] = rank.toUmbrella
+								rankNumberFree[rankNumber]["availableUmbrellas"] = [];
+							} else {
+								elementsToAdd = rankNumberFree[rankNumber]["availableUmbrellas"];
+							}
+
+							elementsToAdd.splice(0,0,umbrella);
+
+							rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
+						}
+					}
 				}
-			} else {
-				commonController.parameter_bad_formatted(res)
 			}
+
+			let availability = {};
+
+			availability["services"] = catalog.services;
+			availability["ranks"] = rankNumberFree;
+
+			commonController.response(res, availability);
 		});
+	});
 
 }
 
-async function umbrellaServiceAndUserChecks(req, res, docResult) {
-
-	if (req.body.umbrellas) {
-
-		// Check if umbrellas are free
-		await commonController.umbrellaFree(req, res, req.body.to, req.body.from, req.body.umbrellas,
-			async (areUmbrellasFree) => {
-				if (areUmbrellasFree){
-
-					await serviceAndUserChecks(req, res, docResult);
-
-				} else {
-					commonController.parameter_bad_formatted(res);
-				}
-			});
-	} else {
-		await serviceAndUserChecks(req, res, docResult);
-	}
-}
-
-async function serviceAndUserChecks(req, res, docResult) {
-
-	if (req.body.services) {
-
-		// Check if user exist
-		await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
-
-			if (areServicesAvailable){
-
-				await userExist(req, res, docResult);
-			} else {
-				commonController.parameter_bad_formatted(res);
-			}
-		});
-	} else {
-		await userExist(req, res, docResult)
-	}
-
-}
-
-async function userExist(req, res, docResult) {
-
-	if (req.body.user_id){
-
-		// Check if user exist
-		await commonController.userExist(req, res, req.body.user_id, async (isUserPresent)=>{
-
-			if (isUserPresent) {
-
-				await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-					req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
-					req.body.services, docResult);
-
-			} else {
-				commonController.parameter_bad_formatted(res);
-			}
-		});
-	} else {
-		await applyChanges(req, res, req.body.from, req.body.to, req.body.price,
-			req.body.confirmed, req.body.cancelled, req.body.user_id, req.body.umbrellas,
-			req.body.services, docResult);
-	}
-}
 
 /**
  * Check if params are correct.
@@ -188,8 +248,8 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 		&& (!(confirmed) || commonController.typeOfBoolean(confirmed))
 		&& (!(cancelled) || commonController.typeOfBoolean(cancelled))){
 
-		let from = doc.date_from;
-		let to = doc.date_to;
+		let from = doc.dateFrom;
+		let to = doc.dateTo;
 
 		if ((reqFrom)
 			&& (new Date(reqFrom).getTime() >= Date.now()))
@@ -207,17 +267,122 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 	return paramsOk;
 }
 
-async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, user_id,
+async function bookingAndUmbrellaServiceCustomerChecks(req, res) {
+
+	// Check if bookings exist
+	await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+		req.params.id, async (err, docResult)=> {
+
+			if (docResult){
+				if (checkParams(req.body.dateFrom, req.body.dateTo, req.body.price,
+					req.body.confirmed, req.body.cancelled, docResult)) {
+
+					await umbrellaServiceAndCustomerChecks(req, res, docResult)
+				}
+			} else {
+				commonController.parameterBadFormatted(res)
+			}
+		});
+
+}
+
+async function umbrellaServiceAndCustomerChecks(req, res, docResult) {
+
+	if (req.body.umbrellas) {
+
+		// Check if umbrellas are free
+		let to = docResult.dateTo
+		if (req.body.dateTo)
+			to = req.body.dateTo
+
+		let from = docResult.dateFrom
+		if (req.body.dateFrom)
+			from = req.body.dateFrom
+
+		let oldUmbrellas = docResult.umbrellas
+
+		// If not do this, the old umbrellas are considered busy but we could change this
+		docResult.umbrellas = []
+		await docResult.save();
+
+		await commonController.umbrellaFree(req, res, to, from, req.body.umbrellas,
+			async (areUmbrellasFree) => {
+				if (areUmbrellasFree){
+
+					await serviceAndCustomerChecks(req, res, docResult);
+				} else {
+					// Return to the precedent situation
+					docResult.umbrellas = oldUmbrellas
+					await docResult.save()
+
+					commonController.parameterBadFormatted(res);
+				}
+			});
+	} else {
+		await serviceAndCustomerChecks(req, res, docResult);
+	}
+}
+
+async function serviceAndCustomerChecks(req, res, docResult) {
+
+	if (req.body.services) {
+
+		// Check if customer exist
+		await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
+
+			if (areServicesAvailable){
+
+				await commonController.constructServices(req, res, req.body.services,
+					async (services)=>{
+						req.body.services = services
+						await customerExist(req, res, docResult);
+					})
+			} else {
+				commonController.parameterBadFormatted(res);
+			}
+		});
+	} else {
+		await customerExist(req, res, docResult)
+	}
+
+}
+
+async function customerExist(req, res, docResult) {
+
+	if (req.body.userId){
+
+		// Check if user exist
+		await commonController.customerExist(req, res, req.body.userId, async (isCustomerPresent)=>{
+
+			if (isCustomerPresent) {
+
+				await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+					req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
+					req.body.services, docResult);
+
+			} else {
+				commonController.parameterBadFormatted(res);
+			}
+		});
+	} else {
+		await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+			req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
+			req.body.services, docResult);
+	}
+}
+
+
+async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, userId,
 							umbrellas, services, doc){
 
-	if (user_id)
-		doc.user_id = user_id
+	if (userId)
+		doc.userId = userId
 
 	if (reqFrom)
-		doc.date_from = new Date(reqFrom)
+		doc.dateFrom = new Date(reqFrom)
 
 	if (reqTo)
-		doc.date_to = new Date(reqTo)
+		doc.dateTo = new Date(reqTo)
 
 	if (confirmed)
 		doc.confirmed = confirmed
@@ -235,42 +400,11 @@ async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelle
 
 		await commonController.createUmbrellas(req, res, umbrellas,(umbrellasReturned)=>{
 			doc.umbrellas = umbrellasReturned;
-			commonController.correctSave(doc, commonController.status_completed, res);
+			commonController.correctSave(doc, commonController.statusCompleted, res);
 		})
 	} else {
 
-		await commonController.correctSave(doc, commonController.status_completed, res);
+		await commonController.correctSave(doc, commonController.statusCompleted, res);
 	}
 
-}
-
-/**
- * GET bookings.
- * Two possible scenarios:
- * 	. get a specific user and get all his bookings
- * 	. get page_id and page_size: in this case return bookings from id to size.
- * 		In this case there are default value both for id and size.
- * @param req The specified GET request
- * @param res The specified GET response
- */
-module.exports.read_bookings = function(req, res) {
-
-	commonController.findAllFromCollection(req, res, collectionName, Booking
-		, collectionName + " not found", (err, docResult) => {
-			if (req.body.user_id)
-				docResult.filter(x => mongoose.Types.ObjectId(req.body.user_id) === x.user_id);
-			else
-				commonController.returnPages(req.body.page_id, req.body.page_size, req, res, docResult, collectionName)
-		});
-
-}
-
-/**
- * DELETE Booking specified by id
- * @param req The specific DELETE request
- * @param res The specific DELETE response
- */
-module.exports.delete_booking = function(req, res) {
-
-	commonController.deleteFirstLevelCollection(req, res, collectionName, Booking, "", req.params.id);
 }
