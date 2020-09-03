@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HomeCard} from "../../../shared/models/home-card.model";
 import {ApiService} from "../../../core/api/api.service";
-import {Service} from "../../../shared/models/service.model";
-import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
+import {ServiceModel} from "../../../shared/models/service.model";
+import {RankUmbrellaModel} from "../../../shared/models/rank-umbrella.model";
 import {HomeData} from "../../../shared/models/home-data.model";
 
 @Component({

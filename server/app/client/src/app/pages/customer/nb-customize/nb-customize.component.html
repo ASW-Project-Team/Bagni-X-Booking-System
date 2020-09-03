@@ -1,12 +1,38 @@
-<form [formGroup]="formGroup">
-  <p>nb-customize works!</p>
+<p>Seleziona qui l’ombrellone (o gli ombrelloni) che intendi prenotare, e gli eventuali servizi aggiuntivi.</p>
 
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-  </mat-form-field>
-</form>
+<div *ngIf="availableRankings && availableServices; else loadingScreen">
+  <div class="salable-category-container">
+    <h1>Ombrelloni</h1>
+    <ul>
+      <li *ngFor="let rank of availableRankings">
+        <app-booking-salable-selector [cardContent]="rank" [limitedItems]="rank.getBookableUmbrellas()"
+                                      [bookingStartDate]="booking.dateFrom" [bookingEndDate]="booking.dateTo"
+                                      [isLastCard]="availableRankings.indexOf(rank) >= availableRankings.length - 1"
+                                      (insertItem)="insertUmbrella($event)" (removeItem)="removeUmbrella($event)">
+        </app-booking-salable-selector>
+      </li>
+    </ul>
+  </div>
 
-<div>
-  <button mat-button matStepperNext>Next</button>
+  <div class="salable-category-container">
+    <h1>Servizi aggiuntivi</h1>
+    <ul>
+      <li *ngFor="let service of availableServices">
+        <app-booking-salable-selector [cardContent]="service" [unlimitedItem]="service"
+                                      [bookingStartDate]="booking.dateFrom" [bookingEndDate]="booking.dateTo"
+                                      [isLastCard]="availableServices.indexOf(service) >= availableServices.length - 1"
+                                      (insertItem)="insertService($event)" (removeItem)="removeService($event)">
+        </app-booking-salable-selector>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #loadingScreen>
+  <!-- Content to render when data is loading -->
+  <app-loading-screen [small-height]="true"></app-loading-screen>
+</ng-template>
+
+<div class="buttons-container">
+  <button mat-raised-button color="primary" matStepperNext class="next-button">Prosegui</button>
 </div>

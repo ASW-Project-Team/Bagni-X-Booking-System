@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Booking, BookingModel} from "../../models/booking.model";
-import {RankUmbrella} from "../../models/rank-umbrella.model";
+import {RankUmbrellaModel} from "../../models/rank-umbrella.model";
 
 @Component({
   selector: 'app-booking-card',

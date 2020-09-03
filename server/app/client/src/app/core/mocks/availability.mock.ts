@@ -1,6 +1,6 @@
 import {HomeData} from "../../shared/models/home-data.model";
 import {AvailabilityData} from "../../shared/models/availability-data.model";
-import {RankUmbrella} from "../../shared/models/rank-umbrella.model";
+import {RankUmbrellaModel} from "../../shared/models/rank-umbrella.model";
 
 export const availabilityMock: AvailabilityData = {
   rankUmbrellas: [
@@ -17,7 +17,7 @@ export const availabilityMock: AvailabilityData = {
           _id: "0",
           percent: 20,
           dateFrom: new Date("2020-08-16"),
-          dateTo: new Date("2020-08-18"),
+          dateTo: new Date("2020-10-18"),
         }
       ],
       availableUmbrellas: [
@@ -59,10 +59,6 @@ export const availabilityMock: AvailabilityData = {
           number: 22,
         },
         {
-          id: "3",
-          number: 23,
-        },
-        {
           id: "4",
           number: 24,
         }
@@ -96,6 +92,10 @@ export const availabilityMock: AvailabilityData = {
         {
           id: "3",
           number: 43,
+        },
+        {
+          id: "4",
+          number: 44,
         },
         {
           id: "4",

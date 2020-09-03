@@ -1,18 +1,18 @@
-import {Service} from "./service.model";
-import {Umbrella} from "./umbrella.model";
+import {ServiceModel} from "./service.model";
+import {UmbrellaModel} from "./umbrella.model";
 import {CostItem} from "./component-specific/booking-summary.model";
 import {BookingState, BookingStateHandler} from "./component-specific/booking-state.model";
 
 export interface BookingModel {
   id?: string,
   userId: string,
-  umbrellas: Umbrella[],
+  umbrellas: UmbrellaModel[],
   confirmed: boolean,
   cancelled: boolean,
   price: number,
   dateFrom: Date,
   dateTo: Date,
-  services: Service[],
+  services: ServiceModel[],
 }
 
 /**
@@ -25,8 +25,8 @@ export class Booking implements BookingModel {
   dateFrom: Date;
   dateTo: Date;
   price: number;
-  services: Service[];
-  umbrellas: Umbrella[];
+  services: ServiceModel[];
+  umbrellas: UmbrellaModel[];
   userId: string;
 
   constructor(bookingModel: BookingModel) {
@@ -137,7 +137,7 @@ export class Booking implements BookingModel {
     });
 
     // the number indicates the occurrences of a given service inside the booking
-    let groupedServices: Map<Service, number> = new Map<Service, number>();
+    let groupedServices: Map<ServiceModel, number> = new Map<ServiceModel, number>();
 
     this.services.forEach(service => {
       if (groupedServices.has(service)) {

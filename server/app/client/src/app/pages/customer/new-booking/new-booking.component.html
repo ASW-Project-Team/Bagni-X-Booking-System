@@ -6,13 +6,13 @@
         <app-nb-period [(booking)]="booking" #periodStep></app-nb-period>
     </mat-step>
 
-    <mat-step [stepControl]="customizeStep.formGroup" [completed]="false">
+    <mat-step [completed]="customizeStep.customizationValid">
       <ng-template matStepLabel><span class="step-label">Personalizza</span></ng-template>
       <app-nb-customize [(booking)]="booking" #customizeStep></app-nb-customize>
     </mat-step>
 
     <mat-step [completed]="false">
-      <ng-template matStepLabel><span class="step-label">Chekout</span></ng-template>
+      <ng-template matStepLabel><span class="step-label">Checkout</span></ng-template>
       <app-nb-checkout [booking]="booking"></app-nb-checkout>
     </mat-step>
   </mat-horizontal-stepper>

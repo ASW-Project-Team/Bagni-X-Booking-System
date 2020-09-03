@@ -1,7 +1,7 @@
-import {Service} from "./service.model";
-import {RankUmbrella} from "./rank-umbrella.model";
+import {ServiceModel} from "./service.model";
+import {RankUmbrellaModel} from "./rank-umbrella.model";
 
 export interface AvailabilityData {
-  services: Service[];
-  rankUmbrellas: RankUmbrella[];
+  services: ServiceModel[];
+  rankUmbrellas: RankUmbrellaModel[];
 }

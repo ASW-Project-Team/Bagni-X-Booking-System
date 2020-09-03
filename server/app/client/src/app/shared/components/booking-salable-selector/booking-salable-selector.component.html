@@ -1,0 +1,28 @@
+<div class="salable-card"
+     [ngStyle]="isLastCard == true ? {'margin-bottom': 0} : {}">
+
+  <div class="main-line">
+    <div class="image"
+         [ngStyle]="{'background-image': 'url(' + cardContent.imageUrl }">
+    </div>
+
+    <div class="lines">
+      <h2 class="title">{{ cardContent.title }}</h2>
+      <p class="description">{{ cardContent.description }}</p>
+    </div>
+  </div>
+
+  <div class="bottom-line">
+    <div class="chips-sector">
+      <div class="price-chip"> {{ cardContent.price | currency: 'EUR' }} </div>
+      <mat-icon svgIcon="sale" class="sale" color="primary"
+                *ngIf="cardContent.isOnSale(bookingStartDate, bookingEndDate)"></mat-icon>
+    </div>
+    <app-quantity-selector
+      [maxQuantity]="getMaxQuantity()"
+      (incrementQuantity)="incrementItem()"
+      (decrementQuantity)="decrementItem()">
+    </app-quantity-selector>
+  </div>
+
+</div>

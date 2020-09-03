@@ -5,8 +5,8 @@ import {STEPPER_GLOBAL_OPTIONS, StepperSelectionEvent} from "@angular/cdk/steppe
 import {Booking} from "../../../shared/models/booking.model";
 import {NbPeriodComponent} from "../nb-period/nb-period.component";
 import {AuthService} from "../../../core/auth/auth.service";
-import {AvailabilityData} from "../../../shared/models/availability-data.model";
 import {ApiService} from "../../../core/api/api.service";
+import {NbCustomizeComponent} from "../nb-customize/nb-customize.component";
 
 @Component({
   selector: 'app-new-booking',
@@ -20,16 +20,14 @@ export class NewBookingComponent implements OnInit {
   backRoute: string;
   backPageName: string;
   booking: Booking;
-  availability: AvailabilityData;
 
   @ViewChild('periodStep') periodStep: NbPeriodComponent;
-
+  @ViewChild('customizeStep') customizeStep: NbCustomizeComponent;
 
   constructor(private _route: ActivatedRoute,
               private _formBuilder: FormBuilder,
               private _authService: AuthService,
               private _apiService: ApiService) { }
-
 
   ngOnInit(): void {
     this.backRoute = this._route.snapshot.queryParams['backRoute'] || '/home';
@@ -55,18 +53,10 @@ export class NewBookingComponent implements OnInit {
   selectionChange(event: StepperSelectionEvent) {
     if (event.previouslySelectedIndex == 0) {
       // invalidate availability, if the user switches from period
-      this.availability = undefined;
       this.periodStep.updateBookingDates();
       this._apiService.getAvailability(this.booking.dateFrom, this.booking.dateTo).subscribe(data => {
-        this.availability = data;
+        this.customizeStep.setAvailableItems(data)
       });
-    }
-
-    if (event.selectedIndex == 0) {
-      // if going back to period, invalidate booking
-      this.booking.umbrellas = [];
-      this.booking.services = [];
-      this.booking.price = 0.0;
     }
   }
 

@@ -1,0 +1,22 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.salable-category-container {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  @include responsiveProp(margin-bottom, $quarterMargin);
+
+  .next-button {
+    @include button;
+    @include responsiveProp(width, $textboxWidth);
+  }
+}

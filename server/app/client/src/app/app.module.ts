@@ -58,6 +58,8 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MatSelectModule} from '@angular/material/select';
 import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { BookingSalableSelectorComponent } from './shared/components/booking-salable-selector/booking-salable-selector.component';
+import { QuantitySelectorComponent } from './shared/components/quantity-selector/quantity-selector.component';
 
 
 @NgModule({
@@ -95,6 +97,8 @@ import localeIt from '@angular/common/locales/it';
     NbCheckoutComponent,
     NewBookingComponent,
     BookingDatePipeExtended,
+    BookingSalableSelectorComponent,
+    QuantitySelectorComponent,
   ],
   imports: [
     BrowserModule,

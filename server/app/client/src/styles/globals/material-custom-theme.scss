@@ -134,6 +134,7 @@ a.mat-menu-item > mat-icon {
 // removes the stepper content padding, adds some style
 .mat-stepper-horizontal .mat-horizontal-content-container {
   padding: 0;
+  overflow: visible;
 }
 .mat-stepper-horizontal .mat-horizontal-stepper-header-container {
   @include responsiveProp(margin-bottom, $defaultMargin);

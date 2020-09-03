@@ -58,7 +58,7 @@
               [title]="service.title"
               [description]="service.description"
               [imageUrl]="service.image"
-              [price]="service.price == 0 ? 'Incluso' : service.price + ' €/gg'"
+              [price]="service.price == 0 ? 'Incluso' : service.price | currency: 'EUR'"
               [is-last-card]="homeData.services.indexOf(service) >= homeData.services.length - 1">
             </app-salable-card>
           </li>
