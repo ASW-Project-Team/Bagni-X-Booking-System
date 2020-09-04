@@ -215,7 +215,7 @@ module.exports.getAvailability = function (req, res) {
 								rankNumberFree[rankNumber]["toUmbrella"] = rank.toUmbrella
 							}
 
-							umbrella["rankId"] = rankNumberFree[rankNumber]._id
+							umbrella["rankId"] = rank._id
 							umbrellas.splice(0,0,umbrella);
 
 							rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
