@@ -195,8 +195,9 @@ module.exports.getAvailability = function (req, res) {
 
 							let elementsToAdd = [];
 
-							let umbrella = new Umbrella();
-							umbrella.number = umbrellaNumber;
+							let umbrella = {};
+
+							umbrella["number"] = umbrellaNumber;
 
 							if (!rankNumberFree[rankNumber]) {
 								rankNumberFree[rankNumber] = {};
@@ -209,6 +210,7 @@ module.exports.getAvailability = function (req, res) {
 								rankNumberFree[rankNumber]["toUmbrella"] = rank.toUmbrella
 							}
 
+							umbrella["rankId"] = rankNumberFree[rankNumber]._id
 							umbrellas.splice(0,0,umbrella);
 
 							rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
