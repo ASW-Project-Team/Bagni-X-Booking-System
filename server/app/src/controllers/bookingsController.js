@@ -182,6 +182,8 @@ module.exports.getAvailability = function (req, res) {
 			let rankNumberFree = [];
 			let rankNumber = -1
 
+			let umbrellas = []
+
 			for (const rank of catalog.rankUmbrellas) {
 
 				rankNumber++
@@ -205,12 +207,9 @@ module.exports.getAvailability = function (req, res) {
 								rankNumberFree[rankNumber]["imageUrl"] = rank.imageUrl;
 								rankNumberFree[rankNumber]["fromUmbrella"] = rank.fromUmbrella;
 								rankNumberFree[rankNumber]["toUmbrella"] = rank.toUmbrella
-								rankNumberFree[rankNumber]["availableUmbrellas"] = [];
-							} else {
-								elementsToAdd = rankNumberFree[rankNumber]["availableUmbrellas"];
 							}
 
-							elementsToAdd.splice(0,0,umbrella);
+							umbrellas.splice(0,0,umbrella);
 
 							rankNumberFree[rankNumber]["availableUmbrellas"] = elementsToAdd;
 						}
@@ -222,6 +221,7 @@ module.exports.getAvailability = function (req, res) {
 
 			availability["services"] = catalog.services;
 			availability["ranks"] = rankNumberFree;
+			availability["availableUmbrellas"] = umbrellas
 
 			commonController.response(res, availability);
 		});
@@ -373,38 +373,49 @@ async function customerExist(req, res, docResult) {
 
 
 async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, userId,
-							umbrellas, services, doc){
+							umbrellas, services, book){
 
-	if (userId)
-		doc.userId = userId
+	commonController.checkAndActForUpdate(book, req, async ()=>{
+		if (umbrellas) {
+
+			await commonController.createUmbrellas(req, res, umbrellas, (umbrellasReturned) => {
+				book.umbrellas = umbrellasReturned;
+
+			})
+		}
+	}, "userId", "dateFrom", "dateTo", "cancelled","confirmed","price")
+		.then(commonController.correctSave(book, commonController.statusCompleted, res))
+
+	/*if (userId)
+		book.userId = userId
 
 	if (reqFrom)
-		doc.dateFrom = new Date(reqFrom)
+		book.dateFrom = new Date(reqFrom)
 
 	if (reqTo)
-		doc.dateTo = new Date(reqTo)
+		book.dateTo = new Date(reqTo)
 
 	if (confirmed)
-		doc.confirmed = confirmed
+		book.confirmed = confirmed
 
 	if (cancelled)
-		doc.cancelled = cancelled
+		book.cancelled = cancelled
 
 	if (price)
-		doc.price = price;
+		book.price = price;
 
 	if (services)
-		doc.services = services;
+		book.services = services;
 
 	if (umbrellas){
 
 		await commonController.createUmbrellas(req, res, umbrellas,(umbrellasReturned)=>{
-			doc.umbrellas = umbrellasReturned;
-			commonController.correctSave(doc, commonController.statusCompleted, res);
+			book.umbrellas = umbrellasReturned;
+			commonController.correctSave(book, commonController.statusCompleted, res);
 		})
 	} else {
 
-		await commonController.correctSave(doc, commonController.statusCompleted, res);
+		await commonController.correctSave(book, commonController.statusCompleted, res);
 	}
-
+*/
 }
