@@ -1,5 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {SalableItemModel} from "../../../../../../shared/models/salable.model";
+import {PeriodStepComponent} from "../../period-step/period-step.component";
+import {QuantitySelectorComponent} from "./quantity-selector/quantity-selector.component";
 
 @Component({
   selector: 'app-salable-picker',
@@ -19,6 +21,8 @@ export class SalablePickerComponent implements OnInit {
 
   @Output() insertItem = new EventEmitter<SalableItemModel>();
   @Output() removeItem = new EventEmitter<SalableItemModel>();
+
+  @ViewChild('qtSelector') qtSelector: QuantitySelectorComponent;
 
   private availableItems: SalableItemModel[] = [];
   private cartedItems: SalableItemModel[] = [];
@@ -40,6 +44,9 @@ export class SalablePickerComponent implements OnInit {
     }
   }
 
+  forceIncrementItem() {
+    this.qtSelector.onIncrement();
+  }
 
   incrementItem() {
     let item;

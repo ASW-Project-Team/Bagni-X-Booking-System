@@ -1,11 +1,11 @@
 <div class="quantity-container">
-  <button mat-icon-button color="primary" class="quantity-button" title="Rimuovi elemento" (click)="onDecrement()">
+  <button mat-icon-button color="primary" class="quantity-button" title="Rimuovi elemento" (click)="onDecrement();$event.stopPropagation()">
     <mat-icon svgIcon="minus-circle-outline" color="primary"></mat-icon>
   </button>
   <div class="quantity">
     x{{quantity}}
   </div>
-  <button mat-icon-button color="primary" class="quantity-button" title="Aggiungi elemento" (click)="onIncrement()">
+  <button mat-icon-button color="primary" class="quantity-button" title="Aggiungi elemento" (click)="onIncrement();$event.stopPropagation()">
     <mat-icon color="primary" svgIcon="plus-circle-outline"></mat-icon>
   </button>
 </div>

@@ -1,4 +1,4 @@
-<div class="salable-card"
+<div class="salable-card" (click)="forceIncrementItem()"
      [ngStyle]="isLastCard == true ? {'margin-bottom': 0} : {}">
 
   <div class="main-line">
@@ -18,7 +18,7 @@
       <mat-icon svgIcon="sale" class="sale" color="primary"
                 *ngIf="isOnSale"></mat-icon>
     </div>
-    <app-quantity-selector
+    <app-quantity-selector #qtSelector
       [maxQuantity]="getMaxQuantity()"
       (incrementQuantity)="incrementItem()"
       (decrementQuantity)="decrementItem()">

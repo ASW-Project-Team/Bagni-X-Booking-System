@@ -16,7 +16,7 @@ h2 {
 
   .next-button {
     @include button;
-    @include responsiveProp(width, $textboxWidth);
+    @include responsiveProp(width, $widerTextboxWidth);
   }
 }
 

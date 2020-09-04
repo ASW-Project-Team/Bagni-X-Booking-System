@@ -25,7 +25,7 @@
 
     .input-field {
       padding: 0;
-      @include responsiveProp(width, $textboxWidth);
+      @include responsiveProp(width, $widerTextboxWidth);
     }
 
     .warning-container {
@@ -45,7 +45,7 @@
     .login-button {
       @include button;
       width: 100%;
-      max-width: $textboxWidthDesktop;
+      max-width: $widerTextboxWidthDesktop;
     }
   }
 }

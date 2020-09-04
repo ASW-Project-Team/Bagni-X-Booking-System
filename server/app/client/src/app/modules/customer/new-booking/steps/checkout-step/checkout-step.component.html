@@ -1,6 +1,7 @@
 <p>Controlla che tutti i dati siano giusti. Una volta terminato, dovrai attendere la conferma da parte del gestore.</p>
-
-<app-booking-summary [booking]="booking"></app-booking-summary>
+<div class="summary">
+  <app-booking-summary [booking]="booking"></app-booking-summary>
+</div>
 
 <div class="warning-container" *ngIf="error">
   <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>

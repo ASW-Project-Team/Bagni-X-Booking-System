@@ -4,6 +4,9 @@ p {
   @include responsiveProp(margin-bottom, $defaultMargin);
 }
 
+.summary {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
 
 .warning-container {
   width: 100%;
@@ -18,11 +21,11 @@ p {
     @include responsiveProp(margin-right, $defaultMargin);
   }
 
-.login-button {
-  @include button;
-  width: 100%;
-  max-width: $textboxWidthDesktop;
-}
+  .next-button {
+    @include button;
+    width: 100%;
+    max-width: $widerTextboxWidthDesktop;
+  }
 }
 
 .buttons-container {
@@ -34,6 +37,6 @@ p {
 
   .next-button {
     @include button;
-    @include responsiveProp(width, $textboxWidth);
+    @include responsiveProp(width, $widerTextboxWidth);
   }
 }

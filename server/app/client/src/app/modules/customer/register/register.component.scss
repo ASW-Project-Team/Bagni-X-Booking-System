@@ -68,7 +68,7 @@
     .registration-button {
       @include button;
       width: 100%;
-      max-width: $textboxWidthDesktop;
+      max-width: $widerTextboxWidthDesktop;
     }
   }
 }
