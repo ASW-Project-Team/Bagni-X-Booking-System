@@ -8,8 +8,8 @@ import {RankUmbrellaModel} from "../../models/rank-umbrella.model";
   styleUrls: ['./booking-card.component.scss']
 })
 export class BookingCardComponent implements OnInit {
-  @Input('is-last-card') isLastCard: boolean = false;
-  @Input('booking') booking: Booking;
+  @Input() isLastCard: boolean = false;
+  @Input() booking: Booking;
 
   constructor() { }
 

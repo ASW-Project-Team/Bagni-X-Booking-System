@@ -1,8 +1,6 @@
 import {Service, ServiceModel} from "./service.model";
 import {Umbrella, UmbrellaModel} from "./umbrella.model";
-import {CostItem} from "./component-specific/booking-summary.model";
-import {BookingState, BookingStateHandler} from "./component-specific/booking-state.model";
-import {map} from "rxjs/operators";
+import {BookingState} from "./booking-state.model";
 
 export interface BookingModel {
   id?: string,
@@ -104,8 +102,8 @@ export class Booking implements BookingModel {
    * Returns an array representing all cost items composing the booking. It is useful to
    * display the summary. Assumes that each umbrella has complete rank information inside.
    */
-  public computeCostItems(): CostItem[] {
-    let costItems: CostItem[] = [];
+  public computeCostItems(): { description: string, amount: number }[] {
+    let costItems: { description: string, amount: number }[] = [];
 
     this.umbrellas.forEach(umbrella => {
       costItems.push({
@@ -142,7 +140,7 @@ export class Booking implements BookingModel {
   /**
    * Returns a cost item representing the total.
    */
-  public computeTotal(): CostItem {
+  public computeTotal(): { description: string, amount: number } {
     return {
       description: 'Totale',
       amount: this.price
@@ -154,8 +152,7 @@ export class Booking implements BookingModel {
    * Returns the state of the booking, computed following state computation rules.
    */
   public getState(): BookingState {
-    const bookingStateHandler = new BookingStateHandler(this);
-    return bookingStateHandler.getCurrentState();
+    return new BookingState(this);
   }
 }
 

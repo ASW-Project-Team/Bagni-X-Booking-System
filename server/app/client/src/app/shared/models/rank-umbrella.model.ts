@@ -1,6 +1,4 @@
 import {Sale, SaleModel} from "./sale.model";
-import {Umbrella, UmbrellaModel} from "./umbrella.model";
-import {SaleCardModel} from "./component-specific/sale-card.model";
 import {DateUtils} from "../utils/date.utils";
 
 export interface RankUmbrellaModel {
@@ -14,7 +12,7 @@ export interface RankUmbrellaModel {
   sales: SaleModel[];
 }
 
-export class RankUmbrella implements RankUmbrellaModel, SaleCardModel {
+export class RankUmbrella implements RankUmbrellaModel {
   _id: any;
   description: string;
   fromUmbrella: number;
@@ -35,17 +33,6 @@ export class RankUmbrella implements RankUmbrellaModel, SaleCardModel {
     this.sales = model.sales.map(model => new Sale(model));
   }
 
-  get title(): string {
-    return this.name;
-  }
-
-  get imageUrl(): string {
-    return this.image;
-  }
-
-  isOnSale(dateFrom: Date, dateTo: Date): boolean {
-    return this.onSaleDuringPeriod(dateFrom, dateTo);
-  }
 
   onSaleDuringPeriod(dateFrom: Date, dateTo: Date): boolean {
     let onSaleDuringPeriod = false;

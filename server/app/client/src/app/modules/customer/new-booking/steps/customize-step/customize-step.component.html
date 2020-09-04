@@ -1,0 +1,39 @@
+<p>Seleziona qui l’ombrellone (o gli ombrelloni) che intendi prenotare, e gli eventuali servizi aggiuntivi.</p>
+
+<div *ngIf="availableRankings && availableServices; else loadingScreen">
+  <div class="salable-category-container">
+    <h1>Ombrelloni</h1>
+    <ul>
+      <li *ngFor="let rank of availableRankings">
+        <app-salable-picker [title]="rank.name" [description]="rank.description" [price]="rank.price"
+                            [isOnSale]="rank.onSaleDuringPeriod(booking.dateFrom, booking.dateTo)"
+                            [limitedItems]="getRankUmbrellas(rank)" [imageUrl]="rank.image"
+                            [isLastCard]="availableRankings.indexOf(rank) >= availableRankings.length - 1"
+                            (insertItem)="insertUmbrella($event)" (removeItem)="removeUmbrella($event)">
+        </app-salable-picker>
+      </li>
+    </ul>
+  </div>
+
+  <div class="salable-category-container">
+    <h1>Servizi aggiuntivi</h1>
+    <ul>
+      <li *ngFor="let service of availableServices">
+        <app-salable-picker [title]="service.title" [description]="service.description" [price]="service.price"
+                            [unlimitedItem]="service" [imageUrl]="service.image"
+                            [isLastCard]="availableServices.indexOf(service) >= availableServices.length - 1"
+                            (insertItem)="insertService($event)" (removeItem)="removeService($event)">
+        </app-salable-picker>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ng-template #loadingScreen>
+  <!-- Content to render when data is loading -->
+  <app-loading-screen [smallHeight]="true"></app-loading-screen>
+</ng-template>
+
+<div class="buttons-container">
+  <button mat-raised-button color="primary" matStepperNext class="next-button">Prosegui</button>
+</div>

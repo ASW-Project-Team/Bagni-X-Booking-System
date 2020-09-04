@@ -1,4 +1,3 @@
-import {CostItem} from "../models/component-specific/booking-summary.model";
 
 export class DateUtils {
   static readonly MILLIS_IN_SECOND = 1000;

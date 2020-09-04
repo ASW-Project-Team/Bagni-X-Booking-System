@@ -1,4 +1,4 @@
-import {AvailabilityData} from "../../shared/models/responses/availability-data.model";
+import {AvailabilityData} from "../../shared/models/http-responses/availability-data.model";
 
 export const availabilityMock: AvailabilityData = {
   availableUmbrellas: [

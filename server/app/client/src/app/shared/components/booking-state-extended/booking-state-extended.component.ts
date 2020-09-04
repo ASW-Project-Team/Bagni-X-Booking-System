@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking} from "../../models/booking.model";
-import {BookingState} from "../../models/component-specific/booking-state.model";
+import {BookingState} from "../../models/booking-state.model";
 
 @Component({
   selector: 'app-booking-state-extended',
@@ -8,12 +7,10 @@ import {BookingState} from "../../models/component-specific/booking-state.model"
   styleUrls: ['./booking-state-extended.component.scss']
 })
 export class BookingStateExtendedComponent implements OnInit {
-  @Input('booking') booking: Booking;
-  currentState: BookingState;
+  @Input() bookingState: BookingState;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.currentState = this.booking.getState();
   }
 }

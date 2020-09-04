@@ -1,6 +1,5 @@
-import {SaleCardModel} from "./component-specific/sale-card.model";
-import {RankUmbrellaModel} from "./rank-umbrella.model";
 import {DateUtils} from "../utils/date.utils";
+import {SalableItemModel} from "./salable.model";
 
 export interface ServiceModel {
   _id: any;
@@ -11,7 +10,7 @@ export interface ServiceModel {
   description: string;
 }
 
-export class Service implements ServiceModel, SaleCardModel {
+export class Service implements ServiceModel, SalableItemModel {
   _id: any;
   description: string;
   image: string;
@@ -27,14 +26,6 @@ export class Service implements ServiceModel, SaleCardModel {
     this.umbrellaRelated = model.umbrellaRelated;
     this.description = model.description;
     this.price = model.price;
-  }
-
-  get imageUrl(): string {
-    return this.image;
-  }
-
-  isOnSale(): boolean {
-    return false;
   }
 
   calculatePrice(dateFrom: Date, dateTo: Date): number {

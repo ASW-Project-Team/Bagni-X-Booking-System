@@ -2,7 +2,7 @@
      [ngStyle]="isLastCard ? { 'margin-bottom': 0 } : { }">
 
   <div class="image"
-       [ngStyle]="{'background-image': 'url(' + news.image }">
+       [ngStyle]="{'background-image': 'url(' + news.imageUrl }">
   </div>
 
   <div class="lines">
@@ -11,7 +11,7 @@
       <p class="date">{{ news.date | newsDate | titlecase }}</p>
     </div>
 
-    <p class="description">{{ news.description }}</p>
+    <p class="description">{{ news.article }}</p>
   </div>
 
 </div>

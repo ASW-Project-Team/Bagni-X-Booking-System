@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import { MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {AlertDialogData} from "../../models/component-specific/dialog-data.model";
+import {AlertDialogData} from "./alert-dialog.model";
 
 
 @Component({

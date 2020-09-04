@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Page} from "../../../models/component-specific/page.model";
+import {MenuItem} from "../appbars.model";
+
 
 @Component({
   selector: 'app-customer-main-appbar',
@@ -8,7 +9,7 @@ import {Page} from "../../../models/component-specific/page.model";
 })
 export class CustomerMainAppbarComponent implements OnInit {
 
-  pages: Page[] = [
+  pages: MenuItem[] = [
     {
       id: "home",
       name: "Home",

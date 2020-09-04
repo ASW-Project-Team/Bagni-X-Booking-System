@@ -9,7 +9,7 @@ import {
 import {Observable, ObservableInput, of, throwError} from 'rxjs';
 import {delay, mergeMap, materialize, dematerialize} from 'rxjs/operators';
 import {customersMock} from "../mocks/customer.mock";
-import {Customer} from "../../shared/models/customer";
+import {CustomerModel} from "../../shared/models/customer.model";
 import {newsFeedMock} from "../mocks/news.mock";
 import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
@@ -77,7 +77,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return FakeBackendInterceptor.createError400('Email/password combination is not correct.');
     }
 
-    const customer: Customer = customersMock[0];
+    const customer: CustomerModel = customersMock[0];
     customer.jwt = FakeBackendInterceptor.fakeJwtToken;
     return FakeBackendInterceptor.createOkResponse(customer);
   }
@@ -91,7 +91,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     // always return the same user
-    const customer: Customer = customersMock[0];
+    const customer: CustomerModel = customersMock[0];
     customer.jwt = FakeBackendInterceptor.fakeJwtToken;
     return FakeBackendInterceptor.createOkResponse(customer);
   }

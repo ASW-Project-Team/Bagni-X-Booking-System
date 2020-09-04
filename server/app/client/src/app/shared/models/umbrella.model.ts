@@ -1,5 +1,5 @@
 import {RankUmbrella, RankUmbrellaModel} from "./rank-umbrella.model";
-import {SalableModel} from "./component-specific/salable.model";
+import {SalableItemModel} from "./salable.model";
 
 export interface UmbrellaModel {
   id: string,
@@ -9,7 +9,7 @@ export interface UmbrellaModel {
 }
 
 
-export class Umbrella implements UmbrellaModel, SalableModel {
+export class Umbrella implements UmbrellaModel, SalableItemModel {
   id: string;
   number: number;
   rank: RankUmbrella;

@@ -1,3 +1,4 @@
+
 export interface NewsModel {
   _id: any;
   image: string;
@@ -19,5 +20,13 @@ export class News implements NewsModel {
     this.description = model.description;
     this.image = model.image;
     this.title = model.title;
+  }
+
+  get article(): string {
+    return this.description
+  }
+
+  get imageUrl(): string {
+    return this.image
   }
 }

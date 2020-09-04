@@ -13,7 +13,7 @@ import {Subscription, timer} from 'rxjs';
   styleUrls: ['./loading-screen.component.scss']
 })
 export class LoadingScreenComponent implements OnInit {
-  @Input('small-height') smallHeight: boolean = false;
+  @Input() smallHeight: boolean = false;
 
   loadingPhrases: String[] = [
     "Aprendo gli ombrelloni...",

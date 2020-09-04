@@ -1,4 +1,4 @@
-import {HomeData} from "../../shared/models/responses/home-data.model";
+import {HomeData} from "../../shared/models/http-responses/home-data.model";
 
 export const homeMock: HomeData = {
   mainCard: {
