@@ -164,11 +164,16 @@ module.exports.deleteBooking = function(req, res) {
 }
 
 /**
- * Return:
- *  . services available.
- *  . ranks with the available umbrellas in that period. If not don't return that rank.
- * @param req
- * @param res
+ * GET function that want to return elements of bath available in a well specified period.
+ * @param req composed by:
+ * 			. "date-from": param in query, the date from which search available umbrellas.
+ * 			. "date-from": param in query, the finish date to which search available umbrellas.
+ * @param res:
+ *  		200:
+ *  			. services available.
+ *  			. ranks If not don't return that rank.
+ *  			. availableUmbrellas that are all the umbrellas free in that period.
+ *  		404: if catalog isn't found.
  */
 module.exports.getAvailability = function (req, res) {
 
@@ -223,7 +228,9 @@ module.exports.getAvailability = function (req, res) {
 
 			availability["services"] = catalog.services;
 			availability["ranks"] = rankNumberFree;
-			availability["availableUmbrellas"] = umbrellas
+
+
+			availability["availableUmbrellas"] = umbrellas.sort((a, b) => a.number - b.number)
 
 			commonController.response(res, availability);
 		});
