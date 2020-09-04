@@ -11,13 +11,13 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./salable-card.component.scss']
 })
 export class SalableCardComponent implements OnInit {
-  @Input('imageUrl') imageUrl: string;
-  @Input('title') title: string;
-  @Input('description') description: string;
-  @Input('price') price: string;
-  @Input('more-info') moreInfo: string;
-  @Input('sale') sale: boolean = false;
-  @Input('is-last-card') isLastCard: boolean = false;
+  @Input() imageUrl: string;
+  @Input() title: string;
+  @Input() description: string;
+  @Input() price: string;
+  @Input() moreInfo: string;
+  @Input() onSale: boolean = false;
+  @Input() isLastCard: boolean = false;
 
   constructor() { }
 

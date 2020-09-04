@@ -7,7 +7,7 @@ import { DatePipe } from "@angular/common";
 export class NewsDatePipe extends
   DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
-    return super.transform(value, "MMM d");
+    return super.transform(value, "d MMM");
   }
 }
 

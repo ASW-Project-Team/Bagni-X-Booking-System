@@ -14,7 +14,7 @@
 
   <div class="chips-line">
     <div class="price-chip"> {{ price }} </div>
-    <div class="more-info-chip" *ngIf="moreInfo" > {{ moreInfo }} </div>
-    <mat-icon svgIcon="sale" class="sale" color="primary" *ngIf="sale"></mat-icon>
+    <div class="more-info-chip" *ngIf="!!moreInfo" > {{ moreInfo }} </div>
+    <mat-icon svgIcon="sale" class="sale" color="primary" *ngIf="onSale"></mat-icon>
   </div>
 </div>

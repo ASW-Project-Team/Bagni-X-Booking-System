@@ -1,6 +1,6 @@
-import {Customer} from "../../shared/models/customer";
+import {CustomerModel} from "../../shared/models/customer.model";
 
-export const customersMock: Customer[] = [
+export const customersMock: CustomerModel[] = [
   {
     id: "1234",
     name: "Riccardo",

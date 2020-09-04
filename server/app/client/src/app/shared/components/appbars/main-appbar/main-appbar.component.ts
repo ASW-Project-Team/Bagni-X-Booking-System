@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Page} from "../../../models/component-specific/page.model";
-import {Customer} from "../../../models/customer";
+import {CustomerModel} from "../../../models/customer.model";
 import {AuthService} from "../../../../core/auth/auth.service";
+import {MenuItem} from "../appbars.model";
 
 @Component({
   selector: 'app-main-appbar',
@@ -9,9 +9,9 @@ import {AuthService} from "../../../../core/auth/auth.service";
   styleUrls: ['./main-appbar.component.scss']
 })
 export class MainAppbarComponent implements OnInit {
-  customer: Customer;
+  customer: CustomerModel;
 
-  @Input('pages') pages: Page[];
+  @Input('pages') pages: MenuItem[];
 
   constructor(private authService: AuthService) { }
 

@@ -15,13 +15,13 @@
   <div class="details-line">
     <div class="left-details">
       <div class="booking-state">
-        <app-booking-state [booking]="booking"></app-booking-state>
+        <app-booking-state [bookingState]="booking.getState()"></app-booking-state>
       </div>
       <div class="booking-time">
         <mat-icon svgIcon="calendar-outline" class="time-icon"></mat-icon>
         <div class="time-lines">
-          <p class="time-from-line">Dal {{ booking.dateFrom | bookingDate }} </p>
-          <p class="time-to-line">Al {{ booking.dateTo | bookingDate }}</p>
+          <p class="time-from-line">Dal {{ booking.dateFrom | bookingDate | titlecase}} </p>
+          <p class="time-to-line">Al {{ booking.dateTo | bookingDate | titlecase}}</p>
         </div>
       </div>
     </div>

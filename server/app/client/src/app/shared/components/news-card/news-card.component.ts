@@ -11,8 +11,8 @@ import {News} from "../../models/news.model";
   styleUrls: ['./news-card.component.scss']
 })
 export class NewsCardComponent implements OnInit {
-  @Input('news') news: News;
-  @Input('is-last-card') isLastCard: boolean = false;
+  @Input() news: News;
+  @Input() isLastCard: boolean = false;
 
   constructor() { }
 

@@ -1,0 +1,24 @@
+<div class="page">
+  <p>Da questa pagina è possibile consultare i dettagli del proprio account, modificandone i dettagli se necessario.</p>
+  <div class="profile-summary" *ngIf="customer">
+    <mat-icon class="icon">account_circle</mat-icon>
+    <div class="text">
+      <h1>{{customer.name + " " + customer.surname}}</h1>
+      <p>{{customer.email}}</p>
+    </div>
+  </div>
+
+  <app-settings-list-item title="Modifica dati account" description="Modifica nome, indirizzo, numero di telefono, email."
+                    icon="shield-account-outline"></app-settings-list-item>
+  <app-settings-list-item title="Logout" description="Effettua il logout dal tuo profilo."
+                    icon="logout-variant" (click)="logout()"></app-settings-list-item>
+  <app-settings-list-item title="Cambia password" description="Modifica la password che utilizzi per accedere al tuo profilo."
+                    icon="form-textbox-password"></app-settings-list-item>
+  <app-settings-list-item title="Elimina l'account" description="Così facendo, perderai tutte le preferenze memorizzate. La cancellazione dell’account è definitiva."
+                    icon="account-remove-outline" [is-last]="true" (click)="deleteCustomer()"></app-settings-list-item>
+</div>
+
+<!-- Header and fab go last, to make them appear over content -->
+<app-customer-main-appbar></app-customer-main-appbar>
+<app-fab title="Prenota" icon-name="calendar-plus" route="/new-booking"></app-fab>
+

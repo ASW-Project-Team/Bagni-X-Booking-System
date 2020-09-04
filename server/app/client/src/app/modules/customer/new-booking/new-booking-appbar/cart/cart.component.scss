@@ -1,0 +1,22 @@
+@import "~src/styles/utils";
+
+.cart-container {
+  border-radius: 48px;
+  background-color: $secondaryColor;
+  @include responsiveProp(padding-left, $defaultMargin);
+  @include responsiveProp(padding-right, $defaultMargin);
+  @include responsiveProp(padding-top, $quarterMargin);
+  @include responsiveProp(padding-bottom, $quarterMargin);
+  display: flex;
+  align-items: center;
+
+  h2 {
+    color: $primaryColor;
+  }
+
+  .cart-icon {
+    color: $primaryColor;
+    @include responsiveProp(margin-left, $defaultMargin);
+
+  }
+}

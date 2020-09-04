@@ -1,0 +1,51 @@
+@import "~src/styles/utils";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .description {
+    margin-bottom: $marginSmartphone;
+    width: 100%;
+    max-width: $textboxWidthDesktop + $marginDesktop * 4;
+
+    @include forDesktopOnly {
+      text-align: center;
+    }
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+
+    .input-field {
+      padding: 0;
+      @include responsiveProp(width, $widerTextboxWidth);
+    }
+
+    .warning-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      @include responsiveProp(margin-bottom, $defaultMargin);
+      text-align: left;
+
+      .warning-icon {
+        @include responsiveProp(margin-right, $defaultMargin);
+      }
+    }
+
+    .login-button {
+      @include button;
+      width: 100%;
+      max-width: $widerTextboxWidthDesktop;
+    }
+  }
+}

@@ -1,0 +1,73 @@
+@import "~src/styles/utils";
+
+.salable-card {
+  box-sizing: border-box;
+  box-shadow: $defaultShadow;
+  background: $backgroundColor;
+  width: 100%;
+  @include responsiveProp(padding, $defaultMargin);
+  @include responsiveProp(margin-bottom, $defaultMargin);
+  @include responsiveProp(border-radius, $defaultMargin);
+
+  .main-line {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    @include responsiveProp(margin-bottom, $defaultMargin);
+
+    .image {
+      @include responsiveProp(width, $cardImageSize);
+      @include responsiveProp(height, $cardImageSize);
+      @include responsiveProp(margin-right, $defaultMargin);
+      @include responsiveProp(border-radius, $halfMargin);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      flex-shrink: 0;
+    }
+
+    .lines {
+      h2.title {}
+      p.description {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .bottom-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .chips-sector {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: -4px; // the negative margin compensates the chips' margin top, useful when they wrap
+
+      @mixin salable-chip {
+        @include chip;
+        margin-top: 4px;
+        @include responsiveProp(margin-right, $halfMargin);
+      }
+
+      .price-chip {
+        @include salable-chip;
+        background-color: $secondaryColor;
+        color: $secondaryControlColor;
+      }
+
+      .sale {
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+
+.last-card {
+  margin-bottom: 0;
+}

@@ -1,0 +1,74 @@
+<form [formGroup]="formGroup">
+  <p>Da questa schermata puoi porre in atto la tua prenotazione, direttamente dall'app! In questa schermata, seleziona
+    il periodo nel quale intendi prenotare. Sulla base di questo verrà calcolata la disponibilità.</p>
+
+  <mat-radio-group color="primary" formControlName="dateRangeType" (change)="dateRangeTypeChange($event)">
+    <h2>
+      <mat-radio-button [value]="DATE_RANGE_TYPES.period" [checked]="true">Abbonamento</mat-radio-button>
+    </h2>
+    <div class="date-range-type-content">
+      <p>Prenota in un periodo che va da data a data.</p>
+
+      <mat-form-field appearance="outline" class="date-range-type-field-extended">
+        <mat-label>Inserisci un intervallo di date</mat-label>
+        <mat-date-range-input [min]="seasonMinDate" [max]="seasonMaxDate"
+                              [rangePicker]="pickerPeriod" formGroupName="periodDateRange">
+          <input matStartDate placeholder="Data di inizio" formControlName="periodDateFrom">
+          <input matEndDate placeholder="Data di fine" formControlName="periodDateTo">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="pickerPeriod"></mat-datepicker-toggle>
+        <mat-date-range-picker touchUi #pickerPeriod></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+
+    <h2>
+      <mat-radio-button [value]="DATE_RANGE_TYPES.day">Giornata intera</mat-radio-button>
+    </h2>
+    <div class="date-range-type-content">
+      <p>Effettua una prenotazione giornaliera.</p>
+
+      <mat-form-field appearance="outline" class="date-range-type-field-extended">
+        <mat-label>Seleziona la giornata</mat-label>
+        <input matInput [matDatepicker]="pickerDaily" placeholder="Es. 10/06/2020"
+               formControlName="dailyDatePicker" [min]="seasonMinDate" [max]="seasonMaxDate">
+        <mat-datepicker-toggle matSuffix [for]="pickerDaily"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #pickerDaily></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <h2>
+      <mat-radio-button [value]="DATE_RANGE_TYPES.halfDay">Mezza giornata</mat-radio-button>
+    </h2>
+    <div class="date-range-type-content">
+      <p>Effettua una prenotazione valida per mezza giornata.</p>
+
+      <div class="half-day-fields" formGroupName="halfDay">
+        <mat-form-field appearance="outline" class="half-day-field" >
+          <mat-label>Seleziona la giornata</mat-label>
+          <input matInput [matDatepicker]="pickerHalfDay" placeholder="Es. 10/06/2020"
+                 formControlName="halfDayDatePicker" [min]="seasonMinDate" [max]="seasonMaxDate" >
+          <mat-datepicker-toggle matSuffix [for]="pickerHalfDay"></mat-datepicker-toggle>
+          <mat-datepicker #pickerHalfDay touchUi></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-day-field">
+          <mat-label>Parte della giornata</mat-label>
+          <mat-select formControlName="halfDayPeriod">
+            <mat-option [value]="HALF_DAY_PERIODS.morning">
+              Mattina
+            </mat-option>
+            <mat-option [value]="HALF_DAY_PERIODS.afternoon">
+              Pomeriggio
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-radio-group>
+
+  <div class="buttons-container">
+    <button mat-raised-button color="primary" matStepperNext class="next-button">Prosegui</button>
+  </div>
+</form>
+
+

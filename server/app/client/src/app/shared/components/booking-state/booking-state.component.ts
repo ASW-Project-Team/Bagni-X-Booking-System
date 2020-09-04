@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking, BookingModel} from "../../models/booking.model";
-import {BookingState, BookingStateHandler} from "../../models/component-specific/booking-state.model";
+import {Booking} from "../../models/booking.model";
+import {BookingState, BookingStateModel} from "../../models/booking-state.model";
 
 /**
  * Component used to show the booking state in a structured way. The
@@ -13,12 +13,10 @@ import {BookingState, BookingStateHandler} from "../../models/component-specific
   styleUrls: ['./booking-state.component.scss']
 })
 export class BookingStateComponent implements OnInit {
-  @Input('booking') booking: Booking;
-  currentState: BookingState;
+  @Input() bookingState: BookingState;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.currentState = this.booking.getState();
   }
 }

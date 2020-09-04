@@ -10,3 +10,13 @@ export class BookingDatePipe extends
     return super.transform(value, "d MMM, h:mm");
   }
 }
+
+@Pipe({
+  name: 'bookingDateExtended'
+})
+export class BookingDatePipeExtended extends
+  DatePipe implements PipeTransform {
+  transform(value: any, args?: any): any {
+    return super.transform(value, "d MMMM, h:mm");
+  }
+}

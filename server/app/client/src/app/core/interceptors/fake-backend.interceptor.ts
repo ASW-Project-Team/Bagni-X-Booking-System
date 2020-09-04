@@ -9,10 +9,11 @@ import {
 import {Observable, ObservableInput, of, throwError} from 'rxjs';
 import {delay, mergeMap, materialize, dematerialize} from 'rxjs/operators';
 import {customersMock} from "../mocks/customer.mock";
-import {Customer} from "../../shared/models/customer";
+import {CustomerModel} from "../../shared/models/customer.model";
 import {newsFeedMock} from "../mocks/news.mock";
 import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
+import {availabilityMock} from "../mocks/availability.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -54,6 +55,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.deleteBooking(request);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.deleteCustomer(request);
+      case url.endsWith('api/new-booking/availability') && method === 'GET':
+        return FakeBackendInterceptor.getAvailability(request);
+      case url.endsWith('api/new-booking/checkout') && method === 'POST':
+        return FakeBackendInterceptor.generateBooking(request);
 
       // todo ecc.
 
@@ -72,7 +77,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return FakeBackendInterceptor.createError400('Email/password combination is not correct.');
     }
 
-    const customer: Customer = customersMock[0];
+    const customer: CustomerModel = customersMock[0];
     customer.jwt = FakeBackendInterceptor.fakeJwtToken;
     return FakeBackendInterceptor.createOkResponse(customer);
   }
@@ -86,7 +91,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     // always return the same user
-    const customer: Customer = customersMock[0];
+    const customer: CustomerModel = customersMock[0];
     customer.jwt = FakeBackendInterceptor.fakeJwtToken;
     return FakeBackendInterceptor.createOkResponse(customer);
   }
@@ -153,6 +158,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
 
   private static deleteCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse();
+  }
+
+  private static getAvailability(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(availabilityMock);
+  }
+
+  private static generateBooking(request: HttpRequest<unknown>): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse();
   }
 

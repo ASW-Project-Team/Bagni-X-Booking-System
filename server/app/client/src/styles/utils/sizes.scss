@@ -22,6 +22,7 @@ $buttonHeightSmartphone: 48px;
 $buttonHeightDesktop: 64px;
 $textboxWidthSmartphone: 100%;
 $textboxWidthDesktop: 260px;
+$widerTextboxWidthDesktop: 300px;
 
 
 // mapped desktop-smartphone values
@@ -35,6 +36,7 @@ $pageWidth: ("smartphone": $pageWidthSmartphone, "desktop": $pageWidthDesktop);
 $cardImageSize: ("smartphone": $cardImageSizeSmartphone, "desktop": $cardImageSizeDesktop);
 $buttonHeight: ("smartphone": $buttonHeightSmartphone, "desktop": $buttonHeightDesktop);
 $textboxWidth: ("smartphone": $textboxWidthSmartphone, "desktop": $textboxWidthDesktop);
+$widerTextboxWidth: ("smartphone": $textboxWidthSmartphone, "desktop": $widerTextboxWidthDesktop);
 
 
 // This mixin encapsulates and simplifies media queries for big screens.
