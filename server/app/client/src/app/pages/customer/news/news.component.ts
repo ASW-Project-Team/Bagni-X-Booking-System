@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiService} from "../../../core/api/api.service";
-import {News} from "../../../shared/models/news.model";
+import {News, NewsModel} from "../../../shared/models/news.model";
 
 @Component({
   selector: 'app-news',
@@ -14,7 +14,8 @@ export class NewsComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.getAllNews().subscribe(data => {
-      this.newsFeed = data;
+      const newsData = data as NewsModel[];
+      this.newsFeed = newsData.map(model => new News(model));
     });
   }
 }

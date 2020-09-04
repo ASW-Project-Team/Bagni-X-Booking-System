@@ -1,5 +1,6 @@
 import {SaleCardModel} from "./component-specific/sale-card.model";
 import {RankUmbrellaModel} from "./rank-umbrella.model";
+import {DateUtils} from "../utils/date.utils";
 
 export interface ServiceModel {
   _id: any;
@@ -34,5 +35,9 @@ export class Service implements ServiceModel, SaleCardModel {
 
   isOnSale(): boolean {
     return false;
+  }
+
+  calculatePrice(dateFrom: Date, dateTo: Date): number {
+    return DateUtils.getBookingDays(dateFrom, dateTo) * this.price;
   }
 }

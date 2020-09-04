@@ -60,6 +60,9 @@ import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { BookingSalableSelectorComponent } from './shared/components/booking-salable-selector/booking-salable-selector.component';
 import { QuantitySelectorComponent } from './shared/components/quantity-selector/quantity-selector.component';
+import { NewBookingAppbarComponent } from './shared/components/appbars/new-booking-appbar/new-booking-appbar.component';
+import { CartComponent } from './shared/components/cart/cart.component';
+import {MatBadgeModule} from '@angular/material/badge';
 
 
 @NgModule({
@@ -99,6 +102,8 @@ import { QuantitySelectorComponent } from './shared/components/quantity-selector
     BookingDatePipeExtended,
     BookingSalableSelectorComponent,
     QuantitySelectorComponent,
+    NewBookingAppbarComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
@@ -121,6 +126,7 @@ import { QuantitySelectorComponent } from './shared/components/quantity-selector
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatBadgeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

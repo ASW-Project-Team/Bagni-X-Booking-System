@@ -16,6 +16,7 @@ export class BookingSalableSelectorComponent implements OnInit {
 
   @Input() limitedItems: SalableModel[];
   @Input() unlimitedItem: SalableModel;
+  @Input() price: number;
 
   @Output() insertItem = new EventEmitter<SalableModel>();
   @Output() removeItem = new EventEmitter<SalableModel>();
@@ -58,7 +59,7 @@ export class BookingSalableSelectorComponent implements OnInit {
   decrementItem() {
     let item = this.cartedItems.pop();
     if (this.areItemsLimited()) {
-      this.limitedItems.push(item);
+      this.availableItems.push(item);
     }
 
     this.removeItem.emit(item)

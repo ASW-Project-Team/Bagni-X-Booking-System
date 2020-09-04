@@ -61,8 +61,9 @@ export class BookingDetailsComponent implements OnInit {
       this.bookingId = params.id;
       this.bookingTitle = params.title;
 
-      this.api.getBooking(this.bookingId).subscribe(bookingData => {
-        this.downloadedBooking = new Booking(bookingData);
+      this.api.getBooking(this.bookingId).subscribe(data => {
+        const bookingData = data as BookingModel;
+        this.downloadedBooking = bookingData ? new Booking(bookingData) : undefined;
       });
     });
   }

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {AppbarAction} from "../../../shared/models/component-specific/appbar.action";
 import {ApiService} from "../../../core/api/api.service";
-import {News} from "../../../shared/models/news.model";
+import {News, NewsModel} from "../../../shared/models/news.model";
 import {SharingService} from "../../../core/sharing/sharing.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -46,8 +46,9 @@ export class NewsDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.newsId = params.id;
       this.newsTitle = params.title;
-      this.api.getNews(this.newsId).subscribe(news => {
-        this.downloadedNews = news;
+      this.api.getNews(this.newsId).subscribe(data => {
+        const newsData = data as NewsModel;
+        this.downloadedNews = newsData ? new News(newsData) : undefined;
       });
     });
   }

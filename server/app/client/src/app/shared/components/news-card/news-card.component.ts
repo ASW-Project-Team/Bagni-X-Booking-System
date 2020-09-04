@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {News} from "../../models/news.model";
+import {NewsModel} from "../../models/news.model";
 
 /**
  * Card that represente a news from the feed.
@@ -11,7 +11,7 @@ import {News} from "../../models/news.model";
   styleUrls: ['./news-card.component.scss']
 })
 export class NewsCardComponent implements OnInit {
-  @Input('news') news: News;
+  @Input('news') news: NewsModel;
   @Input('is-last-card') isLastCard: boolean = false;
 
   constructor() { }

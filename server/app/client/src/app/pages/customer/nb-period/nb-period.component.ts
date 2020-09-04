@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Booking} from "../../../shared/models/booking.model";
 import {MatRadioChange} from "@angular/material/radio";
+import {DateUtils} from "../../../shared/utils/date.utils";
 
 @Component({
   selector: 'app-nb-period',
@@ -102,14 +103,14 @@ export class NbPeriodComponent implements OnInit {
         // in the range case, it assigns the first date as the date from,
         // meanwhile a day is added to the dateTo value, to include the last day completely
         dateFrom = new Date(this.formGroup.get('periodDateRange.periodDateFrom').value);
-        dateTo = NbPeriodComponent.addDay(new Date(this.formGroup.get('periodDateRange.periodDateTo').value));
+        dateTo = DateUtils.addDay(new Date(this.formGroup.get('periodDateRange.periodDateTo').value));
         break;
 
       case this.DATE_RANGE_TYPES.day:
         // in the daily case, it assigns the date as the date from,
         // meanwhile for the dateTo, a day is added to the first value, to include the day completely
         dateFrom = new Date(this.formGroup.get('dailyDatePicker').value);
-        dateTo = NbPeriodComponent.addDay(dateFrom);
+        dateTo = DateUtils.addDay(dateFrom);
         break;
 
       case this.DATE_RANGE_TYPES.halfDay:
@@ -117,30 +118,16 @@ export class NbPeriodComponent implements OnInit {
         // Precise hour values are just indicative, to represent the first or the last part of the day.
         if (this.formGroup.get('halfDay.halfDayPeriod').value == this.HALF_DAY_PERIODS.morning) {
           dateFrom = new Date(this.formGroup.get('halfDay.halfDayDatePicker').value);
-          dateTo = NbPeriodComponent.addHalfDay(dateFrom);
+          dateTo = DateUtils.addHalfDay(dateFrom);
         } else {
-          dateFrom = NbPeriodComponent.addHalfDay(new Date(this.formGroup.get('halfDay.halfDayDatePicker').value));
-          dateTo = NbPeriodComponent.addHalfDay(dateFrom);
+          dateFrom = DateUtils.addHalfDay(new Date(this.formGroup.get('halfDay.halfDayDatePicker').value));
+          dateTo = DateUtils.addHalfDay(dateFrom);
         }
         break;
     }
     this.booking.dateFrom = dateFrom;
     this.booking.dateTo = dateTo;
     this.bookingChange.emit(this.booking);
-  }
-
-
-  // helpers
-  private static addDay(date: Date): Date {
-    let newDate = new Date(date)
-    newDate.setDate(date.getDate() + 1);
-    return newDate;
-  }
-
-  private static addHalfDay(date: Date): Date {
-    let newDate = new Date(date)
-    newDate.setTime(date.getTime() + 12*60*60*1000);
-    return newDate;
   }
 }
 

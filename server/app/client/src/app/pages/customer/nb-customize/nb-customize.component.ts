@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Booking} from "../../../shared/models/booking.model";
-import {AvailabilityData} from "../../../shared/models/availability-data.model";
+import {AvailabilityData} from "../../../shared/models/responses/availability-data.model";
 import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
 import {Service} from "../../../shared/models/service.model";
 import {Umbrella} from "../../../shared/models/umbrella.model";
@@ -16,6 +16,7 @@ export class NbCustomizeComponent implements OnInit {
   @Output() bookingChange: EventEmitter<Booking> = new EventEmitter<Booking>();
 
   availableRankings: RankUmbrella[];
+  availableUmbrellas: Umbrella[];
   availableServices: Service[];
 
   @Output() customizationValidatorChange = new EventEmitter<boolean>();
@@ -31,8 +32,9 @@ export class NbCustomizeComponent implements OnInit {
 
   setAvailableItems(availability: AvailabilityData) {
     if (availability != undefined) {
-      this.availableRankings = availability.rankUmbrellas.map(rankModel => new RankUmbrella(rankModel))
-        .filter(rank => rank.availableUmbrellas && rank.availableUmbrellas.length > 0);
+      this.availableUmbrellas = availability.availableUmbrellas.map(model => new Umbrella(model));
+
+      this.availableRankings = availability.rankUmbrellas.map(rankModel => new RankUmbrella(rankModel));
 
       this.availableServices = availability.services.map(serviceModel => new Service(serviceModel))
         .filter(service => service.price > 0 && service.umbrellaRelated);
@@ -40,6 +42,7 @@ export class NbCustomizeComponent implements OnInit {
     } else {
       this.availableServices = undefined;
       this.availableRankings = undefined;
+      this.availableUmbrellas = undefined;
       // if going back to period, invalidate booking
       this.booking.umbrellas = [];
       this.booking.services = [];
@@ -49,9 +52,16 @@ export class NbCustomizeComponent implements OnInit {
     }
   }
 
+  getRankUmbrellas(rank: RankUmbrella): Umbrella[] {
+    return this.availableUmbrellas
+      .filter(umbrella => umbrella.rankId == rank._id)
+      .map(umbrella => umbrella.generateBookableClone(rank));
+  }
+
   insertUmbrella(item: SalableModel) {
     let umbrella = item as Umbrella;
     this.booking.umbrellas.push(umbrella);
+    this.booking.price += umbrella.rank.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
     this.customizationValidatorChange.emit(true);
     this.bookingChange.emit(this.booking);
   }
@@ -63,6 +73,7 @@ export class NbCustomizeComponent implements OnInit {
     if (index >= 0) {
       this.booking.umbrellas.splice(index, 1);
     }
+    this.booking.price -= umbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
 
     if (this.booking.umbrellas.length <= 0) {
       this.customizationValidatorChange.emit(false);
@@ -74,6 +85,7 @@ export class NbCustomizeComponent implements OnInit {
   insertService(item: SalableModel) {
     let service = item as Service;
     this.booking.services.push(service);
+    this.booking.price += service.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
     this.bookingChange.emit(this.booking);
   }
 
@@ -84,6 +96,7 @@ export class NbCustomizeComponent implements OnInit {
     if (index >= 0) {
       this.booking.services.splice(index, 1);
     }
+    this.booking.price -= service.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
     this.bookingChange.emit(this.booking);
   }
 }

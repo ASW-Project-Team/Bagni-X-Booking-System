@@ -5,7 +5,8 @@
     <h1>Ombrelloni</h1>
     <ul>
       <li *ngFor="let rank of availableRankings">
-        <app-booking-salable-selector [cardContent]="rank" [limitedItems]="rank.getBookableUmbrellas()"
+        <app-booking-salable-selector [cardContent]="rank" [limitedItems]="getRankUmbrellas(rank)"
+                                      [price]="rank.calculatePrice(booking.dateFrom, booking.dateTo)"
                                       [bookingStartDate]="booking.dateFrom" [bookingEndDate]="booking.dateTo"
                                       [isLastCard]="availableRankings.indexOf(rank) >= availableRankings.length - 1"
                                       (insertItem)="insertUmbrella($event)" (removeItem)="removeUmbrella($event)">
@@ -19,6 +20,7 @@
     <ul>
       <li *ngFor="let service of availableServices">
         <app-booking-salable-selector [cardContent]="service" [unlimitedItem]="service"
+                                      [price]="service.calculatePrice(booking.dateFrom, booking.dateTo)"
                                       [bookingStartDate]="booking.dateFrom" [bookingEndDate]="booking.dateTo"
                                       [isLastCard]="availableServices.indexOf(service) >= availableServices.length - 1"
                                       (insertItem)="insertService($event)" (removeItem)="removeService($event)">

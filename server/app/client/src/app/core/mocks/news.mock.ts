@@ -1,7 +1,7 @@
-import {News} from "../../shared/models/news.model";
+import {NewsModel} from "../../shared/models/news.model";
 
 
-export const newsFeedMock: News[] = [
+export const newsFeedMock: NewsModel[] = [
   {
     _id: "0",
     title: "Una super notizia notiziona ona ona",

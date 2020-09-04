@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeCard} from "../../../shared/models/home-card.model";
 import {ApiService} from "../../../core/api/api.service";
-import {ServiceModel} from "../../../shared/models/service.model";
-import {RankUmbrellaModel} from "../../../shared/models/rank-umbrella.model";
-import {HomeData} from "../../../shared/models/home-data.model";
+import {HomeData} from "../../../shared/models/responses/home-data.model";
 
 @Component({
   selector: 'app-home',
@@ -11,7 +8,6 @@ import {HomeData} from "../../../shared/models/home-data.model";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
   homeData: HomeData;
 
   constructor(private apiService: ApiService) { }
@@ -21,5 +17,4 @@ export class HomeComponent implements OnInit {
       this.homeData = data;
     });
   }
-
 }

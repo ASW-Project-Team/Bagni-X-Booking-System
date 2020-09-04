@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Booking, BookingModel} from "../../../shared/models/booking.model";
 import {ApiService} from "../../../core/api/api.service";
+import {NewsModel} from "../../../shared/models/news.model";
 
 
 @Component({
@@ -15,10 +16,8 @@ export class BookingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.getUserBookings().subscribe(data => {
-      this.bookings = [];
-      data.forEach(bookingData => {
-        this.bookings.push(new Booking(bookingData));
-      });
+      const bookingsData = data as BookingModel[];
+      this.bookings = bookingsData.map(model => new Booking(model));
     });
   }
 }

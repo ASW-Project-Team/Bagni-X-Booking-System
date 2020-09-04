@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {News} from "../../shared/models/news.model";
+import {NewsModel} from "../../shared/models/news.model";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class SharingService {
    * @param news the news
    * @return true if the sharing api is available.
    */
-  public shareNews(news: News): boolean {
+  public shareNews(news: NewsModel): boolean {
     let sharingApiAvailable = false;
 
     const sharedUrl = "http://localhost:4200/news/" + news._id;

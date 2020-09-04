@@ -1,8 +1,53 @@
-import {HomeData} from "../../shared/models/home-data.model";
-import {AvailabilityData} from "../../shared/models/availability-data.model";
-import {RankUmbrellaModel} from "../../shared/models/rank-umbrella.model";
+import {AvailabilityData} from "../../shared/models/responses/availability-data.model";
 
 export const availabilityMock: AvailabilityData = {
+  availableUmbrellas: [
+    {
+      id: "1",
+      number: 1,
+      rankId: "0",
+    },
+    {
+      id: "2",
+      number: 2,
+      rankId: "0",
+    },
+    {
+      id: "3",
+      number: 3,
+      rankId: "0",
+    },
+    {
+      id: "14",
+      number: 14,
+      rankId: "1",
+    },
+    {
+      id: "15",
+      number: 15,
+      rankId: "1",
+    },
+    {
+      id: "16",
+      number: 16,
+      rankId: "1",
+    },
+    {
+      id: "27",
+      number: 27,
+      rankId: "2",
+    },
+    {
+      id: "28",
+      number: 28,
+      rankId: "2",
+    },
+    {
+      id: "29",
+      number: 29,
+      rankId: "2",
+    },
+  ],
   rankUmbrellas: [
     {
       _id: "0",
@@ -20,24 +65,6 @@ export const availabilityMock: AvailabilityData = {
           dateTo: new Date("2020-10-18"),
         }
       ],
-      availableUmbrellas: [
-        {
-          id: "1",
-          number: 1,
-        },
-        {
-          id: "2",
-          number: 2,
-        },
-        {
-          id: "3",
-          number: 3,
-        },
-        {
-          id: "4",
-          number: 4,
-        }
-      ],
     },
 
     {
@@ -49,20 +76,6 @@ export const availabilityMock: AvailabilityData = {
       fromUmbrella: 21,
       toUmbrella: 40,
       sales: [],
-      availableUmbrellas: [
-        {
-          id: "1",
-          number: 21,
-        },
-        {
-          id: "2",
-          number: 22,
-        },
-        {
-          id: "4",
-          number: 24,
-        }
-      ],
     },
     {
       _id: "2",
@@ -78,28 +91,6 @@ export const availabilityMock: AvailabilityData = {
           percent: 20,
           dateFrom: new Date("2020-08-16"),
           dateTo: new Date("2020-08-18"),
-        }
-      ],
-      availableUmbrellas: [
-        {
-          id: "1",
-          number: 41,
-        },
-        {
-          id: "2",
-          number: 42,
-        },
-        {
-          id: "3",
-          number: 43,
-        },
-        {
-          id: "4",
-          number: 44,
-        },
-        {
-          id: "4",
-          number: 44,
         }
       ],
     }

@@ -1,6 +1,7 @@
-import {Sale} from "./sale.model";
+import {Sale, SaleModel} from "./sale.model";
 import {Umbrella, UmbrellaModel} from "./umbrella.model";
 import {SaleCardModel} from "./component-specific/sale-card.model";
+import {DateUtils} from "../utils/date.utils";
 
 export interface RankUmbrellaModel {
   _id: any;
@@ -10,13 +11,11 @@ export interface RankUmbrellaModel {
   price: number;
   fromUmbrella: number;
   toUmbrella: number;
-  sales: Sale[];
-  availableUmbrellas?: UmbrellaModel[]
+  sales: SaleModel[];
 }
 
 export class RankUmbrella implements RankUmbrellaModel, SaleCardModel {
   _id: any;
-  availableUmbrellas: UmbrellaModel[];
   description: string;
   fromUmbrella: number;
   image: string;
@@ -27,14 +26,13 @@ export class RankUmbrella implements RankUmbrellaModel, SaleCardModel {
 
   constructor(model: RankUmbrellaModel) {
     this._id = model._id;
-    this.availableUmbrellas = model.availableUmbrellas;
     this.description = model.description;
     this.fromUmbrella = model.fromUmbrella;
     this.toUmbrella = model.toUmbrella;
     this.image = model.image;
     this.name = model.name;
     this.price = model.price;
-    this.sales = model.sales
+    this.sales = model.sales.map(model => new Sale(model));
   }
 
   get title(): string {
@@ -46,21 +44,45 @@ export class RankUmbrella implements RankUmbrellaModel, SaleCardModel {
   }
 
   isOnSale(dateFrom: Date, dateTo: Date): boolean {
-    return this.onSaleDuringPeriod(dateFrom , dateTo);
+    return this.onSaleDuringPeriod(dateFrom, dateTo);
   }
 
   onSaleDuringPeriod(dateFrom: Date, dateTo: Date): boolean {
     let onSaleDuringPeriod = false;
     this.sales.forEach(sale => {
-        if (sale.dateFrom.getTime() <= dateTo.getTime() &&
-          sale.dateTo.getTime() >= dateFrom.getTime()) {
-          onSaleDuringPeriod = true;
-        }
-      });
+      if (sale.onPeriod(dateFrom, dateTo)) {
+        onSaleDuringPeriod = true;
+      }
+    });
     return onSaleDuringPeriod;
   }
 
-  getBookableUmbrellas(): Umbrella[] {
-    return this.availableUmbrellas.map(umbrModel => new Umbrella(umbrModel).setBookable(this));
+  calculatePrice(dateFrom: Date, dateTo: Date): number {
+    const totalDays = DateUtils.getBookingDays(dateFrom, dateTo);
+    let total = 0;
+    let unsaledDays = totalDays;
+
+    // applies only the bigger sale of the period, if present
+    let biggerSale: Sale;
+
+    const salesOnPeriod = this.sales
+      .filter(sale => sale.onPeriod(dateFrom, dateTo));
+    if (salesOnPeriod.length > 0) {
+      biggerSale = salesOnPeriod.reduce((prevSale, currSale) => {
+        return prevSale.percent >= currSale.percent ? prevSale : currSale
+      });
+    }
+
+    if (biggerSale) {
+      const saleDateFrom = dateFrom.getTime() <= biggerSale.dateFrom.getTime() ? biggerSale.dateFrom : dateFrom;
+      const saleDateTo = dateTo.getTime() <= biggerSale.dateTo.getTime() ? dateTo : biggerSale.dateTo;
+      const saledDays = DateUtils.getBookingDays(saleDateFrom, saleDateTo);
+
+      total += saledDays * this.price * ((100 - biggerSale.percent) / 100);
+      unsaledDays -= saledDays;
+    }
+
+    total += unsaledDays * this.price;
+    return total;
   }
 }

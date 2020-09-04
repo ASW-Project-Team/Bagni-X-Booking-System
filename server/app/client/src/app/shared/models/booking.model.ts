@@ -1,7 +1,8 @@
-import {ServiceModel} from "./service.model";
-import {UmbrellaModel} from "./umbrella.model";
+import {Service, ServiceModel} from "./service.model";
+import {Umbrella, UmbrellaModel} from "./umbrella.model";
 import {CostItem} from "./component-specific/booking-summary.model";
 import {BookingState, BookingStateHandler} from "./component-specific/booking-state.model";
+import {map} from "rxjs/operators";
 
 export interface BookingModel {
   id?: string,
@@ -25,8 +26,8 @@ export class Booking implements BookingModel {
   dateFrom: Date;
   dateTo: Date;
   price: number;
-  services: ServiceModel[];
-  umbrellas: UmbrellaModel[];
+  services: Service[];
+  umbrellas: Umbrella[];
   userId: string;
 
   constructor(bookingModel: BookingModel) {
@@ -36,8 +37,8 @@ export class Booking implements BookingModel {
     this.dateFrom = bookingModel.dateFrom;
     this.dateTo = bookingModel.dateTo;
     this.price = bookingModel.price;
-    this.services = bookingModel.services;
-    this.umbrellas = bookingModel.umbrellas;
+    this.services = bookingModel.services.map(model => new Service(model));
+    this.umbrellas = bookingModel.umbrellas.map(model => new Umbrella(model));
     this.userId = bookingModel.userId;
   }
 
@@ -100,44 +101,21 @@ export class Booking implements BookingModel {
 
 
   /**
-   * Expresses the booking in terms of days. If the booking time is lower than a day, it
-   * is automatically set to half day (0,5). Otherwise, days are computed.
-   */
-  public getBookingDays(): number {
-    let millisDiff = Math.abs(this.dateFrom.getTime() - this.dateTo.getTime());
-
-    const MILLIS_IN_SECOND = 1000;
-    const SECONDS_IN_MINUTES = 60;
-    const MINUTES_IN_HOUR = 60;
-    const HOURS_IN_DAYS = 24;
-    const MILLIS_IN_DAY = MILLIS_IN_SECOND * SECONDS_IN_MINUTES * MINUTES_IN_HOUR * HOURS_IN_DAYS;
-
-    if (millisDiff < MILLIS_IN_DAY) {
-      // considerate half day, if booked for less than a day
-      return 0.5;
-    } else {
-      // consider days between otherwise
-      return Math.ceil(millisDiff / MILLIS_IN_DAY);
-    }
-  }
-
-
-  /**
    * Returns an array representing all cost items composing the booking. It is useful to
-   * display the summary.
+   * display the summary. Assumes that each umbrella has complete rank information inside.
    */
   public computeCostItems(): CostItem[] {
     let costItems: CostItem[] = [];
 
     this.umbrellas.forEach(umbrella => {
       costItems.push({
-        description: this.getTitle(),
-        amount: umbrella.rank.price * this.getBookingDays()
+        description: umbrella.getTitle(),
+        amount: umbrella.rank.calculatePrice(this.dateFrom, this.dateTo)
       });
     });
 
     // the number indicates the occurrences of a given service inside the booking
-    let groupedServices: Map<ServiceModel, number> = new Map<ServiceModel, number>();
+    let groupedServices: Map<Service, number> = new Map<Service, number>();
 
     this.services.forEach(service => {
       if (groupedServices.has(service)) {
@@ -153,7 +131,7 @@ export class Booking implements BookingModel {
     groupedServices.forEach((occurrences, service) => {
       costItems.push({
         description: service.title + " x" + occurrences,
-        amount: service.price * occurrences
+        amount: service.calculatePrice(this.dateFrom, this.dateTo) * occurrences
       });
     });
 
