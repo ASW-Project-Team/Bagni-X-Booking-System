@@ -10,12 +10,14 @@ module.exports = function(mongoose) {
 
 const initializeModel = function(mongoose) {
     const Schema = mongoose.Schema;
+    const Float = require('mongoose-float').loadType(mongoose);
+
 
     // price could change thanks to sales used in catalog
     const saleSchema = new Schema({
         _id: Schema.Types.ObjectID,
         percent: {
-            type: Number,
+            type: Float,
             min: [0, 'Too small'],
         },
         dateFrom: {type: Date, $gte: Date.now()},

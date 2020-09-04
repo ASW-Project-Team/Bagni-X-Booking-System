@@ -134,7 +134,7 @@ function checkSales(sales){
         let dateFrom = new Date(saleResult.dateFrom);
         let dateTo = new Date(saleResult.dateTo);
 
-        if (!(commonController.typeOfNumber(saleResult.percent)
+        if (!((saleResult.percent && saleResult.percent<=1)
             && (dateTo)
             && (dateFrom)
             && (dateTo.getTime() >= dateFrom.getTime())
@@ -321,6 +321,7 @@ module.exports.createSale = function (req, res) {
             commonController.areRequiredFieldsPresent(req, res, () => {
 
                 if (commonController.typeOfNumber(req.body.percent)
+                    && req.body.percent <= 1
                     && commonController.typeOfString(req.body.dateFrom)
                     && commonController.typeOfString(req.body.dateTo)
                     && new Date(req.body.dateFrom).getTime() >= Date.now()
@@ -403,7 +404,7 @@ module.exports.updateSale = function (req, res) {
 
         // If par is present find the specified param ...
         if (req.params.id
-            && (!req.body.percent || commonController.typeOfNumber(req.body.percent))
+            && (!req.body.percent ||  req.body.percent <= 1)
             && (!req.body.dateFrom || commonController.typeOfString(req.body.dateFrom))
             && (!req.body.dateTo || commonController.typeOfString(req.body.dateTo))) {
 
