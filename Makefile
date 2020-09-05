@@ -71,7 +71,7 @@ local: build-local up-local
 
 .PHONY: build-local
 build-local:
-	cd ./client npm install @angular/cli && npm install && npm run build --prod
+	cd ./client npm install @angular/cli && npm install && npm run build-prod
 	mv ./client/dist/client/ ./server/client/
 	cd ./server && npm install
 

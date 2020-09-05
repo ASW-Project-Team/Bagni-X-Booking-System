@@ -9,7 +9,7 @@ COPY client/ .
 # Copies all client files inside the container.
 # node_modules are ignored, as part of .dockerignore
 
-RUN npm install @angular/cli && npm install && npm run build --prod
+RUN npm install @angular/cli && npm install && npm run build-prod
 # Builds the client in production mode. This is necessary to enable
 # the right variable inside the build, such as the port, and to enable the
 # service worker and PWA functionalities (disabled in dev mode)
