@@ -5,16 +5,27 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 const path = require('path');
 const compression = require("compression");
-const DOCKER = false;
+let DOCKER = false;
 
 // authentication middleware
 const jwt = require('./src/authentication/jwtMiddleware');
 
-global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client/dist/client';
+global.ANGULAR_CLIENT_PATH = path.resolve(__dirname) + '/client';
 const port = 3000;
 
 const main = function () {
-    waitForMongoInit();
+    mongoose.connect(
+        // localhost x tests
+        'mongodb://mongodb:27017/bagni_X_booking_system_db',
+        {
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            useUnifiedTopology: true,
+            connectTimeoutMS: 30
+        })
+        .then(() => console.log('MongoDB Connected'))
+        .catch((err) => console.log('Connection failed!' + err));
+
 
     // Permits only requests from this domain inside the API
     app.use(cors({

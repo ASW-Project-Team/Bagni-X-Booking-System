@@ -46,6 +46,8 @@ Si pensa inoltre di organizzare il lavoro tramite metodologie Scrum e GitHub Flo
 
 ## Deployment
 Un makefile è fornito all'interno del progetto, per rendere immediato il dispiegamento dei container su tecnologia Docker. Tra i comandi più importanti:
-- `make all`: dispiega tutti container utilizzati per database e web server (per l'attivazione in produzione)
-- `make build-ws-local`: genera dipendenze e build per web server e client Angular, ed avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker (utile in fase di sviluppo);
-- `make up-ws-local`: avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker, e saltando la fase di generazione di dipendenze e build (utile in fase di sviluppo, per un deployment più rapido dopo la prima generazione delle stesse);
+- `make` (o `make all`): dispiega tutti container utilizzati per database e web server (per l'attivazione in produzione)
+- `make build-local`: genera dipendenze e build per web server e client Angular, senza passare per la containerizzazione Docker (utile in fase di sviluppo);
+- `make up-local`: avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker (utile in fase di sviluppo);
+- `make local`: genera le dipendenze e avvia l'istanza locale.
+
