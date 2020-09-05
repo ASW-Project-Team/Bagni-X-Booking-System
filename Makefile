@@ -1,19 +1,5 @@
 SHELL=/bin/bash
 
-DB_SERVICE_NAME=database
-WS_SERVICE_NAME=server
-
-DB_IMAGE=databaseimage
-WS_IMAGE=serverimage
-
-NETWORK=internal
-
-DB_PORTS="27017-27019:27017-27019"
-WS_PORTS="3000:3000"
-
-DB_PATH=./database
-WS_PATH=./server
-
 .PHONY: all
 all: build up
 
