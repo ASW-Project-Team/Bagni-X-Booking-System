@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1599407438045,
+  "timestamp": 1599410525172,
   "index": "/Bagni-X-Booking-System/index.html",
   "assetGroups": [
     {
@@ -15,7 +15,7 @@
         "/Bagni-X-Booking-System/favicon.ico",
         "/Bagni-X-Booking-System/humans.txt",
         "/Bagni-X-Booking-System/index.html",
-        "/Bagni-X-Booking-System/main.aafb54eda8b02feb5db7.js",
+        "/Bagni-X-Booking-System/main.7274ef500072bd8b9dda.js",
         "/Bagni-X-Booking-System/manifest.webmanifest",
         "/Bagni-X-Booking-System/polyfills.a4021de53358bb0fec14.js",
         "/Bagni-X-Booking-System/robots.txt",
@@ -81,8 +81,8 @@
     "/Bagni-X-Booking-System/favicon-32x32.png": "46beec18a06a1be1a981198813505910b9d99c8d",
     "/Bagni-X-Booking-System/favicon.ico": "e87db93f662433e1ed85e56a5bb948f74e4f2298",
     "/Bagni-X-Booking-System/humans.txt": "d9f72fe11ab31e4f5c75d38cf927a2eda2578651",
-    "/Bagni-X-Booking-System/index.html": "ee5bc1e85b537156300512e62b9500a5bfb3db1f",
-    "/Bagni-X-Booking-System/main.aafb54eda8b02feb5db7.js": "b4d51672b219e535f953c40b0a0268343ab1ac0e",
+    "/Bagni-X-Booking-System/index.html": "ae38d5288102d64b297205aac80824737292d980",
+    "/Bagni-X-Booking-System/main.7274ef500072bd8b9dda.js": "8bbbeb66eaef17fe10494f6460fc08d496c53a34",
     "/Bagni-X-Booking-System/manifest.webmanifest": "41b3c520c6a2eb8c73e5ff016d6cec33946c1251",
     "/Bagni-X-Booking-System/mstile-150x150.png": "616ffdf666d3f4dbcece0f9ca0a89fbb3a9fe5a7",
     "/Bagni-X-Booking-System/polyfills.a4021de53358bb0fec14.js": "b47435a9ef2a4829f2f9dfd35599bde3614981b1",
