@@ -1,0 +1,112 @@
+{
+  "configVersion": 1,
+  "timestamp": 1599405979771,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/browserconfig.xml",
+        "/favicon.ico",
+        "/humans.txt",
+        "/index.html",
+        "/main.aafb54eda8b02feb5db7.js",
+        "/manifest.webmanifest",
+        "/polyfills.a4021de53358bb0fec14.js",
+        "/robots.txt",
+        "/runtime.e227d1a0e31cbccbf8ec.js",
+        "/styles.3f4cee84d09bb2b8be37.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/android-chrome-192x192.png",
+        "/android-chrome-256x256.png",
+        "/apple-touch-icon.png",
+        "/assets/home-card-1.jpg",
+        "/assets/home-card-2.jpg",
+        "/assets/home-card-3.jpg",
+        "/assets/icons/android-chrome-192x192.png",
+        "/assets/icons/android-chrome-256x256.png",
+        "/assets/icons/apple-touch-icon.png",
+        "/assets/icons/favicon-16x16.png",
+        "/assets/icons/favicon-32x32.png",
+        "/assets/icons/favicon.ico",
+        "/assets/icons/mstile-150x150.png",
+        "/assets/icons/safari-pinned-tab.svg",
+        "/assets/logo.png",
+        "/assets/main-card.jpg",
+        "/assets/mdi.svg",
+        "/favicon-16x16.png",
+        "/favicon-32x32.png",
+        "/mstile-150x150.png",
+        "/safari-pinned-tab.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/android-chrome-192x192.png": "c97911cc27e6cf9c03fa6b8432f8fcaf9f5891ff",
+    "/android-chrome-256x256.png": "050cd75ffd0531432f4130470e08bd8a9e8e7674",
+    "/apple-touch-icon.png": "cf72c5075f8bd5f0db412cebdf7074cfbec2d306",
+    "/assets/home-card-1.jpg": "3b71614b39e9f382bbc420bd7ae575f2b776df50",
+    "/assets/home-card-2.jpg": "25c9a0b87b2ae36b9cec5f912440155e75df6b19",
+    "/assets/home-card-3.jpg": "b5ac2fe150b11e59ddc0b4a662573b8ca0e0c925",
+    "/assets/icons/android-chrome-192x192.png": "c97911cc27e6cf9c03fa6b8432f8fcaf9f5891ff",
+    "/assets/icons/android-chrome-256x256.png": "050cd75ffd0531432f4130470e08bd8a9e8e7674",
+    "/assets/icons/apple-touch-icon.png": "cf72c5075f8bd5f0db412cebdf7074cfbec2d306",
+    "/assets/icons/favicon-16x16.png": "39c2d12e48f180dcb9f869286bcb9c7bf6666307",
+    "/assets/icons/favicon-32x32.png": "46beec18a06a1be1a981198813505910b9d99c8d",
+    "/assets/icons/favicon.ico": "e87db93f662433e1ed85e56a5bb948f74e4f2298",
+    "/assets/icons/mstile-150x150.png": "616ffdf666d3f4dbcece0f9ca0a89fbb3a9fe5a7",
+    "/assets/icons/safari-pinned-tab.svg": "1c668142476b17753ecfcf9fdabec93d364fc179",
+    "/assets/logo.png": "ba44ac900f412ccbe042ba9eabf8446f61045f6f",
+    "/assets/main-card.jpg": "4f6a5103ffd40198d64c4a1e8af7209dd59b2874",
+    "/assets/mdi.svg": "e964364346094d7cffbb3524cbaa186df497fc68",
+    "/browserconfig.xml": "6acda53caf529a23d472aa20cbed5d62d876fab9",
+    "/favicon-16x16.png": "39c2d12e48f180dcb9f869286bcb9c7bf6666307",
+    "/favicon-32x32.png": "46beec18a06a1be1a981198813505910b9d99c8d",
+    "/favicon.ico": "e87db93f662433e1ed85e56a5bb948f74e4f2298",
+    "/humans.txt": "d9f72fe11ab31e4f5c75d38cf927a2eda2578651",
+    "/index.html": "c0cc6e3d03767122d70363c569a6087d7c5a85e4",
+    "/main.aafb54eda8b02feb5db7.js": "b4d51672b219e535f953c40b0a0268343ab1ac0e",
+    "/manifest.webmanifest": "41b3c520c6a2eb8c73e5ff016d6cec33946c1251",
+    "/mstile-150x150.png": "616ffdf666d3f4dbcece0f9ca0a89fbb3a9fe5a7",
+    "/polyfills.a4021de53358bb0fec14.js": "b47435a9ef2a4829f2f9dfd35599bde3614981b1",
+    "/robots.txt": "4252fc0281c9962dac6783e00e30cb449c7d48c2",
+    "/runtime.e227d1a0e31cbccbf8ec.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "/safari-pinned-tab.svg": "1c668142476b17753ecfcf9fdabec93d364fc179",
+    "/styles.3f4cee84d09bb2b8be37.css": "1bb99f31ad9f8b74aa6d0be3d4ca8a4b620584fe"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
