@@ -15,7 +15,7 @@ export const bookingsMock: BookingModel[] = [
         number: 10,
         rank: {
           _id: "0",
-          image: "/assets/home-card-1.jpg",
+          image: "assets/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
           price: 12,
@@ -36,7 +36,7 @@ export const bookingsMock: BookingModel[] = [
       {
         _id: "0",
         price: 2,
-        image: "/assets/home-card-1.jpg",
+        image: "assets/home-card-1.jpg",
         title: "Lettino deluxe",
         umbrellaRelated: true,
         description: "Tra le tipologie di lettino offerte, questa è quella super.",
@@ -44,7 +44,7 @@ export const bookingsMock: BookingModel[] = [
       {
         _id: "1",
         price: 3,
-        image: "/assets/home-card-1.jpg",
+        image: "assets/home-card-1.jpg",
         title: "Cabina",
         umbrellaRelated: true,
         description: "Con un piccolo supplemento puoi aggiungere una cabina personale alla prenotazione.",
@@ -65,7 +65,7 @@ export const bookingsMock: BookingModel[] = [
         number: 10,
         rank: {
           _id: "0",
-          image: "/assets/home-card-1.jpg",
+          image: "assets/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
           price: 12,
@@ -86,7 +86,7 @@ export const bookingsMock: BookingModel[] = [
         number: 22,
         rank: {
           _id: "0",
-          image: "/assets/home-card-2.jpg",
+          image: "assets/home-card-2.jpg",
           name: "Seconda fila",
           description: "Ombrelloni in prima fila i più belli.",
           price: 13.50,
@@ -107,7 +107,7 @@ export const bookingsMock: BookingModel[] = [
       {
         _id: "0",
         price: 2,
-        image: "/assets/home-card-1.jpg",
+        image: "assets/home-card-1.jpg",
         title: "Lettino deluxe",
         umbrellaRelated: true,
         description: "Tra le tipologie di lettino offerte, questa è quella super.",

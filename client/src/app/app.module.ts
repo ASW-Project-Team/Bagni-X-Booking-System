@@ -140,7 +140,7 @@ export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer){
     registerLocaleData(localeIt, 'it');
     matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('../assets/mdi.svg')
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg')
     );
   }
 }
