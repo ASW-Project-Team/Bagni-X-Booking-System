@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - master
-      - feature/dockerization # todo only before dockerization
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,8 +15,8 @@ jobs:
         uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.3.1
         with:
           github_access_token: ${{ secrets.ACCESS_TOKEN }}
-          build_configuration: production # The build environment for the app
-          base_href: /Bagni-X-Booking-System/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+          build_configuration: production
+          base_href: /Bagni-X-Booking-System/
           deploy_branch: gh-pages
           angular_project_dir: ./client/
           angular_dist_build_folder: client/dist/client
