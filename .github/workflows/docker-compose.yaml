@@ -2,7 +2,10 @@
 # It builds the mongodb image, compiles the Angular client and tries to fetch
 # dependencies.
 name: Docker Compose CI
-on: push
+on:
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
