@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   mongodb:
-    image: mongo:latest
+    image: mongo:4.4
     container_name: mongodb
     restart: always
     environment:
@@ -13,29 +13,19 @@ services:
       - 27017:27017
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    networks:
-      - internal
 
   server:
     build:
       context: .
       dockerfile: Dockerfile
-    image: server
+    container_name: server
     depends_on:
       - mongodb
     ports:
       - 3000:3000
-    networks:
-      - internal
     command: sh -c "/wait && node server.js"
     environment:
       - WAIT_HOSTS=mongodb:27017
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
-
-networks:
-  internal:
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: "brinternal"

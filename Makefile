@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 
-.PHONY: all
-all: build up
+.PHONY: deploy
+deploy: build up
 
 .PHONY: build
 build:
@@ -27,16 +27,26 @@ stop:
 rm:
 	docker-compose rm
 
-.PHONY: local
-local: build-local up-local
+.PHONY: server-dev
+server-dev: build-server-dev up-server-dev
 
-.PHONY: build-local
-build-local:
-	cd ./client npm install @angular/cli && npm install && npm run build-prod
-	mv ./client/dist/client/ ./server/client/
+.PHONY: build-server-dev
+build-server-dev:
 	cd ./server && npm install
 
-.PHONY: up-local
-up-local:
-	cd ./server && node server.js
+.PHONY: up-server-dev
+up-server-dev:
+	cd ./server && npm run dev
+
+.PHONY: client-dev
+client-dev: build-client-dev up-client-dev
+
+.PHONY: build-client-dev
+build-client-dev:
+	cd ./client npm install @angular/cli && npm install && npm run build
+
+.PHONY: up-client-dev
+up-client-dev:
+	ng serve
+
 

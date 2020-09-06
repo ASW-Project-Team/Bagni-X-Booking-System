@@ -38,4 +38,7 @@ RUN chmod +x /wait
 # launch of this, in the docker-compose configuration
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD npm run prod
+# Launches the script 'prod' specified inside the package.json.
+# It essentially starts the server with the --prod parameter, activating
+# the Docker server configuration.
