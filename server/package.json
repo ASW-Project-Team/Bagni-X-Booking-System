@@ -8,7 +8,7 @@
     "prod": "node ./server.js --prod",
     "dev": "node ./server.js"
   },
-  "author": "Riccardo Maldini <riccardo.maldini2@studio.unibo.it>, Francesco Gorini, Thomas Angelini",
+  "author": "Riccardo Maldini <riccardo.maldini2@studio.unibo.it>, Francesco Gorini <francesco.gorini@studio.unibo.it>, Thomas Angelini <thomas.angelini@studio.unibo.it>",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",

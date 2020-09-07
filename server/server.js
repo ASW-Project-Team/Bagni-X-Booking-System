@@ -43,7 +43,9 @@ const main = function () {
   // parse requests of content-type - application/json
   app.use(bodyParser.json())
 
+  // sets the directory as static; in other words, accessible with static urls
   app.use(express.static(ANGULAR_CLIENT_PATH))
+  app.use('/assets', express.static(path.resolve(__dirname) + '/assets'));
 
   // authentication middleware
   const jwt = require('./src/authentication/jwtMiddleware');

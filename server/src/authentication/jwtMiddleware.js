@@ -14,7 +14,8 @@ function jwt() {
                             '/api/auth/customers/login/',
                             '/api/auth/admin/login/',
                             { url: '/api/news/', methods: ['GET'] },
-                            { url: new RegExp('/api/news/*'), methods: ['GET']}
+                            { url: new RegExp('/api/news/*'), methods: ['GET']},
+                            { url: new RegExp('/assets/*'), methods: ['GET']},
                         ]
     });
 }
