@@ -8,7 +8,7 @@ const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
 const Bathhouse = require("../models/bathhouseModel")(mongoose);
 
 const CatalogID = "5f40f4125c935b69a7f0626f";
-const BathhouseID = "5f41345d9ca3ce59d9777862";
+const BathhouseID = "5f5642d299795010d9069484";
 
 
 
@@ -261,13 +261,13 @@ module.exports.deleteFirstLevelCollectionById = function (req, res, documentName
  */
 module.exports.checkAndActForUpdate = async function(document, req, specificParamUpdate, ...parametersName){
 
-    if (specificParamUpdate)
-        await specificParamUpdate()
-
     for (const param of parametersName){
-        document[param] = req.body[param]
+        if (req.body[param] || req.body[param] === false || req.body[param] === 0)
+            document[param] = req.body[param]
     }
 
+    if (specificParamUpdate)
+        await specificParamUpdate()
 }
 
 /**
@@ -388,6 +388,7 @@ module.exports.returnPages = function (id, size, req, res, arrayToSearch, collec
  * @param fieldsRequired The fields that are requested because not optional.
  */
 module.exports.areRequiredFieldsPresent = function (req, res, func, ...fieldsRequired) {
+    // TODO Change with the remove of the callback
 
     let toSave = true;
     for (let field in fieldsRequired){
@@ -640,30 +641,32 @@ module.exports.constructServices = function(req, res, services, func) {
     this.findByIdFirstLevelCollection(req, res, "Catalog", Catalog, "",
         CatalogID, async (err, catalog)=>{
 
-        let servicesComplete = []
+            let servicesComplete = []
 
-        for (const service of services) {
-            for (const serviceCatalog of catalog.services) {
+            const serviceParam = Object.freeze({"price":"price", "umbrellaRelated":"umbrellaRelated",
+                                                    "description":"description"})
 
-                let serviceFound = this.dfs(serviceCatalog, service._id)
+            for (const service of services) {
+                for (const serviceCatalog of catalog.services) {
 
-                if (serviceFound) {
+                    let serviceFound = this.dfs(serviceCatalog, service._id)
 
-                    if (!service.hasOwnProperty("price"))
-                        service.price = serviceFound.price
+                    if (serviceFound) {
 
-                    if (!service.hasOwnProperty("umbrellaRelated"))
-                        service.umbrellaRelated = serviceFound.umbrellaRelated
+                        if (!service.hasOwnProperty(serviceParam.price))
+                            service.price = serviceFound.price
 
-                    if (!service.hasOwnProperty("description"))
-                        service.description = serviceFound.description
+                        if (!service.hasOwnProperty(serviceParam.umbrellaRelated))
+                            service.umbrellaRelated = serviceFound.umbrellaRelated
 
-                    servicesComplete.splice(0,0,service)
+                        if (!service.hasOwnProperty(serviceParam.description))
+                            service.description = serviceFound.description
+
+                        servicesComplete.splice(0,0,service)
+                    }
                 }
             }
-        }
-
-        func(servicesComplete)
+            func(servicesComplete)
     });
 }
 
@@ -716,7 +719,7 @@ module.exports.findBathhouse = function(req, res, func) {
     this.findByIdFirstLevelCollection(req, res, "bathhouse", Bathhouse,
         "bathhouse", BathhouseID, (errBath, bathhouse)=>
 
-            func(errBath, bathhouse)
+            func(bathhouse)
     );
 }
 
