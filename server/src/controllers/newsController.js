@@ -4,6 +4,22 @@ const commonController = require("./commonController");
 
 const feedName = "News";
 
+/*
+// image upload example
+const imageUpload = require('../image-upload/imageUpload');
+module.exports.testImage = function(req, res) {
+	imageUpload.tryUploadImage(req, res, imageUpload.imageTypes.news)
+	.then(response => {
+		console.log(response.imageUrl);
+		console.log(req.body);
+		res.send(response);
+	})
+	.catch(errResponse => {
+		res.status(400).send({description: 'Problemieeno', response: errResponse});
+	});
+}
+*/
+
 
 /**
  * It creates a new feed.
