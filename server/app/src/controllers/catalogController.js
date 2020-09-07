@@ -10,11 +10,20 @@ const commonController = require("./commonController");
 // Before this queries we have to check the permissions to interact with db
 
 /**
- * Return all ranks if present. If there aren't any ranks return "Rank not found".
- * If there is an error with Catalog return the error.
- * If catalog is null return 404.
- * @param req The request.
- * @param res The response.
+ * It returns a specific ranks or someones in a paginated result
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The ranks has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The ranks with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent ranks, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.readRanks = function (req, res) {
 
@@ -33,7 +42,11 @@ module.exports.readRanks = function (req, res) {
 /**
  * Create a new rank. Name and price are required. Sales and description are optional.
  * @param req The create umbrella request.
- * @param res The create umbrella response.
+ * @param res:
+ *          201: All fields are corrected, the item has been inserted.
+ *          400: Malformed request.
+ *          401: The admin was not correctly authenticated.
+ *          404: Catalog ins't found
  */
 module.exports.createRank = function (req, res) {
     commonController.findCatalog(req, res, (err, catalog)  => {
@@ -82,9 +95,14 @@ module.exports.createRank = function (req, res) {
 /**
  * Modify the rank if present. If there isn't that rank return error.
  * If there is an error with Catalog return the error.
- * If catalog is null return 404.
  * @param req The request.
- * @param res The response.
+ * @param res:
+ *             200: All fields are corrected, the item has been modified.
+ *             400: Malformed request.
+ *             401: The admin was not correctly authenticated.
+ *             404: Two scenario:
+ *                      . a RankUmbrella with the given id does not exist.
+ *                      . catalog does not exist.
  */
 module.exports.updateRank = function (req, res) {
     commonController.findCatalog(req, res,  (err, catalog)  => {
@@ -109,7 +127,7 @@ module.exports.updateRank = function (req, res) {
 
 
                 if (toUmbrella >= fromUmbrella
-                    && !checkIfUmbrellasHaveAlreadyRanks(catalog, fromUmbrella, toUmbrella)) {
+                    && !checkIfUmbrellasHaveAlreadyRanks(catalog, fromUmbrella, toUmbrella, req.params.id)) {
 
                     updateAppliedForRanks(req, res, rankTarget, catalog);
 
@@ -150,6 +168,31 @@ function checkSales(sales){
 
 function updateAppliedForRanks(req, res, rankTarget, catalog){
 
+    const ranksParameter = Object.freeze({"name":"name", "fromUmbrella":"fromUmbrella", "toUmbrella":"toUmbrella",
+                                            "description":"description", "price":"price"})
+
+    commonController.checkAndActForUpdate(rankTarget, req, ()=>{
+       if (req.body.sales) {
+
+           let salesToAdd = [];
+
+           for (const sale of req.body.sales) {
+
+               let saleToAdd = {}
+
+               saleToAdd["_id"] = mongoose.Types.ObjectId()
+               saleToAdd["percent"] = sale.percent
+               saleToAdd["dateFrom"] = new Date(sale.dateFrom)
+               saleToAdd["dateTo"] = new Date(sale.dateTo)
+
+               salesToAdd.splice(0,0, saleToAdd)
+           }
+
+           rankTarget.sales = salesToAdd
+       }
+   }, ranksParameter.name, ranksParameter.description, ranksParameter.price, ranksParameter.fromUmbrella, ranksParameter.toUmbrella )
+        .then(commonController.correctSave(catalog, commonController.statusCompleted, res, rankTarget))
+    /*
     if (commonController.typeOfString(req.body.name))
         rankTarget.name = req.body.name
 
@@ -184,7 +227,7 @@ function updateAppliedForRanks(req, res, rankTarget, catalog){
         rankTarget.sales = salesToAdd
     }
 
-    commonController.correctSave(catalog, commonController.statusCompleted, res, rankTarget)
+    commonController.correctSave(catalog, commonController.statusCompleted, res, rankTarget)*/
 }
 
 /**
@@ -231,15 +274,20 @@ module.exports.createService = function(req, res) {
 }
 
 /**
- * The query GET return two possible scenario:
- *  . if "id" is present in the params, the query have to find the specified service
- *  . if "id" is not present, the query have to return some services based on body params "pageId" and "pageSize"
- *      Query Param "pageId": indicate position ...
- *          If not specified we assume id is 1 (the oldest page)
- *      Query Param "pageSize": the number of page that have to be shown
- *          If not specified we assume 10 pages
- * @param req
- * @param res
+ * It returns a specific services or someones in a paginated result.
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The services has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The news with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent news, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.readServices = function (req, res) {
 
@@ -269,7 +317,7 @@ module.exports.updateService = function (req, res) {
         commonController.getNestedDocument(catalog.services, req, res, req.params.id,(serviceTarget) =>{
 
             if (!(req.body.price) || commonController.typeOfNumber(req.body.price)
-                && (!(req.body.umbrellaRelated) || commonController.typeOfString(req.body.umbrellaRelated))
+                && (!(req.body.umbrellaRelated) || commonController.typeOfBoolean(req.body.umbrellaRelated))
                 && (!(req.body.description) || commonController.typeOfString(req.body.description))){
 
                 if (commonController.typeOfNumber(req.body.price))
@@ -345,11 +393,20 @@ module.exports.createSale = function (req, res) {
 
 
 /**
- * Two possible scenario:
- *  . if param "id" is present: Read a single sale if "id" exist, error otherwise.
- *  . Read from "pageId" to "pageId" + "pageSize" sales.
- * @param req The read sale request.
- * @param res The read sale response.
+ * It returns a specific sale or someones in a paginated result
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The sale has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The sale with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent sales, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.readSales = function (req, res) {
     commonController.findCatalog(req, res,  (err, catalog)  => {
@@ -387,7 +444,7 @@ module.exports.readSales = function (req, res) {
                 }
             );
 
-            commonController.returnPages(req.body.pageId, req.body.pageSize, req, res, allSaleRequested, "Sales");
+            commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, allSaleRequested, "Sales");
 
         }
 
@@ -404,7 +461,7 @@ module.exports.updateSale = function (req, res) {
 
         // If par is present find the specified param ...
         if (req.params.id
-            && (!req.body.percent ||  req.body.percent <= 1)
+            && (!req.body.percent ||  (commonController.typeOfNumber(req.body.percent) && req.body.percent <= 1))
             && (!req.body.dateFrom || commonController.typeOfString(req.body.dateFrom))
             && (!req.body.dateTo || commonController.typeOfString(req.body.dateTo))) {
 
@@ -428,7 +485,11 @@ module.exports.updateSale = function (req, res) {
                     if ((dateTo.getTime() >= dateFrom.getTime())
                         && (dateFrom.getTime() >= Date.now())){
 
-                        if (req.body.percent)
+                        const saleParams  = Object.freeze({"percent":"percent", "dateFrom":"dateFrom","dateTo":"dateTo"})
+
+                        commonController.checkAndActForUpdate(saleResult, req, "", saleParams)
+
+/*                        if (req.body.percent)
                             saleResult.percent = req.body.percent
 
                         if (req.body.dateFrom)
@@ -437,7 +498,7 @@ module.exports.updateSale = function (req, res) {
                         if (req.body.dateTo)
                             saleResult.dateTo = dateTo
 
-                       commonController.correctSave(catalog, commonController.statusCompleted, res, saleResult)
+                       commonController.correctSave(catalog, commonController.statusCompleted, res, saleResult)*/
 
                     } else
                         commonController.parameterBadFormatted(res)
@@ -451,9 +512,8 @@ module.exports.updateSale = function (req, res) {
 
             if (!saleFound)
                 commonController.servePlain404(req, res, "Sale");
-        } else {
+        } else
             commonController.notify(res, commonController.badRequest, "Id not present")
-        }
     });
 }
 
@@ -485,19 +545,26 @@ module.exports.deleteSale = function (req, res) {
  * @param catalog
  * @param fromUmbrella
  * @param toUmbrella
+ * @param id: Used only in PUT request to check that umbrellas don't belong to another rank.
+ *            If umbrellas already belongs to this booking this function return false,
+ *            otherwise return true.
  * @returns {boolean}
  */
-function checkIfUmbrellasHaveAlreadyRanks(catalog, fromUmbrella, toUmbrella) {
-    let counter = 0;
+function checkIfUmbrellasHaveAlreadyRanks(catalog, fromUmbrella, toUmbrella, id=undefined) {
+
+    let checker = false;
 
     for (const rank of catalog.rankUmbrellas) {
-        if ((fromUmbrella <= rank.toUmbrella)
+        if (!(id) || !rank._id.equals(id)
+             (fromUmbrella <= rank.toUmbrella)
             && (toUmbrella >= rank.fromUmbrella)){
 
-            counter++
+            checker = true
+            break
         }
 
     }
 
-    return counter > 1;
+    return checker
 }
+

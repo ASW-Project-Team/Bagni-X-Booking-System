@@ -19,10 +19,11 @@ module.exports.createNews = function(req, res) {
 
 	commonController.areRequiredFieldsPresent(req, res, () =>{
 
-		if ((new Date(req.body.date).getTime() >= Date.now())
+		if (commonController.typeOfString(req.body.date)
+			&& new Date(req.body.date).getTime() >= Date.now()
 			&& commonController.typeOfString(req.body.title)
 			&& commonController.typeOfString(req.body.imageUrl)
-			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
+			&& (!req.body.article || commonController.typeOfString(req.body.article))){
 
 			let feed = new Feed(req.body);
 			feed._id = mongoose.Types.ObjectId();
@@ -38,9 +39,20 @@ module.exports.createNews = function(req, res) {
 };
 
 /**
- * It returns the feed with the specified ID
- * @param req
- * @param res
+ * It returns a specific news or someones in a paginated result
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The news has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The news with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent news, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.readNews = function(req, res) {
 

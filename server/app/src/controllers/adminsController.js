@@ -116,17 +116,20 @@ module.exports.modifyAdmin = function(req, res){
 }
 
 /**
- * Return all admins or only the admin vy the given id.
- * @param req
- * @param res:
- *  Responses for "admin:id":
- *          200: The server returned the specified admin.
- *          401: The admin was not correctly authenticated.
- *          404: An admin with the given id does not exist.
- *  Responses for all "admins":
- *          200: The server returned the admin's list.
- *          401: The admin that do the operation was not correctly authenticated.
- *          404: All admin.
+ * It returns a specific admin or someones in a paginated result
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The admin has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The admin with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent admins added, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.returnAdmins = function (req, res) {
 

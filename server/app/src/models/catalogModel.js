@@ -7,7 +7,6 @@ module.exports = function(mongoose) {
     return model;
 };
 
-// FIXME Delete id and umbrellas from query
 const initializeModel = function(mongoose) {
     const serviceModel = require('./nestedSchemas/serviceModel')(mongoose).schema;
     const rankUmbrellaModel = require('./nestedSchemas/rankUmbrellaModel')(mongoose).schema;

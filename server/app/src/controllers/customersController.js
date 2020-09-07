@@ -5,16 +5,27 @@ const commonController = require("./commonController");
 
 
 /**
- * GET a specific customer or paginated.
- * @param req
- * @param res
+ * It returns a specific customer or someones in a paginated result.
+ * @param req: two possible scenario:
+ * 				1) In request is specified par "id".
+ * 				2) In request could be specified "page-id" and/or "page-to".
+ * 					page-id: Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+ * 					page-size: Maximum size of the results. If omitted, default is 10.
+ * @param res: two possible scenario:
+ *				1) res:
+ *					200: The customer has been correctly delivered.
+ *					400: The request was malformed.
+ *					404: The customer with the given id does not exist.
+ *			 	2) res:
+ * 					200: Returns the most recent customers, in a paginated fashion.
+ * 					400: The request was malformed.
  */
 module.exports.readCustomer = function(req, res) {
     if (req.params.id){
         commonController.findByIdFirstLevelCollection(req, res, "Customer",Customer, "",
             req.params.id, (err, docResult) => {
 
-                if (!req.body.deleted)
+                if (!docResult.deleted)
                     commonController.response(res, docResult)
                 else
                     commonController.notify(res, commonController.statusError,
@@ -132,7 +143,7 @@ module.exports.updateCustomer = function(req, res) {
  * @param res
  */
 module.exports.deleteCustomerLogically = function (req, res) {
-    commonController.findByIdFirstLevelCollection(req, res, "customerser", Customer, "",
+    commonController.findByIdFirstLevelCollection(req, res, "customer", Customer, "",
         req.params.id, (err, customerResult)=>{
 
             customerResult.deleted = true;

@@ -3,8 +3,6 @@ const Customer = require("../models/customerModel.js")(mongoose);
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
-const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose)
-
 const conversionDayInMilliseconds = 86400000
 const dayBeforeDeleteIsPossible = 2
 const collectionName = "bookings"
@@ -18,52 +16,58 @@ const collectionName = "bookings"
  */
 module.exports.createBooking = function(req, res) {
 
-
 	commonController.areRequiredFieldsPresent(req, res, () => {
 
-		// Check if fields are well formatted
-		if (commonController.typeOfNumber(req.body.price)
-			&& new Date(req.body.dateFrom).getTime() >= Date.now()
-			&& new Date(req.body.dateTo).getTime() >=  new Date(req.body.dateFrom).getTime()
-			&& commonController.typeOfString(req.body.userId)) {
 
-			// Customer is present if go inside this callback
-			commonController.findByIdFirstLevelCollection(req, res, "Customer", Customer,"",req.body.userId,
-				() => {
+		commonController.findBathhouse(req, res, (bathhouse)=> {
 
-					// Check if umbrella are free
-				commonController.umbrellaFree(req, res, req.body.dateTo, req.body.dateFrom, req.body.umbrellas,
-					(areUmbrellasFree) => {
+			// Check if fields are well formatted
+			if (commonController.typeOfNumber(req.body.price)
+				&& new Date(req.body.dateFrom).getTime() >= Date.now()
+				&& new Date(req.body.dateTo).getTime() >=  new Date(req.body.dateFrom).getTime()
+				&& commonController.typeOfString(req.body.userId)
+				&& new Date(req.body.dateFrom).getTime() >= new Date(bathhouse.seasonDateFrom).getTime()
+				&& new Date(req.body.dateTo).getTime() <= new Date(bathhouse.seasonDateTo).getTime()) {
 
-					if (areUmbrellasFree) {
+				// Customer is present if go inside this callback
+				commonController.findByIdFirstLevelCollection(req, res, "Customer", Customer,"",req.body.userId,
+					() => {
 
-						// create umbrellas
-						commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
+						// Check if umbrella are free
+						commonController.umbrellaFree(req, res, req.body.dateTo, req.body.dateFrom, req.body.umbrellas,
+							(areUmbrellasFree) => {
 
-							if (req.body.services){
+								if (areUmbrellasFree) {
 
-								commonController.servicesAvailable(req, res, req.body.services, (areServicesAvailable)=>{
+									// create umbrellas
+									commonController.createUmbrellas(req, res, req.body.umbrellas, (umbrellas)=>{
 
-									if (areServicesAvailable){
-										commonController.constructServices(req, res, req.body.services, (services)=>
-											applyBooking(req, res, umbrellas, services)
-										)
+										if (req.body.services){
 
-									} else
-										commonController.notify(res, commonController.badRequest, "Service not available")
+											commonController.servicesAvailable(req, res, req.body.services, (areServicesAvailable)=>{
 
-								})
-							} else {
+												if (areServicesAvailable){
+													commonController.constructServices(req, res, req.body.services, (services)=>
+														applyBooking(req, res, umbrellas, services)
+													)
 
-								applyBooking(req, res, umbrellas, "")
-							}
-						})
-					} else
-						commonController.notify(res, commonController.statusError, "Umbrella aren't free");
-				})
-			})
-		} else
-			commonController.notify(res, commonController.badRequest, "Malformed request!");
+												} else
+													commonController.notify(res, commonController.badRequest, "Service not available")
+
+											})
+										} else {
+
+											applyBooking(req, res, umbrellas, "")
+										}
+									})
+								} else
+									commonController.notify(res, commonController.statusError, "Umbrella aren't free");
+							})
+					})
+			} else
+				commonController.notify(res, commonController.badRequest, "Malformed request!");
+		})
+
 
 	}, req.body.userId, req.body.umbrellas, req.body.price, req.body.dateFrom, req.body.dateTo);
 };
@@ -276,22 +280,38 @@ function checkParams(reqFrom, reqTo, price, confirmed, cancelled, doc){
 	return paramsOk;
 }
 
-async function bookingAndUmbrellaServiceCustomerChecks(req, res) {
+function bookingAndUmbrellaServiceCustomerChecks(req, res) {
 
 	// Check if bookings exist
-	await commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
-		req.params.id, async (err, docResult)=> {
+	commonController.findByIdFirstLevelCollection(req, res, "book", Booking, "book not found",
+		req.params.id, (err, docResult)=> {
 
 			if (docResult){
 				if (checkParams(req.body.dateFrom, req.body.dateTo, req.body.price,
 					req.body.confirmed, req.body.cancelled, docResult)) {
 
-					await umbrellaServiceAndCustomerChecks(req, res, docResult)
-				}
-			} else {
+					commonController.findBathhouse(req, res, (bathhouse)=>{
+
+						let dateFrom = new Date(bathhouse.seasonDateFrom)
+						if (req.body.dateFrom)
+							dateFrom = req.body.dateFrom
+
+						let dateTo = new Date(bathhouse.seasonDateTo)
+						if (req.body.dateTo)
+							dateTo = req.body.dateTo
+
+						if (dateFrom.getTime() <= dateTo.getTime()
+							&& dateFrom.getTime() >= new Date(bathhouse.seasonDateFrom).getTime()
+							&& dateTo.getTime() >= new Date(bathhouse.seasonDateTo).getTime())
+							umbrellaServiceAndCustomerChecks(req, res, docResult)
+						else
+							commonController.parameterBadFormatted(res)
+					})
+				} else
+					commonController.parameterBadFormatted(res)
+			} else
 				commonController.parameterBadFormatted(res)
-			}
-		});
+	});
 
 }
 
@@ -314,74 +334,69 @@ async function umbrellaServiceAndCustomerChecks(req, res, docResult) {
 		docResult.umbrellas = []
 		await docResult.save();
 
-		await commonController.umbrellaFree(req, res, to, from, req.body.umbrellas,
-			async (areUmbrellasFree) => {
-				if (areUmbrellasFree){
+		commonController.umbrellaFree(req, res, to, from, req.body.umbrellas,
+			(areUmbrellasFree) => {
+				if (areUmbrellasFree)
 
-					await serviceAndCustomerChecks(req, res, docResult);
-				} else {
+					serviceAndCustomerChecks(req, res, docResult);
+				else {
 					// Return to the precedent situation
 					docResult.umbrellas = oldUmbrellas
-					await docResult.save()
+					docResult.save()
 
 					commonController.parameterBadFormatted(res);
 				}
-			});
-	} else {
-		await serviceAndCustomerChecks(req, res, docResult);
-	}
+		});
+	} else
+		serviceAndCustomerChecks(req, res, docResult);
 }
 
-async function serviceAndCustomerChecks(req, res, docResult) {
+function serviceAndCustomerChecks(req, res, docResult) {
 
 	if (req.body.services) {
 
 		// Check if customer exist
-		await commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
+		commonController.servicesAvailable(req, res, req.body.services, async (areServicesAvailable)=>{
 
 			if (areServicesAvailable){
 
-				await commonController.constructServices(req, res, req.body.services,
-					async (services)=>{
+				commonController.constructServices(req, res, req.body.services,
+					(services)=>{
 						req.body.services = services
-						await customerExist(req, res, docResult);
-					})
-			} else {
+						customerExist(req, res, docResult);
+				})
+			} else
 				commonController.parameterBadFormatted(res);
-			}
 		});
-	} else {
-		await customerExist(req, res, docResult)
-	}
+	} else
+		customerExist(req, res, docResult)
 
 }
 
-async function customerExist(req, res, docResult) {
+function customerExist(req, res, docResult) {
 
 	if (req.body.userId){
 
 		// Check if user exist
-		await commonController.customerExist(req, res, req.body.userId, async (isCustomerPresent)=>{
+		commonController.customerExist(req, res, req.body.userId, async (isCustomerPresent)=>{
 
 			if (isCustomerPresent) {
 
-				await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+				applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
 					req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
 					req.body.services, docResult);
 
-			} else {
+			} else
 				commonController.parameterBadFormatted(res);
-			}
 		});
-	} else {
-		await applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
+	} else
+		applyChanges(req, res, req.body.dateFrom, req.body.dateTo, req.body.price,
 			req.body.confirmed, req.body.cancelled, req.body.userId, req.body.umbrellas,
 			req.body.services, docResult);
-	}
 }
 
 
-async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, userId,
+function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelled, userId,
 							umbrellas, services, book){
 
 	commonController.checkAndActForUpdate(book, req, async ()=>{
@@ -395,36 +410,4 @@ async function applyChanges(req, res, reqFrom, reqTo, price, confirmed, cancelle
 	}, "userId", "dateFrom", "dateTo", "cancelled","confirmed","price")
 		.then(commonController.correctSave(book, commonController.statusCompleted, res))
 
-	/*if (userId)
-		book.userId = userId
-
-	if (reqFrom)
-		book.dateFrom = new Date(reqFrom)
-
-	if (reqTo)
-		book.dateTo = new Date(reqTo)
-
-	if (confirmed)
-		book.confirmed = confirmed
-
-	if (cancelled)
-		book.cancelled = cancelled
-
-	if (price)
-		book.price = price;
-
-	if (services)
-		book.services = services;
-
-	if (umbrellas){
-
-		await commonController.createUmbrellas(req, res, umbrellas,(umbrellasReturned)=>{
-			book.umbrellas = umbrellasReturned;
-			commonController.correctSave(book, commonController.statusCompleted, res);
-		})
-	} else {
-
-		await commonController.correctSave(book, commonController.statusCompleted, res);
-	}
-*/
 }
