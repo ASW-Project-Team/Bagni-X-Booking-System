@@ -11,4 +11,12 @@ module.exports.set = function(app) {
 
     app.route('/api/home-card/')
         .post(bathhouseController.insertHomeCard);
+
+    app.route('/api/new-booking/season/')
+        .get(bathhouseController.getDateOfSeason);
+
+    app.route('/api/bathhouse')
+        .get(bathhouseController.getBathhouse)
+        .put(bathhouseController.modifyBathhouse)
+        .post(bathhouseController.createBathhouse);
 }
