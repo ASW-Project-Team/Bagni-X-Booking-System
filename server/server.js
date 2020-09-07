@@ -4,15 +4,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const compression = require('compression');
+const productionMode = !!(process.argv[2] && process.argv[2] === '--prod');
 
 // Global configuration object
 global.CONFIGS = {
-  productionMode: !!(process.argv[2] && process.argv[2] === '--prod'),
   port: 3000,
-  mongoUrl: this.productionMode
+  mongoUrl: productionMode
     ? 'mongodb://mongodb:27017/bagni_X_booking_system_db'
     : 'mongodb://localhost:27017/bagni_X_booking_system_db',
-  angularClientPath: this.productionMode
+  angularClientPath: productionMode
     ? path.resolve(__dirname) + '/client'
     : path.resolve(__dirname) + '/demo-site',
   assetsPath: path.resolve(__dirname) + '/assets'
