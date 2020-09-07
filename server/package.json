@@ -1,12 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server module of ASW project BagniX Booking System.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "node ./server.js --prod",
     "dev": "node ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ASW-Project-Team/Bagni-X-Booking-System.git"
   },
   "author": "Riccardo Maldini <riccardo.maldini2@studio.unibo.it>, Francesco Gorini <francesco.gorini@studio.unibo.it>, Thomas Angelini <thomas.angelini@studio.unibo.it>",
   "license": "ISC",

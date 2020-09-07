@@ -10,7 +10,7 @@ const productionMode = !!(process.argv[2] && process.argv[2] === '--prod');
 global.CONFIGS = {
   port: 3000,
   mongoUrl: productionMode
-    ? 'mongodb://mongodb:27017/bagni_X_booking_system_db'
+    ? 'mongodb://server:TheSuperServer!46@mongodb:27017/bagni_X_booking_system_db'
     : 'mongodb://localhost:27017/bagni_X_booking_system_db',
   angularClientPath: productionMode
     ? path.resolve(__dirname) + '/client'
@@ -35,7 +35,7 @@ const main = function () {
       connectTimeoutMS: 30,
     }).
     then(() => console.log('MongoDB Connected')).
-    catch((err) => console.log('Connection failed!' + err));
+    catch((err) => console.log('Connection failed! ' + err));
 
   // Permits only requests from this domain inside the API
   app.use(cors({

@@ -4,8 +4,8 @@
  */
 
 db.createUser({
-  user: "riccardo",
-  pwd: "riccardo",
+  user: "server",
+  pwd: "TheSuperServer!46",
   roles: [{
     role: "readWrite",
     db: "bagni_X_booking_system_db"
@@ -57,7 +57,7 @@ db.customer.insert({
 db.bathhouse.insert({
   _id: "0",
   name: "Bagni X",
-  logoUrl: "/images/logo.png",
+  logoUrl: "/assets/default-bathhouse-img-logo.png",
   mainHomeCard: {
     _id: "1",
     title: "La tua spiaggia, a portata di click!",
@@ -65,7 +65,7 @@ db.bathhouse.insert({
       "balneare Bagni X! Questa ti dà la possibilità di prenotare il tuo " +
       "ombrellone direttamente online. Non vediamo l’ora di iniziare!",
     header: true,
-    image: "/images/main-card.jpg"
+    image: "http://localhost:3000/assets/default-main-card-img-0.jpg"
   },
   homeCards: [
     {
@@ -77,7 +77,7 @@ db.bathhouse.insert({
         "telefonicamente o con Whatsapp al numero 000-0000000, o via mail " +
         "a info@bagnix.com",
       header: false,
-      image: "/images/home-card-1.jpg"
+      image: "http://localhost:3000/assets/default-home-card-img-0.jpg"
     },
     {
       _id: "2",
@@ -87,7 +87,7 @@ db.bathhouse.insert({
         "La zona di Senigallia costituisce il confine linguistico fra le " +
         "lingue gallo-italiche e i dialetti italiani mediani.",
       header: false,
-      image: "/images/home-card-2.jpg"
+      image: "http://localhost:3000/assets/default-home-card-img-1.jpg"
     },
     {
       _id: "3",
@@ -96,7 +96,7 @@ db.bathhouse.insert({
         "Senigallia (AN), a pochi metri dalla stazione, e raggiungibile in " +
         "auto. I parcheggi sono a pagamento.",
       header: true,
-      image: "/images/home-card-3.jpg"
+      image: "http://localhost:3000/assets/default-home-card-img-2.jpg"
     }
   ],
 });
@@ -112,7 +112,7 @@ db.news.insert({
     "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " +
     "culpa qui officia deserunt mollit anim id est laborum.",
   date: new Date(),
-  image: "/images/main-card.jpg"
+  image: "http://localhost:3000/assets/default-news-img-0.jpg"
 });
 
 db.news.insert({
@@ -126,12 +126,12 @@ db.news.insert({
     "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in " +
     "culpa qui officia deserunt mollit anim id est laborum.",
   date: new Date(),
-  image: "/images/main-card.jpg"
+  image: "http://localhost:3000/assets/default-news-img-1.jpg"
 });
 
 db.rankUmbrella.insert({
   _id: "0",
-  image: "/images/home-card-1.jpg",
+  image: "http://localhost:3000/assets/default-rank-umbrella-img-0.jpg",
   name: "Ombrellone prima fila",
   description: "Gli ombrelloni dall’1 al 20 sono di prima classe, e si " +
     "affacciano direttamente sul mare.",
@@ -143,10 +143,9 @@ db.rankUmbrella.insert({
 
 db.rankUmbrella.insert({
   _id: "1",
-  image: "/images/home-card-1.jpg",
-  name: "Ombrellone seconda fila",
-  description: "Gli ombrelloni dall’21 al 40 sono di seconda classe, e " +
-    "non si affacciano direttamente sul mare.",
+  image: "http://localhost:3000/assets/default-rank-umbrella-img-1.jpg",
+  name: "Ombrellone standard",
+  description: "Gli ombrelloni dall’21 al 40 presentano costi più contenuti.",
   price: 16.00,
   fromUmbrella: 21,
   toUmbrella: 40,
@@ -156,7 +155,7 @@ db.rankUmbrella.insert({
 db.service.insert({
   _id: "0",
   price: 3.00,
-  image: "/images/home-card-1.jpg",
+  image: "http://localhost:3000/assets/default-service-img-0.jpg",
   title: "Cabina",
   umbrellaRelated: true,
   description: "Con un piccolo supplemento puoi aggiungere una cabina " +
@@ -166,13 +165,12 @@ db.service.insert({
 db.service.insert({
   _id: "1",
   price: 0,
-  image: "/assets/home-card-1.jpg",
+  image: "http://localhost:3000/assets/default-service-img-1.jpg",
   title: "Campo da beach volley",
   umbrellaRelated: false,
   description: "Gli utenti possono accedere gratuitamente al nostro campo da " +
     "beach volley.",
 })
-
 
 // shows the starting configuration
 let cursor = db.feed.find();

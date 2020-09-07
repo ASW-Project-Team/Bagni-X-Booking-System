@@ -6,13 +6,19 @@ services:
     container_name: mongodb
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin-user
-      MONGO_INITDB_ROOT_PASSWORD: admin-password
-      MONGO_INITDB_DATABASE: bagni_X_booking_system_db
-    ports:
-      - 27017:27017
+      - MONGO_INITDB_ROOT_USERNAME=admin-user
+      - MONGO_INITDB_ROOT_PASSWORD=admin-password
+      - MONGO_INITDB_DATABASE=bagni_X_booking_system_db
+    expose:
+      - 27017
+    # deploy:
+    #  restart_policy:
+    #    condition: on-failure
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./storage-init/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      # — mongo-data:/data/db # saves locally db
+
+  # for production: recommended to add a container for mongodb handling, ex. mongo-express
 
   server:
     build:
@@ -23,6 +29,9 @@ services:
       - mongodb
     ports:
       - 3000:3000
+    # deploy:
+    #  restart_policy:
+    #    condition: on-failure
     command: sh -c "/wait && node server.js"
     environment:
       - WAIT_HOSTS=mongodb:27017
