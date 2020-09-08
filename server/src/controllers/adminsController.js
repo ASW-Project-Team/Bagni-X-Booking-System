@@ -1,10 +1,9 @@
-const mongoose = require('mongoose')
-const Admin = require('../models/adminModel')(mongoose)
-const commonController = require('./commonController')
-const authUtils = require('../authentication/utils')
-const bcrypt = require('bcryptjs')
-const validators = require('./utils/validators')
-const responseGen = require('./utils/responseGenerator')
+const mongoose = require('mongoose');
+const Admin = require('../models/adminModel')(mongoose);
+const authUtils = require('../authentication/utils');
+const bcrypt = require('bcryptjs');
+const validators = require('./utils/validators');
+const responseGen = require('./utils/responseGenerator');
 
 const areUserAndPwValid = function (username, password) {
   return validators.isFullString(username) && validators.isPassword(password)
@@ -36,13 +35,11 @@ module.exports.createAdmin = async function (req, res) {
   }
 
   // 4. creates a new admin with the given credentials, and saves it
-  const salt = bcrypt.genSaltSync(10)
-  const hash = bcrypt.hashSync(password, salt)
+  const hash = bcrypt.hashSync(password, 10)
   const adminToInsert = new Admin({
     _id: mongoose.Types.ObjectId(),
     root: false,
     username: username,
-    salt: salt,
     hash: hash,
   })
   const generatedAdmin = await adminToInsert.save();
@@ -137,7 +134,7 @@ module.exports.modifyAdmin = async function (req, res) {
   }
 
   // 5. request completed
-  responseGen.respondOK(res, responseAdminData)
+  responseGen.respondOK(res)
 }
 
 /**
@@ -196,7 +193,7 @@ module.exports.returnAdmins = async function (req, res) {
  *  - 200: Right combination username/password.
  *  - 400: Wrong combination username/password.
  */
-module.exports.authenticateAdmin = async function (req, res, next) {
+module.exports.authenticateAdmin = async function (req, res) {
   // 1. fields sanitization
   const username = req.bodyString('username')
   const password = req.bodyString('password')
@@ -223,7 +220,7 @@ module.exports.authenticateAdmin = async function (req, res, next) {
     id: foundAdmin._id,
     username: foundAdmin.username,
     root: foundAdmin.root,
-    jwt: await authUtils.generateAdminToken(foundAdmin),
+    jwt: authUtils.generateAdminToken(foundAdmin),
   }
   responseGen.respondCreated(res, responseAdminData)
 }

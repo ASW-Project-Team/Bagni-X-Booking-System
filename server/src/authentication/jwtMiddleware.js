@@ -1,8 +1,10 @@
 const expressJwt = require('express-jwt');
-const utils = require('./utils.js');
 const config = require('./secret.json');
 console.log(config);
 module.exports = jwt;
+const mongoose = require('mongoose');
+const Customer = require("../models/customerModel")(mongoose);
+const Admin = require("../models/adminModel")(mongoose);
 
 function jwt() {
     const secret = config.secret;
@@ -93,9 +95,9 @@ async function tokenCorrect(req, payload, done) {
 
     // Security check
     // if the user no longer exits in the db, the token is revoked
-    const customer = await utils.userById(payload.sub);
+    const customer = await Customer.findById(payload.sub);
     if (!(customer)) {
-        const admin = await utils.adminById(payload.sub);
+        const admin = await Admin.findById( payload.sub);
         if(!(admin)){
             return done(null, true);
         }

@@ -33,3 +33,8 @@ module.exports.isInteger = function (integer) {
 module.exports.isDecimal = function (decimal) {
   return validator.isDecimal(decimal + "");
 }
+
+
+module.exports.isBoolean = function (decimal) {
+  return validator.isDecimal(decimal + "");
+}
