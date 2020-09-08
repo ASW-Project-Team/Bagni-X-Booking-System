@@ -1,0 +1,1671 @@
+openapi: 3.0.1
+info:
+  title: Bagni X API documentation
+  description: >
+    API documentation for the 2020 ASW project of [Riccardo Maldini](https://github.com/maldins46),
+    [Francesco Gorini](https://github.com/francescogorini) and [Thomas Angelini](https://github.com/ThomasAngeliniUnibo).
+  version: "1.0"
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Customers
+    description: Endpoints used to retrieve data about customers of the bathhouse.
+  - name: Admins
+    description: Endpoints used to modify the admin table.
+  - name: Authentication
+    description: Endpoints used for authentication purposes.
+  - name: News
+    description: Endpoints used to retrieve news about the bathhouse.
+  - name: Home
+    description: Endpoint to access data of the main home screen.
+  - name: Bathhouse
+    description: Endpoint to access and modify data of the bathhouse and welcome screen.
+  - name: Bookings
+    description: Enpoints used to access and modify booking information.
+  - name: New booking flow
+    description: Enpoints used to insert a new booking.
+  - name: Catalog
+    description: Endpoint used to access and modify information about offered services.
+  - name: Stats
+    description: Endpoint used to access forecast information and statistics on the progress of the season.
+
+components:
+  securitySchemes:
+    specificCustomerAuth:
+      description: The endpoint can be accessed only by the one proprietaty customer.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    customerAuth:
+      description: The endpoint can be accessed by all the authenticated customers.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    specificAdminAuth:
+      description: The endpoint can be accessed only by the one proprietaty admin.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    adminAuth:
+      description: The endpoint can be accessed by all the authenticated admins.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    rootAuth:
+      description: The endpoint can be accessed only by the one root admin.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "014384828"
+        email:
+          type: string
+          example: "riccardo.maldini@gmail.com"
+        name:
+          type: string
+          example: "Riccardo"
+        surname:
+          type: string
+          example: "Maldini"
+        phone:
+          type: string
+          example: "3317767246"
+        address:
+          type: string
+          example: "Viale della Vittoria, 40"
+        registered:
+          type: boolean
+          example: true
+        deleted:
+          type: boolean
+          example: false
+
+    CustomerWithPassword:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "014384828"
+        email:
+          type: string
+          example: "riccardo.maldini@gmail.com"
+        password:
+          type: string
+          example: "mySecretPassword18!"
+        name:
+          type: string
+          example: "Riccardo"
+        surname:
+          type: string
+          example: "Maldini"
+        phone:
+          type: string
+          example: "3317767246"
+        address:
+          type: string
+          example: "Viale della Vittoria, 40"
+        registered:
+          type: boolean
+          example: true
+        deleted:
+          type: boolean
+          example: false
+
+    News:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "458124"
+        imageUrl:
+          type: string
+          example: "http://localhost:3000/image.jpg"
+        date:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        title:
+          type: string
+          example: "Apre la nuova stagione estiva di Bagni X!"
+        article:
+          type: string
+          example: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+
+    ShortNews:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "458124"
+        imageUrl:
+          type: string
+          example: "http://localhost:3000/image.jpg"
+        date:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        title:
+          type: string
+          example: "Apre la nuova stagione estiva di Bagni X!"
+        short-article:
+          description: "The article, truncated at 120 characters."
+          type: string
+          example: "Lorem ipsum dolor sit amet, consectetur adipiscing..."
+
+    Sale:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "234089"
+        percent:
+          type: number
+          example: 20
+        dateFrom:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        dateTo:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+
+    RankUmbrella:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Prima fila"
+        description:
+          type: string
+          example: "I migliori ombrelloni."
+        image:
+          type: string
+          example: "http://localhost:3000/image.jpg"
+        price:
+          type: number
+          example: 12.23
+        fromUmbrella:
+          type: integer
+          example: 1
+        toUmbrella:
+          type: integer
+          example: 20
+        sales:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sale'
+
+    ShortUmbrella:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "0986"
+        number:
+          type: integer
+          example: 12
+        rankId:
+          type: string
+          example: "3838"
+
+    Umbrella:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "0986"
+        number:
+          type: integer
+          example: 12
+        rank:
+          $ref: '#/components/schemas/RankUmbrella'
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "4554"
+        name:
+          type: string
+          example: "Cabina"
+        description:
+          type: string
+          example: "Aggiungi una cabina alla tua prenotazione per porre le tue cose in sicurezza."
+        price:
+          type: number
+          example: 12.23
+        imageUrl:
+          type: string
+          example: "http://localhost:3000/image.jpg"
+        umbrellaRelated:
+          type: boolean
+          example: true
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "4620"
+        userId:
+          type: string
+          example: "4726"
+        confirmed:
+          description: refers to the confirmation of the booking from an admin.
+          type: boolean
+          example: true
+        cancelled:
+          description: Refers to the logical deletion of a booking.
+          type: boolean
+          example: true
+        price:
+          type: number
+          example: 140.34
+        dateFrom:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        dateTo:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        umbrellas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Umbrella'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+
+    Bathhouse:
+      type: Object
+      properties:
+        name:
+          type: string
+          example: "Bagni X"
+        logoUrl:
+          type: string
+          example: "http://localhost:3000/assets/logo.png"
+        seasonStart:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+        seasonEnd:
+          type: string
+          example: "2014-01-01T23:28:56.782Z"
+
+    HomeCard:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "0986"
+        title:
+          type: string
+          example: "Benvenuto nello stabilimento Bagni X!"
+        description:
+          type: string
+          example: "Gotiti la vacanza in questo magico stabilimento!"
+        main:
+          type: boolean
+          example: false
+
+
+paths:
+  /api/customers/{customer-id}:
+    get:
+      summary: It returns user data associated to the given user id.
+      tags:
+        - Customers
+      security:
+        - specificCustomerAuth: [ ]
+        - adminAuth: [ ]
+      parameters:
+        - name: customer-id
+          in: path
+          description: User identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: A JSON object describing the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          description: The request is malformed.
+        401:
+          description: Wrong credentials, or customer that is not the interested one, neither an admin.
+        404:
+          description: The user with the given id does not exist, or it has been logically deleted.
+
+    put:
+      summary: Request of modification for some fields of the given user.
+      tags:
+        - Customers
+      description: >
+        The modification request with the PUT can be executed by the interested user. Logical deletion of
+        the user can be executed using the DELETE primitive.
+      security:
+        - specificCustomerAuth: [ ]
+      parameters:
+        - name: customer-id
+          in: path
+          description: User identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerWithPassword'
+      responses:
+        200:
+          description: The modification has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: Wrong credentials, or customer is not the interested one.
+        404:
+          description: The user with the given id does not exist, or it has been logically deleted.
+
+    delete:
+      summary: It triggers the logic deletion of a user.
+      tags:
+        - Customers
+      security:
+        - specificCustomerAuth: [ ]
+        - adminAuth: [ ]
+      parameters:
+        - name: customer-id
+          in: path
+          description: User identificator
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The customer has been correctly deleted.
+        400:
+          description: The request is malformed.
+        401:
+          description: Wrong credentials, or customer that is not the interested one, neither an admin.
+
+  /api/customers:
+    post:
+      summary: Used by admins to create fresh unregistered customers.
+      description: >
+        This endpoint can only be used by admins, to add to the database data about customers that do not use
+        the app to book a place. For example, customers that arrive without a booking. In this endpoint, the
+        "registered" field must be set to false, or omitted.
+        a place.
+      tags:
+        - Customers
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerWithPassword'
+      responses:
+        201:
+          description: The user has been correctly created.
+        400:
+          description: The request is malformed.
+
+    get:
+      summary: It returns all active customers, in a paginated fashion.
+      tags:
+        - Customers
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: The user array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+
+  /api/admins:
+    get:
+      summary: Returns the list of active admins.
+      tags:
+        - Admins
+      security:
+        - rootAuth: [ ]
+      responses:
+        200:
+          description: The server returned the admin list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "8078907"
+                    username:
+                      type: string
+                      example: "maldins46"
+
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: An admin with the given id does not exist.
+
+  /api/admins/{admin-id}:
+    get:
+      summary: Returns data about the admin.
+      tags:
+        - Admins
+      security:
+        - specificAdminAuth: [ ]
+        - rootAuth: [ ]
+      parameters:
+        - name: admin-id
+          in: path
+          description: A string that univocally identifies the admin.
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The server returned the specified admin.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "8078907"
+                  username:
+                    type: string
+                    example: "maldins46"
+
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: An admin with the given id does not exist.
+    put:
+      summary: It allows the modification of an admin.
+      tags:
+        - Admins
+      security:
+        - specificAdminAuth: [ ]
+        - rootAuth: [ ]
+      parameters:
+        - name: admin-id
+          in: path
+          description: A string that univocally identifies the admin.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "8078907"
+                username:
+                  type: string
+                  example: "maldins46"
+                password:
+                  type: string
+                  example: "mySecretPassword18!"
+      responses:
+        200:
+          description: All fields are corrected, the item has been modified.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: An admin with the given id does not exist.
+
+    delete:
+      summary: It allows admin deletion, by the root admin.
+      tags:
+        - Admins
+      security:
+        - rootAuth: [ ]
+      parameters:
+        - name: admin-id
+          in: path
+          description: A string that univocally identifies the admin.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The admin has been correctly removed.
+        400:
+          description: Malformed request.
+        401:
+          description: The root was not correctly authenticated.
+        404:
+          description: A admin with the given id does not exist.
+
+  /api/auth/customers/register:
+    post:
+      summary: Allows a customer to be registered inside the app.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        201:
+          description: The customer has been correctly authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "0123938"
+                  email:
+                    type: string
+                    example: "riccardo.maldini@gmail.com"
+                  name:
+                    type: string
+                    example: "Riccardo"
+                  surname:
+                    type: string
+                    example: "Maldini"
+                  jwt:
+                    type: string
+                    example: "asdòkdasjfhdf87fafbhe897aa8dbaB"
+        400:
+          description: The request is malformed, or the customer is present yet.
+
+  /api/auth/customers/login:
+    post:
+      summary: Allows a customer to be authenticated inside the app.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "riccardo.maldini@gmail.com"
+                password:
+                  type: string
+                  example: "mySuperSecretPassword18!"
+      responses:
+        200:
+          description: The customer has been correctly authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "0123938"
+                  email:
+                    type: string
+                    example: "riccardo.maldini@gmail.com"
+                  name:
+                    type: string
+                    example: "Riccardo"
+                  surname:
+                    type: string
+                    example: "Maldini"
+                  jwt:
+                    type: string
+                    example: "asdòkdasjfhdf87fafbhe897aa8dbaB"
+        400:
+          description: The request is malformed, or email/pw combination is not correct.
+
+  /api/auth/admins/register:
+    post:
+      summary: Allows an admin to be registered inside the app.
+      description: An admin can only be created by the root user.
+      tags:
+        - Authentication
+      security:
+        - rootAuth: [ ]
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "maldins46"
+                password:
+                  type: string
+                  example: "mySuperSecretPassword18!"
+      responses:
+        201:
+          description: The customer has been correctly authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "0123938"
+                  username:
+                    type: string
+                    example: "maldins46"
+                  jwt:
+                    type: string
+                    example: "asdòkdasjfhdf87fafbhe897aa8dbaB"
+        400:
+          description: The request is malformed, or the user is present yet.
+        401:
+          description: The client is not root, or email-password combination of the root is wrong.
+
+  /api/auth/admins/login:
+    post:
+      summary: Allows an admin to be authenticated inside the app.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "maldins46"
+                password:
+                  type: string
+                  example: "mySuperSecretPassword18!"
+      responses:
+        200:
+          description: The admin has been correctly authenticated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "0123938"
+                  username:
+                    type: string
+                    example: "maldins46"
+                  jwt:
+                    type: string
+                    example: "asdòkdasjfhdf87fafbhe897aa8dbaB"
+        400:
+          description: The request is malformed, or email/pw combination is not correct.
+
+
+  /api/news:
+    get:
+      summary: Returns the most recent news, in a paginated fashion.
+      tags:
+        - News
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            Which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            Maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: The news array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortNews'
+        400:
+          description: The request was malformed.
+
+    post:
+      summary: Creates a fresh news.
+      description: The "id" field, if present, will be ignored, and assigned a new one to the news.
+      tags:
+        - News
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/News'
+      responses:
+        201:
+          description: The news has been correctly added.
+        401:
+          description: Wrong credentials, or the user is not an admin.
+        400:
+          description: The request was malformed.
+
+  /api/news/{news-id}:
+    get:
+      summary: Returns the specified news.
+      tags:
+        - News
+      parameters:
+        - name: news-id
+          in: path
+          description: It identifies the news.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The news has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/News'
+        400:
+          description: The request was malformed.
+        404:
+          description: The news with the given id does not exist.
+
+    put:
+      summary: Modifies the specified news.
+      tags:
+        - News
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: news-id
+          in: path
+          description: It identifies the news.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/News'
+      responses:
+        200:
+          description: The modification has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: Wrong credentials, or the user is not an admin.
+        404:
+          description: The news with the given id does not exist.
+
+    delete:
+      summary: Deletes the specified news.
+      tags:
+        - News
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: news-id
+          in: path
+          description: It identifies the news.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The deletion has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: Wrong credentials, or the user is not an admin.
+        404:
+          description: The news with the given id does not exist.
+
+  /api/bookings:
+    get:
+      summary: It returns all the bookings, in a paginated fashion, in inverse chronological order.
+      tags:
+        - Bookings
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+
+      responses:
+        200:
+          description: The booking array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+
+  /api/bookings/customer/{customer-id}:
+    get:
+      summary: It returns all the bookings of a specified customer, in a paginated fashion, in inverse chronological order.
+      description: A different endpoint is necessary to handle authorization constraints more easily.
+      tags:
+        - Bookings
+      security:
+        - adminAuth: [ ]
+        - specificCustomerAuth: [ ]
+      parameters:
+        - name: customer-id
+          in: path
+          description: It indicates the id of the customer.
+          schema:
+            type: integer
+          required: true
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+
+      responses:
+        200:
+          description: The booking array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        400:
+          description: The request is malformed.
+        401:
+          description: The user was not correctly authenticated, or the authenticated customer is not the interested one.
+        404:
+          description: The user is not present in the database.
+
+  /api/bookings/{booking-id}:
+    get:
+      summary: It returns the booking with the specified id.
+      tags:
+        - Bookings
+      security:
+        - adminAuth: [ ]
+        - specificCustomerAuth: [ ]
+      parameters:
+        - name: booking-id
+          in: path
+          description: It identifies the booking.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The booking has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+
+        400:
+          description: The request is malformed.
+        401:
+          description: >
+            The email-password combination is wrong, the admin was not correctly authenticated, or the customer is not the interested one.
+        404:
+          description: Booking not found. It should be always returned, also if logically deleted.
+    put:
+      summary: It allows the the admin to modify a booking.
+      description: >
+        The booking modification can only be completed by an admin. Once created a booking, a customer cannot modify it,
+        and can only delete it at least 2 days before the booking, using the DELETE primitive. Unlike that primitive,
+        the PUT can be used by the admin also to delete the booking (by setting the cancelled flag to true), in the last
+        two days before the booking.
+      tags:
+        - Bookings
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: booking-id
+          in: path
+          description: It univocally identifies the booking.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        200:
+          description: The booking has been correctly modified.
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: Booking not found.
+
+    delete:
+      summary: It deletes a reservation, at least two days before the booking
+      tags:
+        - Bookings
+      security:
+        - specificCustomerAuth: [ ]
+        - adminAuth: [ ]
+      parameters:
+        - name: booking-id
+          in: path
+          description: It univocally identifies the booking.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The booking has been correctly deleted.
+        400:
+          description: The request is malformed.
+        401:
+          description: The specified customer, or the admin, is not correctly authenticated.
+        404:
+          description: Booking not found.
+
+  /api/new-booking/season-dates:
+    get:
+      summary: It returns the start and the end date of the season.
+      description: >
+        This endpoint is part of the flow used to create a new booking. As such, it is accessible only by
+        customers and admins. The dates are used to select the period in the first phase of the flow.
+      security:
+        - adminAuth: [ ]
+        - customerAuth: [ ]
+      tags:
+        - New booking flow
+      responses:
+        200:
+          description: The query was correctly served.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  seasonStart:
+                    type: string
+                    example: "2014-01-01T23:28:56.782Z"
+                  seasonEnd:
+                    type: string
+                    example: "2014-01-01T23:28:56.782Z"
+        400:
+          description: The request is malformed.
+        401:
+          description: The user was not correctly authenticated.
+
+  /api/new-booking/availability:
+    get:
+      summary: It returns all available umbrellas in the specified period.
+      description: >
+        This endpoint is part of the flow used to create a new booking. As such, it is accessible only by
+        customers and admins.
+      security:
+        - adminAuth: [ ]
+        - customerAuth: [ ]
+      tags:
+        - New booking flow
+      parameters:
+        - name: date-from
+          in: query
+          description: The date from which search available umbrellas.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+
+        - name: date-to
+          in: query
+          description: The date to which search available umbrellas.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The query was correctly served.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rankUmbrellas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RankUmbrella'
+                  availableUmbrellas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShortUmbrella'
+                  services:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Service'
+        400:
+          description: The request is malformed.
+        401:
+          description: The user was not correctly authenticated.
+
+  /api/new-booking/checkout:
+    post:
+      summary: It creates a new booking.
+      description: >
+        This endpoint is part of the flow used to create a new booking. As such, it is accessible only by
+        customers and admins.
+      security:
+        - adminAuth: [ ]
+        - customerAuth: [ ]
+      tags:
+        - New booking flow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        201:
+          description: The booking was successfully inserted into the database.
+        400:
+          description: The request is malformed.
+        401:
+          description: The user was not correctly authenticated.
+
+  /api/home:
+    get:
+      summary: It returns information shown inside the home screen of the app.
+      tags:
+        - Home
+      responses:
+        200:
+          description: The query was correctly served.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mainCard:
+                    $ref: '#/components/schemas/HomeCard'
+                  homeCards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HomeCard'
+                  rankUmbrellas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RankUmbrella'
+                  services:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Service'
+        400:
+          description: The request is malformed.
+
+  /api/home-cards:
+    get:
+      summary: It returns all present cards.
+      tags:
+        - Home
+      security:
+        - adminAuth: [ ]
+
+      responses:
+        200:
+          description: The server returned the desired data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HomeCard'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: The home card with the given id does not exist.
+    post:
+      summary: Inserts an home card into the database.
+      description: The id field is not required inside the body. If present, it will be ignored, and created a new one.
+      tags:
+        - Home
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeCard'
+      responses:
+        200:
+          description: The modification has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: The home card with the given id does not exist.
+
+  /api/home-cards/{home-card-id}:
+    get:
+      summary: It returns the requested home card.
+      tags:
+        - Home
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: home-card-id
+          in: path
+          description: It identifies univolcally the home card.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The server returned the desired data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeCard'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: The home card with the given id does not exist.
+
+    put:
+      summary: Request of modification for some fields of the given home card.
+      tags:
+        - Home
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: home-card-id
+          in: path
+          description: It identifies univolcally the home card.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomeCard'
+      responses:
+        200:
+          description: The modification has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: The home card with the given id does not exist.
+
+    delete:
+      summary: Request of deletion for the given home card.
+      tags:
+        - Home
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: home-card-id
+          in: path
+          description: It identifies univolcally the home card.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The deletion has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: The home card with the given id does not exist.
+
+  /api/bathhouse:
+    get:
+      summary: It returns the bathhouse data.
+      tags:
+        - Bathhouse
+      responses:
+        200:
+          description: The server returned the desired data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bathhouse'
+        400:
+          description: The request is malformed.
+
+    put:
+      summary: Modifies some bathhouse data.
+      tags:
+        - Bathhouse
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bathhouse'
+      responses:
+        200:
+          description: The modification has been accepted by the server.
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+
+  /api/catalog/rank-umbrellas:
+    get:
+      summary: It returns all active rankings, in a paginated fashion.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: The ranking array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RankUmbrella'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+
+    post:
+      summary: It allows the admin to insert a new RankUmbrella into the database.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RankUmbrella'
+      responses:
+        201:
+          description: All fields are corrected, the item has been inserted.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+
+  /api/catalog/rank-umbrellas/{rank-id}:
+    get:
+      summary: It allows the admin to access a specified RankUmbrella.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: rank-id
+          in: path
+          description: A string that univocally identifies the rankUmbrella.
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The server returned the specified RankUmbrella.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankUmbrella'
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A RankUmbrella with the given id does not exist.
+    put:
+      summary: It allows the admin to modify a new RankUmbrella.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: rank-id
+          in: path
+          description: A string that univocally identifies the rankUmbrella.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RankUmbrella'
+      responses:
+        200:
+          description: All fields are corrected, the item has been modified.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A RankUmbrella with the given id does not exist.
+
+    delete:
+      summary: It allows the admin to delete a RankUmbrella.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: rank-id
+          in: path
+          description: A string that univocally identifies the rankUmbrella.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The RankUmbrella has been correctly removed.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A RankUmbrella with the given id does not exist.
+
+  /api/catalog/services:
+    get:
+      summary: It returns all active services, in a paginated fashion.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: page-id
+          in: query
+          description: >
+            It indicates which one of the incremental paginated results will be delivered. If omitted, default is 0.
+          schema:
+            type: integer
+          required: false
+        - name: page-size
+          in: query
+          description: >
+            It indicates the maximum size of the results. If omitted, default is 10.
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: The services array has been correctly delivered.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Service'
+        400:
+          description: The request is malformed.
+        401:
+          description: The admin was not correctly authenticated.
+    post:
+      summary: It allows the admin to insert a new Service into the database.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        201:
+          description: All fields are corrected, the item has been inserted.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+
+  /api/catalog/services/{service-id}:
+    get:
+      summary: It allows the admin to access a specified Service.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: service-id
+          in: path
+          description: A string that univocally identifies the Service.
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The server returned the specified Service.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A Service with the given id does not exist.
+    put:
+      summary: It allows the admin to modify a new Service.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: service-id
+          in: path
+          description: A string that univocally identifies the Service.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+      responses:
+        200:
+          description: All fields are corrected, the item has been modified.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A Service with the given id does not exist.
+
+    delete:
+      summary: It allows the admin to delete a Service.
+      tags:
+        - Catalog
+      security:
+        - adminAuth: [ ]
+      parameters:
+        - name: service-id
+          in: path
+          description: A string that univocally identifies the Service.
+          required: true
+          explode: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: The Service has been correctly removed.
+        400:
+          description: Malformed request.
+        401:
+          description: The admin was not correctly authenticated.
+        404:
+          description: A Service with the given id does not exist.
+
+  # /stats/:
+
