@@ -1,8 +1,13 @@
+/*
+ * Checks the given properties of the field, and also check whether the field is
+ * undefined.
+ */
+
 const validator = require('validator');
 
 const passwordPattern = new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/);
 
-module.exports.isFullString = function (string) {
+module.exports.isNonEmptyString = function (string) {
   return string !== undefined && (typeof string === 'string' || string instanceof String) && string.length > 0 ;
 }
 
@@ -30,11 +35,14 @@ module.exports.isInteger = function (integer) {
   return integer !== undefined && validator.isInteger(integer + "");
 }
 
-module.exports.isDecimal = function (decimal) {
-  return validator.isDecimal(decimal + "");
+module.exports.isFloat = (decimal) => {
+  return decimal !== undefined && validator.isFloat(decimal + "");
 }
 
+module.exports.isBool = (boolean) => {
+  return boolean !== undefined && validator.isBoolean(boolean + "");
+}
 
-module.exports.isBoolean = function (decimal) {
-  return validator.isDecimal(decimal + "");
+module.exports.areFieldsValid = (...fields) => {
+  return fields.filter(field => field === undefined).length === 0;
 }

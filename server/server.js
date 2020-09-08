@@ -60,13 +60,8 @@ const main = function () {
   const jwt = require('./src/authentication/jwtMiddleware');
   //app.use(jwt());
 
-  // input sanitization
-  app.use(require('sanitize').middleware);
-
   const routes = require('./src/routes/routes');
   routes.set(app);
-
-
 
   app.listen(CONFIGS.port, function () {
     console.log('BagniX webserver started on port ' + CONFIGS.port);

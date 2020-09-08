@@ -3,11 +3,9 @@ const Admin = require('../models/adminModel')(mongoose);
 const authUtils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
+const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
 
-const areUserAndPwValid = function (username, password) {
-  return validators.isFullString(username) && validators.isPassword(password)
-}
 
 /**
  * Create a non-root admin, in the database, authenticates it and returns its
@@ -18,11 +16,11 @@ const areUserAndPwValid = function (username, password) {
  */
 module.exports.createAdmin = async function (req, res) {
   // 1. fields sanitization
-  const username = req.bodyString('username')
-  const password = req.bodyString('password')
+  const username = sanitizers.toEmail(req.body.username);
+  const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
-  if (!areUserAndPwValid(username, password)) {
+  if (!validators.areFieldsValid(username, password)) {
     responseGen.respondMalformedRequest(res)
     return
   }
@@ -35,12 +33,11 @@ module.exports.createAdmin = async function (req, res) {
   }
 
   // 4. creates a new admin with the given credentials, and saves it
-  const hash = bcrypt.hashSync(password, 10)
   const adminToInsert = new Admin({
     _id: mongoose.Types.ObjectId(),
     root: false,
     username: username,
-    hash: hash,
+    hash: bcrypt.hashSync(password, 10),
   })
   const generatedAdmin = await adminToInsert.save();
 
@@ -66,8 +63,8 @@ module.exports.createAdmin = async function (req, res) {
  */
 module.exports.deleteAdmin = async function (req, res) {
   // 1. sanitization
-  const paramId = req.paramString('id')
-  const queryUsername = req.queryString('username')
+  const paramId = sanitizers.toMongoId(req.param.id);
+  const queryUsername = sanitizers.toString(req.query.username);
 
   // 2. try the removal
   let removedAdmin;
@@ -75,7 +72,7 @@ module.exports.deleteAdmin = async function (req, res) {
     // find the admin by the id, if present
     removedAdmin = await Admin.findOneAndRemove({ _id: paramId });
 
-  } else if (validators.isFullString(queryUsername)) {
+  } else if (validators.isNonEmptyString(queryUsername)) {
     // find the admin by the username in query params, if the id is not present
     removedAdmin = await Admin.findOneAndRemove({ username: queryUsername });
 
@@ -104,13 +101,13 @@ module.exports.deleteAdmin = async function (req, res) {
  * - 404: An admin with the given id does not exist.
  */
 module.exports.modifyAdmin = async function (req, res) {
-  // 1. fields sanitization
-  const username = req.bodyString('username')
-  const password = req.bodyString('password')
-  const paramId = req.paramString('id')
+    // 1. sanitization
+  const paramId = sanitizers.toMongoId(req.param.id);
+  const username = sanitizers.toEmail(req.body.username);
+  const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
-  if (!validators.isMongoId(paramId)) {
+  if (!validators.areFieldsValid(paramId)) {
     responseGen.respondMalformedRequest(res)
     return
   }
@@ -119,7 +116,7 @@ module.exports.modifyAdmin = async function (req, res) {
   const adminFound = await Admin.findOneAndUpdate(
     { _id: paramId },
     {
-      username: validators.isFullString(username) ? username : undefined,
+      username: username,
       hash: validators.isPassword(password) ? bcrypt.hashSync(password, 10) : undefined
     },
     {
@@ -149,7 +146,7 @@ module.exports.modifyAdmin = async function (req, res) {
  */
 module.exports.returnAdmins = async function (req, res) {
   // 1. fields sanitization
-  const paramId = req.paramString('id');
+  const paramId = sanitizers.toMongoId(req.param.id);
 
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
@@ -195,11 +192,11 @@ module.exports.returnAdmins = async function (req, res) {
  */
 module.exports.authenticateAdmin = async function (req, res) {
   // 1. fields sanitization
-  const username = req.bodyString('username')
-  const password = req.bodyString('password')
+  const username = sanitizers.toEmail(req.body.username);
+  const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
-  if (!areUserAndPwValid(username, password)) {
+  if (!validators.areFieldsValid(username, password)) {
     responseGen.respondMalformedRequest(res)
     return;
   }

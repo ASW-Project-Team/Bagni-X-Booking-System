@@ -5,12 +5,8 @@ const commonController = require("./commonController");
 const authUtils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
+const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
-
-
-const areEmailAndPwValid = function (email, password) {
-    return validators.isEmail(email) && validators.isPassword(password)
-}
 
 
 /**
@@ -21,18 +17,16 @@ const areEmailAndPwValid = function (email, password) {
  */
 module.exports.createCustomer = async function(req, res) {
   // 1. fields sanitization
-  const email = req.bodyString('email');
-  const password = req.bodyString('password');
-  const name = req.bodyString('name');
-  const surname = req.bodyString('surname');
-  const phone = req.bodyString('phone');
-  const address = req.bodyString('address');
-  const registered = req.bodyString('registered');
+  const email = sanitizers.toEmail(req.body.email);
+  const password = sanitizers.toPassword(req.body.password);
+  const name = sanitizers.toString(req.body.name);
+  const surname = sanitizers.toString(req.body.surname);
+  const phone = sanitizers.toPhone(req.body.phone);
+  const address = sanitizers.toString(req.body.address);
+  const registered = sanitizers.toBool(req.body.registered);
 
   // 2. fields validation
-  if (!validators.isEmail(email) || !validators.isPassword(password)
-    || !validators.isFullString(name) || !validators.isFullString(surname)
-    || !validators.isBoolean(registered)) {
+  if (!validators.areFieldsValid(email, password, name, surname, registered)) {
     responseGen.respondMalformedRequest(res)
     return;
   }
@@ -54,10 +48,9 @@ module.exports.createCustomer = async function(req, res) {
     surname: surname,
     registered: registered,
     deleted: false,
-    phone: validators.isPhoneNumber(phone) ? phone : undefined,
-    address: validators.isFullString(address) ? address : undefined
+    phone: phone,
+    address: address
   })
-
   const generatedCustomer = await customerToInsert.save();
 
   // 5. returns the customer data and the jwt
@@ -85,33 +78,32 @@ module.exports.createCustomer = async function(req, res) {
  */
 module.exports.updateCustomer = async function(req, res) {
   // 1. fields sanitization
-  const email = req.bodyString('email');
-  const password = req.bodyString('password');
-  const name = req.bodyString('name');
-  const surname = req.bodyString('surname');
-  const phone = req.bodyString('phone');
-  const address = req.bodyString('address');
-  const paramId = req.paramString('id')
-  const deleted = req.bodyString('deleted');
-
+  const email = sanitizers.toEmail(req.body.email);
+  const password = sanitizers.toPassword(req.body.password);
+  const name = sanitizers.toString(req.body.name);
+  const surname = sanitizers.toString(req.body.surname);
+  const phone = sanitizers.toPhone(req.body.phone);
+  const address = sanitizers.toString(req.body.address);
+  const deleted = sanitizers.toBool(req.body.deleted);
+  const paramId = sanitizers.toMongoId(req.param.id);
 
   // 2. fields validation
   if (!validators.isMongoId(paramId)) {
     responseGen.respondMalformedRequest(res)
-    return
+    return;
   }
 
   // 3. updates the customer, if exists
   const customerFound = await Customer.findOneAndUpdate(
     { _id: paramId },
     {
-      email: validators.isEmail(email) ? email : undefined,
-      hash: validators.isPassword(password) ? bcrypt.hashSync(password, 10) : undefined,
-      name: validators.isFullString(name) ? name : undefined,
-      surname: validators.isFullString(surname) ? surname : undefined,
-      deleted: validators.isBoolean(deleted) ? deleted : undefined,
-      phone: validators.isPhoneNumber(phone) ? phone : undefined,
-      address: validators.isFullString(address) ? address : undefined
+      email: email,
+      hash: password ? bcrypt.hashSync(password, 10) : undefined,
+      name: name,
+      surname: surname,
+      deleted: deleted,
+      phone: phone,
+      address: address
     },
     {
       omitUndefined: true, // if fields are undefined, they will not be updated
@@ -139,7 +131,7 @@ module.exports.updateCustomer = async function(req, res) {
  */
 module.exports.deleteCustomerLogically = async function (req, res) {
   // 1. sanitization
-  const paramId = req.paramString('id')
+  const paramId = sanitizers.toMongoId(req.param.id);
 
   // 2. try the removal
   let removedCustomer;
@@ -177,7 +169,7 @@ module.exports.deleteCustomerLogically = async function (req, res) {
  */
 module.exports.readCustomer = async function(req, res) {
   // 1. fields sanitization
-  const paramId = req.paramString('id');
+  const paramId = sanitizers.toMongoId(req.param.id);
 
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
@@ -210,7 +202,7 @@ module.exports.readCustomer = async function(req, res) {
   // a paginated fashion
   const customers = await Customer.find();
 
-  // Return tot pages todo
+  // Return paginated result todo
   commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, customers, "Customers")
 };
 
@@ -222,37 +214,37 @@ module.exports.readCustomer = async function(req, res) {
  *  - 400: Wrong combination username/password.
  */
 module.exports.authenticateCustomer = async function (req, res) {
-    // 1. fields sanitization
-    const email = req.bodyString('email');
-    const password = req.bodyString('password');
+  // 1. fields sanitization
+  const email = sanitizers.toEmail(req.body.email);
+  const password = sanitizers.toPassword(req.body.password);
 
-    // 2. fields validation
-    if (!areEmailAndPwValid(email, password)) {
-        responseGen.respondMalformedRequest(res)
-        return;
-    }
+  // 2. fields validation
+  if (!validators.areFieldsValid(email, password)) {
+    responseGen.respondMalformedRequest(res)
+    return;
+  }
 
-    // 3. search the customer, if present, by email
-    const foundCustomer = await Customer.findOne({ email: email });
+  // 3. search the customer, if present, by email
+  const foundCustomer = await Customer.findOne({ email: email });
 
-    // 4. if the username/password combination is not valid, or the customer is not
-    //    present, return an error. The 404 is not used here, to not give too
-    //    much information to attackers.
-    if (!foundCustomer || !bcrypt.compareSync(password, foundCustomer.hash)) {
-        responseGen.respondRequestError(res, 'Incorrect username/password combination.')
-        return;
-    }
+  // 4. if the username/password combination is not valid, or the customer is not
+  //    present, return an error. The 404 is not used here, to not give too
+  //    much information to attackers.
+  if (!foundCustomer || !bcrypt.compareSync(password, foundCustomer.hash)) {
+    responseGen.respondRequestError(res, 'Incorrect username/password combination.')
+    return;
+  }
 
-    // returns the customer data and the jwt
-    const responseCustomerData = {
-        id: foundCustomer._id,
-        name: foundCustomer.name,
-        surname: foundCustomer.surname,
-        phone: foundCustomer.phone,
-        address: foundCustomer.address,
-        registered: foundCustomer.registered,
-        deleted: foundCustomer.deleted,
-        jwt: authUtils.generateCustomerToken(foundCustomer),
-    }
-    responseGen.respondCreated(res, responseCustomerData);
+  // returns the customer data and the jwt
+  const responseCustomerData = {
+    id: foundCustomer._id,
+    name: foundCustomer.name,
+    surname: foundCustomer.surname,
+    phone: foundCustomer.phone,
+    address: foundCustomer.address,
+    registered: foundCustomer.registered,
+    deleted: foundCustomer.deleted,
+    jwt: authUtils.generateCustomerToken(foundCustomer),
+  }
+  responseGen.respondCreated(res, responseCustomerData);
 }
