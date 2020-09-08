@@ -11,7 +11,7 @@ global.CONFIGS = {
   port: 3000,
   mongoUrl: productionMode
     ? 'mongodb://server:TheSuperServer!46@mongodb:27017/bagni_X_booking_system_db'
-    : 'mongodb://localhost:27017/bagni_X_booking_system_db',
+    : 'mongodb://server:TheSuperServer!46@localhost:27017/bagni_X_booking_system_db',
   angularClientPath: productionMode
     ? path.resolve(__dirname) + '/client'
     : path.resolve(__dirname) + '/demo-site',
@@ -58,10 +58,15 @@ const main = function () {
 
   // authentication middleware
   const jwt = require('./src/authentication/jwtMiddleware');
-  app.use(jwt());
+  //app.use(jwt());
+
+  // input sanitization
+  app.use(require('sanitize').middleware);
 
   const routes = require('./src/routes/routes');
   routes.set(app);
+
+
 
   app.listen(CONFIGS.port, function () {
     console.log('BagniX webserver started on port ' + CONFIGS.port);
