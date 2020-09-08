@@ -13,7 +13,7 @@ db.createUser({
 });
 
 // Initializes collections, leaving them untouched if present yet
-db.createCollection('admin', function(err, collection) {});
+db.createCollection('admins', function(err, collection) {});
 db.createCollection('bathhouse', function(err, collection) {});
 db.createCollection('booking', function(err, collection) {});
 db.createCollection('customer', function(err, collection) {});

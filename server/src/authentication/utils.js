@@ -10,7 +10,6 @@ const config = require('./secret.json');
 
 module.exports = {
     authenticate_customer,
-    authenticate_admin,
     create,
     adminById,
     userById
@@ -31,21 +30,14 @@ async function authenticate_customer({ username, password }) {
     }
 }
 
-async function authenticate_admin({ username, password }) {
-    let token;
-
-    const admin = await Admin.findOne({ username });
-    if (admin && bcrypt.compareSync(password, admin.hash)) {
-        if(admin.root){
-            token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'root'});
-        }else{
-            token = jwt.sign({sub: admin.id}, config.secret, {expiresIn: '7d', audience: 'admin'});
-        }
-        return {
-            ...admin.toJSON(),
-            token
-        };
-    }
+/**
+ * Generates the token for the given admin.
+ */
+module.exports.generateAdminToken = function(admin) {
+  return jwt.sign(
+    { sub: admin.id },
+    config.secret,
+    { expiresIn: '7d', audience: admin.root ? 'root' : 'admin' });
 }
 
 async function create(userParam) {

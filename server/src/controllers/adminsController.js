@@ -1,196 +1,229 @@
-const mongoose = require('mongoose');
-const Admin = require("../models/adminModel")(mongoose);
-const commonController = require("./commonController");
-const utils = require('../authentication/utils');
-const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose')
+const Admin = require('../models/adminModel')(mongoose)
+const commonController = require('./commonController')
+const authUtils = require('../authentication/utils')
+const bcrypt = require('bcryptjs')
+const validators = require('./utils/validators')
+const responseGen = require('./utils/responseGenerator')
+
+const areUserAndPwValid = function (username, password) {
+  return validators.isFullString(username) && validators.isPassword(password)
+}
+
 /**
- * Check if admin is authenticated or not.
- * This mechanism is used due to not help cracker that want to attach DB.
- * @param req
- * @param res:
- *        200: The customer has been correctly authenticated and responds with a JSON that have fields
- *             "username", "authenticate" (true), and "jwt".
- *        400: The request is malformed or email/pw combination is not correct.
+ * Create a non-root admin, in the database, authenticates it and returns its
+ * data (except passwords). Required responses:
+ * - 201: The admin has been correctly authenticated.
+ * - 400: The request is malformed, or the admin is present yet.
+ * - 401: The requester admin is not root.
  */
-/*module.exports.authenticateAdmin = function(req, res) {
+module.exports.createAdmin = async function (req, res) {
+  // 1. fields sanitization
+  const username = req.bodyString('username')
+  const password = req.bodyString('password')
 
-    findAdmin(req, res, req.body.username,
-        (elemFounded) => {
+  // 2. fields validation
+  if (!areUserAndPwValid(username, password)) {
+    responseGen.respondMalformedRequest(res)
+    return
+  }
 
-        if (commonController.typeOfString(req.body.password)
-        && (elemFounded.hashedPassword === commonController.sha512(req.body.password, elemFounded.salt))){
+  // 3. controls if admin exists yet
+  const adminFound = await Admin.findOne({ username: username })
+  if (adminFound) {
+    responseGen.respondAlreadyPresent(res)
+    return;
+  }
 
-            let response = {}
+  // 4. creates a new admin with the given credentials, and saves it
+  const salt = bcrypt.genSaltSync(10)
+  const hash = bcrypt.hashSync(password, salt)
+  const adminToInsert = new Admin({
+    _id: mongoose.Types.ObjectId(),
+    root: false,
+    username: username,
+    salt: salt,
+    hash: hash,
+  })
+  const generatedAdmin = await adminToInsert.save();
 
-            response["username"] = req.body.username;
-            response["authenticate"] = true;
-            //response["jwt"] =
+  // 5. returns the admin data and the jwt
+  const responseAdminData = {
+    id: generatedAdmin._id,
+    username: generatedAdmin.username,
+    root: generatedAdmin.root,
+    jwt: authUtils.generateAdminToken(generatedAdmin)
+  }
 
-            commonController.response(res, response);
-        } else
-            // Email and password aren't corrected.
-            commonController.parameterBadFormatted(res);
+  responseGen.respondCreated(res, responseAdminData);
+}
 
-        // User don't exist.
-    },() => commonController.parameterBadFormatted(res))
-};
-*/
+
 /**
- * Create a admin that isn't root. This admin topology can't create new admin.
- * @param req
- * @param res:
- *               201: The customer has been correctly authenticated.
- *               400: The request is malformed, or the user is present yet.
- *               401: The client is not root, or email-password combination of the root is wrong.
+ * Deletes an admin, by id (parameter) or by username (query). Required
+ * responses:
+ * - 200: The admin has been correctly removed.
+ * - 400: Malformed request.
+ * - 401: The root was not correctly authenticated.
+ * - 404: A admin with the given id/username does not exist.
  */
-module.exports.createAdmin = function(req, res) {
+module.exports.deleteAdmin = async function (req, res) {
+  // 1. sanitization
+  const paramId = req.paramString('id')
+  const queryUsername = req.queryString('username')
 
-    findAdmin(req, res, req.body.username,
-        () => commonController.alreadyPresent(res, "admin"),
-        () => {
-        if (commonController.typeOfString(req.body.password)
-                && commonController.checkPassword(req.body.password)){
+  // 2. try the removal
+  let removedAdmin;
+  if (validators.isMongoId(paramId)) {
+    // find the admin by the id, if present
+    removedAdmin = await Admin.findOneAndRemove({ _id: paramId });
 
-                // If someone pass root = true
-                req.body.root = false
+  } else if (validators.isFullString(queryUsername)) {
+    // find the admin by the username in query params, if the id is not present
+    removedAdmin = await Admin.findOneAndRemove({ username: queryUsername });
 
-            let admin = new Admin(req.body)
-            admin._id = mongoose.Types.ObjectId();
-            admin.salt = commonController.genRandomString(commonController.saltLength);
-            if(req.body.password){
-                admin.hash = bcrypt.hashSync(req.body.password, 10);
-            }
-            //todo admin.salt = commonController.genRandomString(commonController.salt_length);
-            //admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+  } else {
+    // If no indication is present, the request is malformed
+    responseGen.respondMalformedRequest(res)
+    return;
+  }
 
-            //admin.hashedPassword = commonController.sha512(req.body.password, admin.salt);
+  // 3. If the admin is not found, respond 404
+  if (!removedAdmin) {
+    responseGen.respondNotFound(res, 'Admin')
+    return;
+  }
 
-            commonController.correctSave(admin, commonController.statusCreated, res)
+  // 4. request completed
+  responseGen.respondOK(res);
+}
 
-            } else
-                commonController.parameterBadFormatted(res)
+
+/**
+ * Modifies admin data. Required responses:
+ * - 200: All fields are corrected, the item has been modified.
+ * - 400: Malformed request.
+ * - 401: The admin was not correctly authenticated.
+ * - 404: An admin with the given id does not exist.
+ */
+module.exports.modifyAdmin = async function (req, res) {
+  // 1. fields sanitization
+  const username = req.bodyString('username')
+  const password = req.bodyString('password')
+  const paramId = req.paramString('id')
+
+  // 2. fields validation
+  if (!validators.isMongoId(paramId)) {
+    responseGen.respondMalformedRequest(res)
+    return
+  }
+
+  // 3. updates the admin, if exists
+  const adminFound = await Admin.findOneAndUpdate(
+    { _id: paramId },
+    {
+      username: validators.isFullString(username) ? username : undefined,
+      hash: validators.isPassword(password) ? bcrypt.hashSync(password, 10) : undefined
+    },
+    {
+      omitUndefined: true, // if fields are undefined, they will not be updated
+      new: true, // if true, return the modified document rather than the original. defaults to false
     })
-};
 
+  // 4. if the admin not exists, respond 404
+  if (!adminFound) {
+    responseGen.respondNotFound(res, 'Admin')
+    return;
+  }
+
+  // 5. request completed
+  responseGen.respondOK(res, responseAdminData)
+}
 
 /**
- * DELETE by username and by id
- * @param req
- * @param res:
- *              200: The admin has been correctly removed
- *              401: The root was not correctly authenticated.
- *              404: A admin with the given id/username does not exist.
+ * Return all admins, or only the admin with the given id. Required responses:
+ * For "admin:id":
+ *  - 200: The server returned the specified admin.
+ *  - 401: The admin was not correctly authenticated.
+ *  - 404: An admin with the given id does not exist.
+ * For all admins:
+ *  - 200: The server returned the admins list.
+ *  - 401: The admin that do the operation was not correctly authenticated.
  */
-module.exports.deleteAdmin = function(req, res) {
+module.exports.returnAdmins = async function (req, res) {
+  // 1. fields sanitization
+  const paramId = req.paramString('id');
 
-    if (req.query.username) {
-        commonController.deleteFirstLevelCollectionByUsername(req, res, "admins", Admin,
-            "", req.query.username);
-    } else if (req.params.id) {
-        commonController.deleteFirstLevelCollectionById(req, res, "admins", Admin, "", req.params.id);
+  // 2. try the extraction
+  if (validators.isMongoId(paramId)) {
+    // if the id is present and valid, return the correspondent
+    // admin non-secret data
+    const foundAdmin = await Admin.findOne({ _id: paramId })
+
+    // admin not present in the db, 404
+    if (!foundAdmin) {
+      responseGen.respondNotFound(res, 'Admin')
+      return;
     }
-};
+
+    const responseAdminData = {
+      id: foundAdmin._id,
+      username: foundAdmin.username,
+      root: foundAdmin.root,
+    }
+    responseGen.respondOK(res, responseAdminData)
+    return;
+  }
+
+  // if the id is not present, or not valid, return all admins,
+  // ordered by username
+  const adminsData = await Admin.find().sort({ username: 1 })
+  const adminsDataNonSensitive = adminsData.map(admin => {
+    return {
+      id: admin._id,
+      username: admin.username,
+      root: admin.root,
+    }
+  })
+  console.log(adminsDataNonSensitive)
+  responseGen.respondOK(res, adminsDataNonSensitive)
+}
 
 
 /**
- * Request PUT that permits to modify admin's parameter.
- * @param req
- * @param res:
- *          200: All fields are corrected, the item has been modified.
- *          400: Malformed request.
- *          401: The admin was not correctly authenticated.
- *          404: An admin with the given id does not exist.
+ * Checks if username and password are present inside the database. Required
+ * responses:
+ *  - 200: Right combination username/password.
+ *  - 400: Wrong combination username/password.
  */
-module.exports.modifyAdmin = function(req, res){
+module.exports.authenticateAdmin = async function (req, res, next) {
+  // 1. fields sanitization
+  const username = req.bodyString('username')
+  const password = req.bodyString('password')
 
-    if (req.params.id) {
+  // 2. fields validation
+  if (!areUserAndPwValid(username, password)) {
+    responseGen.respondMalformedRequest(res)
+    return;
+  }
 
-        commonController.findByIdFirstLevelCollection(req, res, "admin", Admin, "", req.params.id,
-            (admin)=>{
+  // 3. search the admin, if present, by username
+  const foundAdmin = await Admin.findOne({ username: username });
 
-            if ((!(req.body.username) || commonController.typeOfString(req.body.username))
-                && (!(req.body.password) || commonController.checkPassword(req.body.password))){
+  // 4. if the username/password combination is not valid, or the admin is not
+  //    present, return an error. The 404 is not used here, to not give too
+  //    much information to attackers.
+  if (!foundAdmin || !bcrypt.compareSync(password, foundAdmin.hash)) {
+    responseGen.respondRequestError(res, 'Incorrect username/password combination.')
+    return;
+  }
 
-
-                applyAdmin(req.body.username, req.body.password, admin, req, res, req.params.id)
-
-            } else
-                commonController.parameterBadFormatted(res)
-            });
-    } else
-        commonController.parameterBadFormatted(res)
-}
-
-/**
- * Return all admins or only the admin vy the given id.
- * @param req
- * @param res:
- *  Responses for "admin:id":
- *          200: The server returned the specified admin.
- *          401: The admin was not correctly authenticated.
- *          404: An admin with the given id does not exist.
- *  Responses for all "admins":
- *          200: The server returned the admin's list.
- *          401: The admin that do the operation was not correctly authenticated.
- *          404: All admin.
- */
-module.exports.returnAdmins = function (req, res) {
-
-    if (req.params.id)
-        commonController.findByIdFirstLevelCollection(req,res,"Admin", Admin, "",req.params.id,
-            (err, admin) => commonController.response(res, admin))
-    else
-        commonController.findAllFromCollection( req, res, "Admins",Admin, "",
-            (err, admins) => commonController.response(res, admins))
-}
-
-/**
- * Find an admin by his username.
- * @param req
- * @param res
- * @param username
- * @param funcFounded
- * @param funcNotFounded
- */
-function findAdmin(req, res, username, funcFounded, funcNotFounded) {
-
-    commonController.areRequiredFieldsPresent(req, res, () =>{
-
-        if (commonController.typeOfString(username)) {
-
-            Admin.find({"username": username}, (err, docs) => {
-
-                if (docs[0])
-                    funcFounded(docs[0]);
-                else
-                    funcNotFounded();
-            });
-        }
-
-    }, req.body.username, req.body.password)
-}
-
-function applyAdmin(username, password, admin, req, res, id) {
-
-    commonController.findByIdFirstLevelCollection(req, res, "Admin", Admin, "", id, (err, admin)=>{
-
-        if (username)
-            admin.username = username
-
-        //if (password)
-            //admin.hash = commonController.sha512(password, admin.salt)
-
-        commonController.correctSave(admin, commonController.statusCompleted, res)
-    })
-}
-
-/**
- * @param {any} req
- * @param {Response<any>|Request<ParamsDictionary, any, any, QueryString.ParsedQs>} res
- * @param {NextFunction|Response<any>} next
- */
-exports.authenticate = function(req, res, next) {
-    utils.authenticate_admin(req.body)
-        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Username or password is incorrect' }))
-        .catch(err => next(err));
+  // returns the admin data and the jwt
+  const responseAdminData = {
+    id: foundAdmin._id,
+    username: foundAdmin.username,
+    root: foundAdmin.root,
+    jwt: await authUtils.generateAdminToken(foundAdmin),
+  }
+  responseGen.respondCreated(res, responseAdminData)
 }

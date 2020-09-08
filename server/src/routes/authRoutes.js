@@ -8,10 +8,10 @@ module.exports.set = function(app) {
     app.route('/api/auth/customers/login/')
         .post(customerController.authenticate)
 
-    app.route('/api/auth/admin/register/')
+    app.route('/api/auth/admins/register/')
         .post(adminsController.createAdmin)
 
-    app.route('/api/auth/admin/login/')
-        .post(adminsController.authenticate)
+    app.route('/api/auth/admins/login/')
+        .post(adminsController.authenticateAdmin)
 
 };
