@@ -107,8 +107,6 @@ module.exports.tryUploadImage = function(req, res, imageType) {
         error: undefined
       }
 
-      console.log(req.file);
-
       outcome.isPresent = !!req.file;
       outcome.imageUrl = !!req.file ? (req.protocol + '://' + req.get('host') + "/" + req.file.path) : undefined;
 
