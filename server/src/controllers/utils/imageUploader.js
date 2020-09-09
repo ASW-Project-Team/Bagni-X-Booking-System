@@ -59,7 +59,7 @@ const imageFilter = function(req, file, cb) {
 const imageTypes = {
   homeCard: 'homeCardImg',
   service: 'serviceImg',
-  rankUmbrella: 'rankUmbrellaImg',
+  rankUmbrella: 'rankUmbrellasImg',
   bathhouse: 'bathhouseImg',
   news: 'newsImg'
 };
@@ -71,6 +71,17 @@ module.exports.newsImgSupport = multer({
   fileFilter: imageFilter
 }).single(imageTypes.news);
 
+
+module.exports.rankUmbrellasImgSupport = multer({
+  storage: storage(imageTypes.rankUmbrella),
+  fileFilter: imageFilter
+}).single(imageTypes.rankUmbrella);
+
+
+module.exports.servicesImgSupport = multer({
+  storage: storage(imageTypes.service),
+  fileFilter: imageFilter
+}).single(imageTypes.service);
 
 
 module.exports.types = imageTypes;

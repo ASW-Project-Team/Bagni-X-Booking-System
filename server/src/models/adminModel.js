@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-let Schema = mongoose.Schema;
 
-let adminsSchema = new Schema({
+const adminSchema = new mongoose.Schema({
   // the root user can create or delete admin users
   // (NB: cannot add other root admins)
   root: {type: Boolean, default: false},
@@ -9,6 +8,6 @@ let adminsSchema = new Schema({
   hash: String
 });
 
-const admins = mongoose.model('admins', adminsSchema);
+const adminsModel = mongoose.model('admins', adminSchema);
 
-module.exports = admins;
+module.exports = adminsModel;

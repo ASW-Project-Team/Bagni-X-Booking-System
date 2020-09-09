@@ -1,17 +1,15 @@
 module.exports.set = function(app) {
-    const customerController = require('../controllers/customersController');
-    const adminsController = require('../controllers/adminsController');
+    const authController = require('../controllers/authController');
 
     app.route('/api/auth/customers/register/')
-        .post(customerController.createCustomer)
+        .post(authController.registerCustomer)
 
     app.route('/api/auth/customers/login/')
-        .post(customerController.authenticateCustomer)
+        .post(authController.authenticateCustomer)
 
     app.route('/api/auth/admins/register/')
-        .post(adminsController.createAdmin)
+        .post(authController.registerAdmin)
 
     app.route('/api/auth/admins/login/')
-        .post(adminsController.authenticateAdmin)
-
+        .post(authController.authenticateAdmin)
 };

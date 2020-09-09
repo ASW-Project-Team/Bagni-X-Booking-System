@@ -2,7 +2,7 @@ const News = require("../models/newsModel");
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
-const imgUploader = require('./utils/imageUpload');
+const imgUploader = require('./utils/imageUploader');
 const common = require('./utils/common');
 
 /**
@@ -87,11 +87,12 @@ module.exports.readNews = async function(req, res) {
  */
 module.exports.updateNews = async function(req, res) {
 	// 1. sanitization
-	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
 	const paramId = sanitizers.toMongoId(req.params.id);
 	const title = sanitizers.toString(req.body.title);
-	const date = sanitizers.toDate(req.body.date);
 	const article = sanitizers.toString(req.body.article);
+	const date = sanitizers.toDate(req.body.date);
+	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
+
 
 	// 2. fields validation
 	if (!validators.isMongoId(paramId)) {

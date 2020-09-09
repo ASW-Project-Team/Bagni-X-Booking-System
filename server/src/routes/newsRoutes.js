@@ -1,7 +1,6 @@
 module.exports.set = function(app) {
-	// due to not possible two or more require at the same collection
 	const newsController = require('../controllers/newsController');
-	const newsImgSupport = require('../controllers/utils/imageUpload').newsImgSupport;
+	const newsImgSupport = require('../controllers/utils/imageUploader').newsImgSupport;
 
 	app.route('/api/news/')
 		.get(newsController.readNews)

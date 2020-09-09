@@ -2,10 +2,10 @@ module.exports.set = function(app) {
     const adminController = require('../controllers/adminsController');
 
     app.route('/api/admins/')
-        .get(adminController.returnAdmins);
+        .get(adminController.readAdmins);
 
     app.route('/api/admins/:id')
-        .get(adminController.returnAdmins)
-        .put(adminController.modifyAdmin)
+        .get(adminController.readAdmins)
+        .put(adminController.updateAdmin)
         .delete(adminController.deleteAdmin);
 };

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-let Schema = mongoose.Schema;
 
-let customersSchema = new Schema({
+const customerSchema = new mongoose.Schema({
   // contacts
   name: String,
   surname: String,
@@ -13,12 +12,11 @@ let customersSchema = new Schema({
   hash: String,
 
   // other values
-  // registered is used to discriminate users that corresponds
-  // to an account
-  registered: {type: Boolean, default: true},
-  deleted: {type: Boolean, default: false},
+  // 'registered' is used to discriminate users that corresponds to an account
+  registered: { type: Boolean, default: true },
+  deleted: { type: Boolean, default: false },
 });
 
-const customers = mongoose.model('customers', customersSchema);
+const customersModel = mongoose.model('customers', customerSchema);
 
-module.exports = customers;
+module.exports = customersModel;

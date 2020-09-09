@@ -62,7 +62,7 @@ const main = async function () {
 
   // authentication middleware
   const jwt = require('./src/authentication/jwtMiddleware');
-  //app.use(jwt());
+  app.use(jwt());
 
   const routes = require('./src/routes/routes');
   routes.set(app);

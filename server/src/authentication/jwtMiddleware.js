@@ -2,8 +2,9 @@ const expressJwt = require('express-jwt');
 const config = require('./secret.json');
 module.exports = jwt;
 const mongoose = require('mongoose');
-const Customer = require("../models/customerModel")(mongoose);
-const Admin = require("../models/adminModel")(mongoose);
+const Customer = require("../models/customerModel");
+const Admin = require("../models/adminModel");
+const Booking = require("../models/bookingModel")(mongoose);
 
 function jwt() {
     const secret = config.secret;
@@ -17,7 +18,7 @@ function jwt() {
                             { url: '/api/news/', methods: ['GET'] },
                             { url: new RegExp('/api/news/*'), methods: ['GET']},
                             { url: new RegExp('/assets/*'), methods: ['GET']},
-                            { url: new RegExp('^((?!/api).)*$')}
+                            { url: new RegExp('^((?!\/api).)*$')}
                         ]
     });
 }
@@ -141,7 +142,7 @@ async function isRequestCorrect(userInUrl, id){
         return false;
     }
     if('bookings' === userInUrl[2] && 'customer' === userInUrl[3]){
-        const booking = await utils.bookingById(id);
+        const booking = await Booking.findById(id);
         if(booking.userId !== id){
             return false;
         }

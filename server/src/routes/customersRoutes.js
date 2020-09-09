@@ -8,5 +8,5 @@ module.exports.set = function(app) {
 
   app.route('/api/customers/')
     .get(usersController.readCustomer)
-    .post(usersController.createCustomer);
+    .post(usersController.createUnregisteredCustomer);
 };

@@ -1,5 +1,4 @@
 const Customer = require("../models/customerModel");
-const authUtils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
@@ -8,12 +7,12 @@ const common = require('./utils/common')
 
 
 /**
- * Create a customer in the database, authenticates it and returns its
- * data (except passwords). Required responses:
+ * Create an unregistered customer in the database, authenticates it
+ * and returns its data (except passwords). Required responses:
  * - 201: The customer has been correctly authenticated.
  * - 400: The request is malformed, or the admin is present yet.
  */
-module.exports.createCustomer = async function(req, res) {
+module.exports.createUnregisteredCustomer = async function(req, res) {
   // 1. fields sanitization
   const email = sanitizers.toEmail(req.body.email);
   const password = sanitizers.toPassword(req.body.password);
@@ -24,7 +23,7 @@ module.exports.createCustomer = async function(req, res) {
   const registered = sanitizers.toBool(req.body.registered);
 
   // 2. fields validation
-  if (!validators.areFieldsValid(email, password, name, surname, registered)) {
+  if (!validators.areFieldsValid(name, surname)) {
     responseGen.respondMalformedRequest(res)
     return;
   }
@@ -43,7 +42,7 @@ module.exports.createCustomer = async function(req, res) {
     hash: hash,
     name: name,
     surname: surname,
-    registered: registered,
+    registered: false,
     deleted: false,
     phone: phone,
     address: address
@@ -52,8 +51,52 @@ module.exports.createCustomer = async function(req, res) {
 
   // 5. returns the customer data and the jwt
   const responseCustomerData = common.filterSensitiveInfoObj(generatedCustomer);
-  responseCustomerData.jwt = authUtils.generateCustomerToken(generatedCustomer);
   responseGen.respondCreated(res, responseCustomerData);
+};
+
+
+/**
+ * Return all customers, or only the customer with the given id, paginated.
+ * Required responses:
+ * For "customer:id":
+ *  - 200: The server returned the specified customer.
+ *  - 401: The admin/customer was not correctly authenticated.
+ *  - 404: An customer with the given id does not exist.
+ * For all customers:
+ *  - 200: The server returned the customers list.
+ *  - 401: The admin that do the operation was not correctly authenticated.
+ */
+module.exports.readCustomer = async function(req, res) {
+  // 1. fields sanitization
+  const paramId = sanitizers.toMongoId(req.params.id);
+  const pageId = sanitizers.toInt(req.params['page-id']);
+  const pageSize = sanitizers.toInt(req.params['page-size']);
+
+
+  // 2. try the extraction
+  if (validators.isMongoId(paramId)) {
+    // if the id is present and valid, return the correspondent
+    // admin non-secret data
+    const foundCustomer = await Customer.findOne({ _id: paramId })
+
+    // customer not present in the db, 404
+    if (!foundCustomer || foundCustomer.deleted) {
+      responseGen.respondNotFound(res, 'Customer')
+      return;
+    }
+
+    const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
+    responseGen.respondOK(res, responseCustomerData)
+    return;
+  }
+
+  // if the id is not present, or not valid, return returns the customers, in
+  // alphabetic order, and paginated
+  const customers = await Customer.find({deleted: false})
+  .sort({surname: 1}).sort({name: 1});
+  const customersDataNonSensitive = common.filterSensitiveInfo(customers);
+  const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
+  responseGen.respondOK(res, paginatedResults);
 };
 
 
@@ -143,82 +186,3 @@ module.exports.deleteCustomerLogically = async function (req, res) {
   responseGen.respondOK(res);
 }
 
-
-/**
- * Return all customers, or only the customer with the given id, paginated.
- * Required responses:
- * For "customer:id":
- *  - 200: The server returned the specified customer.
- *  - 401: The admin/customer was not correctly authenticated.
- *  - 404: An customer with the given id does not exist.
- * For all customers:
- *  - 200: The server returned the customers list.
- *  - 401: The admin that do the operation was not correctly authenticated.
- */
-module.exports.readCustomer = async function(req, res) {
-  // 1. fields sanitization
-  const paramId = sanitizers.toMongoId(req.params.id);
-  const pageId = sanitizers.toInt(req.params['page-id']);
-  const pageSize = sanitizers.toInt(req.params['page-size']);
-
-
-  // 2. try the extraction
-  if (validators.isMongoId(paramId)) {
-    // if the id is present and valid, return the correspondent
-    // admin non-secret data
-    const foundCustomer = await Customer.findOne({ _id: paramId })
-
-    // customer not present in the db, 404
-    if (!foundCustomer || foundCustomer.deleted) {
-      responseGen.respondNotFound(res, 'Customer')
-      return;
-    }
-
-    const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
-    responseGen.respondOK(res, responseCustomerData)
-    return;
-  }
-
-  // if the id is not present, or not valid, return returns the customers, in
-  // alphabetic order, and paginated
-  const customers = await Customer.find({deleted: false})
-      .sort({surname: 1}).sort({name: 1});
-  const customersDataNonSensitive = common.filterSensitiveInfo(customers);
-  const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
-  responseGen.respondOK(res, paginatedResults);
-};
-
-
-/**
- * Checks if username and password are present inside the database. Required
- * responses:
- *  - 200: Right combination username/password.
- *  - 400: Wrong combination username/password.
- */
-module.exports.authenticateCustomer = async function (req, res) {
-  // 1. fields sanitization
-  const email = sanitizers.toEmail(req.body.email);
-  const password = sanitizers.toPassword(req.body.password);
-
-  // 2. fields validation
-  if (!validators.areFieldsValid(email, password)) {
-    responseGen.respondMalformedRequest(res)
-    return;
-  }
-
-  // 3. search the customer, if present, by email
-  const foundCustomer = await Customer.findOne({ email: email });
-
-  // 4. if the username/password combination is not valid, or the customer is not
-  //    present, return an error. The 404 is not used here, to not give too
-  //    much information to attackers.
-  if (!foundCustomer || !bcrypt.compareSync(password, foundCustomer.hash)) {
-    responseGen.respondRequestError(res, 'Incorrect username/password combination.')
-    return;
-  }
-
-  // returns the customer data and the jwt
-  const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
-  responseCustomerData.jwt = authUtils.generateCustomerToken(foundCustomer);
-  responseGen.respondCreated(res, responseCustomerData);
-}

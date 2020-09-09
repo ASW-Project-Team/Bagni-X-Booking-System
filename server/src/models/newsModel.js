@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-let Schema = mongoose.Schema;
 
-let newsSchema = new Schema({
+const newsSchema = new mongoose.Schema({
   title: String,
   article: {type: String, default: null},
   date: Date,
   imageUrl: String,
 });
 
-const news = mongoose.model('news', newsSchema);
+const newsModel = mongoose.model('news', newsSchema);
 
-module.exports = news;
+module.exports = newsModel;
