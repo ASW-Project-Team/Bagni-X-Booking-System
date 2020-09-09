@@ -11,9 +11,10 @@ function jwt() {
                             '/api/home/',
                             '/api/auth/customers/register/',
                             '/api/auth/customers/login/',
-                            '/api/auth/admin/login/',
+                            '/api/auth/admins/login/',
                             { url: '/api/news/', methods: ['GET'] },
-                            { url: new RegExp('/api/news/*'), methods: ['GET']}
+                            { url: new RegExp('/api/news/*'), methods: ['GET']},
+                            { url: new RegExp('^((?!/api).)*$')}
                         ]
     });
 }
@@ -70,7 +71,7 @@ async function tokenCorrect(req, payload, done) {
                     return done(null, true);
                 }
                 // Customers can't modify a booking
-                if('bookings' === userInUrl[2] && id === userInUrl[3] && methodRequest === 'PUT'){
+                if('bookings' === splittedUrl[2] && methodRequest === 'PUT'){
                     return done(null, true);
                 }
             }
@@ -129,15 +130,18 @@ async function tokenCorrect(req, payload, done) {
 }
 
 
-function isRequestCorrect(userInUrl, id){
+async function isRequestCorrect(userInUrl, id){
     if('customers' === userInUrl[2] && id !== userInUrl[3]){
         return false;
     }
     if('admins' === userInUrl[2] && id !== userInUrl[3]){
         return false;
     }
-    if('bookings' === userInUrl[2] && 'customer' === userInUrl[3] && id !== userInUrl[4]){
-        return false;
+    if('bookings' === userInUrl[2] && 'customer' === userInUrl[3]){
+        const booking = await utils.bookingById(id);
+        if(booking.userId !== id){
+            return false;
+        }
     }
     return true;
 }

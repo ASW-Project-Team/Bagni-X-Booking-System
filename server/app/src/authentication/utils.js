@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const Customer = require("../models/customerModel")(mongoose);
 const Admin = require("../models/adminModel")(mongoose);
-//const Booking = require("../models/bookingModel")(mongoose);
+const Booking = require("../models/bookingModel")(mongoose);
 
 const config = require('./secret.json');
 
@@ -13,7 +13,8 @@ module.exports = {
     authenticate_admin,
     create,
     adminById,
-    userById
+    userById,
+    bookingById
 };
 
 
@@ -70,5 +71,9 @@ async function userById(id) {
 
 async function adminById(id) {
     return await Admin.findById(id);
+}
+
+async function bookingById(id){
+    return await Booking.findById(id);
 }
 
