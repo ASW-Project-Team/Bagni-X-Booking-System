@@ -25,6 +25,9 @@ WORKDIR /usr/src/server
 COPY --from=client-build /usr/src/client/dist .
 # Copies the client build from the previous container
 
+COPY storage-init/assets/ ./assets
+# Copies default image assets to the assets server directory
+
 COPY server/ .
 # Copies all server files inside the container.
 # node_modules are ignored, as part of .dockerignore
