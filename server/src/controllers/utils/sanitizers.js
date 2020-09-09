@@ -4,7 +4,7 @@
  */
 
 const validator = require('validator');
-const myValidators = require('validators');
+const myValidators = require('./validators');
 
 module.exports.toInt = (value) => {
   if (value !== undefined)
@@ -49,6 +49,6 @@ module.exports.toFloat = (value) => {
 }
 
 module.exports.toEmail = (value) => {
-  if(myValidators.isEmail())
+  if (myValidators.isEmail(value))
     return module.exports.toString(value);
 }

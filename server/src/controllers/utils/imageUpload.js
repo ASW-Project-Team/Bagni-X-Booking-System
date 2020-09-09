@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 
+
 /**
  * In a string in Kebab case, words are separated by an hyphen. This function
  * converts from camelCase to kebab-case. This is useful for crating file names.
@@ -16,7 +17,6 @@ const camelToKebab = function(camelCaseString) {
 
 /**
  * Creates the storage object.
- * of the object {@link imageTypes}.
  * @return used to store the image.
  */
 const storage = function() {
@@ -49,7 +49,6 @@ const imageFilter = function(req, file, cb) {
   cb(null, true);
 };
 
-
 /**
  * An object that summarizes the possible types usable inside the param
  * image type of {@link tryUploadImage}. Use this standardized object to refer
@@ -57,7 +56,7 @@ const imageFilter = function(req, file, cb) {
  * @type {{bathhouse: string, news: string, homeCard: string, service: string,
  * rankUmbrella: string}}
  */
-module.exports.imageTypes = {
+const imageTypes = {
   homeCard: 'homeCardImg',
   service: 'serviceImg',
   rankUmbrella: 'rankUmbrellaImg',
@@ -65,6 +64,16 @@ module.exports.imageTypes = {
   news: 'newsImg'
 };
 
+module.exports.defaultImage = "http://localhost:3000/assets/default-home-card-img-1.jpg";
+
+module.exports.newsImgSupport = multer({
+  storage: storage(imageTypes.news),
+  fileFilter: imageFilter
+}).single(imageTypes.news);
+
+
+
+module.exports.types = imageTypes;
 
 /**
  * The returned object of the returned promise from {@link tryUploadImage},
@@ -83,7 +92,7 @@ module.exports.imageTypes = {
  *
  * @param {string=} imageType the category of the image. Used to better
  * organize files inside image directory. A property of the object
- * {@link imageTypes}.
+ * {@link type}.
  * @param {Object} req the req field of the request.
  * @param {Object} res the res field of the request.
  * @return {Promise<TryUploadOutcome>} A promise that, if completed, returns an
@@ -125,3 +134,28 @@ module.exports.tryUploadImage = function(req, res, imageType) {
   });
 }
 
+
+/**
+ * Tries the upload in a synchronous way, and if no image is present, returns
+ * undefined
+ * @param {string=} imageType the category of the image. Used to better
+ * organize files inside image directory. A property of the object
+ * {@link type}.
+ * @param {Object} req the req field of the request.
+ * @param {Object} res the res field of the request.
+ * @return {Promise<TryUploadOutcome>} A promise that, if completed, returns an
+ * object that summarizes the outcome of the request. In case of error, the same
+ * object is thrown, but must be intercepted inside the catch block.
+ * @return {string}
+ */
+module.exports.trySyncUpload = async (req, res, imageType) => {
+  let imageUrl;
+  try {
+    const upload = await module.exports.tryUploadImage(req, res, imageType);
+    imageUrl = upload.imageUrl;
+  } catch (e) {
+    imageUrl = undefined;
+  }
+
+  return imageUrl;
+}

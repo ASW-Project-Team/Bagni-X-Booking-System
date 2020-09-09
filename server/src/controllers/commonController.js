@@ -3,7 +3,7 @@ const crypto = require('crypto')
 
 const Booking = require('../models/bookingModel')(mongoose);
 const Catalog = require('../models/catalogModel')(mongoose);
-const Customer = require('../models/customerModel')(mongoose);
+const Customer = require('../models/customerModel');
 const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
 const Bathhouse = require("../models/bathhouseModel")(mongoose);
 

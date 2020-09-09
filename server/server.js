@@ -22,20 +22,24 @@ global.CONFIGS = {
 /**
  * Sets up the server.
  */
-const main = function () {
+const main = async function () {
   const app = express();
 
   // wait for mongo init is not necessary anymore, as it is handled by Docker
-  mongoose.connect(
-    CONFIGS.mongoUrl,
-    {
-      useNewUrlParser: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-      connectTimeoutMS: 30,
-    }).
-    then(() => console.log('MongoDB Connected')).
-    catch((err) => console.log('Connection failed! ' + err));
+  try {
+    await mongoose.connect(
+      CONFIGS.mongoUrl,
+      {
+        useNewUrlParser: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true,
+        connectTimeoutMS: 30,
+      }
+    );
+    console.log('MongoDB Connected');
+  } catch (err) {
+    console.log('Connection failed! ' + err);
+  }
 
   // Permits only requests from this domain inside the API
   app.use(cors({

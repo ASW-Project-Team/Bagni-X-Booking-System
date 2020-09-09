@@ -1,10 +1,8 @@
-const path = require('path');
-
-exports.serveClientApp = function(req, res) {
+module.exports.serveClientApp = function(req, res) {
 	res.sendFile(CONFIGS.angularClientPath + '/index.html');
 };
 
-exports.serveAssets = function(req, res) {
+module.exports.serveAssets = function(req, res) {
 	res.sendFile(req.baseUrl);
 };
 

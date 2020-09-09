@@ -1,34 +1,24 @@
-let model;
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-module.exports = function(mongoose) {
-  if (!!!model)
-    model = initializeModel(mongoose);
+let customersSchema = new Schema({
+  // contacts
+  name: String,
+  surname: String,
+  phone: String,
+  address: String,
 
-  return model;
-};
+  // authentication
+  email: String,
+  hash: String,
 
-const initializeModel = function(mongoose) {
-  let Schema = mongoose.Schema;
+  // other values
+  // registered is used to discriminate users that corresponds
+  // to an account
+  registered: {type: Boolean, default: true},
+  deleted: {type: Boolean, default: false},
+});
 
-  // it's possible also nested declaration?
-  let customerSchema = new Schema({
-    _id: mongoose.Types.ObjectId,
+const customers = mongoose.model('customers', customersSchema);
 
-    // contacts
-    name: String,
-    surname: String,
-    phone: String,
-    address: String,
-
-    // authentication
-    email: String,
-    hash: String,
-
-    // other values
-    // registered is used to discriminate users that corresponds
-    // to an account
-    registered: {type: Boolean, default: true},
-    deleted: {type: Boolean, default: false},
-  });
-  return mongoose.model('customer', customerSchema, 'customers');
-};
+module.exports = customers;

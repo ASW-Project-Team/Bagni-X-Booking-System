@@ -9,8 +9,10 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin-user
       - MONGO_INITDB_ROOT_PASSWORD=admin-password
       - MONGO_INITDB_DATABASE=bagni_X_booking_system_db
-    expose:
-      - 27017
+    #expose:
+    #  - 27017
+    ports:
+      - 27017:27017
     # deploy:
     #  restart_policy:
     #    condition: on-failure

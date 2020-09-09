@@ -1,12 +1,10 @@
-const mongoose = require('mongoose');
-
-const Customer = require("../models/customerModel")(mongoose);
-const commonController = require("./commonController");
+const Customer = require("../models/customerModel");
 const authUtils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
+const common = require('./utils/common')
 
 
 /**
@@ -41,7 +39,6 @@ module.exports.createCustomer = async function(req, res) {
   // 4. creates a new customer with the given credentials, and saves it
   const hash = bcrypt.hashSync(password, 10)
   const customerToInsert = new Customer({
-    _id: mongoose.Types.ObjectId(),
     email: email,
     hash: hash,
     name: name,
@@ -54,17 +51,8 @@ module.exports.createCustomer = async function(req, res) {
   const generatedCustomer = await customerToInsert.save();
 
   // 5. returns the customer data and the jwt
-  const responseCustomerData = {
-    id: generatedCustomer._id,
-    email: generatedCustomer.email,
-    name: generatedCustomer.name,
-    surname: generatedCustomer.surname,
-    registered: generatedCustomer.registered,
-    deleted: generatedCustomer.deleted,
-    phone: generatedCustomer.phone,
-    address: generatedCustomer.address,
-    jwt: authUtils.generateCustomerToken(generatedCustomer)
-  }
+  const responseCustomerData = common.filterSensitiveInfoObj(generatedCustomer);
+  responseCustomerData.jwt = authUtils.generateCustomerToken(generatedCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 };
 
@@ -78,6 +66,7 @@ module.exports.createCustomer = async function(req, res) {
  */
 module.exports.updateCustomer = async function(req, res) {
   // 1. fields sanitization
+  const paramId = sanitizers.toMongoId(req.params.id);
   const email = sanitizers.toEmail(req.body.email);
   const password = sanitizers.toPassword(req.body.password);
   const name = sanitizers.toString(req.body.name);
@@ -85,7 +74,6 @@ module.exports.updateCustomer = async function(req, res) {
   const phone = sanitizers.toPhone(req.body.phone);
   const address = sanitizers.toString(req.body.address);
   const deleted = sanitizers.toBool(req.body.deleted);
-  const paramId = sanitizers.toMongoId(req.param.id);
 
   // 2. fields validation
   if (!validators.isMongoId(paramId)) {
@@ -131,13 +119,13 @@ module.exports.updateCustomer = async function(req, res) {
  */
 module.exports.deleteCustomerLogically = async function (req, res) {
   // 1. sanitization
-  const paramId = sanitizers.toMongoId(req.param.id);
+  const paramId = sanitizers.toMongoId(req.params.id);
 
   // 2. try the removal
   let removedCustomer;
   if (validators.isMongoId(paramId)) {
     // find the admin by the id, if present
-    removedCustomer = await Customer.findAndModify({ _id: paramId }, { deleted: true });
+    removedCustomer = await Customer.findOneAndUpdate({ _id: paramId }, { deleted: true });
 
   } else {
     // If no indication is present, the request is malformed
@@ -169,7 +157,10 @@ module.exports.deleteCustomerLogically = async function (req, res) {
  */
 module.exports.readCustomer = async function(req, res) {
   // 1. fields sanitization
-  const paramId = sanitizers.toMongoId(req.param.id);
+  const paramId = sanitizers.toMongoId(req.params.id);
+  const pageId = sanitizers.toInt(req.params['page-id']);
+  const pageSize = sanitizers.toInt(req.params['page-size']);
+
 
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
@@ -183,27 +174,18 @@ module.exports.readCustomer = async function(req, res) {
       return;
     }
 
-    const responseCustomerData = {
-      id: foundCustomer._id,
-      email: foundCustomer.email,
-      name: foundCustomer.name,
-      surname: foundCustomer.surname,
-      registered: foundCustomer.registered,
-      deleted: foundCustomer.deleted,
-      phone: foundCustomer.phone,
-      address: foundCustomer.address,
-    }
-
+    const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
     responseGen.respondOK(res, responseCustomerData)
     return;
   }
 
   // if the id is not present, or not valid, return returns the customers, in
-  // a paginated fashion
-  const customers = await Customer.find();
-
-  // Return paginated result todo
-  commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, customers, "Customers")
+  // alphabetic order, and paginated
+  const customers = await Customer.find({deleted: false})
+      .sort({surname: 1}).sort({name: 1});
+  const customersDataNonSensitive = common.filterSensitiveInfo(customers);
+  const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
+  responseGen.respondOK(res, paginatedResults);
 };
 
 
@@ -236,15 +218,7 @@ module.exports.authenticateCustomer = async function (req, res) {
   }
 
   // returns the customer data and the jwt
-  const responseCustomerData = {
-    id: foundCustomer._id,
-    name: foundCustomer.name,
-    surname: foundCustomer.surname,
-    phone: foundCustomer.phone,
-    address: foundCustomer.address,
-    registered: foundCustomer.registered,
-    deleted: foundCustomer.deleted,
-    jwt: authUtils.generateCustomerToken(foundCustomer),
-  }
+  const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
+  responseCustomerData.jwt = authUtils.generateCustomerToken(foundCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 }

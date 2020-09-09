@@ -1,23 +1,14 @@
-let model;
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-module.exports = function(mongoose) {
-  if (!!!model)
-    model = initializeModel(mongoose);
+let adminsSchema = new Schema({
+  // the root user can create or delete admin users
+  // (NB: cannot add other root admins)
+  root: {type: Boolean, default: false},
+  username: String,
+  hash: String
+});
 
-  return model;
-};
+const admins = mongoose.model('admins', adminsSchema);
 
-
-const initializeModel = function(mongoose) {
-  let Schema = mongoose.Schema;
-
-  let adminSchema = new Schema({
-    _id: mongoose.Types.ObjectId,
-    // the root user can create or delete admin users
-    // (NB: cannot add other root admins)
-    root: {type: Boolean, default: false},
-    username: String,
-    hash: String
-  });
-  return mongoose.model('admin', adminSchema, 'admins');
-};
+module.exports = admins;

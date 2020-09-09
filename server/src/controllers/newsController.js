@@ -1,74 +1,82 @@
-const mongoose = require('mongoose');
-const Feed = require("../models/newsModel")(mongoose);
-const commonController = require("./commonController");
+const News = require("../models/newsModel");
+const validators = require('./utils/validators');
+const sanitizers = require('./utils/sanitizers');
+const responseGen = require('./utils/responseGenerator');
+const imgUploader = require('./utils/imageUpload');
+const common = require('./utils/common');
 
-const feedName = "News";
+/**
+ * Create a new article. Required responses:
+ * - 201: The item has been correctly created.
+ * - 400: The request is malformed.
+ * - 401: Not admin.
+ */
+module.exports.createNews = async function(req, res) {
+	// 1. fields sanitization
+	const date = sanitizers.toDate(req.body.date);
+	const title = sanitizers.toString(req.body.title);
+	const article = sanitizers.toString(req.body.article);
+	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
 
-/*
-// image upload example
-const imageUpload = require('../image-upload/imageUpload');
-module.exports.testImage = function(req, res) {
-	imageUpload.tryUploadImage(req, res, imageUpload.imageTypes.news)
-	.then(response => {
-		console.log(response.imageUrl);
-		console.log(req.body);
-		res.send(response);
-	})
-	.catch(errResponse => {
-		res.status(400).send({description: 'Problemieeno', response: errResponse});
+	// 2. fields validation
+	if (!validators.areFieldsValid(date, title, article)) {
+		responseGen.respondMalformedRequest(res)
+		return;
+	}
+	// 3. creates a new item with the given data, and saves it
+	const newsToInsert = new News({
+		date: date,
+		title: title,
+		article: article,
+		imageUrl: imageUrl ? imageUrl : imgUploader.defaultImage
 	});
-}
-*/
+	const generatedNews = await newsToInsert.save();
+
+	// 4. returns the item data
+	const responseItemData = common.filterSensitiveInfoObj(generatedNews);
+	responseGen.respondCreated(res, responseItemData);
+};
 
 
 /**
- * It creates a new feed.
- * @param req:
- * 	. in params have the id to delete.
- * 	. in body have almost the required fields.
- * @param res:
- * 	. Status "Completed (200)" and document if all parameter demanded are corrected formatted.
- * 	. Status "Bad request (400)" if almost one parameter is bad formatted.
- * 	. Status "Error (404)" if some required fields isn't insert in request body.
+ * Return all news, or only the news with the given id. Required responses:
+ * For "news:id":
+ *  - 200: The server returned the specified item.
+ *  - 404: A news with the given id does not exist.
+ * For all news:
+ *  - 200: The server returned the news list.
  */
-module.exports.createNews = function(req, res) {
+module.exports.readNews = async function(req, res) {
+	// 1. fields sanitization
+	const paramId = sanitizers.toMongoId(req.params.id);
+	const pageId = sanitizers.toInt(req.params['page-id']);
+	const pageSize = sanitizers.toInt(req.params['page-size']);
 
-	commonController.areRequiredFieldsPresent(req, res, () =>{
+	// 2. try the extraction
+	if (validators.isMongoId(paramId)) {
+		// if the id is present and valid, return the correspondent
+		// admin non-secret data
+		const foundItem = await News.findOne({ _id: paramId })
 
-		if ((new Date(req.body.date).getTime() >= Date.now())
-			&& commonController.typeOfString(req.body.title)
-			&& commonController.typeOfString(req.body.imageUrl)
-			&& (!(req.body.article) || (commonController.typeOfString(req.body.article)))){
-
-			let feed = new Feed(req.body);
-			feed._id = mongoose.Types.ObjectId();
-
-			feed.date = new Date(req.body.date);
-
-			commonController.correctSave(feed, commonController.statusCreated, res);
-		} else {
-			commonController.parameterBadFormatted(res);
+		// admin not present in the db, 404
+		if (!foundItem) {
+			responseGen.respondNotFound(res, 'News')
+			return;
 		}
 
-	}, req.body.date, req.body.title, req.body.imageUrl);
-};
-
-/**
- * It returns the feed with the specified ID
- * @param req
- * @param res
- */
-module.exports.readNews = function(req, res) {
-
-	if (req.params.id){
-		commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "", req.params.id,
-			(err,news) => commonController.response(res, news));
-	} else {
-		commonController.findAllFromCollection(req, res, feedName, Feed, "", (err, feed) =>
-			commonController.returnPages(req.query["page-id"], req.query["page-size"], req, res, feed, "Feed"))
+		const responseItemData = common.filterSensitiveInfoObj(foundItem);
+		responseGen.respondOK(res, responseItemData)
+		return;
 	}
 
+	// if the id is not present, or not valid, return returns the news, ordered
+	// from the most recent, and paginated
+	const items = await News.find().sort({date: -1});
+	const customersDataNonSensitive = common.filterSensitiveInfo(items);
+	const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
+	responseGen.respondOK(res, paginatedResults);
 };
+
 
 /**
  * Modify a news if have correct parameters.
@@ -77,37 +85,72 @@ module.exports.readNews = function(req, res) {
  * 	. Status "Completed (200)" and document if all parameter demanded are corrected formatted.
  * 	. Status "Bad request (400)" if almost one parameter is bad formatted.
  */
-module.exports.updateNews = function(req, res) {
+module.exports.updateNews = async function(req, res) {
+	// 1. sanitization
+	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
+	const paramId = sanitizers.toMongoId(req.params.id);
+	const title = sanitizers.toString(req.body.title);
+	const date = sanitizers.toDate(req.body.date);
+	const article = sanitizers.toString(req.body.article);
 
-	commonController.findByIdFirstLevelCollection(req, res, feedName, Feed, "",
-		req.params.id, (err, docResult) => {
+	// 2. fields validation
+	if (!validators.isMongoId(paramId)) {
+		responseGen.respondMalformedRequest(res)
+		return;
+	}
 
-		// If correct parameter change, if not response
-		if (!(req.body.date) || ((new Date(req.body.date).getTime() >= Date.now()))
-			&& (!(req.body.title) || (commonController.typeOfString(req.body.title)))
-			&& (!(req.body.article) || (commonController.typeOfString(req.body.article))
-			&& (!(req.body.imageUrl) || commonController.typeOfString(req.body.imageUrl)))){
+	// 3. updates the admin, if exists
+	const newsFound = await News.findOneAndUpdate(
+		{ _id: paramId },
+		{
+			date: date,
+			title: title,
+			article: article,
+			imageUrl: imageUrl
+		},
+		{ omitUndefined: true, new: true }
+	);
 
-			commonController.checkAndActForUpdate(docResult, req, ()=>{
-				if (req.body.date)
-					docResult.date = new Date(req.body.date)
-			}, "title", "article", "imageUrl")
-				.then(commonController.correctSave(docResult, commonController.statusCompleted, res))
+	// 4. if the admin not exists, respond 404
+	if (!newsFound) {
+		responseGen.respondNotFound(res, 'News')
+		return;
+	}
 
-		} else {
-			commonController.parameterBadFormatted(res);
-		}
-
-	})
+	// 5. request completed
+	responseGen.respondOK(res)
 }
 
 
 /**
- * It deletes a feed with a specified id.
- * @param req that have params the id to delete.
- * @param res
+ * Deletes a news, by id (parameter). Required responses:
+ * - 200: The item has been correctly removed.
+ * - 400: Malformed request.
+ * - 401: The admin was not correctly authenticated.
+ * - 404: An item with the given id/username does not exist.
  */
-module.exports.deleteNews = function(req, res) {
+module.exports.deleteNews = async function(req, res) {
+	// 1. sanitization
+	const paramId = sanitizers.toMongoId(req.params.id);
 
-	commonController.deleteFirstLevelCollectionById(req, res, feedName, Feed, "", req.params.id);
+	// 2. try the removal
+	let removedItem;
+	if (validators.isMongoId(paramId)) {
+		// find the admin by the id, if present
+		removedItem = await News.findOneAndRemove({ _id: paramId });
+
+	} else {
+		// If no indication is present, the request is malformed
+		responseGen.respondMalformedRequest(res)
+		return;
+	}
+
+	// 3. If the admin is not found, respond 404
+	if (!removedItem) {
+		responseGen.respondNotFound(res, 'News')
+		return;
+	}
+
+	// 4. request completed
+	responseGen.respondOK(res);
 };

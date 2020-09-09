@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const Admin = require('../models/adminModel')(mongoose);
+const Admin = require('../models/adminModel');
 const authUtils = require('../authentication/utils');
 const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
+const common = require('./utils/common');
 
 
 /**
@@ -16,7 +16,7 @@ const responseGen = require('./utils/responseGenerator');
  */
 module.exports.createAdmin = async function (req, res) {
   // 1. fields sanitization
-  const username = sanitizers.toEmail(req.body.username);
+  const username = sanitizers.toString(req.body.username);
   const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
@@ -34,7 +34,6 @@ module.exports.createAdmin = async function (req, res) {
 
   // 4. creates a new admin with the given credentials, and saves it
   const adminToInsert = new Admin({
-    _id: mongoose.Types.ObjectId(),
     root: false,
     username: username,
     hash: bcrypt.hashSync(password, 10),
@@ -42,13 +41,10 @@ module.exports.createAdmin = async function (req, res) {
   const generatedAdmin = await adminToInsert.save();
 
   // 5. returns the admin data and the jwt
-  const responseAdminData = {
-    id: generatedAdmin._id,
-    username: generatedAdmin.username,
-    root: generatedAdmin.root,
-    jwt: authUtils.generateAdminToken(generatedAdmin)
-  }
-
+  const responseAdminData = common.filterSensitiveInfoObj(generatedAdmin);
+  responseAdminData.jwt = authUtils.generateAdminToken(generatedAdmin);
+  console.log(responseAdminData);
+  console.log(responseAdminData.jwt);
   responseGen.respondCreated(res, responseAdminData);
 }
 
@@ -63,7 +59,7 @@ module.exports.createAdmin = async function (req, res) {
  */
 module.exports.deleteAdmin = async function (req, res) {
   // 1. sanitization
-  const paramId = sanitizers.toMongoId(req.param.id);
+  const paramId = sanitizers.toMongoId(req.params.id);
   const queryUsername = sanitizers.toString(req.query.username);
 
   // 2. try the removal
@@ -101,15 +97,15 @@ module.exports.deleteAdmin = async function (req, res) {
  * - 404: An admin with the given id does not exist.
  */
 module.exports.modifyAdmin = async function (req, res) {
-    // 1. sanitization
-  const paramId = sanitizers.toMongoId(req.param.id);
-  const username = sanitizers.toEmail(req.body.username);
+  // 1. sanitization
+  const paramId = sanitizers.toMongoId(req.params.id);
+  const username = sanitizers.toString(req.body.username);
   const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
-  if (!validators.areFieldsValid(paramId)) {
+  if (!validators.isMongoId(paramId)) {
     responseGen.respondMalformedRequest(res)
-    return
+    return;
   }
 
   // 3. updates the admin, if exists
@@ -119,10 +115,8 @@ module.exports.modifyAdmin = async function (req, res) {
       username: username,
       hash: validators.isPassword(password) ? bcrypt.hashSync(password, 10) : undefined
     },
-    {
-      omitUndefined: true, // if fields are undefined, they will not be updated
-      new: true, // if true, return the modified document rather than the original. defaults to false
-    })
+    { omitUndefined: true, new: true }
+  );
 
   // 4. if the admin not exists, respond 404
   if (!adminFound) {
@@ -133,6 +127,7 @@ module.exports.modifyAdmin = async function (req, res) {
   // 5. request completed
   responseGen.respondOK(res)
 }
+
 
 /**
  * Return all admins, or only the admin with the given id. Required responses:
@@ -146,41 +141,33 @@ module.exports.modifyAdmin = async function (req, res) {
  */
 module.exports.returnAdmins = async function (req, res) {
   // 1. fields sanitization
-  const paramId = sanitizers.toMongoId(req.param.id);
+  const paramId = sanitizers.toMongoId(req.params.id);
+  const pageId = sanitizers.toInt(req.params['page-id']);
+  const pageSize = sanitizers.toInt(req.params['page-size']);
 
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
     // if the id is present and valid, return the correspondent
     // admin non-secret data
-    const foundAdmin = await Admin.findOne({ _id: paramId })
+    const foundItem = await Admin.findOne({ _id: paramId })
 
     // admin not present in the db, 404
-    if (!foundAdmin) {
+    if (!foundItem) {
       responseGen.respondNotFound(res, 'Admin')
       return;
     }
 
-    const responseAdminData = {
-      id: foundAdmin._id,
-      username: foundAdmin.username,
-      root: foundAdmin.root,
-    }
-    responseGen.respondOK(res, responseAdminData)
+    const responseItemData = common.filterSensitiveInfoObj(foundItem);
+    responseGen.respondOK(res, responseItemData)
     return;
   }
 
-  // if the id is not present, or not valid, return all admins,
-  // ordered by username
-  const adminsData = await Admin.find().sort({ username: 1 })
-  const adminsDataNonSensitive = adminsData.map(admin => {
-    return {
-      id: admin._id,
-      username: admin.username,
-      root: admin.root,
-    }
-  })
-  console.log(adminsDataNonSensitive)
-  responseGen.respondOK(res, adminsDataNonSensitive)
+  // if the id is not present, or not valid, return returns the customers, in
+  // alphabetic order, and paginated
+  const items = await Admin.find().sort({username: 1});
+  const customersDataNonSensitive = common.filterSensitiveInfo(items);
+  const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
+  responseGen.respondOK(res, paginatedResults);
 }
 
 
@@ -192,7 +179,7 @@ module.exports.returnAdmins = async function (req, res) {
  */
 module.exports.authenticateAdmin = async function (req, res) {
   // 1. fields sanitization
-  const username = sanitizers.toEmail(req.body.username);
+  const username = sanitizers.toString(req.body.username);
   const password = sanitizers.toPassword(req.body.password);
 
   // 2. fields validation
@@ -213,11 +200,7 @@ module.exports.authenticateAdmin = async function (req, res) {
   }
 
   // returns the admin data and the jwt
-  const responseAdminData = {
-    id: foundAdmin._id,
-    username: foundAdmin.username,
-    root: foundAdmin.root,
-    jwt: authUtils.generateAdminToken(foundAdmin),
-  }
-  responseGen.respondCreated(res, responseAdminData)
+  const responseAdminData = common.filterSensitiveInfoObj(foundAdmin);
+  responseAdminData.jwt = authUtils.generateAdminToken(foundAdmin);
+  responseGen.respondCreated(res, responseAdminData);
 }
