@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "node ./server.js --prod",
+    "dev": "node ./server.js"
+  },
+  "author": "Riccardo Maldini <riccardo.maldini2@studio.unibo.it>, Francesco Gorini <francesco.gorini@studio.unibo.it>, Thomas Angelini <thomas.angelini@studio.unibo.it>",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "firebase-admin": "^9.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.20",
+    "multer": "^1.4.2"
+  },
+  "devDependencies": {
+    "mongoose-float": "^1.0.4"
+  }
+}

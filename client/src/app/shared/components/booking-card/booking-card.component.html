@@ -1,0 +1,34 @@
+<div class="booking-card" matRipple matRippleColor="primary"
+     [ngStyle]="isLastCard == true ? { 'margin-bottom': 0 } : {}">
+
+  <div class="main-line">
+    <div class="image"
+         [ngStyle]="{'background-image': 'url(' + booking.umbrellas[0].rank.image }">
+    </div>
+
+    <div class="lines">
+      <h2 class="title">{{ booking.getTitle() }}</h2>
+      <p class="description">{{ booking.getDescription() }}</p>
+    </div>
+  </div>
+
+  <div class="details-line">
+    <div class="left-details">
+      <div class="booking-state">
+        <app-booking-state [bookingState]="booking.getState()"></app-booking-state>
+      </div>
+      <div class="booking-time">
+        <mat-icon svgIcon="calendar-outline" class="time-icon"></mat-icon>
+        <div class="time-lines">
+          <p class="time-from-line">Dal {{ booking.dateFrom | bookingDate | titlecase}} </p>
+          <p class="time-to-line">Al {{ booking.dateTo | bookingDate | titlecase}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="right-details">
+      <div class="price-chip">
+        {{ booking.price | currency: 'EUR' }}
+      </div>
+    </div>
+  </div>
+</div>

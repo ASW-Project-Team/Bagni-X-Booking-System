@@ -1,42 +1,31 @@
-version: '3'
+version: '3.1'
 
 services:
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin-user
+      MONGO_INITDB_ROOT_PASSWORD: admin-password
+      MONGO_INITDB_DATABASE: bagni_X_booking_system_db
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
   server:
     build:
-      context: server
+      context: .
       dockerfile: Dockerfile
-      args:
-      # - IMAGE_VERSION=non_serve
-    image: server
-    #    image: vic/debian.iptables.ifconfig
-    environment:
-    #- MIAVAR=non_serve__solo_come_esempio
+    container_name: server
+    depends_on:
+      - mongodb
     ports:
       - 3000:3000
-    networks:
-      - internal
-  database:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
-      args:
-      # - IMAGE_VERSION=non_serve
-    image: database
+    command: sh -c "/wait && node server.js"
     environment:
-    #- MIAVAR=non_serve3__solo_come_esempio
-    ports:
-      - 27017-27019:27017-27019
-    networks:
-      - internal
-#    volumes:
-#      - mydata:/data
-
-networks:
-  internal:
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: "brinternal"
-#      com.docker.network.enable_ipv6: "false"
-#volumes:
-#  mydata:
-
+      - WAIT_HOSTS=mongodb:27017
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30

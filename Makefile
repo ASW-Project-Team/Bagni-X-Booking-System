@@ -1,71 +1,52 @@
 SHELL=/bin/bash
 
-DB_SERVICE_NAME=database
-WS_SERVICE_NAME=server
-
-DB_IMAGE=databaseimage
-WS_IMAGE=serverimage
-
-NETWORK=internal
-
-DB_PORTS="27017-27019:27017-27019"
-WS_PORTS="3000:3000"
-
-DB_PATH=./database
-WS_PATH=./server
-
-.PHONY: all
-all: build network up
+.PHONY: deploy
+deploy: build up
 
 .PHONY: build
 build:
-	ps ; cd ${DB_PATH} && docker build -t ${DB_IMAGE} .
-	cd ${WS_PATH}  && docker build -t ${WS_IMAGE} .
-
-.PHONY: network
-network:
-	- docker network create -d bridge ${NETWORK}
+	docker-compose build
 
 .PHONY: up
-up: network
-	docker run -itd --network ${NETWORK} -p ${DB_PORTS} --name ${DB_SERVICE_NAME}      ${DB_IMAGE}
-	docker run -itd --network ${NETWORK} -p ${WS_PORTS} --name ${WS_SERVICE_NAME} --rm ${WS_IMAGE}
-
-.PHONY: cleanall
-cleanall: downrmi
+up:
+	docker-compose up
 
 .PHONY: clean
 clean: down
 
-.PHONY: downrmi
-downrmi: down rmi
-
+# Stops containers and removes containers, networks, volumes, and images created by up .
 .PHONY: down
-down: stop rm rmnetwork
+down:
+	docker-compose down
 
 .PHONY: stop
 stop:
-	- docker stop ${DB_SERVICE_NAME} ${WS_SERVICE_NAME}
+	docker-compose stop
 
 .PHONY: rm
 rm:
-	- docker rm ${DB_SERVICE_NAME} ${WS_SERVICE_NAME}
+	docker-compose rm
 
-.PHONY: rmi
-rmi:
-	- docker rmi ${NODEJSAPPIMAGE} ${MONGOIMAGE}
+.PHONY: server-dev
+server-dev: build-server-dev up-server-dev
 
-.PHONY: rmnetwork
-rmnetwork:
-	- docker network rm ${NETWORK}
+.PHONY: build-server-dev
+build-server-dev:
+	cd ./server && npm install
 
-.PHONY: build-ws-local
-build-local:
-	cd ${WS_PATH}/app/client && npm update && ng build
-	cd ${WS_PATH}/app/ && npm update && node app.js
+.PHONY: up-server-dev
+up-server-dev:
+	cd ./server && npm run dev
 
+.PHONY: client-dev
+client-dev: build-client-dev up-client-dev
 
-.PHONY: up-ws-local
-up-local:
-	cd ${WS_PATH}/app/ && node app.js
+.PHONY: build-client-dev
+build-client-dev:
+	cd ./client npm install @angular/cli && npm install && npm run build
+
+.PHONY: up-client-dev
+up-client-dev:
+	ng serve
+
 

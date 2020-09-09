@@ -1,0 +1,74 @@
+@import "~src/styles/utils";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  .description {
+    margin-bottom: $marginSmartphone;
+    width: 100%;
+    max-width: $textboxWidthDesktop * 2 + $marginDesktop;
+
+    @include forDesktopOnly {
+      text-align: center;
+    }
+  }
+
+  .registration-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .inputs-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: $textboxWidthDesktop * 2 + $marginDesktop * 2;
+      @include responsiveProp(margin-bottom, $defaultMargin);
+
+      .input-field {
+        padding: 0;
+        @include responsiveProp(width, $textboxWidth);
+
+        @include forDesktopOnly {
+          padding: 0 $marginDesktop / 2;
+        }
+      }
+
+      .long-input {
+        width: 100%;
+
+        @include forDesktopOnly {
+          width: $textboxWidthDesktop * 2 + $marginDesktop;
+        }
+      }
+    }
+
+    .warning-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      @include responsiveProp(margin-bottom, $defaultMargin);
+      text-align: left;
+
+      .warning-icon {
+        @include responsiveProp(margin-right, $defaultMargin);
+      }
+    }
+
+    .registration-button {
+      @include button;
+      width: 100%;
+      max-width: $widerTextboxWidthDesktop;
+    }
+  }
+}

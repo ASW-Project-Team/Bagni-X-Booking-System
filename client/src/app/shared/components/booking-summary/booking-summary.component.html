@@ -1,0 +1,19 @@
+<h1>Periodo</h1>
+<p class="time--line">Dal {{ booking.dateFrom | bookingDateExtended | titlecase }},
+  al {{ booking.dateTo | bookingDateExtended | titlecase }}</p>
+
+<h1>Riassunto</h1>
+<ul>
+  <li *ngFor="let item of booking.computeCostItems()">
+    <div class="cost-item">
+      <div class="cost-description">{{ item.description }}</div>
+      <h2 class="cost-amount">{{ item.amount | currency: 'EUR' }}</h2>
+    </div>
+  </li>
+</ul>
+<div class="divider"></div>
+
+<div class="cost-item">
+  <div class="cost-description">{{ booking.computeTotal().description }}</div>
+  <h2 class="cost-amount">{{ booking.computeTotal().amount | currency: 'EUR' }}</h2>
+</div>

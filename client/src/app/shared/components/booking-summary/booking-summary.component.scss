@@ -1,0 +1,25 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @include responsiveProp(margin-bottom, $quarterMargin);
+
+
+  .cost-amount {
+    text-align: right;
+    margin: 0;
+  }
+}
+
+.divider {
+  height: 1px;
+  background-color: #cccccc;
+  margin: 0 auto;
+  @include responsiveProp(margin-bottom, $halfMargin);
+}

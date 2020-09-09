@@ -1,0 +1,22 @@
+# The aim of this action is to deploy a usable instance of the client to
+# GitHub Pages, by compiling che Angular client, and making it
+# accessible from the branch gh-pages.
+name: Angular CD
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Angular Deploy to gh-pages
+        uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.3.1
+        with:
+          github_access_token: ${{ secrets.ACCESS_TOKEN }}
+          build_configuration: production
+          base_href: /Bagni-X-Booking-System/
+          deploy_branch: gh-pages
+          angular_project_dir: ./client/
+          angular_dist_build_folder: client/dist/client

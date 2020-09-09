@@ -1,0 +1,14 @@
+<mat-toolbar class="appbar">
+  <div class="back-action">
+    <a href="#" mat-icon-button
+       routerLinkActive="active" color="primary"
+       routerLink="{{ backRoute }}" title="{{ backPageName | titlecase }}">
+      <mat-icon color="primary" svgIcon="arrow-left"></mat-icon>
+    </a>
+  </div>
+  <h1 class="title">Prenota</h1>
+
+  <div class="cart">
+    <app-cart [booking]="booking"></app-cart>
+  </div>
+</mat-toolbar>

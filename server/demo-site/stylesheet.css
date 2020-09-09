@@ -1,0 +1,30 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+.centered {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+img {
+    width: 100px;
+    height: 100px;
+    margin-top: 24px;
+}
+
+h1 {
+    text-align: center;
+    max-width: 250px;
+    color: #FD7926;
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+p {
+    text-align: center;
+    max-width: 250px;
+    color: #727F93;
+}
