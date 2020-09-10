@@ -1,63 +1,113 @@
-/**
- * Implements pagination, based in given items (supposed in order), and the
- * given page size and id. If omitted, default are used.
- * @param {number=} pageIdParam - the id of the page, from 0 to n, default 0.
- * @param {number=} pageSizeParam - the size of the page, default to 10.
- * @param {Object[]} items - an array of objects.
- * @return {Object[]} the items in the range, of an empty array, if they aren't.
+const validators = require('./validators');
+const sanitizers = require('./sanitizers');
+const responseGen = require('./responseGenerator');
+const imgUploader = require('./imageUploader');
+const respFilters = require('./responseFilters');
+
+
+/*
+ * The module includes entire creation, modification and deletion routines,
+ * customizable in some parts.
+ *
  */
-module.exports.filterByPage = (pageIdParam, pageSizeParam, items) => {
-  const pageId = pageIdParam ? pageIdParam : 0;
-  const pageSize = pageSizeParam ? pageSizeParam : 10;
 
-  const pageStartIndex = pageId * pageSize;
-  const pageEndIndex = pageStartIndex + pageSize - 1;
-
-  if (items === undefined || items.length <= 0) {
-    return [];
+/**
+ * Insert all, validate all. fields are in format {name: value}
+ */
+module.exports.create = async (req,res,model, fields) => {
+  // validation
+  if (!validators.areFieldsValid(...Object.values(fields))) {
+    responseGen.respondMalformedRequest(res)
+    return;
   }
 
-  return items.filter((item, index) => index >= pageStartIndex && index <= pageEndIndex);
+  // todo for customer/admin, check if exists
+
+  // creates a new item with the given credentials, and saves it
+  const itemToInsert = new model(fields);
+  const generatedItem = await itemToInsert.save();
+
+  // returns the item data
+  const responseItemData = respFilters.filterSensitiveInfoObj(generatedItem);
+  responseGen.respondCreated(res, responseItemData);
 }
 
 
-/**
- * Removes from the giver array information that are not secure to send to the
- * requester.
- * @param {Object[]} items - The array of db documents
- * @return {Object[]} The objects without sensitive information, neither db data
- */
-module.exports.filterSensitiveInfo = (items) => {
-  if (items === undefined) {
-    return [];
+
+module.exports.update = async (req, res, model, paramId, fields) => {
+  // fields validation
+  if (!validators.isMongoId(paramId)) {
+    responseGen.respondMalformedRequest(res)
+    return;
   }
 
-  return items.map(item => module.exports.filterSensitiveInfoObj(item));
+  // todo for customer, check deleted field
+
+  // updates the item, if exists
+  const itemFound = await model.findOneAndUpdate({ _id: paramId },
+    fields, { omitUndefined: true, new: true });
+
+  // 4. if the item not exists, respond 404
+  if (!itemFound) {
+    responseGen.respondNotFound(res, model.modelName)
+    return;
+  }
+
+  // 5. request completed
+  responseGen.respondOK(res)
 }
 
 
-/**
- * Removes from the given objsct information that are not secure to send to the
- * requester.
- * @param {Object} item - The db document
- * @return {Object} The object without sensitive information, neither db data
- */
-module.exports.filterSensitiveInfoObj = (item) => {
-  if (item === undefined) {
-    return undefined;
+module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRulesArray) => {
+  // 2. try the extraction
+  if (validators.isMongoId(paramId)) {
+    // todo for customer, check delete field
+
+    // if the id is present and valid, return the correspondent
+    // item non-secret data
+    const foundItem = await model.findOne({ _id: paramId })
+
+    // admin not present in the db, 404
+    if (!foundItem) {
+      responseGen.respondNotFound(res, model.modelName);
+      return;
+    }
+
+    const responseItemData = respFilters.filterSensitiveInfoObj(foundItem);
+    responseGen.respondOK(res, responseItemData)
+    return;
   }
 
-  // transform the document in a plain javascript object
-  let plainItem = item.toObject();
+  // if the id is not present, or not valid, return returns the news, ordered
+  // from the most recent, and paginated
+  const itemsQuery =  model.find();
+  sortRulesArray.forEach(rule => itemsQuery.sort(rule));
+  const items = await itemsQuery.exec();
+  const customersDataNonSensitive = respFilters.filterSensitiveInfo(items);
+  const paginatedResults = respFilters.filterByPage(pageId, pageSize, customersDataNonSensitive);
+  responseGen.respondOK(res, paginatedResults);
+}
 
-  // removes mongoose version number
-  delete plainItem['__v'];
-  delete plainItem.hash;
 
-  if (plainItem._id) {
-    delete Object.assign(plainItem, {id: plainItem._id })._id;
+module.exports.delete = async (req, res, model, paramId) => {
+  // try the removal
+  let removedItem;
+  if (validators.isMongoId(paramId)) {
+    // find the admin by the id, if present
+    removedItem = await model.findOneAndRemove({ _id: paramId });
+
+  } else {
+    // If no indication is present, the request is malformed
+    responseGen.respondMalformedRequest(res)
+    return;
   }
 
-  // sensitive information, do not send to the client
-  return plainItem;
+  // If the item is not found, respond 404
+  if (!removedItem) {
+    responseGen.respondNotFound(res, model.modelName);
+    return;
+  }
+
+  // request completed
+  responseGen.respondOK(res);
 }

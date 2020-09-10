@@ -4,7 +4,7 @@ const auth = require('./utils/auth');
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
-const common = require('./utils/common');
+const respFilters = require('./utils/responseFilters');
 
 
 /**
@@ -41,7 +41,7 @@ module.exports.registerAdmin = async function (req, res) {
   const generatedAdmin = await adminToInsert.save();
 
   // 5. returns the admin data and the jwt
-  const responseAdminData = common.filterSensitiveInfoObj(generatedAdmin);
+  const responseAdminData = respFilters.filterSensitiveInfoObj(generatedAdmin);
   responseAdminData.jwt = auth.generateAdminToken(generatedAdmin);
   console.log(responseAdminData);
   console.log(responseAdminData.jwt);
@@ -78,7 +78,7 @@ module.exports.authenticateAdmin = async function (req, res) {
   }
 
   // returns the admin data and the jwt
-  const responseAdminData = common.filterSensitiveInfoObj(foundAdmin);
+  const responseAdminData = respFilters.filterSensitiveInfoObj(foundAdmin);
   responseAdminData.jwt = auth.generateAdminToken(foundAdmin);
   responseGen.respondCreated(res, responseAdminData);
 }
@@ -113,7 +113,7 @@ module.exports.authenticateCustomer = async function (req, res) {
   }
 
   // returns the customer data and the jwt
-  const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
+  const responseCustomerData = respFilters.filterSensitiveInfoObj(foundCustomer);
   responseCustomerData.jwt = auth.generateCustomerToken(foundCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 }
@@ -161,7 +161,7 @@ module.exports.registerCustomer = async function(req, res) {
   const generatedCustomer = await customerToInsert.save();
 
   // 5. returns the customer data and the jwt
-  const responseCustomerData = common.filterSensitiveInfoObj(generatedCustomer);
+  const responseCustomerData = respFilters.filterSensitiveInfoObj(generatedCustomer);
   responseCustomerData.jwt = auth.generateCustomerToken(generatedCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 };

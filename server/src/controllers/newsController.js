@@ -1,9 +1,8 @@
 const News = require("../models/newsModel");
-const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
-const responseGen = require('./utils/responseGenerator');
 const imgUploader = require('./utils/imageUploader');
 const common = require('./utils/common');
+
 
 /**
  * Create a new article. Required responses:
@@ -12,29 +11,19 @@ const common = require('./utils/common');
  * - 401: Not admin.
  */
 module.exports.createNews = async function(req, res) {
-	// 1. fields sanitization
+	// Sanitization
 	const date = sanitizers.toDate(req.body.date);
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
 	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
 
-	// 2. fields validation
-	if (!validators.areFieldsValid(date, title, article)) {
-		responseGen.respondMalformedRequest(res)
-		return;
-	}
-	// 3. creates a new item with the given data, and saves it
-	const newsToInsert = new News({
+	// creation flow
+	await common.create(req, res, News, {
 		date: date,
 		title: title,
 		article: article,
 		imageUrl: imageUrl ? imageUrl : imgUploader.defaultImage
 	});
-	const generatedNews = await newsToInsert.save();
-
-	// 4. returns the item data
-	const responseItemData = common.filterSensitiveInfoObj(generatedNews);
-	responseGen.respondCreated(res, responseItemData);
 };
 
 
@@ -47,34 +36,13 @@ module.exports.createNews = async function(req, res) {
  *  - 200: The server returned the news list.
  */
 module.exports.readNews = async function(req, res) {
-	// 1. fields sanitization
+	// Sanitization
 	const paramId = sanitizers.toMongoId(req.params.id);
 	const pageId = sanitizers.toInt(req.params['page-id']);
 	const pageSize = sanitizers.toInt(req.params['page-size']);
 
-	// 2. try the extraction
-	if (validators.isMongoId(paramId)) {
-		// if the id is present and valid, return the correspondent
-		// admin non-secret data
-		const foundItem = await News.findOne({ _id: paramId })
-
-		// admin not present in the db, 404
-		if (!foundItem) {
-			responseGen.respondNotFound(res, 'News')
-			return;
-		}
-
-		const responseItemData = common.filterSensitiveInfoObj(foundItem);
-		responseGen.respondOK(res, responseItemData)
-		return;
-	}
-
-	// if the id is not present, or not valid, return returns the news, ordered
-	// from the most recent, and paginated
-	const items = await News.find().sort({date: -1});
-	const customersDataNonSensitive = common.filterSensitiveInfo(items);
-	const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
-	responseGen.respondOK(res, paginatedResults);
+	// read flow
+	await common.read(req, res, News, paramId, pageId, pageSize, [{ date: -1}]);
 };
 
 
@@ -86,40 +54,20 @@ module.exports.readNews = async function(req, res) {
  * 	. Status "Bad request (400)" if almost one parameter is bad formatted.
  */
 module.exports.updateNews = async function(req, res) {
-	// 1. sanitization
+	// Sanitization
 	const paramId = sanitizers.toMongoId(req.params.id);
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
 	const date = sanitizers.toDate(req.body.date);
 	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
 
-
-	// 2. fields validation
-	if (!validators.isMongoId(paramId)) {
-		responseGen.respondMalformedRequest(res)
-		return;
-	}
-
-	// 3. updates the admin, if exists
-	const newsFound = await News.findOneAndUpdate(
-		{ _id: paramId },
-		{
-			date: date,
-			title: title,
-			article: article,
-			imageUrl: imageUrl
-		},
-		{ omitUndefined: true, new: true }
-	);
-
-	// 4. if the admin not exists, respond 404
-	if (!newsFound) {
-		responseGen.respondNotFound(res, 'News')
-		return;
-	}
-
-	// 5. request completed
-	responseGen.respondOK(res)
+	// Update flow
+	await common.update(req, res, News, paramId, {
+		date: date,
+		title: title,
+		article: article,
+		imageUrl: imageUrl
+	});
 }
 
 
@@ -131,27 +79,9 @@ module.exports.updateNews = async function(req, res) {
  * - 404: An item with the given id/username does not exist.
  */
 module.exports.deleteNews = async function(req, res) {
-	// 1. sanitization
+	// sanitization
 	const paramId = sanitizers.toMongoId(req.params.id);
 
-	// 2. try the removal
-	let removedItem;
-	if (validators.isMongoId(paramId)) {
-		// find the admin by the id, if present
-		removedItem = await News.findOneAndRemove({ _id: paramId });
-
-	} else {
-		// If no indication is present, the request is malformed
-		responseGen.respondMalformedRequest(res)
-		return;
-	}
-
-	// 3. If the admin is not found, respond 404
-	if (!removedItem) {
-		responseGen.respondNotFound(res, 'News')
-		return;
-	}
-
-	// 4. request completed
-	responseGen.respondOK(res);
+	// removal flow
+	await common.delete(req, res, News, paramId);
 };

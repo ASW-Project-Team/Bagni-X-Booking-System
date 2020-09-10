@@ -1,9 +1,11 @@
 const Customer = require("../models/customerModel");
-const bcrypt = require('bcryptjs');
 const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
 const responseGen = require('./utils/responseGenerator');
-const common = require('./utils/common')
+const respFilters = require('./utils/responseFilters');
+const common = require('./utils/common');
+const auth = require('./utils/auth');
+
 
 
 /**
@@ -20,7 +22,6 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
   const surname = sanitizers.toString(req.body.surname);
   const phone = sanitizers.toPhone(req.body.phone);
   const address = sanitizers.toString(req.body.address);
-  const registered = sanitizers.toBool(req.body.registered);
 
   // 2. fields validation
   if (!validators.areFieldsValid(name, surname)) {
@@ -36,10 +37,9 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
   }
 
   // 4. creates a new customer with the given credentials, and saves it
-  const hash = bcrypt.hashSync(password, 10)
   const customerToInsert = new Customer({
     email: email,
-    hash: hash,
+    hash: password ? auth.createHash(password) : undefined,
     name: name,
     surname: surname,
     registered: false,
@@ -50,7 +50,7 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
   const generatedCustomer = await customerToInsert.save();
 
   // 5. returns the customer data and the jwt
-  const responseCustomerData = common.filterSensitiveInfoObj(generatedCustomer);
+  const responseCustomerData = respFilters.filterSensitiveInfoObj(generatedCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 };
 
@@ -67,7 +67,7 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
  *  - 401: The admin that do the operation was not correctly authenticated.
  */
 module.exports.readCustomer = async function(req, res) {
-  // 1. fields sanitization
+  // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
   const pageId = sanitizers.toInt(req.params['page-id']);
   const pageSize = sanitizers.toInt(req.params['page-size']);
@@ -85,7 +85,7 @@ module.exports.readCustomer = async function(req, res) {
       return;
     }
 
-    const responseCustomerData = common.filterSensitiveInfoObj(foundCustomer);
+    const responseCustomerData = respFilters.filterSensitiveInfoObj(foundCustomer);
     responseGen.respondOK(res, responseCustomerData)
     return;
   }
@@ -94,8 +94,8 @@ module.exports.readCustomer = async function(req, res) {
   // alphabetic order, and paginated
   const customers = await Customer.find({deleted: false})
   .sort({surname: 1}).sort({name: 1});
-  const customersDataNonSensitive = common.filterSensitiveInfo(customers);
-  const paginatedResults = common.filterByPage(pageId, pageSize, customersDataNonSensitive);
+  const customersDataNonSensitive = respFilters.filterSensitiveInfo(customers);
+  const paginatedResults = respFilters.filterByPage(pageId, pageSize, customersDataNonSensitive);
   responseGen.respondOK(res, paginatedResults);
 };
 
@@ -108,7 +108,7 @@ module.exports.readCustomer = async function(req, res) {
  * - 404: An customer with the given id does not exist.
  */
 module.exports.updateCustomer = async function(req, res) {
-  // 1. fields sanitization
+  // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
   const email = sanitizers.toEmail(req.body.email);
   const password = sanitizers.toPassword(req.body.password);
@@ -118,37 +118,16 @@ module.exports.updateCustomer = async function(req, res) {
   const address = sanitizers.toString(req.body.address);
   const deleted = sanitizers.toBool(req.body.deleted);
 
-  // 2. fields validation
-  if (!validators.isMongoId(paramId)) {
-    responseGen.respondMalformedRequest(res)
-    return;
-  }
-
-  // 3. updates the customer, if exists
-  const customerFound = await Customer.findOneAndUpdate(
-    { _id: paramId },
-    {
-      email: email,
-      hash: password ? bcrypt.hashSync(password, 10) : undefined,
-      name: name,
-      surname: surname,
-      deleted: deleted,
-      phone: phone,
-      address: address
-    },
-    {
-      omitUndefined: true, // if fields are undefined, they will not be updated
-      new: true, // if true, return the modified document rather than the original. defaults to false
-    })
-
-  // 4. if the customer not exists, respond 404
-  if (!customerFound) {
-    responseGen.respondNotFound(res, 'Customer')
-    return;
-  }
-
-  // 5. request completed
-  responseGen.respondOK(res)
+  // Update flow
+  await common.update(req, res, Customer, paramId, {
+    email: email,
+    hash: password ? auth.createHash(password) : undefined,
+    name: name,
+    surname: surname,
+    deleted: deleted,
+    phone: phone,
+    address: address
+  });
 };
 
 
