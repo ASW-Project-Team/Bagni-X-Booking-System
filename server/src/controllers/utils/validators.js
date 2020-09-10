@@ -1,65 +1,60 @@
-/*
- * Checks the given properties of the field, and also check whether the field is
- * undefined.
+/**
+ * @file The file contains the validators, that are functions used to check the
+ * properties of a given object. Every validator returns true if the property
+ * is fulfilled, and it is not undefined; false otherwise.
  */
 
 const validator = require('validator');
 
-const passwordPattern = new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/);
 
-module.exports.isNonEmptyString = function (string) {
-  return string !== undefined && (typeof string === 'string' || string instanceof String) && string.length > 0 ;
+module.exports.isNonEmptyString = (value) => {
+  return value !== undefined && (typeof value === 'string' || value instanceof String) && value.length > 0 ;
 }
 
-module.exports.isEmail = function (string) {
-  return string !== undefined && validator.isEmail(string + "");
+module.exports.isEmail = (value) => {
+  return value !== undefined && validator.isEmail(value + "");
 }
 
-module.exports.isDate = function (string) {
-  return string !== undefined && validator.isISO8601(string + "");
+module.exports.isDate = (value) => {
+  return value !== undefined && validator.isISO8601(value + "");
 }
 
-module.exports.isPassword = function (string) {
-  return string !== undefined && validator.matches(string + "", passwordPattern);
+module.exports.isPassword = (value) => {
+  return value !== undefined && validator.matches(value + "",
+    new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}\[\]:;<>,.?\/~_+-=|]).{8,32}$/));
 }
 
-module.exports.isMongoId = function (string) {
-  return string !== undefined && validator.isMongoId(string + "", passwordPattern);
+module.exports.isMongoId = (value) => {
+  return value !== undefined && validator.isMongoId(value + "");
 }
 
-module.exports.isPhoneNumber = function (string) {
-  return string !== undefined && validator.isMobilePhone(string + "");
+module.exports.isPhoneNumber = (value) => {
+  return value !== undefined && validator.isMobilePhone(value + "");
 }
 
-module.exports.isInt = function (integer) {
-  return integer !== undefined && validator.isInt(integer + "");
+module.exports.isInt = (value) => {
+  return value !== undefined && validator.isInt(value + "");
 }
 
-
-module.exports.isPositiveInt = function (integer) {
-  return integer !== undefined && validator.isInt(integer + "") && validator.toInt(integer + '') >= 0;
+module.exports.isPositiveInt = (value) => {
+  return value !== undefined && validator.isInt(value + "") && validator.toInt(value + '') >= 0;
 }
 
-module.exports.isFloat = (decimal) => {
-  return decimal !== undefined && validator.isFloat(decimal + "");
+module.exports.isFloat = (value) => {
+  return value !== undefined && validator.isFloat(value + "");
 }
 
-module.exports.isPositiveFloat = (decimal) => {
-  return decimal !== undefined && validator.isFloat(decimal + "") && validator.toFloat(decimal + '') >= 0;
+module.exports.isPositiveFloat = (value) => {
+  return value !== undefined && validator.isFloat(value + "") && validator.toFloat(value + '') >= 0;
 }
 
-module.exports.isBool = (boolean) => {
-  return boolean !== undefined && validator.isBoolean(boolean + "");
+module.exports.isBool = (value) => {
+  return value !== undefined && validator.isBoolean(value + "");
 }
 
 module.exports.isArray = (value) => {
   return value !== undefined && Array.isArray(value);
 }
-
-module.exports.areFieldsValid = (...fields) => {
-  return fields.filter(field => field === undefined).length === 0;
-}
-
 
 module.exports.isPercent = (value) => {
   const float = validator.toFloat(value + '');
@@ -93,7 +88,72 @@ module.exports.areDatesConsecutive = (dateFrom, dateTo) => {
     const dateFromObj = validator.toDate(dateFrom);
     const dateToObj = validator.toDate(dateTo);
 
-    return dateFrom.getTime() <= dateTo.getTime();
+    return dateFromObj.getTime() <= dateToObj.getTime();
   }
   return false;
+}
+
+
+module.exports.isService = (value) => {
+  if (value !== undefined) {
+    if(module.exports.isNonEmptyString(value.name)
+      && module.exports.isNonEmptyString(value.description)
+      && module.exports.isPositiveFloat(value.dailyPrice)
+      && module.exports.isNonEmptyString(value.imageUrl)
+      && module.exports.isMongoId(value.serviceId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports.isUmbrella = (value) => {
+  if (value !== undefined) {
+    if(module.exports.isPositiveInt(value.number)
+      && module.exports.isRank(value.rankUmbrella)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+module.exports.isRank = (value) => {
+  if (value !== undefined) {
+    if(module.exports.isNonEmptyString(value.name)
+      && module.exports.isNonEmptyString(value.description)
+      && module.exports.isPositiveFloat(value.dailyPrice)
+      && module.exports.isPositiveInt(value.fromUmbrella)
+      && module.exports.isPositiveInt(value.toUmbrella)
+      && module.exports.isNonEmptyString(value.imageUrl)
+      && module.exports.areSales(value.sales)
+      && module.exports.isMongoId(value.rankUmbrellaId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports.areSales = (value) => {
+  if (module.exports.isArray(value)) {
+    const eachIsSale = value.map(item => {
+      return module.exports.isPercent(item.percent)
+        && module.exports.isDate(item.dateFrom)
+        && module.exports.isDate(item.dateTo)
+    }).reduce((prev, curr)=> prev && curr, true);
+
+    if(eachIsSale) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/**
+ * Validates multiple properties, responding true if all properties are
+ * not undefined
+ */
+module.exports.areFieldsValid = (...fields) => {
+  return fields.filter(field => field === undefined).length === 0;
 }

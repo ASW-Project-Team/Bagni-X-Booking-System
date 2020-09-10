@@ -69,8 +69,8 @@ module.exports.updateService = async (req, res) => {
 module.exports.readServices = async (req, res) => {
   // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
-  const pageId = sanitizers.toInt(req.params['page-id']);
-  const pageSize = sanitizers.toInt(req.params['page-size']);
+  const pageId = sanitizers.toInt(req.query['page-id']);
+  const pageSize = sanitizers.toInt(req.query['page-size']);
 
   // read flow
   await common.read(req, res, Services, paramId, pageId, pageSize, { sortRules: [{ name: 1}]});

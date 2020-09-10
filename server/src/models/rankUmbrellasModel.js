@@ -3,6 +3,7 @@ const Float = require("mongoose-float").loadType(mongoose);
 const saleSchema = require('./freeSchemas/saleSchema');
 
 const rankUmbrellasSchema = new mongoose.Schema({
+  rankUmbrellaId: { type: mongoose.Schema.Types.ObjectID, required: false },
   name: String,
   imageUrl: String,
   description: { type: String, default: null },

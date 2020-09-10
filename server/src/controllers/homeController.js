@@ -76,8 +76,8 @@ module.exports.updateHomeCard = async (req, res) => {
 module.exports.readHomeCards = async (req, res) => {
   // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
-  const pageId = sanitizers.toInt(req.params['page-id']);
-  const pageSize = sanitizers.toInt(req.params['page-size']);
+  const pageId = sanitizers.toInt(req.query['page-id']);
+  const pageSize = sanitizers.toInt(req.query['page-size']);
 
   // read flow
   await common.read(req, res, HomeCard, paramId, pageId, pageSize, { sortRules: [{ orderingIndex: 1}]});
@@ -104,16 +104,16 @@ module.exports.deleteHomeCard = async (req, res) => {
  */
 module.exports.getHome = async (req, res) => {
   const mainCardFromDb = await HomeCard.findOne({ isMainCard: true});
-  const mainCard = respFilters.filterSensitiveInfoObj(mainCardFromDb);
+  const mainCard = respFilters.cleanObject(mainCardFromDb);
 
   const homeCardsFromDb = await HomeCard.find({ isMainCard: false }).sort({ orderingIndex: 1});
-  const homeCards = respFilters.filterSensitiveInfo(homeCardsFromDb);
+  const homeCards = respFilters.clean(homeCardsFromDb);
 
   const rankUmbrellasFromDb = await Service.find().sort({ name: 1});
-  const rankUmbrellas = respFilters.filterSensitiveInfo(rankUmbrellasFromDb);
+  const rankUmbrellas = respFilters.clean(rankUmbrellasFromDb);
 
   const servicesFromDb = await Service.find().sort({ name: 1});
-  const services = respFilters.filterSensitiveInfo(servicesFromDb);
+  const services = respFilters.clean(servicesFromDb);
 
   respGenerator.respondOK(res, {
     mainCard: mainCard,

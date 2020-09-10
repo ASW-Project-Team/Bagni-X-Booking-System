@@ -1,60 +1,9 @@
 const multer = require('multer');
-const path = require('path');
-
-
-/**
- * In a string in Kebab case, words are separated by an hyphen. This function
- * converts from camelCase to kebab-case. This is useful for crating file names.
- * @param camelCaseString the string in CamelCase
- * @return {string} the same string in kebab-case
- */
-const camelToKebab = function(camelCaseString) {
-  return camelCaseString
-           .replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2')
-           .toLowerCase();
-};
-
-
-/**
- * Creates the storage object.
- * @return used to store the image.
- */
-const storage = function() {
-  const destDir = 'assets/';
-
-  return multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, destDir);
-    },
-
-    // By default, multer removes file extensions. This add them back
-    filename: function (req, file, cb) {
-      cb(
-        null,
-        camelToKebab(file.fieldname) + '-' + Date.now() + path.extname(file.originalname)
-      );
-    }
-  });
-}
-
-/**
- * Ensures that the sent file is an image. Used inside the storage object.
- */
-const imageFilter = function(req, file, cb) {
-  // Accept images only
-  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
-    req.fileValidationError = 'Only image files are allowed!';
-    return cb(new Error('Only image files are allowed!'), false);
-  }
-  cb(null, true);
-};
-
+const imgSupport = require('../../routes/utils/imageSupport')
 /**
  * An object that summarizes the possible types usable inside the param
  * image type of {@link tryUploadImage}. Use this standardized object to refer
  * to the types.
- * @type {{bathhouse: string, news: string, homeCard: string, service: string,
- * rankUmbrella: string}}
  */
 const imageTypes = {
   homeCard: 'homeCardImg',
@@ -65,35 +14,6 @@ const imageTypes = {
 };
 
 module.exports.defaultImage = "http://localhost:3000/assets/default-home-card-img-1.jpg";
-
-module.exports.newsImgSupport = multer({
-  storage: storage(imageTypes.news),
-  fileFilter: imageFilter
-}).single(imageTypes.news);
-
-
-module.exports.rankUmbrellasImgSupport = multer({
-  storage: storage(imageTypes.rankUmbrella),
-  fileFilter: imageFilter
-}).single(imageTypes.rankUmbrella);
-
-
-module.exports.servicesImgSupport = multer({
-  storage: storage(imageTypes.service),
-  fileFilter: imageFilter
-}).single(imageTypes.service);
-
-module.exports.homeCardsImgSupport = multer({
-  storage: storage(imageTypes.homeCard),
-  fileFilter: imageFilter
-}).single(imageTypes.homeCard);
-
-
-module.exports.bathhouseImgSupport = multer({
-  storage: storage(imageTypes.bathhouse),
-  fileFilter: imageFilter
-}).single(imageTypes.bathhouse);
-
 
 module.exports.types = imageTypes;
 
@@ -122,13 +42,10 @@ module.exports.types = imageTypes;
  * object is thrown, but must be intercepted inside the catch block.
  */
 module.exports.tryUploadImage = function(req, res, imageType) {
-  let upload = multer({
-    storage: storage(imageType),
-    fileFilter: imageFilter
-  }).single(imageType);
+  let uploader = imgSupport.generic(imageType);
 
   return new Promise(function(resolve, reject) {
-    upload(req, res, function(err) {
+    uploader(req, res, function(err) {
       // req.file contains information of uploaded file
       // req.body contains information of text fields, if there were any
 

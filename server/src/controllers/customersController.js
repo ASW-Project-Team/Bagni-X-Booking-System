@@ -46,8 +46,8 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
 module.exports.readCustomer = async function(req, res) {
   // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
-  const pageId = sanitizers.toInt(req.params['page-id']);
-  const pageSize = sanitizers.toInt(req.params['page-size']);
+  const pageId = sanitizers.toInt(req.query['page-id']);
+  const pageSize = sanitizers.toInt(req.query['page-size']);
 
   // reading flow
   await common.read(req, res, Customer, paramId, pageId, pageSize,

@@ -20,19 +20,13 @@ module.exports.filterByPage = (pageIdParam, pageSizeParam, items) => {
   return items.filter((item, index) => index >= pageStartIndex && index <= pageEndIndex);
 }
 
+module.exports.clean = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(item => module.exports.cleanObject(item));
 
-/**
- * Removes from the giver array information that are not secure to send to the
- * requester.
- * @param {Object[]} items - The array of db documents
- * @return {Object[]} The objects without sensitive information, neither db data
- */
-module.exports.filterSensitiveInfo = (items) => {
-  if (items === undefined) {
-    return [];
+  } else if (Object(value) === value) {
+    return module.exports.cleanObject(value);
   }
-
-  return items.map(item => module.exports.filterSensitiveInfoObj(item));
 }
 
 
@@ -42,7 +36,7 @@ module.exports.filterSensitiveInfo = (items) => {
  * @param {Object} item - The db document
  * @return {Object} The object without sensitive information, neither db data
  */
-module.exports.filterSensitiveInfoObj = (item) => {
+module.exports.cleanObject = (item) => {
   if (item === undefined) {
     return undefined;
   }
@@ -58,6 +52,27 @@ module.exports.filterSensitiveInfoObj = (item) => {
     delete Object.assign(plainItem, {id: plainItem._id })._id;
   }
 
+  Object.keys(plainItem).forEach(key => module.exports.strictClean(plainItem[key]));
+
   // sensitive information, do not send to the client
   return plainItem;
+}
+
+module.exports.strictClean = (value) => {
+  if (Array.isArray(value)) {
+    value.forEach(item => module.exports.strictCleanObject(item));
+  } else if (Object(value) === value) {
+    return module.exports.strictCleanObject(value);
+  }
+}
+
+
+module.exports.strictCleanObject = (value) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  delete value._id;
+
+  Object.keys(value).forEach(key => module.exports.strictClean(value[key]));
 }

@@ -30,7 +30,7 @@ module.exports.create = async (req, res, model, fields, config) => {
   const generatedItem = await itemToInsert.save();
 
   // returns the item data
-  const responseItemData = respFilters.filterSensitiveInfoObj(generatedItem);
+  const responseItemData = respFilters.cleanObject(generatedItem);
   responseGen.respondCreated(res, responseItemData);
 }
 
@@ -56,7 +56,7 @@ module.exports.update = async (req, res, model, paramId, fields, config) => {
   }
 
   findAndUpdateQuery.setOptions({ omitUndefined: true, new: true });
-  findAndUpdateQuery.update(fields);
+  findAndUpdateQuery.updateOne(fields);
 
   const itemFound = await findAndUpdateQuery.exec();
 
@@ -84,7 +84,7 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, config)
     let findItemQuery = model.findOne({ _id: paramId});
 
     if (config.checkLogicalDeletion) {
-      findItemQuery.where({ eleted: false });
+      findItemQuery.where({ deleted: false });
     }
 
     const foundItem = await findItemQuery.exec();
@@ -95,7 +95,7 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, config)
       return;
     }
 
-    const responseItemData = respFilters.filterSensitiveInfoObj(foundItem);
+    const responseItemData = respFilters.clean(foundItem);
     responseGen.respondOK(res, responseItemData)
     return;
   }
@@ -111,7 +111,7 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, config)
   }
 
   const items = await itemsQuery.exec();
-  const customersDataNonSensitive = respFilters.filterSensitiveInfo(items);
+  const customersDataNonSensitive = respFilters.clean(items);
   const paginatedResults = respFilters.filterByPage(pageId, pageSize, customersDataNonSensitive);
   responseGen.respondOK(res, paginatedResults);
 }
@@ -130,7 +130,7 @@ module.exports.delete = async (req, res, model, paramId, config) => {
       removedItem = await model.findOneAndRemove({ _id: paramId });
 
     } else {
-      removedItem = await Customer.findOneAndUpdate({ _id: paramId }, { deleted: true });
+      removedItem = await model.findOneAndUpdate({ _id: paramId }, { deleted: true });
     }
 
   } else {

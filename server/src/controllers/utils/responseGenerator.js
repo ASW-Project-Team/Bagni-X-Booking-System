@@ -73,19 +73,6 @@ module.exports.respondAlreadyPresent = function (res, referringItem) {
 }
 
 /**
- * Responds with a 400 error, saying that the item is missing some required
- * fields.
- * @param {Object} res The Express res object.
- * @param {string=} referringItem The item to refer to. If omitted, a standard
- * response is generated.
- */
-module.exports.respondMissingFields = function (res, referringItem) {
-  const item = referringItem ? referringItem : 'The item';
-  const body = createDescription(`${item} is missing some required fields.`);
-  res.status(HttpCodes.BAD_REQUEST).json(body);
-}
-
-/**
  * Responds with a 401 error, saying that the request is malformed.
  * @param {Object} res The Express res object.
  */

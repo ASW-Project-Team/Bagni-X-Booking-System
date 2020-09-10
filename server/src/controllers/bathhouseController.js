@@ -30,20 +30,10 @@ module.exports.updateBathhouse = async (req, res) => {
 
 
 /**
- * Return all items, in a paginated fashion, or only the item with
- * the given id. Required responses:
- * For get by id:
- *  - 200: The server returned the specified item.
- *  - 400: The request is malformed.
- *  - 401: Not an admin.
- *  - 404: An item with the given id does not exist.
- * For get all:
- *  - 200: The server returned the paginated item list.
- *  - 400: The request is malformed.
- *  - 401: Not an admin.
+ * Return the content of the bathhouse document.
  */
 module.exports.readBathhouse = async (req, res) => {
     const bathhouseFromDb = await Bathhouse.findOne();
-    const bathhouse = respFilters.filterSensitiveInfoObj(bathhouseFromDb);
+    const bathhouse = respFilters.cleanObject(bathhouseFromDb);
     respGenerator.respondOK(res, bathhouse);
 }

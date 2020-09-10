@@ -41,7 +41,7 @@ module.exports.registerAdmin = async function (req, res) {
   const generatedAdmin = await adminToInsert.save();
 
   // 5. returns the admin data and the jwt
-  const responseAdminData = respFilters.filterSensitiveInfoObj(generatedAdmin);
+  const responseAdminData = respFilters.cleanObject(generatedAdmin);
   responseAdminData.jwt = auth.generateAdminToken(generatedAdmin);
   console.log(responseAdminData);
   console.log(responseAdminData.jwt);
@@ -78,7 +78,7 @@ module.exports.authenticateAdmin = async function (req, res) {
   }
 
   // returns the admin data and the jwt
-  const responseAdminData = respFilters.filterSensitiveInfoObj(foundAdmin);
+  const responseAdminData = respFilters.cleanObject(foundAdmin);
   responseAdminData.jwt = auth.generateAdminToken(foundAdmin);
   responseGen.respondCreated(res, responseAdminData);
 }
@@ -113,7 +113,7 @@ module.exports.authenticateCustomer = async function (req, res) {
   }
 
   // returns the customer data and the jwt
-  const responseCustomerData = respFilters.filterSensitiveInfoObj(foundCustomer);
+  const responseCustomerData = respFilters.cleanObject(foundCustomer);
   responseCustomerData.jwt = auth.generateCustomerToken(foundCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 }
@@ -161,7 +161,7 @@ module.exports.registerCustomer = async function(req, res) {
   const generatedCustomer = await customerToInsert.save();
 
   // 5. returns the customer data and the jwt
-  const responseCustomerData = respFilters.filterSensitiveInfoObj(generatedCustomer);
+  const responseCustomerData = respFilters.cleanObject(generatedCustomer);
   responseCustomerData.jwt = auth.generateCustomerToken(generatedCustomer);
   responseGen.respondCreated(res, responseCustomerData);
 };

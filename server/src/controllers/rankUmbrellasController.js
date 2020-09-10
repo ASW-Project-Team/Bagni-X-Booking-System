@@ -19,9 +19,9 @@ module.exports.createRankUmbrella = async (req, res) => {
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas);
   const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
   const sales = sanitizers.toArray(req.body.sales, {
-    dateFrom: validators.isDate,
-    dateTo: validators.isDate,
-    percent: validators.isPercent
+    dateFrom: sanitizers.toDate,
+    dateTo: sanitizers.toDate,
+    percent: sanitizers.toPercent
   })
 
   // creation flow
@@ -53,8 +53,8 @@ module.exports.createRankUmbrella = async (req, res) => {
 module.exports.readRankUmbrellas = async (req, res) => {
   // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
-  const pageId = sanitizers.toInt(req.params['page-id']);
-  const pageSize = sanitizers.toInt(req.params['page-size']);
+  const pageId = sanitizers.toInt(req.query['page-id']);
+  const pageSize = sanitizers.toInt(req.query['page-size']);
 
   // read flow
   await common.read(req, res, RankUmbrellas, paramId, pageId, pageSize, { sortRules: [{ name: 1}]});
@@ -77,9 +77,9 @@ module.exports.updateRankUmbrella = async (req, res) => {
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas, paramId);
   const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
   const sales = sanitizers.toArray(req.body.sales, {
-    dateFrom: validators.isDate,
-    dateTo: validators.isDate,
-    percent: validators.isPercent
+    dateFrom: sanitizers.toDate,
+    dateTo: sanitizers.toDate,
+    percent: sanitizers.toPercent
   });
 
   // Update flow

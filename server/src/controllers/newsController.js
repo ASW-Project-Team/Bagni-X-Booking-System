@@ -38,8 +38,8 @@ module.exports.createNews = async function(req, res) {
 module.exports.readNews = async function(req, res) {
 	// Sanitization
 	const paramId = sanitizers.toMongoId(req.params.id);
-	const pageId = sanitizers.toInt(req.params['page-id']);
-	const pageSize = sanitizers.toInt(req.params['page-size']);
+	const pageId = sanitizers.toInt(req.query['page-id']);
+	const pageSize = sanitizers.toInt(req.query['page-size']);
 
 	// read flow
 	await common.read(req, res, News, paramId, pageId, pageSize, { sortRules: [{ date: -1}]});
