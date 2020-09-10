@@ -1,11 +1,7 @@
 const Customer = require("../models/customerModel");
-const validators = require('./utils/validators');
 const sanitizers = require('./utils/sanitizers');
-const responseGen = require('./utils/responseGenerator');
-const respFilters = require('./utils/responseFilters');
 const common = require('./utils/common');
 const auth = require('./utils/auth');
-
 
 
 /**
@@ -15,43 +11,24 @@ const auth = require('./utils/auth');
  * - 400: The request is malformed, or the admin is present yet.
  */
 module.exports.createUnregisteredCustomer = async function(req, res) {
-  // 1. fields sanitization
+  // Sanitization
   const email = sanitizers.toEmail(req.body.email);
-  const password = sanitizers.toPassword(req.body.password);
   const name = sanitizers.toString(req.body.name);
   const surname = sanitizers.toString(req.body.surname);
   const phone = sanitizers.toPhone(req.body.phone);
   const address = sanitizers.toString(req.body.address);
 
-  // 2. fields validation
-  if (!validators.areFieldsValid(name, surname)) {
-    responseGen.respondMalformedRequest(res)
-    return;
-  }
-
-  // 3. controls if customer exists yet
-  const customerFound = await Customer.findOne({ email: email });
-  if (customerFound) {
-    responseGen.respondAlreadyPresent(res)
-    return;
-  }
-
-  // 4. creates a new customer with the given credentials, and saves it
-  const customerToInsert = new Customer({
+  // creation flow
+  await common.create(req, res, Customer, {
     email: email,
-    hash: password ? auth.createHash(password) : undefined,
     name: name,
     surname: surname,
     registered: false,
     deleted: false,
     phone: phone,
     address: address
-  })
-  const generatedCustomer = await customerToInsert.save();
-
-  // 5. returns the customer data and the jwt
-  const responseCustomerData = respFilters.filterSensitiveInfoObj(generatedCustomer);
-  responseGen.respondCreated(res, responseCustomerData);
+  }, ['email', 'phone', 'address']
+  );
 };
 
 
@@ -72,31 +49,9 @@ module.exports.readCustomer = async function(req, res) {
   const pageId = sanitizers.toInt(req.params['page-id']);
   const pageSize = sanitizers.toInt(req.params['page-size']);
 
-
-  // 2. try the extraction
-  if (validators.isMongoId(paramId)) {
-    // if the id is present and valid, return the correspondent
-    // admin non-secret data
-    const foundCustomer = await Customer.findOne({ _id: paramId })
-
-    // customer not present in the db, 404
-    if (!foundCustomer || foundCustomer.deleted) {
-      responseGen.respondNotFound(res, 'Customer')
-      return;
-    }
-
-    const responseCustomerData = respFilters.filterSensitiveInfoObj(foundCustomer);
-    responseGen.respondOK(res, responseCustomerData)
-    return;
-  }
-
-  // if the id is not present, or not valid, return returns the customers, in
-  // alphabetic order, and paginated
-  const customers = await Customer.find({deleted: false})
-  .sort({surname: 1}).sort({name: 1});
-  const customersDataNonSensitive = respFilters.filterSensitiveInfo(customers);
-  const paginatedResults = respFilters.filterByPage(pageId, pageSize, customersDataNonSensitive);
-  responseGen.respondOK(res, paginatedResults);
+  // reading flow
+  await common.read(req, res, Customer, paramId, pageId, pageSize,
+    [{ surname: 1}, { name: 1}], true);
 };
 
 
@@ -117,6 +72,8 @@ module.exports.updateCustomer = async function(req, res) {
   const phone = sanitizers.toPhone(req.body.phone);
   const address = sanitizers.toString(req.body.address);
   const deleted = sanitizers.toBool(req.body.deleted);
+
+  // todo check if email is taken?
 
   // Update flow
   await common.update(req, res, Customer, paramId, {
@@ -140,28 +97,10 @@ module.exports.updateCustomer = async function(req, res) {
  * - 404: A customer with the given id does not exist.
  */
 module.exports.deleteCustomerLogically = async function (req, res) {
-  // 1. sanitization
+  // Sanitization
   const paramId = sanitizers.toMongoId(req.params.id);
 
-  // 2. try the removal
-  let removedCustomer;
-  if (validators.isMongoId(paramId)) {
-    // find the admin by the id, if present
-    removedCustomer = await Customer.findOneAndUpdate({ _id: paramId }, { deleted: true });
-
-  } else {
-    // If no indication is present, the request is malformed
-    responseGen.respondMalformedRequest(res)
-    return;
-  }
-
-  // 3. If the admin is not found, respond 404
-  if (!removedCustomer) {
-    responseGen.respondNotFound(res, 'Customer')
-    return;
-  }
-
-  // 4. request completed
-  responseGen.respondOK(res);
+  // Deletion flow
+  await common.delete(req, res, Customer, paramId, true);
 }
 

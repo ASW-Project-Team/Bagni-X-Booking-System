@@ -1,7 +1,5 @@
 const validators = require('./validators');
-const sanitizers = require('./sanitizers');
 const responseGen = require('./responseGenerator');
-const imgUploader = require('./imageUploader');
 const respFilters = require('./responseFilters');
 
 
@@ -14,14 +12,14 @@ const respFilters = require('./responseFilters');
 /**
  * Insert all, validate all. fields are in format {name: value}
  */
-module.exports.create = async (req,res,model, fields) => {
+module.exports.create = async (req, res, model, fields, nonRequiredFieldsParam) => {
   // validation
-  if (!validators.areFieldsValid(...Object.values(fields))) {
+  let nonRequiredFields = nonRequiredFieldsParam ? nonRequiredFieldsParam : [];
+  let requiredFields = Object.entries(fields).filter(([key, value]) => !nonRequiredFields.includes(key)).map(([key, value]) => value);
+  if (!validators.areFieldsValid(...requiredFields)) {
     responseGen.respondMalformedRequest(res)
     return;
   }
-
-  // todo for customer/admin, check if exists
 
   // creates a new item with the given credentials, and saves it
   const itemToInsert = new model(fields);
@@ -34,18 +32,26 @@ module.exports.create = async (req,res,model, fields) => {
 
 
 
-module.exports.update = async (req, res, model, paramId, fields) => {
+module.exports.update = async (req, res, model, paramId, fields, checkLogicalDeletion) => {
   // fields validation
   if (!validators.isMongoId(paramId)) {
     responseGen.respondMalformedRequest(res)
     return;
   }
 
-  // todo for customer, check deleted field
-
   // updates the item, if exists
-  const itemFound = await model.findOneAndUpdate({ _id: paramId },
-    fields, { omitUndefined: true, new: true });
+  // if the id is present and valid, return the correspondent
+  // item non-secret data
+  let findAndUpdateQuery = model.findOne({ _id: paramId});
+
+  if (checkLogicalDeletion) {
+    findAndUpdateQuery.where({deleted: false});
+  }
+
+  findAndUpdateQuery.setOptions({ omitUndefined: true, new: true });
+  findAndUpdateQuery.update(fields);
+
+  const itemFound = await findAndUpdateQuery.exec();
 
   // 4. if the item not exists, respond 404
   if (!itemFound) {
@@ -58,14 +64,19 @@ module.exports.update = async (req, res, model, paramId, fields) => {
 }
 
 
-module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRulesArray) => {
+module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRulesArray, checkLogicalDeletion) => {
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
-    // todo for customer, check delete field
 
     // if the id is present and valid, return the correspondent
     // item non-secret data
-    const foundItem = await model.findOne({ _id: paramId })
+    let findItemQuery = model.findOne({ _id: paramId});
+
+    if (checkLogicalDeletion) {
+      findItemQuery.where({deleted: false});
+    }
+
+    const foundItem = await findItemQuery.exec();
 
     // admin not present in the db, 404
     if (!foundItem) {
@@ -80,8 +91,14 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRul
 
   // if the id is not present, or not valid, return returns the news, ordered
   // from the most recent, and paginated
-  const itemsQuery =  model.find();
-  sortRulesArray.forEach(rule => itemsQuery.sort(rule));
+  let itemsQuery =  model.find();
+
+  sortRulesArray.forEach(rule => { itemsQuery = itemsQuery.sort(rule) });
+
+  if (checkLogicalDeletion) {
+    itemsQuery = itemsQuery.where({ deleted: false });
+  }
+
   const items = await itemsQuery.exec();
   const customersDataNonSensitive = respFilters.filterSensitiveInfo(items);
   const paginatedResults = respFilters.filterByPage(pageId, pageSize, customersDataNonSensitive);
@@ -89,12 +106,17 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRul
 }
 
 
-module.exports.delete = async (req, res, model, paramId) => {
+module.exports.delete = async (req, res, model, paramId, logicalDeletion) => {
   // try the removal
   let removedItem;
   if (validators.isMongoId(paramId)) {
-    // find the admin by the id, if present
-    removedItem = await model.findOneAndRemove({ _id: paramId });
+    if (!logicalDeletion) {
+      // find the admin by the id, if present
+      removedItem = await model.findOneAndRemove({ _id: paramId });
+
+    } else {
+      removedItem = await Customer.findOneAndUpdate({ _id: paramId }, { deleted: true });
+    }
 
   } else {
     // If no indication is present, the request is malformed

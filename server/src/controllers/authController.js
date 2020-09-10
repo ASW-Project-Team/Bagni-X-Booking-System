@@ -102,7 +102,7 @@ module.exports.authenticateCustomer = async function (req, res) {
   }
 
   // 3. search the customer, if present, by email
-  const foundCustomer = await Customer.findOne({ email: email });
+  const foundCustomer = await Customer.findOne({ email: email }).where({deleted: false});
 
   // 4. if the username/password combination is not valid, or the customer is not
   //    present, return an error. The 404 is not used here, to not give too
@@ -141,7 +141,7 @@ module.exports.registerCustomer = async function(req, res) {
   }
 
   // 3. controls if customer exists yet
-  const customerFound = await Customer.findOne({ email: email });
+  const customerFound = await Customer.findOne({ email: email }).where({registered: true});
   if (customerFound) {
     responseGen.respondAlreadyPresent(res)
     return;
