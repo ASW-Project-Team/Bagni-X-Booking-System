@@ -11,6 +11,11 @@ module.exports.toInt = (value) => {
     return validator.toInt(value + '')
 }
 
+module.exports.toPositiveInt = (value) => {
+  if (myValidators.isPositiveInt(value))
+    return validator.toInt(value + '')
+}
+
 module.exports.toBool = (value) => {
   if (value !== undefined)
     return validator.toBoolean(value + '')

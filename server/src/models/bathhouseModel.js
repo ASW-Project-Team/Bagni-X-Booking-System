@@ -1,23 +1,16 @@
-let model;
+const mongoose = require('mongoose');
 
-module.exports = function(mongoose) {
-    if (!!!model)
-        model = initializeModel(mongoose);
+const bathhouseSchema = new mongoose.Schema(
+  {
+    name: String,
+    logoUrl: String,
+    seasonStart: Date,
+    seasonEnd: Date
+  },
+  // forces the collection to have a maximum of 1 element
+  { capped: { max: 1, size: 1024, autoIndexId: true } }
+);
 
-    return model;
-};
+const bathhouseModel = mongoose.model('Bathhouse', bathhouseSchema, 'bathhouse');
 
-
-const initializeModel = function(mongoose) {
-    const Schema = mongoose.Schema;
-    const homeCardModel = require("./nestedSchemas/homeCardModel")(mongoose).schema;
-
-    const  bathhouse = new Schema({
-        _id: Schema.Types.ObjectId,
-        name: String,
-        logoUrl: String,
-        mainHomeCard: homeCardModel,
-        homeCards: [homeCardModel]
-    });
-    return mongoose.model('bathhouse', bathhouse, 'bathhouse');
-}
+module.exports = bathhouseModel;

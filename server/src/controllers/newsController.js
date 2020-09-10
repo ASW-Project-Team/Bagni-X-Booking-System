@@ -42,7 +42,7 @@ module.exports.readNews = async function(req, res) {
 	const pageSize = sanitizers.toInt(req.params['page-size']);
 
 	// read flow
-	await common.read(req, res, News, paramId, pageId, pageSize, [{ date: -1}]);
+	await common.read(req, res, News, paramId, pageId, pageSize, { sortRules: [{ date: -1}]});
 };
 
 

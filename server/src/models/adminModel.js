@@ -8,6 +8,6 @@ const adminSchema = new mongoose.Schema({
   hash: String
 });
 
-const adminsModel = mongoose.model('admins', adminSchema);
+const adminModel = mongoose.model('Admin', adminSchema, 'admins');
 
-module.exports = adminsModel;
+module.exports = adminModel;

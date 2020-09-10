@@ -57,7 +57,7 @@ module.exports.readRankUmbrellas = async (req, res) => {
   const pageSize = sanitizers.toInt(req.params['page-size']);
 
   // read flow
-  await common.read(req, res, RankUmbrellas, paramId, pageId, pageSize, [{ name: 1}]);
+  await common.read(req, res, RankUmbrellas, paramId, pageId, pageSize, { sortRules: [{ name: 1}]});
 }
 
 

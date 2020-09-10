@@ -24,9 +24,11 @@ module.exports.generateCustomerToken = function(customer) {
     { expiresIn: '7d', audience: 'customer' });
 }
 
+
 module.exports.passwordValid = (password, hash) => {
   return bcrypt.compareSync(password, hash);
 }
+
 
 module.exports.createHash = (password) => {
   return bcrypt.hashSync(password, 10);

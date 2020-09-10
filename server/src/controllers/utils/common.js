@@ -12,9 +12,13 @@ const respFilters = require('./responseFilters');
 /**
  * Insert all, validate all. fields are in format {name: value}
  */
-module.exports.create = async (req, res, model, fields, nonRequiredFieldsParam) => {
+module.exports.create = async (req, res, model, fields, config) => {
+  if(!config) {
+    config = {};
+  }
+
   // validation
-  let nonRequiredFields = nonRequiredFieldsParam ? nonRequiredFieldsParam : [];
+  let nonRequiredFields = config.nonRequiredFields ? config.nonRequiredFields : [];
   let requiredFields = Object.entries(fields).filter(([key, value]) => !nonRequiredFields.includes(key)).map(([key, value]) => value);
   if (!validators.areFieldsValid(...requiredFields)) {
     responseGen.respondMalformedRequest(res)
@@ -31,8 +35,11 @@ module.exports.create = async (req, res, model, fields, nonRequiredFieldsParam) 
 }
 
 
+module.exports.update = async (req, res, model, paramId, fields, config) => {
+  if(!config) {
+    config = {};
+  }
 
-module.exports.update = async (req, res, model, paramId, fields, checkLogicalDeletion) => {
   // fields validation
   if (!validators.isMongoId(paramId)) {
     responseGen.respondMalformedRequest(res)
@@ -44,7 +51,7 @@ module.exports.update = async (req, res, model, paramId, fields, checkLogicalDel
   // item non-secret data
   let findAndUpdateQuery = model.findOne({ _id: paramId});
 
-  if (checkLogicalDeletion) {
+  if (config.checkLogicalDeletion) {
     findAndUpdateQuery.where({deleted: false});
   }
 
@@ -64,7 +71,11 @@ module.exports.update = async (req, res, model, paramId, fields, checkLogicalDel
 }
 
 
-module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRulesArray, checkLogicalDeletion) => {
+module.exports.read = async (req, res, model, paramId, pageId, pageSize, config) => {
+  if (!config) {
+    config = {};
+  }
+
   // 2. try the extraction
   if (validators.isMongoId(paramId)) {
 
@@ -72,8 +83,8 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRul
     // item non-secret data
     let findItemQuery = model.findOne({ _id: paramId});
 
-    if (checkLogicalDeletion) {
-      findItemQuery.where({deleted: false});
+    if (config.checkLogicalDeletion) {
+      findItemQuery.where({ eleted: false });
     }
 
     const foundItem = await findItemQuery.exec();
@@ -93,9 +104,9 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRul
   // from the most recent, and paginated
   let itemsQuery =  model.find();
 
-  sortRulesArray.forEach(rule => { itemsQuery = itemsQuery.sort(rule) });
+  config.sortRules.forEach(rule => { itemsQuery = itemsQuery.sort(rule) });
 
-  if (checkLogicalDeletion) {
+  if (config.checkLogicalDeletion) {
     itemsQuery = itemsQuery.where({ deleted: false });
   }
 
@@ -106,11 +117,15 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, sortRul
 }
 
 
-module.exports.delete = async (req, res, model, paramId, logicalDeletion) => {
+module.exports.delete = async (req, res, model, paramId, config) => {
+  if (!config) {
+    config = {};
+  }
+
   // try the removal
   let removedItem;
   if (validators.isMongoId(paramId)) {
-    if (!logicalDeletion) {
+    if (!config.logicalDeletion) {
       // find the admin by the id, if present
       removedItem = await model.findOneAndRemove({ _id: paramId });
 

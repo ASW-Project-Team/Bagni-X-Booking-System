@@ -83,6 +83,17 @@ module.exports.servicesImgSupport = multer({
   fileFilter: imageFilter
 }).single(imageTypes.service);
 
+module.exports.homeCardsImgSupport = multer({
+  storage: storage(imageTypes.homeCard),
+  fileFilter: imageFilter
+}).single(imageTypes.homeCard);
+
+
+module.exports.bathhouseImgSupport = multer({
+  storage: storage(imageTypes.bathhouse),
+  fileFilter: imageFilter
+}).single(imageTypes.bathhouse);
+
 
 module.exports.types = imageTypes;
 

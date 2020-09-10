@@ -8,6 +8,6 @@ const serviceSchema = new mongoose.Schema({
   dailyPrice: { type: Float, $gte: 0.0 },
 });
 
-const servicesModel = mongoose.model('services', serviceSchema);
+const serviceModel = mongoose.model('Service', serviceSchema, 'services');
 
-module.exports = servicesModel;
+module.exports = serviceModel;

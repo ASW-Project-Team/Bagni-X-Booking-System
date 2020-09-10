@@ -3,7 +3,7 @@ const Customer = require("../models/customerModel.js");
 const Booking = require("../models/bookingModel")(mongoose);
 const commonController = require("./commonController");
 
-const Umbrella = require("../models/nestedSchemas/umbrellaModel")(mongoose)
+const Umbrella = require("../models/freeSchemas/umbrellaSchema")
 
 const conversionDayInMilliseconds = 86400000
 const dayBeforeDeleteIsPossible = 2

@@ -22,7 +22,8 @@ module.exports.readAdmins = async function (req, res) {
   const pageSize = sanitizers.toInt(req.params['page-size']);
 
   // read flow
-  await common.read(req, res, Admin, paramId, pageId, pageSize, [{ username: 1 }]);
+  await common.read(req, res, Admin, paramId, pageId, pageSize,
+    { sortRules: [{ username: 1 }] });
 }
 
 

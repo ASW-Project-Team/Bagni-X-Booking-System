@@ -27,7 +27,7 @@ module.exports.createUnregisteredCustomer = async function(req, res) {
     deleted: false,
     phone: phone,
     address: address
-  }, ['email', 'phone', 'address']
+  }, { nonRequiredFields:['email', 'phone', 'address'] }
   );
 };
 
@@ -51,7 +51,7 @@ module.exports.readCustomer = async function(req, res) {
 
   // reading flow
   await common.read(req, res, Customer, paramId, pageId, pageSize,
-    [{ surname: 1}, { name: 1}], true);
+    { sortRules: [{ surname: 1}, { name: 1}], checkLogicalDeletion: true });
 };
 
 
@@ -101,6 +101,6 @@ module.exports.deleteCustomerLogically = async function (req, res) {
   const paramId = sanitizers.toMongoId(req.params.id);
 
   // Deletion flow
-  await common.delete(req, res, Customer, paramId, true);
+  await common.delete(req, res, Customer, paramId, { logicalDeletion: true });
 }
 

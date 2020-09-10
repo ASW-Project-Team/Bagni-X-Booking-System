@@ -17,6 +17,6 @@ const customerSchema = new mongoose.Schema({
   deleted: { type: Boolean, default: false },
 });
 
-const customersModel = mongoose.model('customers', customerSchema);
+const customerModel = mongoose.model('Customer', customerSchema, 'customers');
 
-module.exports = customersModel;
+module.exports = customerModel;

@@ -31,12 +31,12 @@ module.exports.isPhoneNumber = function (string) {
   return string !== undefined && validator.isMobilePhone(string + "");
 }
 
-module.exports.isInteger = function (integer) {
+module.exports.isInt = function (integer) {
   return integer !== undefined && validator.isInt(integer + "");
 }
 
 
-module.exports.isPositiveInteger = function (integer) {
+module.exports.isPositiveInt = function (integer) {
   return integer !== undefined && validator.isInt(integer + "") && validator.toInt(integer + '') >= 0;
 }
 
@@ -67,7 +67,7 @@ module.exports.isPercent = (value) => {
 }
 
 module.exports.isValidUmbrellaRange = async (fromUmbrella, toUmbrella, rankModel, properId) => {
-  if (module.exports.isPositiveInteger(fromUmbrella) && module.exports.isPositiveInteger(toUmbrella)) {
+  if (module.exports.isPositiveInt(fromUmbrella) && module.exports.isPositiveInt(toUmbrella)) {
     const fromUmbrellaInt = validator.toInt(fromUmbrella + '');
     const toUmbrellaInt = validator.toInt(toUmbrella + '');
 

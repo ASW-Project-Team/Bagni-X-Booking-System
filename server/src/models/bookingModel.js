@@ -1,29 +1,19 @@
-let model;
+const mongoose = require('mongoose')
+const umbrellaSchema = require('./freeSchemas/umbrellaSchema');
+const Float = require("mongoose-float").loadType(mongoose);
+const serviceSchema = require('./servicesModel').schema;
 
-module.exports = function(mongoose) {
-    if (!!!model)
-        model = initializeModel(mongoose);
+const bookingSchema = new mongoose.Schema({
+    userId: mongoose.Schema.Types.ObjectID,
+    umbrellas: [ umbrellaSchema ],
+    confirmed: {type: Boolean, default: false},
+    cancelled: {type: Boolean, default: false},
+    price: {type: Float, $gt: 0.0},
+    dateFrom: {type: Date, $gte: Date.now()},
+    dateTo: {type: Date, $gte: Date.now()},
+    services: [ serviceSchema ]
+});
 
-    return model;
-};
+const bookingModel = mongoose.model('Booking', bookingSchema, 'bookings');
 
-
-const initializeModel = function(mongoose) {
-    const Float = require('mongoose-float').loadType(mongoose);
-    const serviceModel = require("./nestedSchemas/serviceModel")(mongoose).schema;
-    const umbrellaModel = require("./nestedSchemas/umbrellaModel")(mongoose).schema;
-    const Schema = mongoose.Schema;
-    const bookingSchema = new Schema({
-        _id: Schema.Types.ObjectID,
-        userId: Schema.Types.ObjectID,
-        umbrellas: [umbrellaModel],
-        confirmed: {type: Boolean, default: false},
-        cancelled: {type: Boolean, default: false},
-        price: {type: Float, $gt: 0.0},
-        dateFrom: {type: Date, $gte: Date.now()},
-        dateTo: {type: Date, $gte: Date.now()},
-        services: [{type: serviceModel, default: null}]
-    });
-
-    return mongoose.model('booking', bookingSchema, 'bookings');
-}
+module.exports = bookingModel;

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Float = require("mongoose-float").loadType(mongoose);
-const saleSchema = require('./nestedSchemas/saleModel')(mongoose).schema;
+const saleSchema = require('./freeSchemas/saleSchema');
 
 const rankUmbrellasSchema = new mongoose.Schema({
   name: String,
@@ -12,6 +12,6 @@ const rankUmbrellasSchema = new mongoose.Schema({
   sales: [ { type: saleSchema, default: null } ]
 });
 
-const rankUmbrellas = mongoose.model('rankUmbrellas', rankUmbrellasSchema);
+const rankUmbrellaModel = mongoose.model('RankUmbrella', rankUmbrellasSchema, 'rankUmbrellas');
 
-module.exports = rankUmbrellas;
+module.exports = rankUmbrellaModel;

@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const crypto = require('crypto')
 
 const Booking = require('../models/bookingModel')(mongoose);
-const Catalog = require('../models/catalogModel')(mongoose);
+const Catalog = {} //= require('../models/catalogModel')(mongoose);
 const Customer = require('../models/customerModel');
-const Umbrella = require('../models/nestedSchemas/umbrellaModel')(mongoose);
+const Umbrella = require('../models/freeSchemas/umbrellaSchema');
 const Bathhouse = require("../models/bathhouseModel")(mongoose);
 
 const CatalogID = "5f40f4125c935b69a7f0626f";

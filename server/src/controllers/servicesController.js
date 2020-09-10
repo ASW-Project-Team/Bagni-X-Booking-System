@@ -15,7 +15,7 @@ module.exports.createService = async (req, res) => {
   const name = sanitizers.toString(req.body.name);
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
+  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.service);
 
   // creation flow
   await common.create(req, res, Services, {
@@ -40,7 +40,7 @@ module.exports.updateService = async (req, res) => {
   const name = sanitizers.toString(req.body.name);
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
+  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.service);
 
   // Update flow
   await common.update(req, res, Services, paramId, {
@@ -73,7 +73,7 @@ module.exports.readServices = async (req, res) => {
   const pageSize = sanitizers.toInt(req.params['page-size']);
 
   // read flow
-  await common.read(req, res, Services, paramId, pageId, pageSize, [{ name: 1}]);
+  await common.read(req, res, Services, paramId, pageId, pageSize, { sortRules: [{ name: 1}]});
 }
 
 
