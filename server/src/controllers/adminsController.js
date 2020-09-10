@@ -40,7 +40,7 @@ module.exports.updateAdmin = async function (req, res) {
   const password = sanitizers.toPassword(req.body.password);
 
   // Update flow
-  await common.update(req, res, Customer, paramId, {
+  await common.update(req, res, Admin, paramId, {
     username: username,
     hash: password ? auth.createHash(password) : undefined,
     name: name,
