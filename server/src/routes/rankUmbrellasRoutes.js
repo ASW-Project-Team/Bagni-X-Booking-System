@@ -1,13 +1,13 @@
 module.exports.set = function (app) {
   const rankUmbrellasController = require('../controllers/rankUmbrellasController')
-  const imgSupport = require('../utils/imageSupport').rankUmbrella;
+  const imgUpload = require('../utils/imageUpload');
 
   app.route('/api/catalog/rank-umbrellas/:id')
     .get(rankUmbrellasController.readRankUmbrellas)
-    .put(imgSupport, rankUmbrellasController.updateRankUmbrella)
+    .put(imgUpload.addSupport, rankUmbrellasController.updateRankUmbrella)
     .delete(rankUmbrellasController.deleteRankUmbrella)
 
   app.route('/api/catalog/rank-umbrellas/')
     .get(rankUmbrellasController.readRankUmbrellas)
-    .post(imgSupport, rankUmbrellasController.createRankUmbrella)
+    .post(imgUpload.addSupport, rankUmbrellasController.createRankUmbrella)
 }

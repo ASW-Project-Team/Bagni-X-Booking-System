@@ -2,7 +2,7 @@ const HomeCard = require("../models/homeCardModel");
 const RankUmbrella = require('../models/rankUmbrellasModel');
 const Service = require('../models/servicesModel');
 const sanitizers = require('../validation/sanitizers');
-const imgUploader = require('../utils/imageUploader');
+const imgUploader = require('../utils/imageUpload');
 const common = require('../utils/common');
 const respFilters = require('../utils/responseFilters');
 const respGenerator = require('../utils/responseGenerator');
@@ -19,7 +19,7 @@ module.exports.createHomeCard = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const isMainCard = sanitizers.toBool(req.body.isMainCard);
   const orderingIndex = sanitizers.toPositiveInt(req.body.orderingIndex)
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.homeCard);
+  const imageUrl = await imgUploader.syncUpload(req, res);
 
   // creation flow
   await common.create(req, res, HomeCard, {
@@ -47,7 +47,7 @@ module.exports.updateHomeCard = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const isMainCard = sanitizers.toBool(req.body.isMainCard);
   const orderingIndex = sanitizers.toPositiveInt(req.body.orderingIndex)
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.homeCard);
+  const imageUrl = await imgUploader.syncUpload(req, res);
 
   // Update flow
   await common.update(req, res, HomeCard, paramId, {

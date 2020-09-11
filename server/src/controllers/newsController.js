@@ -1,6 +1,6 @@
 const News = require("../models/newsModel");
 const sanitizers = require('../validation/sanitizers');
-const imgUploader = require('../utils/imageUploader');
+const imgUploader = require('../utils/imageUpload');
 const common = require('../utils/common');
 
 
@@ -15,7 +15,7 @@ module.exports.createNews = async function(req, res) {
 	const date = sanitizers.toDate(req.body.date);
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
-	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
+	const imageUrl = await imgUploader.syncUpload(req, res,);
 
 	// creation flow
 	await common.create(req, res, News, {
@@ -59,7 +59,7 @@ module.exports.updateNews = async function(req, res) {
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
 	const date = sanitizers.toDate(req.body.date);
-	const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.news);
+	const imageUrl = await imgUploader.syncUpload(req, res);
 
 	// Update flow
 	await common.update(req, res, News, paramId, {

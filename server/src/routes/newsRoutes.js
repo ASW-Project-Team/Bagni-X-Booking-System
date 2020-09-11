@@ -1,13 +1,13 @@
 module.exports.set = function(app) {
 	const newsController = require('../controllers/newsController');
-	const imgSupport = require('../utils/imageSupport').news;
+	const imgUpload = require('../utils/imageUpload');
 
 	app.route('/api/news/')
 		.get(newsController.readNews)
-		.post(imgSupport, newsController.createNews);
+		.post(imgUpload.addSupport, newsController.createNews);
 
 	app.route('/api/news/:id')
 		.get(newsController.readNews)
-		.put(imgSupport, newsController.updateNews)
+		.put(imgUpload.addSupport, newsController.updateNews)
 		.delete(newsController.deleteNews);
 };

@@ -1,13 +1,13 @@
 module.exports.set = function (app) {
   const servicesController = require('../controllers/servicesController')
-  const imgSupport = require('../utils/imageSupport').service;
+  const imgUpload = require('../utils/imageUpload');
 
   app.route('/api/catalog/services/:id')
     .get(servicesController.readServices)
-    .put(imgSupport, servicesController.updateService)
+    .put(imgUpload.addSupport, servicesController.updateService)
     .delete(servicesController.deleteService)
 
   app.route('/api/catalog/services/')
     .get(servicesController.readServices)
-    .post(imgSupport, servicesController.createService)
+    .post(imgUpload.addSupport, servicesController.createService)
 }

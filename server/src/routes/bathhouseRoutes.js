@@ -1,8 +1,8 @@
 module.exports.set = function (app) {
   const bathhouseController = require('../controllers/bathhouseController')
-  const imgSupport = require('../utils/imageSupport').bathhouse;
+  const imgUpload = require('../utils/imageUpload');
 
   app.route('/api/bathhouse/')
     .get(bathhouseController.readBathhouse)
-    .put(imgSupport, bathhouseController.updateBathhouse)
+    .put(imgUpload.addSupport, bathhouseController.updateBathhouse)
 }

@@ -76,19 +76,21 @@ module.exports.toEmail = (value) => {
  */
 module.exports.toArray = (array, itemSanitizers) => {
   // esegui sanitization per tutti gli oggetti; se anche solo un oggetto ha un undefined, invalida
-  if (customValidators.isArray(array) && array.length > 0) {
+  if (customValidators.isArray(array) && array.length >= 0) {
     const allItemsValid = array.map(item => {
-      Object.entries(item).map(([key, value]) => {
-        if (itemSanitizers[key]) {
-          return itemSanitizers[key](value);
-        }
-        return undefined;
-      }).reduce(((prev, curr) => prev !== undefined && curr !== undefined) ,true);
-
-      if (allItemsValid) {
-        return array;
-      }
+      Object.entries(item).
+        map(([key, value]) => {
+          if (itemSanitizers[key]) {
+            return itemSanitizers[key](value);
+          }
+          return undefined;
+        }).reduce(((prev, curr) => prev !== undefined && curr !== undefined),
+          true);
     });
+
+    if (allItemsValid) {
+      return array;
+    }
   }
 }
 

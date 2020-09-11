@@ -1,7 +1,7 @@
 const RankUmbrellas = require("../models/rankUmbrellasModel");
 const validators = require('../validation/validators');
 const sanitizers = require('../validation/sanitizers');
-const imgUploader = require('../utils/imageUploader');
+const imgUploader = require('../utils/imageUpload');
 const common = require('../utils/common');
 
 
@@ -17,7 +17,7 @@ module.exports.createRankUmbrella = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
+  const imageUrl = await imgUploader.syncUpload(req, res);
   const sales = sanitizers.toArray(req.body.sales, {
     dateFrom: sanitizers.toDate,
     dateTo: sanitizers.toDate,
@@ -75,7 +75,7 @@ module.exports.updateRankUmbrella = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas, paramId);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.rankUmbrella);
+  const imageUrl = await imgUploader.syncUpload(req, res);
   const sales = sanitizers.toArray(req.body.sales, {
     dateFrom: sanitizers.toDate,
     dateTo: sanitizers.toDate,

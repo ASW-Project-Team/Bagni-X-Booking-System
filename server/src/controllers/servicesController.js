@@ -1,6 +1,6 @@
 const Services = require("../models/servicesModel");
 const sanitizers = require('../validation/sanitizers');
-const imgUploader = require('../utils/imageUploader');
+const imgUploader = require('../utils/imageUpload');
 const common = require('../utils/common');
 
 
@@ -15,7 +15,7 @@ module.exports.createService = async (req, res) => {
   const name = sanitizers.toString(req.body.name);
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.service);
+  const imageUrl = await imgUploader.syncUpload(req, res);
 
   // creation flow
   await common.create(req, res, Services, {
@@ -40,7 +40,7 @@ module.exports.updateService = async (req, res) => {
   const name = sanitizers.toString(req.body.name);
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
-  const imageUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.service);
+  const imageUrl = await imgUploader.syncUpload(req, res);
 
   // Update flow
   await common.update(req, res, Services, paramId, {

@@ -1,6 +1,6 @@
 const Bathhouse = require('../models/bathhouseModel');
 const sanitizers = require('../validation/sanitizers');
-const imgUploader = require('../utils/imageUploader');
+const imgUploader = require('../utils/imageUpload');
 const respFilters = require('../utils/responseFilters');
 const respGenerator = require('../utils/responseGenerator');
 
@@ -16,7 +16,7 @@ module.exports.updateBathhouse = async (req, res) => {
     const name = sanitizers.toString(req.body.name);
     const seasonStart = sanitizers.toDate(req.body.seasonStart);
     const seasonEnd = sanitizers.toBool(req.body.seasonEnd);
-    const logoUrl = await imgUploader.trySyncUpload(req, res, imgUploader.types.bathhouse);
+    const logoUrl = await imgUploader.syncUpload(req, res);
 
     await Bathhouse.findOneAndUpdate({}, {
         name: name,
