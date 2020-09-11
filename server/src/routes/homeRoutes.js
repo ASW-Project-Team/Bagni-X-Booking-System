@@ -1,6 +1,6 @@
 module.exports.set = function(app) {
 	const homeCardsController = require('../controllers/homeController');
-	const imgSupport = require('./utils/imageSupport').homeCard;
+	const imgSupport = require('../utils/imageSupport').homeCard;
 
 	app.route('/api/home-cards/')
 		.get(homeCardsController.readHomeCards)

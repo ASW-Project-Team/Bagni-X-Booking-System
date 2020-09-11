@@ -2,12 +2,12 @@ const Booking = require('../models/bookingModel');
 const Bathhouse = require("../models/bathhouseModel");
 const RankUmbrella = require('../models/rankUmbrellasModel');
 const Service = require('../models/servicesModel');
-const sanitizers = require('./utils/sanitizers');
-const validators = require('./utils/validators');
+const sanitizers = require('../validation/sanitizers');
+const validators = require('../validation/validators');
 
-const common = require('./utils/common');
-const respFilters = require('./utils/responseFilters');
-const respGenerator = require('./utils/responseGenerator');
+const common = require('../utils/common');
+const respFilters = require('../utils/responseFilters');
+const respGenerator = require('../utils/responseGenerator');
 
 /**
  * Creates an array with all the umbrella extracted from the ranks, in a format

@@ -1,4 +1,4 @@
-const responseGenerator = require('./utils/responseGenerator');
+const responseGenerator = require('../utils/responseGenerator');
 
 module.exports.serveClientApp = function(req, res) {
 	res.sendFile(CONFIGS.angularClientPath + '/index.html');

@@ -1,6 +1,6 @@
 module.exports.set = function(app) {
 	const newsController = require('../controllers/newsController');
-	const imgSupport = require('./utils/imageSupport').news;
+	const imgSupport = require('../utils/imageSupport').news;
 
 	app.route('/api/news/')
 		.get(newsController.readNews)

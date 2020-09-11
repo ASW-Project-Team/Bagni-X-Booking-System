@@ -1,11 +1,11 @@
 const HomeCard = require("../models/homeCardModel");
 const RankUmbrella = require('../models/rankUmbrellasModel');
 const Service = require('../models/servicesModel');
-const sanitizers = require('./utils/sanitizers');
-const imgUploader = require('./utils/imageUploader');
-const common = require('./utils/common');
-const respFilters = require('./utils/responseFilters');
-const respGenerator = require('./utils/responseGenerator');
+const sanitizers = require('../validation/sanitizers');
+const imgUploader = require('../utils/imageUploader');
+const common = require('../utils/common');
+const respFilters = require('../utils/responseFilters');
+const respGenerator = require('../utils/responseGenerator');
 
 /**
  * Create a new item. Required responses:

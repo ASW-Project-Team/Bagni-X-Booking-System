@@ -1,4 +1,4 @@
-const validators = require('./validators');
+const validators = require('../validation/validators');
 const responseGen = require('./responseGenerator');
 const respFilters = require('./responseFilters');
 

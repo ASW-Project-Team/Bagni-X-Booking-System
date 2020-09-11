@@ -1,6 +1,6 @@
 module.exports.set = function (app) {
   const servicesController = require('../controllers/servicesController')
-  const imgSupport = require('./utils/imageSupport').service;
+  const imgSupport = require('../utils/imageSupport').service;
 
   app.route('/api/catalog/services/:id')
     .get(servicesController.readServices)

@@ -60,6 +60,18 @@ module.exports.respondNotFound = function (res, referringItem) {
   res.status(HttpCodes.NOT_FOUND).json(body);
 }
 
+
+/**
+ * Responds to the sender with a 404 error.
+ * @param {Object} res The Express res object.
+ * @param {string=} referringItem The item to refer to. If omitted, a standard
+ * response is generated.
+ */
+module.exports.respondNotFoundRoute = function (res) {
+  const body = createDescription(`The specified route is not present in the API.`);
+  res.status(HttpCodes.NOT_FOUND).json(body);
+}
+
 /**
  * Responds with a 400 error, saying that the item is already present.
  * @param {Object} res The Express res object.
@@ -88,7 +100,7 @@ module.exports.respondMalformedRequest = function (res) {
  */
 module.exports.respondUnauthorized = function (res) {
   const body = createDescription(
-    'You do not have permissions to access this content.'
+    'You do not have permissions to access this route.'
   );
 
   res.status(HttpCodes.BAD_REQUEST).json(body);

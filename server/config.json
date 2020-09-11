@@ -1,0 +1,5 @@
+{
+  "jwtSecret": "bagnixSuperSecretCryttoKey",
+  "mongoUser": "server",
+  "mongoPw": "TheSuperServer!46",
+}

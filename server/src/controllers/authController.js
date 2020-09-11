@@ -1,10 +1,10 @@
 const Admin = require('../models/adminModel');
 const Customer = require('../models/customerModel');
-const auth = require('./utils/auth');
-const validators = require('./utils/validators');
-const sanitizers = require('./utils/sanitizers');
-const responseGen = require('./utils/responseGenerator');
-const respFilters = require('./utils/responseFilters');
+const auth = require('../authentication/utils');
+const validators = require('../validation/validators');
+const sanitizers = require('../validation/sanitizers');
+const responseGen = require('../utils/responseGenerator');
+const respFilters = require('../utils/responseFilters');
 
 
 /**

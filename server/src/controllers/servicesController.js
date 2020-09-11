@@ -1,7 +1,7 @@
 const Services = require("../models/servicesModel");
-const sanitizers = require('./utils/sanitizers');
-const imgUploader = require('./utils/imageUploader');
-const common = require('./utils/common');
+const sanitizers = require('../validation/sanitizers');
+const imgUploader = require('../utils/imageUploader');
+const common = require('../utils/common');
 
 
 /**

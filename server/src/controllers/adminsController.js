@@ -1,7 +1,7 @@
 const Admin = require('../models/adminModel');
-const sanitizers = require('./utils/sanitizers');
-const common = require('./utils/common');
-const auth = require('./utils/auth');
+const sanitizers = require('../validation/sanitizers');
+const common = require('../utils/common');
+const auth = require('../authentication/utils');
 
 
 

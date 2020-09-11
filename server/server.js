@@ -4,14 +4,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const compression = require('compression');
+const config = require('./config.json');
 const productionMode = !!(process.argv[2] && process.argv[2] === '--prod');
 
 // Global configuration object
 global.CONFIGS = {
   port: 3000,
   mongoUrl: productionMode
-    ? 'mongodb://server:TheSuperServer!46@mongodb:27017/bagni_X_booking_system_db'
-    : 'mongodb://server:TheSuperServer!46@localhost:27017/bagni_X_booking_system_db',
+    ? `mongodb://${config.mongoUser}:${config.mongoPw}@mongodb:27017/bagni_X_booking_system_db`
+    : `mongodb://${config.mongoUser}:${config.mongoPw}@localhost:27017/bagni_X_booking_system_db`,
   angularClientPath: productionMode
     ? path.resolve(__dirname) + '/client'
     : path.resolve(__dirname) + '/demo-site',
@@ -37,14 +38,17 @@ const main = async function () {
       }
     );
     console.log('MongoDB Connected');
+
   } catch (err) {
-    console.log('Connection failed! ' + err);
+    console.log(`Connection to MongoDB failed! ${err}`);
+    return;
   }
 
   // Permits only requests from this domain inside the API
   app.use(cors({
-    origin: 'http://localhost:' + CONFIGS.port,
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    origin: `http://localhost:${CONFIGS.port}`,
+    // some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200,
   }));
 
   // File size optimization in requests
@@ -56,19 +60,20 @@ const main = async function () {
   // parse requests of content-type - application/json
   app.use(bodyParser.json());
 
-  // sets the directory as static; in other words, accessible with static urls
+  // sets the given directories as static, accessible with static urls
   app.use(express.static(CONFIGS.angularClientPath));
   app.use('/assets', express.static(CONFIGS.assetsPath));
 
-  // authentication middleware
-  const jwt = require('./src/authentication/jwtMiddleware');
-  //app.use(jwt());
+  // authentication middleware for /api endpoints only
+  const authMiddleware = require('./src/authentication/middleware');
+  app.use('/api', authMiddleware.authenticate);
 
+  // set up the routes
   const routes = require('./src/routes/routes');
   routes.set(app);
 
   app.listen(CONFIGS.port, function () {
-    console.log('BagniX webserver started on port ' + CONFIGS.port);
+    console.log(`BagniX webserver started on port  ${CONFIGS.port}`);
   });
 }
 

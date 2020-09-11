@@ -1,8 +1,8 @@
 const RankUmbrellas = require("../models/rankUmbrellasModel");
-const validators = require('./utils/validators');
-const sanitizers = require('./utils/sanitizers');
-const imgUploader = require('./utils/imageUploader');
-const common = require('./utils/common');
+const validators = require('../validation/validators');
+const sanitizers = require('../validation/sanitizers');
+const imgUploader = require('../utils/imageUploader');
+const common = require('../utils/common');
 
 
 /**

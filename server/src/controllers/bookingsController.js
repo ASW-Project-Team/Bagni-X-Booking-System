@@ -1,9 +1,9 @@
 const Booking = require('../models/bookingModel');
-const validators = require('./utils/validators');
-const sanitizers = require('./utils/sanitizers');
-const common = require('./utils/common');
-const respFilters = require('./utils/responseFilters');
-const responseGen = require('./utils/responseGenerator');
+const validators = require('../validation/validators');
+const sanitizers = require('../validation/sanitizers');
+const common = require('../utils/common');
+const respFilters = require('../utils/responseFilters');
+const responseGen = require('../utils/responseGenerator');
 const dayBeforeDeleteIsPossible = 2
 
 

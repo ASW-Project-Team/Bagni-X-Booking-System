@@ -1,5 +1,5 @@
 const multer = require('multer');
-const imgSupport = require('../../routes/utils/imageSupport')
+const imgSupport = require('./imageSupport')
 /**
  * An object that summarizes the possible types usable inside the param
  * image type of {@link tryUploadImage}. Use this standardized object to refer

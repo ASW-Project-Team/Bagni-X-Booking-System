@@ -1,8 +1,8 @@
 const Bathhouse = require('../models/bathhouseModel');
-const sanitizers = require('./utils/sanitizers');
-const imgUploader = require('./utils/imageUploader');
-const respFilters = require('./utils/responseFilters');
-const respGenerator = require('./utils/responseGenerator');
+const sanitizers = require('../validation/sanitizers');
+const imgUploader = require('../utils/imageUploader');
+const respFilters = require('../utils/responseFilters');
+const respGenerator = require('../utils/responseGenerator');
 
 
 /**

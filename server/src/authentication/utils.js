@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const config = require('../../authentication/secret.json');
+const config = require('../../config.json');
 
 
 /**
@@ -9,7 +9,7 @@ const config = require('../../authentication/secret.json');
 module.exports.generateAdminToken = function(admin) {
   return jwt.sign(
     { sub: admin.id },
-    config.secret,
+    config.jwtSecret,
     { expiresIn: '7d', audience: admin.root ? 'root' : 'admin' });
 }
 
@@ -20,7 +20,7 @@ module.exports.generateAdminToken = function(admin) {
 module.exports.generateCustomerToken = function(customer) {
   return jwt.sign(
     { sub: customer.id },
-    config.secret,
+    config.jwtSecret,
     { expiresIn: '7d', audience: 'customer' });
 }
 
