@@ -5,10 +5,10 @@
 
 const jwt = require('jsonwebtoken')
 const config = require('../../config.json');
-const respGen = require('../utils/responseGenerator')
+const respGen = require('./responseGenerator')
 const Customer = require('../models/customerModel')
 const Admin = require('../models/adminModel')
-const sanitizers = require('../validation/sanitizers')
+const sanitizers = require('./sanitizers')
 
 /**
  * Lists endpoints that not require authentication, neither JWT.
@@ -93,44 +93,6 @@ const securedEndpoints = rootEndpoints.concat(adminSpecificEndpoints).
   concat(allAdminsEndpoints).
   concat(customerSpecificEndpoints).
   concat(allCustomersEndpoints)
-
-/**
- * Middleware module that checks whether the client is authorized to access
- * the specified API endpoint.
- */
-module.exports.authenticate = async (req, res, next) => {
-  const endpoint = { url: req.url, method: req.method }
-
-  // pass, for the free routes
-  if (endpointMatches(endpoint, freeEndpoints)) {
-    return next();
-  }
-
-  // respond 404 with non-existing API routes
-  if (!endpointMatches(endpoint, securedEndpoints)) {
-    return respGen.respondNotFoundRoute(res)
-  }
-
-  // SECURED ZONE: from here, a JWT is required
-  const parsedToken = await parseToken(req.headers['authorization']);
-
-  // token not found, or not valid
-  if (!parsedToken) {
-    return respGen.respondUnauthorized(res);
-  }
-
-  // control if token is revoked
-  if (await isTokenRevoked(parsedToken)) {
-    return respGen.respondUnauthorized(res);
-  }
-
-  // checks the security level required for each endpoint
-  if (!endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub)) {
-    return respGen.respondUnauthorized(res);
-  }
-
-  return next();
-}
 
 
 /**
@@ -265,4 +227,75 @@ const endpointsCheck = (endpoint, audience, userId) => {
       break;
   }
   return false;
+}
+
+
+/**
+ * Middleware module that checks whether the client is authorized to access
+ * the specified API endpoint.
+ */
+module.exports.middleware = async (req, res, next) => {
+  const endpoint = { url: req.url, method: req.method }
+
+  // pass, for the free routes
+  if (endpointMatches(endpoint, freeEndpoints)) {
+    return next();
+  }
+
+  // respond 404 with non-existing API routes
+  if (!endpointMatches(endpoint, securedEndpoints)) {
+    return respGen.respondNotFoundRoute(res)
+  }
+
+  // SECURED ZONE: from here, a JWT is required
+  const parsedToken = await parseToken(req.headers['authorization']);
+
+  // token not found, or not valid
+  if (!parsedToken) {
+    return respGen.respondUnauthorized(res);
+  }
+
+  // control if token is revoked
+  if (await isTokenRevoked(parsedToken)) {
+    return respGen.respondUnauthorized(res);
+  }
+
+  // checks the security level required for each endpoint
+  if (!endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub)) {
+    return respGen.respondUnauthorized(res);
+  }
+
+  return next();
+}
+
+
+/**
+ * Generates the token for the given admin.
+ */
+module.exports.generateAdminToken = function(admin) {
+  return jwt.sign(
+    { sub: admin.id },
+    config.jwtSecret,
+    { expiresIn: '7d', audience: admin.root ? 'root' : 'admin' });
+}
+
+
+/**
+ * Generates the token for the given customer.
+ */
+module.exports.generateCustomerToken = function(customer) {
+  return jwt.sign(
+    { sub: customer.id },
+    config.jwtSecret,
+    { expiresIn: '7d', audience: 'customer' });
+}
+
+
+module.exports.passwordValid = (password, hash) => {
+  return bcrypt.compareSync(password, hash);
+}
+
+
+module.exports.createHash = (password) => {
+  return bcrypt.hashSync(password, 10);
 }

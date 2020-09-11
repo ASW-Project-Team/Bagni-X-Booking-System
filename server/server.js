@@ -64,8 +64,8 @@ const main = async function () {
   app.use('/assets', express.static(CONFIGS.assetsPath));
 
   // authentication middleware for /api endpoints only
-  const authMiddleware = require('./src/authentication/middleware');
-  app.use('/api', authMiddleware.authenticate);
+  const auth = require('./src/utils/authentication');
+  app.use('/api', auth.middleware);
 
   // set up the routes
   const routes = require('./src/routes/routes');

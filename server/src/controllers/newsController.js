@@ -1,5 +1,5 @@
 const News = require("../models/newsModel");
-const sanitizers = require('../validation/sanitizers');
+const sanitizers = require('../utils/sanitizers');
 const imgUploader = require('../utils/imageUpload');
 const common = require('../utils/common');
 
