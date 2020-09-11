@@ -28,12 +28,14 @@ db.admins.insert([
   {
     root: true,
     username: 'root',
-    hash: '$2y$10$ccELA.3iTyjxLci6.2AaNeLvGyJ8oVSp9WsRr.FuYGdaD66rzIsoO',
+    // Admin!1234
+    hash: '$2b$10$nTNFPIlgeaSTYSqSHTPfL.oQ7g1D5F3g17zVoayG4kiIUQUyrDTcy',
   },
   {
     root: false,
     username: 'admin',
-    hash: '$2y$10$iiUKbMqoKLjRxrzvz.447Oy3arCWMRxTnFMJ.Cjubbi1kPOWszbJG\n',
+    // Admin!1234
+    hash: '$2b$10$nTNFPIlgeaSTYSqSHTPfL.oQ7g1D5F3g17zVoayG4kiIUQUyrDTcy',
   },
 ])
 
@@ -43,7 +45,8 @@ db.customers.insert({
   email: 'test@test.it',
   phone: '331123456',
   address: 'Viale della Vittoria, 22',
-  hash: '$2y$10$MvyVhdotMz20DoO0rOoLjuJz/Y18GmrE2NRFxYmw5uUoHWiY0oMAK',
+  // Customer!1234
+  hash: '$2y$10$alG9nqF3qy.Z1NjZKKbV/eRMcB.KztL2y4TPBbzld9BvrqD1M0VjK',
   deleted: false,
   registered: true,
 })

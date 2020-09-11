@@ -9,6 +9,7 @@ const respGen = require('./responseGenerator')
 const Customer = require('../models/customerModel')
 const Admin = require('../models/adminModel')
 const sanitizers = require('./sanitizers')
+const bcrypt = require('bcrypt');
 
 /**
  * Lists endpoints that not require authentication, neither JWT.
@@ -30,7 +31,6 @@ const freeEndpoints = [
 const allCustomersEndpoints = [
   { url: new RegExp('^\/new-booking\/.+$'), methods: ['GET', 'POST'] },
   { url: new RegExp('^\/stats\/?$'), methods: ['GET'] },
-
 ]
 
 /**
@@ -48,7 +48,7 @@ const customerSpecificEndpoints = [
  * @type {{url: string|RegExp, methods: [string]}[]}
  */
 const allAdminsEndpoints = [
-  { url: new RegExp('^\/customers\/?$'), methods: ['GET'] },
+  { url: new RegExp('^\/customers\/?$'), methods: ['GET', 'POST'] },
   { url: new RegExp('^\/customers\/.+$'), methods: ['PUT', 'POST'] },
   { url: new RegExp('^\/news\/.+$'), methods: ['POST', 'PUT', 'DELETE'] },
   { url: new RegExp('^\/home-cards\/?$'), methods: ['GET'] },
@@ -70,10 +70,7 @@ const allAdminsEndpoints = [
  * @type {{url: string|RegExp, methods: [string]}[]}
  */
 const adminSpecificEndpoints = [
-  {
-    url: new RegExp('^\/admins\/.+'),
-    methods: ['GET', 'PUT', 'POST', 'DELETE'],
-  },
+  { url: new RegExp('^\/admins\/.+'), methods: ['GET', 'PUT', 'POST', 'DELETE'], },
 ]
 
 /**
@@ -165,32 +162,34 @@ const isTokenRevoked = async (token) => {
     if (!customer) {
       return true;
     }
-  } else {
-    return true;
   }
+  return false;
 }
 
 
 /**
  * For each endpoint checks the required security level. Returns true if the
  * given user has the required privileges, false otherwise.
- * @param {string} endpoint - the endpoint to verify.
+ * @param {{url:string, method: string}} endpoint - the endpoint to verify.
  * @param {string} audience - the aud field of the token.
  * @param {string} userId - The sub field of the token.
+ * @param {Object} req - The request object.
  * @return {boolean} True if the given user has the required privileges,
  * false otherwise.
  */
-const endpointsCheck = (endpoint, audience, userId) => {
+const endpointsCheck = (endpoint, audience, userId, req) => {
   // secure endpoints verification
   switch (true) {
     case endpointMatches(endpoint, rootEndpoints):
       if (audience === 'root') {
         return true;
       }
-      break
+      break;
 
     case endpointMatches(endpoint, adminSpecificEndpoints):
-      if (audience === 'admin' || audience === 'root') {
+      if (audience === 'root') {
+        return true;
+      } else if (audience === 'admin') {
         const paramId = sanitizers.toString(getInlineParam(endpoint.url))
         if (paramId === userId) {
           return true;
@@ -205,12 +204,13 @@ const endpointsCheck = (endpoint, audience, userId) => {
     case endpointMatches(endpoint, customerSpecificEndpoints):
       if (audience === 'admin' || audience === 'root') {
         return true;
+
       } else if (audience === 'customer') {
-        let custId
-        if (endpoint.url.match(new RegExp('^\/bookings\/.+$'))) {
-          custId = sanitizers.toString(req.body.customerId)
-        } else {
+        let custId;
+        if (endpoint.url.match(new RegExp('^\/bookings\/customer\/.+$'))) {
           custId = sanitizers.toString(getInlineParam(endpoint.url))
+        } else {
+          custId = sanitizers.toString(req.body.customerId);
         }
 
         if (custId === userId) {
@@ -220,8 +220,7 @@ const endpointsCheck = (endpoint, audience, userId) => {
 
       break;
     case endpointMatches(endpoint, allCustomersEndpoints):
-      if (audience === 'admin' || audience === 'root' || audience ===
-        'customer') {
+      if (audience === 'admin' || audience === 'root' || audience === 'customer') {
         return true;
       }
       break;
@@ -261,7 +260,7 @@ module.exports.middleware = async (req, res, next) => {
   }
 
   // checks the security level required for each endpoint
-  if (!endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub)) {
+  if (!endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub, req)) {
     return respGen.respondUnauthorized(res);
   }
 
