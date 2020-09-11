@@ -26,7 +26,6 @@ global.CONFIGS = {
 const main = async function () {
   const app = express();
 
-  // wait for mongo init is not necessary anymore, as it is handled by Docker
   try {
     await mongoose.connect(
       CONFIGS.mongoUrl,
@@ -73,7 +72,7 @@ const main = async function () {
   routes.set(app);
 
   app.listen(CONFIGS.port, function () {
-    console.log(`BagniX webserver started on port  ${CONFIGS.port}`);
+    console.log(`BagniX webserver started on port ${CONFIGS.port}`);
   });
 }
 
