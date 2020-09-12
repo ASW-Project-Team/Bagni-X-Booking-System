@@ -2,34 +2,37 @@ import {Sale, SaleModel} from "./sale.model";
 import {DateUtils} from "../utils/date.utils";
 
 export interface RankUmbrellaModel {
-  _id: any;
-  image: string;
+  id?: string;
+  rankUmbrellaId?: string;
+  imageUrl: string;
   name: string;
   description: string;
-  price: number;
+  dailyPrice: number;
   fromUmbrella: number;
   toUmbrella: number;
   sales: SaleModel[];
 }
 
 export class RankUmbrella implements RankUmbrellaModel {
-  _id: any;
+  id: string;
+  rankUmbrellaId: string;
   description: string;
   fromUmbrella: number;
-  image: string;
+  imageUrl: string;
   name: string;
-  price: number;
+  dailyPrice: number;
   sales: Sale[];
   toUmbrella: number;
 
   constructor(model: RankUmbrellaModel) {
-    this._id = model._id;
+    this.id = model.id;
+    this.rankUmbrellaId = model.rankUmbrellaId;
     this.description = model.description;
     this.fromUmbrella = model.fromUmbrella;
     this.toUmbrella = model.toUmbrella;
-    this.image = model.image;
+    this.imageUrl = model.imageUrl;
     this.name = model.name;
-    this.price = model.price;
+    this.dailyPrice = model.dailyPrice;
     this.sales = model.sales.map(model => new Sale(model));
   }
 
@@ -50,26 +53,30 @@ export class RankUmbrella implements RankUmbrellaModel {
     let unsaledDays = totalDays;
 
     // applies only the bigger sale of the period, if present
-    let biggerSale: Sale;
+    let biggerSaleAmount: number;
+    let saledDays: number;
 
     const salesOnPeriod = this.sales
       .filter(sale => sale.onPeriod(dateFrom, dateTo));
+
     if (salesOnPeriod.length > 0) {
-      biggerSale = salesOnPeriod.reduce((prevSale, currSale) => {
-        return prevSale.percent >= currSale.percent ? prevSale : currSale
+      biggerSaleAmount = salesOnPeriod.map(currSale => {
+        const saleDateFrom = dateFrom.getTime() <= currSale.dateFrom.getTime() ? currSale.dateFrom : dateFrom;
+        const saleDateTo = dateTo.getTime() <= currSale.dateTo.getTime() ? dateTo : currSale.dateTo;
+        saledDays = DateUtils.getBookingDays(saleDateFrom, saleDateTo);
+        return saledDays * this.dailyPrice * (1 - currSale.percent)
+
+      }).reduce((prevAmount, currAmount) => {
+        return prevAmount >= currAmount ? prevAmount : currAmount;
       });
     }
 
-    if (biggerSale) {
-      const saleDateFrom = dateFrom.getTime() <= biggerSale.dateFrom.getTime() ? biggerSale.dateFrom : dateFrom;
-      const saleDateTo = dateTo.getTime() <= biggerSale.dateTo.getTime() ? dateTo : biggerSale.dateTo;
-      const saledDays = DateUtils.getBookingDays(saleDateFrom, saleDateTo);
-
-      total += saledDays * this.price * ((100 - biggerSale.percent) / 100);
+    if (biggerSaleAmount && saledDays) {
+      total += biggerSaleAmount;
       unsaledDays -= saledDays;
     }
 
-    total += unsaledDays * this.price;
+    total += unsaledDays * this.dailyPrice;
     return total;
   }
 }

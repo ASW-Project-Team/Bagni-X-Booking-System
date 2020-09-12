@@ -8,6 +8,7 @@ const config = require('../../config.json');
 const respGen = require('./responseGenerator')
 const Customer = require('../models/customerModel')
 const Admin = require('../models/adminModel')
+const Bookings = require('../models/bookingModel')
 const sanitizers = require('./sanitizers')
 const bcrypt = require('bcrypt');
 
@@ -177,7 +178,7 @@ const isTokenRevoked = async (token) => {
  * @return {boolean} True if the given user has the required privileges,
  * false otherwise.
  */
-const endpointsCheck = (endpoint, audience, userId, req) => {
+const endpointsCheck = async (endpoint, audience, userId, req) => {
   // secure endpoints verification
   switch (true) {
     case endpointMatches(endpoint, rootEndpoints):
@@ -207,10 +208,14 @@ const endpointsCheck = (endpoint, audience, userId, req) => {
 
       } else if (audience === 'customer') {
         let custId;
-        if (endpoint.url.match(new RegExp('^\/bookings\/customer\/.+$'))) {
+        if (endpoint.url.match(new RegExp('^\/bookings\/customer\/.+$'))
+         || endpoint.url.match(new RegExp('^\/customers\/.+$'))) {
           custId = sanitizers.toString(getInlineParam(endpoint.url))
-        } else {
-          custId = sanitizers.toString(req.body.customerId);
+
+        } else if (endpoint.url.match(new RegExp('^\/bookings\/.+$'))) {
+          const bookingId = sanitizers.toString(getInlineParam(endpoint.url))
+          const booking = await Bookings.findOne({_id: bookingId});
+          custId = booking.customerId.toString();
         }
 
         if (custId === userId) {
@@ -260,7 +265,7 @@ module.exports.middleware = async (req, res, next) => {
   }
 
   // checks the security level required for each endpoint
-  if (!endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub, req)) {
+  if (!await endpointsCheck(endpoint, parsedToken.aud, parsedToken.sub, req)) {
     return respGen.respondUnauthorized(res);
   }
 

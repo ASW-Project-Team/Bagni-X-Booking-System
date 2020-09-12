@@ -34,7 +34,7 @@ export class NewBookingComponent implements OnInit {
     this.backRoute = this._route.snapshot.queryParams['backRoute'] || '/home';
     this.backPageName = this._route.snapshot.queryParams['backPageName'] || 'Home';
     this.booking = new Booking({
-      userId: this._authService.currentCustomerValue().id,
+      customerId: this._authService.currentCustomerValue().id,
       dateFrom: NewBookingComponent.createTodayAtMidnight(),
       dateTo: NewBookingComponent.createTodayAtMidnight(),
       umbrellas: [],

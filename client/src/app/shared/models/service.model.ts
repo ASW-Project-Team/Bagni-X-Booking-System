@@ -1,34 +1,44 @@
 import {DateUtils} from "../utils/date.utils";
 import {SalableItemModel} from "./salable.model";
+import {RankUmbrella, RankUmbrellaModel} from "./rank-umbrella.model";
 
 export interface ServiceModel {
-  _id: any;
-  price: number;
-  image: string;
-  title: string;
-  umbrellaRelated: boolean;
+  id?: string;
+  dailyPrice: number;
+  imageUrl: string;
+  name: string;
   description: string;
+  serviceId?: string;
 }
 
 export class Service implements ServiceModel, SalableItemModel {
-  _id: any;
+  id?: string;
   description: string;
-  image: string;
-  price: number;
-  title: string;
-  umbrellaRelated: boolean;
+  imageUrl: string;
+  dailyPrice: number;
+  name: string;
+  serviceId?: string;
 
   constructor(model: ServiceModel) {
-    this._id = model._id;
+    this.id = model.id;
     this.description = model.description;
-    this.image = model.image;
-    this.title = model.title;
-    this.umbrellaRelated = model.umbrellaRelated;
-    this.description = model.description;
-    this.price = model.price;
+    this.imageUrl = model.imageUrl;
+    this.name = model.name;
+    this.dailyPrice = model.dailyPrice;
+    this.serviceId = model.serviceId;
+  }
+
+  generateBookableClone(): Service {
+    return new Service({
+      serviceId: this.id,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      name: this.name,
+      dailyPrice: this.dailyPrice
+    });
   }
 
   calculatePrice(dateFrom: Date, dateTo: Date): number {
-    return DateUtils.getBookingDays(dateFrom, dateTo) * this.price;
+    return DateUtils.getBookingDays(dateFrom, dateTo) * this.dailyPrice;
   }
 }

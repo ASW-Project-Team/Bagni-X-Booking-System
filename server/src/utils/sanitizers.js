@@ -100,7 +100,7 @@ module.exports.toArray = (array, itemSanitizers) => {
  * each field.
  */
 module.exports.toArrayOfSchemas = (array, itemSanitizer) => {
-  if (customValidators.isArray(array) && array.length > 0) {
+  if (customValidators.isArray(array)) {
     const allItemsValid = array.map(item => itemSanitizer(item))
      .reduce(((prev, curr) => prev !== undefined && curr !== undefined) ,true);
 

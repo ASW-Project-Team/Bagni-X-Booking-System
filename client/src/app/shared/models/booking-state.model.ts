@@ -22,27 +22,27 @@ export class BookingState implements BookingStateModel {
   }
 
   static calculateState(booking: BookingModel): BookingStateModel {
-    if (booking.dateFrom > new Date()
+    if (booking.dateFrom.getTime() > new Date().getTime()
       && booking.confirmed === true
       && booking.cancelled === false) {
       // in programma
       return possibleStates[0];
 
-    } else if (booking.dateFrom > new Date()
-      && booking.confirmed === false
+    } else if ( /*booking.dateFrom.getTime() > new Date().getTime() &&*/ // todo handle non-confirmed in now
+         booking.confirmed === false
       && booking.cancelled === false) {
       // in attesa di conferma
       return possibleStates[1];
 
-    } else if (booking.dateFrom <= new Date()
-      && booking.dateTo >= new Date()
+    } else if (booking.dateFrom.getTime() <= new Date().getTime()
+      && booking.dateTo.getTime() >= new Date().getTime()
       && booking.confirmed === true
       && booking.cancelled === false) {
       // in corso
       return possibleStates[2];
 
-    } else if (booking.dateFrom <= new Date()
-      && booking.dateTo <= new Date()
+    } else if (booking.dateFrom.getTime() <= new Date().getTime()
+      && booking.dateTo.getTime() <= new Date().getTime()
       && booking.confirmed === true
       && booking.cancelled === false) {
       // completato
@@ -69,7 +69,7 @@ export const possibleStates: BookingStateModel[] = [
   },
   {
     name: 'In attesa di conferma',
-    description: 'Tale stato indica che lo stabililimento deve confermare la prenotazione.',
+    description: 'Tale stato indica che lo stabililimento deve confermare la prenotazione. ',
     class: 'state-warning',
     icon: 'progress-alert'
   },

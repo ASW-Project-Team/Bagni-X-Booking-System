@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
       address: this.regForm.get('address').value != '' ? this.regForm.get('address').value : null,
       phone: this.regForm.get('phone').value != '' ? this.regForm.get('phone').value : null,
       registered: true,
-      cancelled: false,
+      deleted: false,
     })
       .pipe(first())
       .subscribe(

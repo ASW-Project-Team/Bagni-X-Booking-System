@@ -1,20 +1,17 @@
 export interface SaleModel {
-  _id: any;
   percent: number,
   dateFrom: Date,
   dateTo: Date,
 }
 
 export class Sale implements SaleModel {
-  _id: any;
   dateFrom: Date;
   dateTo: Date;
   percent: number;
 
   constructor(model: SaleModel) {
-    this._id = model._id;
-    this.dateFrom = model.dateFrom;
-    this.dateTo = model.dateTo;
+    this.dateFrom = new Date(model.dateFrom);
+    this.dateTo = new Date(model.dateTo);
     this.percent = model.percent;
   }
 

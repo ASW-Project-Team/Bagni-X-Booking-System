@@ -2,38 +2,33 @@ import {RankUmbrella, RankUmbrellaModel} from "./rank-umbrella.model";
 import {SalableItemModel} from "./salable.model";
 
 export interface UmbrellaModel {
-  id: string,
   number: number,
-  rank?: RankUmbrellaModel,
-  rankId?: string,
+  rankUmbrella?: RankUmbrellaModel,
+  rankUmbrellaId?: string,
 }
 
 
 export class Umbrella implements UmbrellaModel, SalableItemModel {
-  id: string;
   number: number;
-  rank: RankUmbrella;
-  rankId: string;
-
+  rankUmbrella: RankUmbrella;
+  rankUmbrellaId: string;
 
   constructor(model: UmbrellaModel) {
-    this.id = model.id;
     this.number = model.number;
-    this.rank = model.rank ? new RankUmbrella(model.rank) : undefined;
-    this.rankId = model.rankId;
+    this.rankUmbrella = model.rankUmbrella ? new RankUmbrella(model.rankUmbrella) : undefined;
+    this.rankUmbrellaId = model.rankUmbrellaId;
   }
 
 
   generateBookableClone(rank: RankUmbrellaModel): Umbrella {
     return new Umbrella({
-      id: this.id,
       number: this.number,
-      rank: new RankUmbrella({
-        _id: rank._id,
-        image: rank.image,
+      rankUmbrella: new RankUmbrella({
+        rankUmbrellaId: rank.id,
+        imageUrl: rank.imageUrl,
         name: rank.name,
         description: rank.description,
-        price: rank.price,
+        dailyPrice: rank.dailyPrice,
         fromUmbrella: rank.fromUmbrella,
         toUmbrella: rank.toUmbrella,
         sales: rank.sales
@@ -45,7 +40,7 @@ export class Umbrella implements UmbrellaModel, SalableItemModel {
   getTitle(): string {
     let title = "Ombrellone n." + this.number;
     if (this.isBookable()) {
-      title += ", " + this.rank.name;
+      title += ", " + this.rankUmbrella.name;
     }
     return title;
   }
@@ -53,7 +48,7 @@ export class Umbrella implements UmbrellaModel, SalableItemModel {
 
   calculatePrice(dateFrom: Date, dateTo: Date): number {
     if (this.isBookable()) {
-      return this.rank.calculatePrice(dateFrom, dateTo);
+      return this.rankUmbrella.calculatePrice(dateFrom, dateTo);
     } else {
       return -1;
     }
@@ -61,6 +56,6 @@ export class Umbrella implements UmbrellaModel, SalableItemModel {
 
 
   isBookable(): boolean {
-    return !!this.rank && !!!this.rankId;
+    return !!this.rankUmbrella && !!!this.rankUmbrellaId;
   }
 }

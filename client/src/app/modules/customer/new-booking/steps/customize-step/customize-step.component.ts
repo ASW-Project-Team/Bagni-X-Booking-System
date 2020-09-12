@@ -37,7 +37,7 @@ export class CustomizeStepComponent implements OnInit {
       this.availableRankings = availability.rankUmbrellas.map(rankModel => new RankUmbrella(rankModel));
 
       this.availableServices = availability.services.map(serviceModel => new Service(serviceModel))
-        .filter(service => service.price > 0 && service.umbrellaRelated);
+        .filter(service => service.dailyPrice > 0);
 
     } else {
       this.availableServices = undefined;
@@ -52,16 +52,19 @@ export class CustomizeStepComponent implements OnInit {
     }
   }
 
-  getRankUmbrellas(rank: RankUmbrella): Umbrella[] {
-    return this.availableUmbrellas
-      .filter(umbrella => umbrella.rankId == rank._id)
+  getUmbrellasByRank(rank: RankUmbrella): Umbrella[] {
+    const umbrellasByRank = this.availableUmbrellas
+      .filter(umbrella => umbrella.rankUmbrellaId == rank.id)
       .map(umbrella => umbrella.generateBookableClone(rank));
+
+    // inverse sort, to pick them in order with the push in item picker
+    return umbrellasByRank.sort((a,b) => (a.number > b.number) ? -1 : ((b.number > a.number) ? 1 : 0))
   }
 
   insertUmbrella(item: SalableItemModel) {
     let umbrella = item as Umbrella;
     this.booking.umbrellas.push(umbrella);
-    this.booking.price += umbrella.rank.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
+    this.booking.price += umbrella.rankUmbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
     this.customizationValidatorChange.emit(true);
     this.bookingChange.emit(this.booking);
   }

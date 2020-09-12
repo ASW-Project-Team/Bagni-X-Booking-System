@@ -4,7 +4,7 @@ import {BookingState} from "./booking-state.model";
 
 export interface BookingModel {
   id?: string,
-  userId: string,
+  customerId: string,
   umbrellas: UmbrellaModel[],
   confirmed: boolean,
   cancelled: boolean,
@@ -26,18 +26,18 @@ export class Booking implements BookingModel {
   price: number;
   services: Service[];
   umbrellas: Umbrella[];
-  userId: string;
+  customerId: string;
 
   constructor(bookingModel: BookingModel) {
     this.id = bookingModel.id;
     this.cancelled = bookingModel.cancelled;
     this.confirmed = bookingModel.confirmed;
-    this.dateFrom = bookingModel.dateFrom;
-    this.dateTo = bookingModel.dateTo;
+    this.dateFrom = new Date(bookingModel.dateFrom);
+    this.dateTo = new Date(bookingModel.dateTo);
     this.price = bookingModel.price;
     this.services = bookingModel.services.map(model => new Service(model));
     this.umbrellas = bookingModel.umbrellas.map(model => new Umbrella(model));
-    this.userId = bookingModel.userId;
+    this.customerId = bookingModel.customerId;
   }
 
 
@@ -74,12 +74,12 @@ export class Booking implements BookingModel {
     let description = '';
 
     if (this.umbrellas[0] && this.umbrellas.length == 1) {
-      description = this.umbrellas[0].rank.name;
+      description = this.umbrellas[0].rankUmbrella.name;
 
     } else if (this.umbrellas.length > 1) {
       this.umbrellas.map(umbrella => {
         // selects the rank name, and make the first letter of each, uppercase
-        let rankName = umbrella.rank.name;
+        let rankName = umbrella.rankUmbrella.name;
         return rankName.charAt(0).toUpperCase() + rankName.slice(1);
 
       }).filter((rankName, index, array) => {
@@ -108,7 +108,7 @@ export class Booking implements BookingModel {
     this.umbrellas.forEach(umbrella => {
       costItems.push({
         description: umbrella.getTitle(),
-        amount: umbrella.rank.calculatePrice(this.dateFrom, this.dateTo)
+        amount: umbrella.rankUmbrella.calculatePrice(this.dateFrom, this.dateTo)
       });
     });
 
@@ -128,7 +128,7 @@ export class Booking implements BookingModel {
     // add a cost item for each grouped service
     groupedServices.forEach((occurrences, service) => {
       costItems.push({
-        description: service.title + " x" + occurrences,
+        description: service.name + " x" + occurrences,
         amount: service.calculatePrice(this.dateFrom, this.dateTo) * occurrences
       });
     });

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Booking} from "../../../../../shared/models/booking.model";
 import {Router} from "@angular/router";
 import {ApiService} from "../../../../../core/api/api.service";

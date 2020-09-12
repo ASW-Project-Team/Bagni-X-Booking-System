@@ -108,7 +108,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
 
   private static getNews(request: HttpRequest<unknown>): ObservableInput<any> {
-    const news = newsFeedMock.find(x => x._id === FakeBackendInterceptor.idFromUrl(request))
+    const news = newsFeedMock.find(x => x.id === FakeBackendInterceptor.idFromUrl(request))
     if (!news) {
       return FakeBackendInterceptor.createError404();
     }

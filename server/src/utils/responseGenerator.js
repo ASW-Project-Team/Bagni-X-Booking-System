@@ -103,7 +103,7 @@ module.exports.respondUnauthorized = function (res) {
     'You do not have permissions to access this route.'
   );
 
-  res.status(HttpCodes.BAD_REQUEST).json(body);
+  res.status(HttpCodes.UNAUTHORIZED).json(body);
 }
 
 /**

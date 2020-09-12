@@ -32,7 +32,7 @@ export class ApiService {
 
   public getUserBookings(): Observable<any> {
     const userId: string = this.authService.currentCustomerValue().id;
-    return this._http.get(`${environment.apiUrl}/api/bookings/user/${userId}`);
+    return this._http.get(`${environment.apiUrl}/api/bookings/customer/${userId}`);
   }
 
   public getBooking(bookingId: string): Observable<any> {
@@ -41,6 +41,11 @@ export class ApiService {
 
   public deleteBooking(bookingId: string): Observable<any> {
     return this._http.delete(`${environment.apiUrl}/api/bookings/${bookingId}`);
+  }
+
+
+  public getSeason(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/new-booking/season`,);
   }
 
   public getAvailability(dateFrom: Date, dateTo: Date): Observable<any> {

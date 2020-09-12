@@ -8,7 +8,7 @@ export const customersMock: CustomerModel[] = [
     email: "test@test.it",
     phone: "331123456",
     address: "Viale della Vittoria, 22",
-    cancelled: false,
+    deleted: false,
     registered: true,
   },
   {
@@ -18,7 +18,7 @@ export const customersMock: CustomerModel[] = [
     email: "test@altrotest.it",
     phone: "331123456",
     address: "Viale della Vittoria, 22",
-    cancelled: false,
+    deleted: false,
     registered: true,
   }
 ];

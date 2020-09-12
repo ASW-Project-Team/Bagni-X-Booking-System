@@ -1,32 +1,24 @@
 
 export interface NewsModel {
-  _id: any;
-  image: string;
+  id: any;
+  imageUrl: string;
   title: string;
   date: Date;
-  description: string;
+  article: string;
 }
 
 export class News implements NewsModel {
-  _id: any;
+  id: any;
   date: Date;
-  description: string;
-  image: string;
+  article: string;
+  imageUrl: string;
   title: string;
 
   constructor(model: NewsModel) {
-    this._id = model._id;
-    this.date = model.date;
-    this.description = model.description;
-    this.image = model.image;
+    this.id = model.id;
+    this.date = new Date(model.date);
+    this.article = model.article;
+    this.imageUrl = model.imageUrl;
     this.title = model.title;
-  }
-
-  get article(): string {
-    return this.description
-  }
-
-  get imageUrl(): string {
-    return this.image
   }
 }

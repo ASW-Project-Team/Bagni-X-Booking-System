@@ -18,7 +18,7 @@ export class SharingService {
   public shareNews(news: NewsModel): boolean {
     let sharingApiAvailable = false;
 
-    const sharedUrl = "http://localhost:4200/news/" + news._id;
+    const sharedUrl = "http://localhost:4200/news/" + news.id;
     const sharedTitle = "Bagni X - " + news.title;
     const description = "Scopri questa e altre news sul nostro sito."
 

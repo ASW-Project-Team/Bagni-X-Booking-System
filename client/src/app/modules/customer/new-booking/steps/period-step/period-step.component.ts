@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Booking} from "../../../../../shared/models/booking.model";
 import {MatRadioChange} from "@angular/material/radio";
 import {DateUtils} from "../../../../../shared/utils/date.utils";
+import {ApiService} from "../../../../../core/api/api.service";
 
 @Component({
   selector: 'app-period-step',
@@ -13,8 +14,9 @@ export class PeriodStepComponent implements OnInit {
   @Input() booking: Booking;
   @Output() bookingChange: EventEmitter<Booking> = new EventEmitter<Booking>();
   formGroup: FormGroup;
-  seasonMinDate: Date;
-  seasonMaxDate: Date;
+  startBookingDate: Date;
+  endBookingDate: Date;
+  datesAvailable: boolean = true;
 
   readonly DATE_RANGE_TYPES = {
     period: 'period',
@@ -28,7 +30,8 @@ export class PeriodStepComponent implements OnInit {
   }
 
 
-  constructor(private _formBuilder: FormBuilder) {
+  constructor(private _formBuilder: FormBuilder,
+              private _api: ApiService) {
     this.formGroup = this._formBuilder.group({
       dateRangeType: [this.DATE_RANGE_TYPES.period, Validators.required],
       periodDateRange: this._formBuilder.group({
@@ -54,9 +57,15 @@ export class PeriodStepComponent implements OnInit {
     this.formGroup.get('dailyDatePicker').setValue(this.booking.dateFrom);
     this.formGroup.get('halfDay.halfDayDatePicker').setValue(this.booking.dateTo);
 
-    // todo get from server?
-    this.seasonMinDate = new Date('2020-5-15');
-    this.seasonMaxDate = new Date('2020-10-1');
+    this._api.getSeason().subscribe(data => {
+      const seasonStart = new Date(data.seasonStart);
+      const seasonEnd = new Date(data.seasonEnd);
+      const today = new Date();
+
+      this.datesAvailable = seasonEnd.getTime() >= today.getTime();
+      this.startBookingDate = seasonStart.getTime() >= today.getTime() ? seasonStart : today;
+      this.endBookingDate = seasonEnd.getTime() >= today.getTime() ? seasonEnd : today;
+    });
   }
 
 

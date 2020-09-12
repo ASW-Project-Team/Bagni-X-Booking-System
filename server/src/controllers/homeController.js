@@ -109,7 +109,7 @@ module.exports.getHome = async (req, res) => {
   const homeCardsFromDb = await HomeCard.find({ isMainCard: false }).sort({ orderingIndex: 1});
   const homeCards = respFilters.clean(homeCardsFromDb);
 
-  const rankUmbrellasFromDb = await Service.find().sort({ name: 1});
+  const rankUmbrellasFromDb = await RankUmbrella.find().sort({ name: 1});
   const rankUmbrellas = respFilters.clean(rankUmbrellasFromDb);
 
   const servicesFromDb = await Service.find().sort({ name: 1});

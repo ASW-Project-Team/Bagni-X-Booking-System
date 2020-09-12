@@ -6,7 +6,7 @@ export interface CustomerModel {
   password?: string;
   phone?: string;
   address?: string
-  cancelled?: boolean;
+  deleted?: boolean;
   registered?: boolean;
   jwt?: string;
 }

@@ -1,23 +1,26 @@
 export interface HomeCardModel {
-  _id: any;
-  image: string;
+  id: string;
+  imageUrl: string;
   title: string;
-  header: boolean;
+  isMainCard: boolean;
+  orderingIndex: number;
   description: string;
 }
 
 export class HomeCard implements HomeCardModel {
-  _id: any;
+  id: string;
   description: string;
-  header: boolean;
-  image: string;
+  isMainCard: boolean;
+  orderingIndex: number;
+  imageUrl: string;
   title: string;
 
   constructor(model: HomeCardModel) {
-    this._id = model._id;
+    this.id = model.id;
     this.description = model.description;
-    this.header = model.header;
-    this.image = model.image;
+    this.isMainCard = model.isMainCard;
+    this.orderingIndex = model.orderingIndex;
+    this.imageUrl = model.imageUrl;
     this.title = model.title;
   }
 }

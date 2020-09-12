@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking} from "../../models/booking.model";
-import {BookingState, BookingStateModel} from "../../models/booking-state.model";
+import {BookingState} from "../../models/booking-state.model";
 
 /**
  * Component used to show the booking state in a structured way. The

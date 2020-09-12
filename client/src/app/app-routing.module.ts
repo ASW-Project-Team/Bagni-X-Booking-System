@@ -31,8 +31,8 @@ const routes: Routes = [
 
   // todo admin
 
-  //{ path: '404', component: PageNotFoundComponent },
-  //{ path: '**', redirectTo: '404' }
+  { path: '404', component: PageNotFoundComponent },
+  { path: '**', redirectTo: '404' }
 ];
 
 @NgModule({

@@ -5,9 +5,9 @@
     <h1>Ombrelloni</h1>
     <ul>
       <li *ngFor="let rank of availableRankings">
-        <app-salable-picker [title]="rank.name" [description]="rank.description" [price]="rank.price"
+        <app-salable-picker [title]="rank.name" [description]="rank.description" [price]="rank.dailyPrice"
                             [isOnSale]="rank.onSaleDuringPeriod(booking.dateFrom, booking.dateTo)"
-                            [limitedItems]="getRankUmbrellas(rank)" [imageUrl]="rank.image"
+                            [limitedItems]="getUmbrellasByRank(rank)" [imageUrl]="rank.imageUrl"
                             [isLastCard]="availableRankings.indexOf(rank) >= availableRankings.length - 1"
                             (insertItem)="insertUmbrella($event)" (removeItem)="removeUmbrella($event)">
         </app-salable-picker>
@@ -19,8 +19,8 @@
     <h1>Servizi aggiuntivi</h1>
     <ul>
       <li *ngFor="let service of availableServices">
-        <app-salable-picker [title]="service.title" [description]="service.description" [price]="service.price"
-                            [unlimitedItem]="service" [imageUrl]="service.image"
+        <app-salable-picker [title]="service.name" [description]="service.description" [price]="service.dailyPrice"
+                            [unlimitedItem]="service.generateBookableClone()" [imageUrl]="service.imageUrl"
                             [isLastCard]="availableServices.indexOf(service) >= availableServices.length - 1"
                             (insertItem)="insertService($event)" (removeItem)="removeService($event)">
         </app-salable-picker>

@@ -132,7 +132,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: "it" },
-    fakeBackendProvider // todo remove in production
+    //fakeBackendProvider // todo remove in production
   ],
   bootstrap: [AppComponent]
 })

@@ -23,7 +23,7 @@ const generateAllUmbrellas = async () => {
     for (let i = rank.fromUmbrella; i <= rank.toUmbrella; i++) {
       umbrellas.push({
         number: i,
-        rankId: rank._id
+        rankUmbrellaId: rank._id
       })
     }
 
@@ -50,7 +50,7 @@ const generateAvailableUmbrellas = async (dateFrom, dateTo) => {
       return umbrella.number;
     });
 
-  }).reduce((prev, curr) => {prev.concat(curr)}, []);
+  }).reduce((prev, curr) => prev.concat(curr), []);
 
   const allUmbrellas = await generateAllUmbrellas();
 

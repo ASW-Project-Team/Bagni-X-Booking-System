@@ -5,20 +5,28 @@ const cors = require('cors');
 const path = require('path');
 const compression = require('compression');
 const config = require('./config.json');
-const productionMode = !!(process.argv[2] && process.argv[2] === '--prod');
+const mode = process.argv[2] ? process.argv[2] : '--dev';
 
 // Global configuration object
 global.CONFIGS = {
   port: 3000,
-  mongoUrl: productionMode
-    ? `mongodb://${config.mongoUser}:${config.mongoPw}@mongodb:27017/bagni_X_booking_system_db`
-    : `mongodb://${config.mongoUser}:${config.mongoPw}@localhost:27017/bagni_X_booking_system_db`,
-  angularClientPath: productionMode
-    ? path.resolve(__dirname) + '/client'
-    : path.resolve(__dirname) + '/demo-site',
   assetsPath: path.resolve(__dirname) + '/assets'
 };
 
+switch(mode) {
+  case '--integration':
+    global.CONFIGS.mongoUrl = `mongodb://${config.mongoUser}:${config.mongoPw}@localhost:27017/bagni_X_booking_system_db`;
+    global.CONFIGS.angularClientPath = path.resolve(__dirname) + '/client';
+    break;
+  case '--prod':
+    global.CONFIGS.mongoUrl = `mongodb://${config.mongoUser}:${config.mongoPw}@mongodb:27017/bagni_X_booking_system_db`;
+    global.CONFIGS.angularClientPath = path.resolve(__dirname) + '/client';
+    break;
+  default:
+    global.CONFIGS.mongoUrl = `mongodb://${config.mongoUser}:${config.mongoPw}@localhost:27017/bagni_X_booking_system_db`;
+    global.CONFIGS.angularClientPath = path.resolve(__dirname) + '/demo-site';
+    break;
+}
 
 /**
  * Sets up the server.
