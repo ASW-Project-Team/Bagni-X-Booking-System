@@ -1,6 +1,6 @@
 <mat-toolbar class="appbar">
   <div class="back-action">
-    <a href="#" mat-icon-button
+    <a href="#" mat-icon-button [matTooltip]="'Torna a ' + backPageName"
        routerLinkActive="active" color="primary"
        routerLink="{{ backRoute }}" title="{{ backPageName | titlecase }}">
       <mat-icon color="primary" svgIcon="arrow-left"></mat-icon>
@@ -8,12 +8,13 @@
   </div>
   <h1 class="title">{{ title }}</h1>
 
-  <div *ngFor="let action of actions" class="action" (click)="action.execute()">
-    <button mat-icon-button title="{{action.name}}">
-      <mat-icon *ngIf="action.isMdi; else normalIcon" color="primary"
-                class="menu-icon" svgIcon="{{ action.icon }}"></mat-icon>
+  <div *ngFor="let action of actions" class="action" >
+    <button mat-icon-button [matTooltip]="action.name"
+            [disabled]="action.disabled" (click)="action.execute()">
+      <mat-icon *ngIf="action.isMdi; else normalIcon"
+                class="menu-icon" svgIcon="{{ action.mdiIcon }}"></mat-icon>
       <ng-template #normalIcon>
-        <mat-icon class="menu-icon" color="primary">{{ action.isMdi }}</mat-icon>
+        <mat-icon class="menu-icon">{{ action.isMdi }}</mat-icon>
       </ng-template>
     </button>
   </div>

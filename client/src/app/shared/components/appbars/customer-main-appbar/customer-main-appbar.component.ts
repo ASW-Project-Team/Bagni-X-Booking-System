@@ -18,8 +18,8 @@ export class CustomerMainAppbarComponent implements OnInit {
       icon: "home-outline"
     },
     {
-      id: "feed",
-      name: "Feed",
+      id: "news",
+      name: "News",
       route: "/news",
       isMdi: true,
       icon: "newspaper-variant-outline"

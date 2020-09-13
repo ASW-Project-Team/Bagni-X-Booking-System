@@ -20,12 +20,6 @@ p {
   .warning-icon {
     @include responsiveProp(margin-right, $defaultMargin);
   }
-
-  .next-button {
-    @include button;
-    width: 100%;
-    max-width: $widerTextboxWidthDesktop;
-  }
 }
 
 .buttons-container {
@@ -38,5 +32,12 @@ p {
   .next-button {
     @include button;
     @include responsiveProp(width, $widerTextboxWidth);
+  }
+
+  .back-button {
+    @include button;
+    @include responsiveProp(width, $buttonHeight);
+    @include responsiveProp(margin-right, $defaultMargin);
+    background-color: $backgroundColor;
   }
 }

@@ -19,6 +19,7 @@ export class CustomizeStepComponent implements OnInit {
   availableUmbrellas: Umbrella[];
   availableServices: Service[];
 
+  customizationValidator: boolean = false;
   @Output() customizationValidatorChange = new EventEmitter<boolean>();
 
   constructor() {
@@ -48,6 +49,7 @@ export class CustomizeStepComponent implements OnInit {
       this.booking.services = [];
       this.booking.price = 0.0;
       this.bookingChange.emit(this.booking);
+      this.customizationValidator = false;
       this.customizationValidatorChange.emit(false);
     }
   }
@@ -65,6 +67,7 @@ export class CustomizeStepComponent implements OnInit {
     let umbrella = item as Umbrella;
     this.booking.umbrellas.push(umbrella);
     this.booking.price += umbrella.rankUmbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
+    this.customizationValidator = true;
     this.customizationValidatorChange.emit(true);
     this.bookingChange.emit(this.booking);
   }
@@ -79,6 +82,7 @@ export class CustomizeStepComponent implements OnInit {
     this.booking.price -= umbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
 
     if (this.booking.umbrellas.length <= 0) {
+      this.customizationValidator = false;
       this.customizationValidatorChange.emit(false);
     }
     this.bookingChange.emit(this.booking);

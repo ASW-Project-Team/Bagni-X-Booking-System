@@ -28,6 +28,13 @@ export class DateUtils {
     return newDate;
   }
 
+  static twoDaysBefore(date: Date): Date {
+    let newDate = new Date(date)
+    newDate.setDate(date.getDate() - 2);
+    newDate.setHours(0,0,0,0);
+    return newDate;
+  }
+
   static addHalfDay(date: Date): Date {
     let newDate = new Date(date)
     newDate.setTime(date.getTime() + 12*60*60*1000);

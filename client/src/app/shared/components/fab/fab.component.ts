@@ -11,10 +11,12 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./fab.component.scss']
 })
 export class FabComponent implements OnInit {
-  @Input('title') title: string;
-  @Input('icon-name') iconName: string; // used if the custom icon pack is used
-  @Input('is-mdi') isMdi: boolean = true;
-  @Input('route') route: string;
+  @Input() title: string;
+  @Input() iconName: string; // used if the custom icon pack is used
+  @Input() isMdi: boolean = true;
+  @Input() route: string;
+  @Input() currentPageName: string;
+  @Input() currentPageRoute: string;
 
   constructor() { }
 

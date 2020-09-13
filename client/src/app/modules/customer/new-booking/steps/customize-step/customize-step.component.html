@@ -35,5 +35,8 @@
 </ng-template>
 
 <div class="buttons-container">
-  <button mat-raised-button color="primary" matStepperNext class="next-button">Prosegui</button>
+  <button mat-raised-button matStepperPrevious class="back-button">
+    <mat-icon svgIcon="chevron-left" color="primary"></mat-icon>
+  </button>
+  <button mat-raised-button color="primary" [disabled]="!customizationValidator" matStepperNext class="next-button">Vai al checkout</button>
 </div>

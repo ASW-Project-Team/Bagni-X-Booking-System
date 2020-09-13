@@ -19,4 +19,11 @@ p {
     @include button;
     @include responsiveProp(width, $widerTextboxWidth);
   }
+
+  .back-button {
+    @include button;
+    @include responsiveProp(width, $buttonHeight);
+    @include responsiveProp(margin-right, $defaultMargin);
+    background-color: $backgroundColor;
+  }
 }

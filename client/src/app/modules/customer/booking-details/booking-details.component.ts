@@ -6,6 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
+import {DateUtils} from "../../../shared/utils/date.utils";
 
 @Component({
   selector: 'app-booking-details',
@@ -18,8 +19,7 @@ export class BookingDetailsComponent implements OnInit {
   bookingTitle: string;
 
   downloadedBooking: Booking;
-  deleteAction: AppbarAction;
-
+  actions: AppbarAction[] = [];
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -28,35 +28,6 @@ export class BookingDetailsComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
-    let context = this;
-    this.deleteAction = {
-      id: "0",
-      name: "Annulla prenotazione",
-      icon: 'trash-can-outline',
-      isMdi: true,
-      execute: function () {
-        context.dialog.open(AlertDialogComponent, {
-          data: {
-            content: "Sei sicuro di voler annullare la tua prenotazione? L'azione non è reversibile.",
-            positiveAction: {
-              text: "Sì, annulla",
-              execute: function() {
-                context.api.deleteBooking(context.bookingId).subscribe(resp => {
-                 context.router.navigate(['/bookings']).then(() => {
-                   context.snackBar.open("Prenotazione annullata.", null, { duration: 4000 });
-                 });
-                });
-              }
-            },
-            negativeAction: {
-              text: "No",
-              execute: function() { }
-            }
-          }
-        });
-      }
-    };
-
     this.route.params.subscribe(params => {
       this.bookingId = params.id;
       this.bookingTitle = params.title;
@@ -64,6 +35,35 @@ export class BookingDetailsComponent implements OnInit {
       this.api.getBooking(this.bookingId).subscribe(data => {
         const bookingData = data as BookingModel;
         this.downloadedBooking = bookingData ? new Booking(bookingData) : undefined;
+        let context = this;
+        this.actions.push({
+          id: "0",
+          name: "Annulla prenotazione",
+          mdiIcon: 'trash-can-outline',
+          isMdi: true,
+          disabled: DateUtils.twoDaysBefore(this.downloadedBooking.dateFrom).getTime() < new Date().getTime(),
+          execute: function () {
+            context.dialog.open(AlertDialogComponent, {
+              data: {
+                content: "Sei sicuro di voler annullare la tua prenotazione? L'azione non è reversibile. Ricorda che puoi annullare la prenotazione fino a un massimo di due giorni prima dell'erogazione del servizio.",
+                positiveAction: {
+                  text: "Sì, annulla",
+                  execute: function() {
+                    context.api.deleteBooking(context.bookingId).subscribe(resp => {
+                      context.router.navigate(['/bookings']).then(() => {
+                        context.snackBar.open("Prenotazione annullata.", null, { duration: 4000 });
+                      });
+                    });
+                  }
+                },
+                negativeAction: {
+                  text: "No",
+                  execute: function() { }
+                }
+              }
+            });
+          }
+        });
       });
     });
   }

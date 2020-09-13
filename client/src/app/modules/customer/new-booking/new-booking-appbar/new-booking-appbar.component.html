@@ -2,7 +2,7 @@
   <div class="back-action">
     <a href="#" mat-icon-button
        routerLinkActive="active" color="primary"
-       routerLink="{{ backRoute }}" title="{{ backPageName | titlecase }}">
+       [routerLink]="backRoute" [matTooltip]="'Torna a ' + backPageName">
       <mat-icon color="primary" svgIcon="arrow-left"></mat-icon>
     </a>
   </div>

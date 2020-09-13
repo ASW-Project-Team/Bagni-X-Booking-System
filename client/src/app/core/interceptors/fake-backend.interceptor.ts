@@ -4,7 +4,7 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HTTP_INTERCEPTORS, HttpResponse
+  HttpResponse
 } from '@angular/common/http';
 import {Observable, ObservableInput, of, throwError} from 'rxjs';
 import {delay, mergeMap, materialize, dematerialize} from 'rxjs/operators';
@@ -14,6 +14,7 @@ import {newsFeedMock} from "../mocks/news.mock";
 import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
 import {availabilityMock} from "../mocks/availability.mock";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -34,6 +35,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   // route functions
   private static handleRoute(request: HttpRequest<unknown>, next: HttpHandler): ObservableInput<any> {
+    if(!environment.fakeBackend) {
+      return;
+    }
+
     const {url, method, headers, body} = request;
 
     switch (true) {
@@ -196,11 +201,3 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return throwError({status: 401, error: {message: message ? message : 'Unauthorized!'}});
   }
 }
-
-
-export let fakeBackendProvider = {
-  // use fake backend in place of Http service for backend-less development
-  provide: HTTP_INTERCEPTORS,
-  useClass: FakeBackendInterceptor,
-  multi: true
-};

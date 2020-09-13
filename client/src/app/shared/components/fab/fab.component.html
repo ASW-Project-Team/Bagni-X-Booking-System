@@ -1,4 +1,4 @@
-<a href="#" [routerLink]="route" class="extended-fab-button" mat-fab>
+<a href="#" [routerLink]="route" [queryParams]="{ backRoute: currentPageRoute, backPageName: currentPageName}" class="extended-fab-button" mat-fab>
   <mat-icon *ngIf="isMdi; else normalIcon" class="menu-icon"  svgIcon="{{iconName}}"></mat-icon>
 
   <ng-template #normalIcon>

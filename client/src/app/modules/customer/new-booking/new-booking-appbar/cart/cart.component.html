@@ -1,4 +1,4 @@
-<div class="cart-container">
+<div class="cart-container" matTooltip="Riassunto prenotazione">
   <h2>{{ booking.price | currency:'EUR' }}</h2>
   <mat-icon class="cart-icon" matBadgeColor="primary" matBadgeSize="small" [matBadge]="booking.umbrellas.length.toString()">beach_access</mat-icon>
   <mat-icon class="cart-icon" matBadgeColor="primary"  matBadgeSize="small" [matBadge]="booking.services.length.toString()" svgIcon="puzzle-outline"></mat-icon>

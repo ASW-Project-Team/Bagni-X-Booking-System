@@ -45,7 +45,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
 import {HttpErrorInterceptor} from "./core/interceptors/http-error.interceptor";
 import { MatInputModule } from '@angular/material/input';
-import {fakeBackendProvider} from "./core/interceptors/fake-backend.interceptor";
+import {FakeBackendInterceptor} from "./core/interceptors/fake-backend.interceptor";
 import { SettingsListItemComponent } from './shared/components/settings-list-item/settings-list-item.component';
 import { PeriodStepComponent } from './modules/customer/new-booking/steps/period-step/period-step.component';
 import { CustomizeStepComponent } from './modules/customer/new-booking/steps/customize-step/customize-step.component';
@@ -63,6 +63,8 @@ import { QuantitySelectorComponent } from './modules/customer/new-booking/steps/
 import { NewBookingAppbarComponent } from './modules/customer/new-booking/new-booking-appbar/new-booking-appbar.component';
 import { CartComponent } from './modules/customer/new-booking/new-booking-appbar/cart/cart.component';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatTooltipModule} from "@angular/material/tooltip";
+
 
 
 @NgModule({
@@ -127,12 +129,13 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatNativeDateModule,
     MatSelectModule,
     MatBadgeModule,
+    MatTooltipModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: "it" },
-    //fakeBackendProvider // todo remove in production
+    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
+    { provide: LOCALE_ID, useValue: "it" }
   ],
   bootstrap: [AppComponent]
 })
@@ -141,6 +144,9 @@ export class AppModule {
     registerLocaleData(localeIt, 'it');
     matIconRegistry.addSvgIconSet(
       domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg')
+    );
+    matIconRegistry.addSvgIcon('new-booking',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-booking.svg')
     );
   }
 }

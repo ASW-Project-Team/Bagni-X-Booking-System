@@ -51,6 +51,6 @@ up-client-dev:
 
 .PHONY: integration
 integration:
-	cd ./client && ng build && cd ../ && rm -rf ./server/client && mv ./client/dist/client ./server/client && cd ./server && npm run integration
+	cd ./client && ng build --prod && cd ../ && rm -rf ./server/client && mv ./client/dist/client ./server/client && cd ./server && npm run integration
 
 

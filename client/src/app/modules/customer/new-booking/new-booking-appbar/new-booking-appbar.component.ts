@@ -11,9 +11,9 @@ export class NewBookingAppbarComponent implements OnInit {
   @Input() backPageName: string;
   @Input() booking: Booking;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
   }
+
+  ngOnInit(): void { }
 
 }

@@ -29,7 +29,8 @@ export class NewsDetailsComponent implements OnInit {
     this.shareAction = {
       id: "0",
       name: "Condividi",
-      icon: 'share-variant-outline',
+      mdiIcon: 'share-variant-outline',
+      disabled: false,
       isMdi: true,
       execute: function() {
         let sharingApiAvailable = ctx.sharing.shareNews(ctx.downloadedNews);
