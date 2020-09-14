@@ -1,4 +1,4 @@
-@import "~src/styles/utils";
+@import "../../../../../../styles/utils";
 
 p {
   @include responsiveProp(margin-bottom, $defaultMargin);
