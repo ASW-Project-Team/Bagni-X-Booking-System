@@ -1,0 +1,22 @@
+/api/stats example response
+
+{
+	dailyOccupation: {
+		totalUmbrellas: 50
+		occupiedUmbrellas: 24
+	}
+
+	seasonHistorical: [
+		{
+			date: 2020-05-15T00:00:00+0200',
+			percent: 0.34
+		},
+		{
+			date: 2020-05-15T00:00:00+0200',
+			percent: 0.35
+		},
+		...
+	]
+
+  ... ?
+}
