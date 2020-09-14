@@ -40,7 +40,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       return;
     }
 
-    const {url, method, headers, body} = request;
+    const {url, method} = request;
 
     switch (true) {
       case url.endsWith('api/auth/customers/login') && method === 'POST':
@@ -48,9 +48,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.endsWith('api/auth/customers/register') && method === 'POST':
         return FakeBackendInterceptor.register(request);
       case url.endsWith('api/home') && method === 'GET':
-        return FakeBackendInterceptor.getHome(request);
+        return FakeBackendInterceptor.getHome();
       case url.endsWith('api/news') && method === 'GET':
-        return FakeBackendInterceptor.getNewsFeed(request);
+        return FakeBackendInterceptor.getNewsFeed();
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getNews(request);
       case url.match(/\/api\/bookings\/customer\/\d+$/) && method === 'GET':
@@ -60,13 +60,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.deleteBooking(request);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.deleteCustomer(request);
+        return FakeBackendInterceptor.deleteCustomer();
       case url.endsWith('api/new-booking/season') && method === 'GET':
-        return FakeBackendInterceptor.getSeason(request);
+        return FakeBackendInterceptor.getSeason();
       case url.endsWith('api/new-booking/availability') && method === 'GET':
-        return FakeBackendInterceptor.getAvailability(request);
+        return FakeBackendInterceptor.getAvailability();
       case url.endsWith('api/new-booking/checkout') && method === 'POST':
-        return FakeBackendInterceptor.generateBooking(request);
+        return FakeBackendInterceptor.generateBooking();
 
       // todo ecc.
 
@@ -105,12 +105,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 
 
-  private static getHome(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static getHome(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(homeMock);
   }
 
 
-  private static getNewsFeed(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static getNewsFeed(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(newsFeedMock);
   }
 
@@ -165,19 +165,19 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 
 
-  private static deleteCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static deleteCustomer(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse();
   }
 
-  private static getAvailability(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static getAvailability(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(availabilityMock);
   }
 
-  private static getSeason(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static getSeason(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(seasonMock);
   }
 
-  private static generateBooking(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static generateBooking(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse();
   }
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ContentChild, ElementRef, Input, OnInit, TemplateRef} from '@angular/core';
 import {AppbarAction} from "../appbars.model";
 
 @Component({
@@ -7,17 +7,13 @@ import {AppbarAction} from "../appbars.model";
   styleUrls: ['./nested-appbar.component.scss']
 })
 export class NestedAppbarComponent implements OnInit {
-  @Input('back-route') backRoute: string;
-  @Input('back-page-name') backPageName: string;
-
-
-  @Input('title') title: string;
-  // actions identifies what the ending part of the appbar should do
-  @Input('actions') actions: AppbarAction[];
+  @Input() backRoute: string;
+  @Input() backPageName: string;
+  @Input() title: string;
+  @Input() actions: AppbarAction[];
+  @ContentChild('rightContent') rightContent: TemplateRef<ElementRef>;
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

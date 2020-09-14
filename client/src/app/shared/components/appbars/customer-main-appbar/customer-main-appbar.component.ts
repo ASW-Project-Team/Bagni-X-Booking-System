@@ -1,14 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MenuItem} from "../appbars.model";
+import {MainAppbarComponent} from "../main-appbar/main-appbar.component";
+import {AuthService} from "../../../../core/auth/auth.service";
 
-
+/**
+ * @file This is the main appbar with menu, used from the customer.
+ */
 @Component({
   selector: 'app-customer-main-appbar',
-  templateUrl: './customer-main-appbar.component.html',
-  styleUrls: ['./customer-main-appbar.component.scss']
+  templateUrl: '../main-appbar/main-appbar.component.html',
+  styleUrls: ['../main-appbar/main-appbar.component.scss']
 })
-export class CustomerMainAppbarComponent implements OnInit {
-
+export class CustomerMainAppbarComponent extends MainAppbarComponent {
   pages: MenuItem[] = [
     {
       id: "home",
@@ -33,9 +36,12 @@ export class CustomerMainAppbarComponent implements OnInit {
     }
   ];
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private _customerAuth: AuthService) {
+    super();
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    this.user = this._customerAuth.currentCustomerValue();
+  }
 }

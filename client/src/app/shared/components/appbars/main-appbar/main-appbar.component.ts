@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CustomerModel} from "../../../models/customer.model";
 import {AuthService} from "../../../../core/auth/auth.service";
-import {MenuItem} from "../appbars.model";
+import {MenuItem, User} from "../appbars.model";
 
 @Component({
   selector: 'app-main-appbar',
@@ -9,13 +9,8 @@ import {MenuItem} from "../appbars.model";
   styleUrls: ['./main-appbar.component.scss']
 })
 export class MainAppbarComponent implements OnInit {
-  customer: CustomerModel;
+  user: User;
+  pages: MenuItem[];
 
-  @Input('pages') pages: MenuItem[];
-
-  constructor(private authService: AuthService) { }
-
-  ngOnInit(): void {
-    this.customer = this.authService.currentCustomerValue();
-  }
+  ngOnInit() { }
 }

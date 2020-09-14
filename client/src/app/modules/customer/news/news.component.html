@@ -6,7 +6,7 @@
     <ul class="news-feed-container">
       <li *ngFor="let news of newsFeed">
         <app-news-card
-          [routerLink]="['/news', news.id, {title: news.title}]"
+          [routerLink]="['/news', news.id, { title: news.title }]"
           [news]="news"
           [isLastCard]="newsFeed.indexOf(news) >= newsFeed.length - 1">
         </app-news-card>

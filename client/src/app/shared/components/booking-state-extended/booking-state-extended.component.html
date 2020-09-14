@@ -1,5 +1,5 @@
 <div class="state-extended-container">
-  <mat-icon class="state-icon" [ngClass]="bookingState.class" svgIcon="{{ bookingState.icon }}"></mat-icon>
+  <mat-icon class="state-icon" [ngClass]="bookingState.class" [svgIcon]="bookingState.icon"></mat-icon>
   <div class="state-text">
     <h2 [ngClass]="bookingState.class">{{ bookingState.name }}</h2>
     <p>{{bookingState.description}}</p>

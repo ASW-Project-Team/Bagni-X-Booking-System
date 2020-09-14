@@ -16,4 +16,4 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar title="{{getTitleIfAvailable()}}" back-route="/news" back-page-name="News" [actions]="[shareAction]"></app-nested-appbar>
+<app-nested-appbar [title]="getTitleIfAvailable()" backRoute="/news" backPageName="News" [actions]="[shareAction]"></app-nested-appbar>

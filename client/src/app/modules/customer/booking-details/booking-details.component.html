@@ -20,5 +20,6 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar title="{{ getAppbarTitle() }}" back-route="/bookings" back-page-name="Prenotazioni"
-                   [actions]="actions"></app-nested-appbar>
+<app-nested-appbar [title]="getAppbarTitle()" backRoute="/bookings"
+                   backPageName="Prenotazioni" [actions]="actions">
+</app-nested-appbar>
