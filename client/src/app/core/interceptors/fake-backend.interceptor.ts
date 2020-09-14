@@ -15,6 +15,7 @@ import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
 import {availabilityMock} from "../mocks/availability.mock";
 import {environment} from "../../../environments/environment";
+import {seasonMock} from "../mocks/bathhouse.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -52,7 +53,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getNewsFeed(request);
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getNews(request);
-      case url.match(/\/api\/bookings\/user\/\d+$/) && method === 'GET':
+      case url.match(/\/api\/bookings\/customer\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getBookings(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getBooking(request);
@@ -60,6 +61,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.deleteBooking(request);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.deleteCustomer(request);
+      case url.endsWith('api/new-booking/season') && method === 'GET':
+        return FakeBackendInterceptor.getSeason(request);
       case url.endsWith('api/new-booking/availability') && method === 'GET':
         return FakeBackendInterceptor.getAvailability(request);
       case url.endsWith('api/new-booking/checkout') && method === 'POST':
@@ -168,6 +171,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   private static getAvailability(request: HttpRequest<unknown>): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(availabilityMock);
+  }
+
+  private static getSeason(request: HttpRequest<unknown>): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(seasonMock);
   }
 
   private static generateBooking(request: HttpRequest<unknown>): ObservableInput<any> {

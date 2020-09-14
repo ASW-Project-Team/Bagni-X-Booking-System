@@ -14,7 +14,7 @@ export const bookingsMock: BookingModel[] = [
         number: 10,
         rankUmbrella: {
           rankUmbrellaId: "0",
-          imageUrl: "assets/home-card-1.jpg",
+          imageUrl: "assets/fake-backend/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
           dailyPrice: 12,
@@ -34,14 +34,14 @@ export const bookingsMock: BookingModel[] = [
       {
         serviceId: "0",
         dailyPrice: 2,
-        imageUrl: "assets/home-card-1.jpg",
+        imageUrl: "assets/fake-backend/home-card-1.jpg",
         name: "Lettino deluxe",
         description: "Tra le tipologie di lettino offerte, questa è quella super.",
       },
       {
         serviceId: "1",
         dailyPrice: 3,
-        imageUrl: "assets/home-card-1.jpg",
+        imageUrl: "assets/fake-backend/fake-backend/home-card-1.jpg",
         name: "Cabina",
         description: "Con un piccolo supplemento puoi aggiungere una cabina personale alla prenotazione.",
       },
@@ -60,7 +60,7 @@ export const bookingsMock: BookingModel[] = [
         number: 10,
         rankUmbrella: {
           rankUmbrellaId: "0",
-          imageUrl: "assets/home-card-1.jpg",
+          imageUrl: "assets/fake-backend/home-card-1.jpg",
           name: "Prima fila",
           description: "Ombrelloni in prima fila i più belli.",
           dailyPrice: 12,
@@ -79,7 +79,7 @@ export const bookingsMock: BookingModel[] = [
         number: 22,
         rankUmbrella: {
           rankUmbrellaId: "0",
-          imageUrl: "assets/home-card-2.jpg",
+          imageUrl: "assets/fake-backend/home-card-2.jpg",
           name: "Seconda fila",
           description: "Ombrelloni in prima fila i più belli.",
           dailyPrice: 13.50,
@@ -99,7 +99,7 @@ export const bookingsMock: BookingModel[] = [
       {
         serviceId: "0",
         dailyPrice: 2,
-        imageUrl: "assets/home-card-1.jpg",
+        imageUrl: "assets/fake-backend/home-card-1.jpg",
         name: "Lettino deluxe",
         description: "Tra le tipologie di lettino offerte, questa è quella super.",
       },
