@@ -60,7 +60,7 @@ import {MatMenuModule} from "@angular/material/menu";
 export class MaterialComponentsModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer){
     matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg')
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/mdi.svg')
     );
     matIconRegistry.addSvgIcon('new-booking',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-booking.svg')

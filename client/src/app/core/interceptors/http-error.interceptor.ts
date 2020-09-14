@@ -22,11 +22,15 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         // auto logout if 401 response returned from api
         this._authService.logout();
         location.reload();
-      }
 
-      const error = err.error.description || err.statusText;
-      console.error(error);
-      return throwError(error);
+      } else if (err.error == undefined) {
+        return throwError(err);
+
+      } else {
+        const error = err.error.description || err.statusText;
+        console.error(error);
+        return throwError(error);
+      }
     }))
   }
 }

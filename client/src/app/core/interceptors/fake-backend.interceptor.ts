@@ -24,6 +24,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   constructor() { }
 
   public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if(!environment.fakeBackend) {
+      return next.handle(request);
+    }
+
     // wrap in delayed observable to simulate server api call
     return of(null)
       .pipe(mergeMap(() => FakeBackendInterceptor.handleRoute(request, next)))
@@ -36,9 +40,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   // route functions
   private static handleRoute(request: HttpRequest<unknown>, next: HttpHandler): ObservableInput<any> {
-    if(!environment.fakeBackend) {
-      return;
-    }
 
     const {url, method} = request;
 

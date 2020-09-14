@@ -30,7 +30,7 @@
               "src/manifest.webmanifest",
               "src/browserconfig.xml",
               { "glob": "**/*", "input": "src/assets/icons/", "output": "./" },
-              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets" }
+              { "glob": "mdi.svg", "input": "./node_modules/@mdi/angular-material", "output": "./assets/custom-icons" }
             ],
             "styles": [
               "src/styles.scss"
@@ -75,7 +75,28 @@
                   "with": "src/environments/environment.integration.ts"
                 }
               ],
-              "serviceWorker": false
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "serviceWorker": false,
+              "ngswConfigPath": "ngsw-config.json"
             },
             "gh-pages": {
               "fileReplacements": [

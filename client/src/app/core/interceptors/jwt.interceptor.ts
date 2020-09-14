@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 import {AuthService} from "../auth/auth.service";
 
 /**
- * The JWT Interceptor intercepts http requests from the application to add a JWT auth token to the Authorization
- * header if the user is logged in.
+ * The JWT Interceptor intercepts http requests from the application to add a
+ * JWT auth token to the Authorization header, if the user is logged in.
  */
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
