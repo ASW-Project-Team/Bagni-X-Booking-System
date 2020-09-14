@@ -1,7 +1,7 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
+/**
+ * @file Default dev mode. This is the base configuration used in the ng serve builds (without a
+ * real backend), so the fake backend is enabled.
+ */
 export const environment = {
   production: false,
   fakeBackend: true,

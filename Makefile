@@ -27,6 +27,7 @@ stop:
 rm:
 	docker-compose rm
 
+
 .PHONY: server-dev
 server-dev: build-server-dev up-server-dev
 
@@ -51,6 +52,6 @@ up-client-dev:
 
 .PHONY: integration
 integration:
-	cd ./client && ng build --prod && cd ../ && rm -rf ./server/client && mv ./client/dist/client ./server/client && cd ./server && npm run integration
+	cd ./client && ng build --configuration=integration --output-path=../server/client && cd ../server && npm run integration
 
 
