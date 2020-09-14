@@ -17,7 +17,3 @@ export interface MenuItem {
   icon: string;
   isMdi: boolean;
 }
-
-export interface User {
-  name: string
-}

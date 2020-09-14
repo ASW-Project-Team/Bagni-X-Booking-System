@@ -1,0 +1,48 @@
+<div class="page">
+  <div class="description">
+      <span *ngIf="returnUrlExternallySet">
+        Per utilizzare il pannello amministratore, devi effettuare l'accesso.
+      </span>
+    <span *ngIf="!returnUrlExternallySet">
+        Benvenuto nel pannello di accesso amministratore. Accedi per gestire le prenotaizioni dei tuoi clienti!
+      </span>
+  </div>
+
+  <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Username</mat-label>
+      <input matInput [formControl]="usernameControl" type="text" placeholder="mario.rossi">
+      <mat-error *ngIf="usernameControl.hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Password</mat-label>
+      <input matInput [formControl]="passwordControl" [type]="hidePw ? 'password' : 'text'"
+             placeholder="Es. mySuperPassword!">
+      <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <mat-error *ngIf="passwordControl.hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="warning-container" *ngIf="loading">
+      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
+      <span>Effettuando il login...</span>
+    </div>
+    <div class="warning-container" *ngIf="error">
+      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
+      <span>{{error}}</span>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="login-button">
+      Login
+    </button>
+  </form>
+</div>
+
+<!-- Header goes last, to make them appear over content -->
+<app-nested-appbar title="Accedi al pennello amministratore" backPageName="Home" backRoute="/home"></app-nested-appbar>
+
+

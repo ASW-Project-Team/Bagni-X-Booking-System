@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {AuthService} from "../auth/auth.service";
+import {CustomerAuthService} from "../auth/customer-auth.service";
 import {Booking} from "../../shared/models/booking.model";
 
 
@@ -16,7 +16,7 @@ import {Booking} from "../../shared/models/booking.model";
 export class ApiService {
 
   constructor(private _http: HttpClient,
-              private authService: AuthService) { }
+              private authService: CustomerAuthService) { }
 
   public getHome(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/home`);

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {MenuItem} from "../appbars.model";
 import {MainAppbarComponent} from "../main-appbar/main-appbar.component";
-import {AuthService} from "../../../../core/auth/auth.service";
+import {CustomerAuthService} from "../../../../core/auth/customer-auth.service";
 
 /**
  * @file This is the main appbar with menu, used from the customer.
@@ -36,12 +36,12 @@ export class CustomerMainAppbarComponent extends MainAppbarComponent {
     }
   ];
 
-  constructor(private _customerAuth: AuthService) {
+  constructor(private customerAuth: CustomerAuthService) {
     super();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.user = this._customerAuth.currentCustomerValue();
+    this.username = this.customerAuth.currentCustomerValue().name;
   }
 }

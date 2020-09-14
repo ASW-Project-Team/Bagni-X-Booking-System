@@ -19,6 +19,7 @@ import {AppRoutingModule} from "../../app-routing.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MaterialComponentsModule} from "../material-components/material-components.module";
 import {PipesModule} from "../pipes/pipes.module";
+import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-appbar.component";
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import {PipesModule} from "../pipes/pipes.module";
     NewsCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
+    AdminMainAppbarComponent
   ],
   imports: [
     CommonModule,
@@ -61,6 +63,7 @@ import {PipesModule} from "../pipes/pipes.module";
     NewsCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
+    AdminMainAppbarComponent
   ]
 })
 export class SharedComponentsModule { }

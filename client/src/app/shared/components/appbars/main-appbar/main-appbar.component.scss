@@ -21,12 +21,26 @@
     height: 24px;
     display: flex;
     align-items: center;
+    min-width: 0;
 
     // setting text decoration to none in l.15, makes h1 lost the font formatting.
     // This re-enables the custom font
     h1.title {
       @include titleFont;
       color: $primaryColor;
+      @include responsiveProp(margin-right, $halfMargin);
+    }
+
+    h1.subtitle {
+      @include bodyFont;
+      color: $primaryColor;
+      font-size: 18px;
+      min-width: 0;
+      @include singleLineEllispis;
+
+      @include forDesktopOnly {
+        font-size: 20px;
+      }
     }
 
     img {

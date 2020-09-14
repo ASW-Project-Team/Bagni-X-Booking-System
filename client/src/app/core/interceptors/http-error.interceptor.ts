@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from "../auth/auth.service";
+import { CustomerAuthService } from "../auth/customer-auth.service";
 
 /**
  * The Error Interceptor intercepts http http-responses from the api to check if there were any errors.
@@ -14,7 +14,7 @@ import { AuthService } from "../auth/auth.service";
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-  constructor(private _authService: AuthService) {}
+  constructor(private _authService: CustomerAuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(catchError(err => {

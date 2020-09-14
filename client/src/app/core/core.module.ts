@@ -1,7 +1,6 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {ApiService} from "./api/api.service";
 import {JwtInterceptor} from "./interceptors/jwt.interceptor";
 import {HttpErrorInterceptor} from "./interceptors/http-error.interceptor";
 import {FakeBackendInterceptor} from "./interceptors/fake-backend.interceptor";

@@ -16,6 +16,8 @@ import {bookingsMock} from "../mocks/bookings.mock";
 import {availabilityMock} from "../mocks/availability.mock";
 import {environment} from "../../../environments/environment";
 import {seasonMock} from "../mocks/bathhouse.mock";
+import {AdminModel} from "../../shared/models/admin.model";
+import {adminsMocks} from "../mocks/admins.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -45,9 +47,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     switch (true) {
       case url.endsWith('api/auth/customers/login') && method === 'POST':
-        return FakeBackendInterceptor.authenticate(request);
+        return FakeBackendInterceptor.authenticateCustomer(request);
+      case url.endsWith('api/auth/admins/login') && method === 'POST':
+        return FakeBackendInterceptor.authenticateAdmin(request);
       case url.endsWith('api/auth/customers/register') && method === 'POST':
-        return FakeBackendInterceptor.register(request);
+        return FakeBackendInterceptor.registerCustomer(request);
       case url.endsWith('api/home') && method === 'GET':
         return FakeBackendInterceptor.getHome();
       case url.endsWith('api/news') && method === 'GET':
@@ -78,7 +82,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 
 
-  private static authenticate(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static authenticateCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
     const email = request.body['email'];
     const password = request.body['password'];
 
@@ -91,8 +95,26 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return FakeBackendInterceptor.createOkResponse(customer);
   }
 
+  private static authenticateAdmin(request: HttpRequest<unknown>): ObservableInput<any> {
+    const username = request.body['username'];
+    const password = request.body['password'];
 
-  private static register(request: HttpRequest<unknown>): ObservableInput<any> {
+    if (username == 'test' && password == 'test') {
+      const admin: AdminModel = adminsMocks[0];
+      admin.jwt = FakeBackendInterceptor.fakeJwtToken;
+      return FakeBackendInterceptor.createOkResponse(admin);
+
+    } else if (username == 'root' && password == 'root') {
+      const admin: AdminModel = adminsMocks[1];
+      admin.jwt = FakeBackendInterceptor.fakeJwtToken;
+      return FakeBackendInterceptor.createOkResponse(admin);
+    }
+
+    return FakeBackendInterceptor.createError400('Username/password combination is not correct.');
+  }
+
+
+  private static registerCustomer(request: HttpRequest<unknown>): ObservableInput<any> {
     const newCustomer: unknown = request.body;
 
     if (customersMock.find(x => x.email === newCustomer['email'])) {
@@ -198,14 +220,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 
   private static createError400(message?): ObservableInput<any> {
-    return throwError({status: 400, error: {message: message ? message : 'Error!'}});
+    return throwError({status: 400, error: {description: message ? message : 'Error!'}});
   }
 
   private static createError404(message?): ObservableInput<any> {
-    return throwError({status: 404, error: {message: message ? message : 'Item not found!'}});
+    return throwError({status: 404, error: {description: message ? message : 'Item not found!'}});
   }
 
   private static createError401(message?): ObservableInput<any> {
-    return throwError({status: 401, error: {message: message ? message : 'Unauthorized!'}});
+    return throwError({status: 401, error: {description: message ? message : 'Unauthorized!'}});
   }
 }

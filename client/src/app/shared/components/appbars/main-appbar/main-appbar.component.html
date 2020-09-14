@@ -2,7 +2,7 @@
   <div class="logo">
     <a routerLink="/" class="logo">
       <img src="assets/fake-backend/logo.png" alt="BagniX Logo"/>
-      <h1 class="title">Bagni X</h1>
+      <h1 class="title">Bagni X</h1><h1 *ngIf="isAdmin" class="subtitle">Admin panel</h1>
     </a>
   </div>
 
@@ -24,22 +24,22 @@
           </a>
         </li>
 
-        <li *ngIf="!user">
+        <li *ngIf="!username">
           <a href="#" class="user-page" mat-ripple routerLinkActive="active" routerLink="/login" matTooltip="Login">
             <mat-icon svgIcon="account-arrow-left-outline" class="icon"></mat-icon>
             <span class="title">Login</span>
           </a>
         </li>
-        <li *ngIf="!user">
+        <li *ngIf="!username">
           <a href="#" class="user-page" mat-ripple routerLinkActive="active" routerLink="/register" matTooltip="Registrati">
             <mat-icon svgIcon="account-plus-outline" class="icon"></mat-icon>
             <span class="title">Registrati</span>
           </a>
         </li>
-        <li *ngIf="user">
-          <a href="#" class="user-page" mat-ripple routerLinkActive="active" routerLink="/profile" matTooltip="Il tuo profilo">
+        <li *ngIf="username">
+          <a href="#" class="user-page" mat-ripple routerLinkActive="active"  [routerLink]="isAdmin ? '/admin/profile':'/profile'" matTooltip="Il tuo profilo">
             <mat-icon svgIcon="account-circle-outline" class="icon"></mat-icon>
-            <span class="title">{{user.name}}</span>
+            <span class="title">{{username}}</span>
           </a>
         </li>
       </ul>
@@ -58,28 +58,28 @@
           <mat-icon *ngIf="page.isMdi; else normalIcon" class="menu-icon" svgIcon="{{page.icon}}"></mat-icon>
 
           <ng-template #normalIcon>
-            <mat-icon class="menu-icon">{{page.isMdi}}</mat-icon>
+            <mat-icon class="menu-icon">{{page.icon}}</mat-icon>
           </ng-template>
 
           <span>{{page.name | titlecase}}</span>
         </button>
       </div>
-      <div *ngIf="!user">
+      <div *ngIf="!username">
         <button mat-menu-item routerLink="/login">
           <mat-icon svgIcon="account-arrow-left-outline" class="menu-icon"></mat-icon>
           <span>Login</span>
         </button>
       </div>
-      <div *ngIf="!user">
+      <div *ngIf="!username">
         <button mat-menu-item routerLink="/register">
           <mat-icon svgIcon="account-plus-outline" class="menu-icon"></mat-icon>
           <span>Registrati</span>
         </button>
       </div>
-      <div *ngIf="user">
-        <button mat-menu-item routerLink="/profile">
+      <div *ngIf="username">
+        <button mat-menu-item [routerLink]="isAdmin ? '/admin/profile':'/profile'">
           <mat-icon svgIcon="account-circle-outline" class="menu-icon"></mat-icon>
-          <span>{{user.name}}</span>
+          <span>{{username}}</span>
         </button>
       </div>
     </mat-menu>

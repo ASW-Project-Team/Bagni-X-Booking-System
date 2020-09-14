@@ -1,7 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CustomerModel} from "../../../models/customer.model";
-import {AuthService} from "../../../../core/auth/auth.service";
-import {MenuItem, User} from "../appbars.model";
+import {MenuItem} from "../appbars.model";
 
 @Component({
   selector: 'app-main-appbar',
@@ -9,7 +7,8 @@ import {MenuItem, User} from "../appbars.model";
   styleUrls: ['./main-appbar.component.scss']
 })
 export class MainAppbarComponent implements OnInit {
-  user: User;
+  username: string;
+  isAdmin: boolean = false;
   pages: MenuItem[];
 
   ngOnInit() { }

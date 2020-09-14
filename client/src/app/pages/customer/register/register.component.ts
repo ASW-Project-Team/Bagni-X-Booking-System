@@ -9,7 +9,7 @@ import {
   Validators
 } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../../core/auth/auth.service";
+import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {first} from "rxjs/operators";
 
@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
-              private authService: AuthService,
+              private authService: CustomerAuthService,
               private router: Router,
               private snackBar: MatSnackBar) {
     // redirect to home if already logged in

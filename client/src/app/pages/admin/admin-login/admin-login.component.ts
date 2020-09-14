@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {first} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {first} from "rxjs/operators";
+import {AdminAuthService} from "../../../core/auth/admin-auth.service";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-admin-login',
+  templateUrl: './admin-login.component.html',
+  styleUrls: ['./admin-login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class AdminLoginComponent implements OnInit {
   loginForm: FormGroup;
-  emailControl: FormControl;
+  usernameControl: FormControl;
   passwordControl: FormControl;
 
   loading: boolean = false;
@@ -24,15 +24,15 @@ export class LoginComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
-              private customerAuthService: CustomerAuthService,
+              private authService: AdminAuthService,
               private router: Router,
               private snackBar: MatSnackBar) {
     // redirect to home if already logged in
-    if (this.customerAuthService.isLoggedIn()) {
-      this.router.navigate(["/home"]).then(() => {
-        const customerEmail = this.customerAuthService.currentCustomerValue().email;
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(["/admin/bookings"]).then(() => {
+        const adminUsername = this.authService.currentAdminValue().username;
         this.snackBar.open(
-        `Sei già loggato come ${customerEmail}! per effettuare l'accesso con un altro account,
+          `Sei già loggato come amministratore ${adminUsername}! per effettuare l'accesso con un altro account,
                  esegui prima il logout da questo.`,
           null,
           { duration: 4000 }
@@ -43,11 +43,11 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.emailControl = new FormControl('',[Validators.required, Validators.email])
+    this.usernameControl = new FormControl('',[Validators.required])
     this.passwordControl = new FormControl('',[Validators.required])
 
     this.loginForm = new FormGroup({
-      emailControl: this.emailControl,
+      usernameControl: this.usernameControl,
       passwordControl: this.passwordControl
     });
 
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
       this.returnUrlExternallySet = true;
       this.returnUrl = this.route.snapshot.queryParams['returnUrl']
     } else {
-      this.returnUrl = '/home';
+      this.returnUrl = '/admin/bookings';
     }
 
   }
@@ -71,12 +71,12 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.customerAuthService.login(this.emailControl.value, this.passwordControl.value)
+    this.authService.login(this.usernameControl.value, this.passwordControl.value)
       .pipe(first())
       .subscribe(
         data => {
           this.router.navigate([this.returnUrl]).then(() => {
-            const customerName = this.customerAuthService.currentCustomerValue().name;
+            const customerName = this.authService.currentAdminValue().username;
             this.snackBar.open(
               `Login completato. Benvenuto, ${customerName}!`,
               null,

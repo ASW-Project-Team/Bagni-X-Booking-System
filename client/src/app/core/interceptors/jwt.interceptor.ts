@@ -6,7 +6,7 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {AuthService} from "../auth/auth.service";
+import {CustomerAuthService} from "../auth/customer-auth.service";
 
 /**
  * The JWT Interceptor intercepts http requests from the application to add a
@@ -15,7 +15,7 @@ import {AuthService} from "../auth/auth.service";
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: CustomerAuthService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // add authorization header with jwt token if available

@@ -4,7 +4,7 @@ import {FormBuilder} from "@angular/forms";
 import {STEPPER_GLOBAL_OPTIONS, StepperSelectionEvent} from "@angular/cdk/stepper";
 import {Booking} from "../../../shared/models/booking.model";
 import {PeriodStepComponent} from "./steps/period-step/period-step.component";
-import {AuthService} from "../../../core/auth/auth.service";
+import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {ApiService} from "../../../core/api/api.service";
 import {CustomizeStepComponent} from "./steps/customize-step/customize-step.component";
 
@@ -27,7 +27,7 @@ export class NewBookingComponent implements OnInit {
 
   constructor(private _route: ActivatedRoute,
               private _formBuilder: FormBuilder,
-              private _authService: AuthService,
+              private _authService: CustomerAuthService,
               private _apiService: ApiService) { }
 
   ngOnInit(): void {

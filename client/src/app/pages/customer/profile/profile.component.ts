@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../../core/auth/auth.service";
+import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {Router} from "@angular/router";
 import {CustomerModel} from "../../../shared/models/customer.model";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -14,7 +14,7 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
 export class ProfileComponent implements OnInit {
   customer: CustomerModel;
 
-  constructor(private authService: AuthService,
+  constructor(private authService: CustomerAuthService,
               private router: Router,
               private snackBar: MatSnackBar,
               private dialog: MatDialog,) {
