@@ -58,7 +58,7 @@ module.exports.registerAdmin = async function (req, res) {
 module.exports.authenticateAdmin = async function (req, res) {
   // 1. fields sanitization
   const username = sanitizers.toString(req.body.username);
-  const password = sanitizers.toPassword(req.body.password);
+  const password = sanitizers.toString(req.body.password);
 
   // 2. fields validation
   if (!validators.areFieldsValid(username, password)) {
@@ -92,8 +92,8 @@ module.exports.authenticateAdmin = async function (req, res) {
  */
 module.exports.authenticateCustomer = async function (req, res) {
   // 1. fields sanitization
-  const email = sanitizers.toEmail(req.body.email);
-  const password = sanitizers.toPassword(req.body.password);
+  const email = sanitizers.toString(req.body.email);
+  const password = sanitizers.toString(req.body.password);
 
   // 2. fields validation
   if (!validators.areFieldsValid(email, password)) {
