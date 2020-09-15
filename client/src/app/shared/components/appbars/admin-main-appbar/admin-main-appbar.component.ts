@@ -45,8 +45,8 @@ export class AdminMainAppbarComponent extends MainAppbarComponent {
       id: "rank-umbrellas",
       name: "Ombrelloni",
       route: "/admin/rank-umbrellas",
-      isMdi: false,
-      icon: "beach_access"
+      isMdi: true,
+      icon: "rank"
     },
     {
       id: "services",
