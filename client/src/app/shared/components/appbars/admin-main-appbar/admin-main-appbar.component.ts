@@ -42,9 +42,9 @@ export class AdminMainAppbarComponent extends MainAppbarComponent {
       icon: "home-edit-outline"
     },
     {
-      id: "ranks",
+      id: "rank-umbrellas",
       name: "Ombrelloni",
-      route: "/admin/ranks",
+      route: "/admin/rank-umbrellas",
       isMdi: false,
       icon: "beach_access"
     },

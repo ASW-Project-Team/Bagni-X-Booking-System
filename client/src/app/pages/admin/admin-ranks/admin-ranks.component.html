@@ -1,6 +1,33 @@
 <div class="page">
-  <p>admin-ranks works!</p>
+  <p>
+    Gli ombrelloni dello stabilimento devono essere organizzati nell’app in categorie, che possono corrispondere alle
+    varie file, o ad ombrelloni con diverse caratteristiche e prezzo. Da qui è possibile personalizzarne i dettagli.
+  </p>
+
+  <div *ngIf="rankUmbrellas; else loadingScreen">
+    <ul class="news-feed-container">
+      <li *ngFor="let rankUmbrella of rankUmbrellas">
+        <app-salable-card
+          [routerLink]="['/admin/rank-umbrellas', rankUmbrella.id, { title: rankUmbrella.name }]"
+          [title]="rankUmbrella.name"
+          [description]="rankUmbrella.description"
+          [imageUrl]="rankUmbrella.imageUrl"
+          [price]="rankUmbrella.dailyPrice + ' €/gg'"
+          [moreInfo]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
+          [onSale]="rankUmbrella.sales.length > 0"
+          [isLastCard]="rankUmbrellas.indexOf(rankUmbrella) >= rankUmbrellas.length - 1">
+        </app-salable-card>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loadingScreen>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen [smallHeight]="true"></app-loading-screen>
+  </ng-template>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>
+<app-fab title="Aggiungi" currentPageName="Ombrelloni" currentPageRoute="/admin/rank-umbrellas" route="/admin/new-rank-umbrella" iconName="new-rank"></app-fab>
+

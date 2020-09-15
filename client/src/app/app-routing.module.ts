@@ -46,7 +46,7 @@ const routes: Routes = [
   { path: 'admin/home-customize', component: AdminHomeCustomizeComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/news', component: AdminNewsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/profile', component: AdminProfileComponent, canActivate: [AdminAuthGuard] },
-  { path: 'admin/ranks', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/rank-umbrellas', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services', component: AdminServicesComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/stats', component: AdminStatsComponent, canActivate: [AdminAuthGuard] },
 

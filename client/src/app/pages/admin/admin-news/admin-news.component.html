@@ -2,7 +2,6 @@
   <p>Da questa pagina è possibile aggiornare il feed, ovvero la sezione dedicata alle news dello stabilimento, da
     comunicare a clienti o semplici visitatori non iscritti.</p>
 
-
   <div *ngIf="newsFeed; else loadingScreen">
     <ul class="news-feed-container">
       <li *ngFor="let news of newsFeed">

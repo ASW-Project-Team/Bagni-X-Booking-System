@@ -18,6 +18,7 @@ import {environment} from "../../../environments/environment";
 import {seasonMock} from "../mocks/bathhouse.mock";
 import {AdminModel} from "../../shared/models/admin.model";
 import {adminsMocks} from "../mocks/admins.mock";
+import {rankUmbrellasMock} from "../mocks/rank-umbrellas.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -53,6 +54,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.registerCustomer(request);
       case url.endsWith('api/home') && method === 'GET':
         return FakeBackendInterceptor.getHome();
+      case url.endsWith('api/catalog/rank-umbrellas') && method === 'GET':
+        return FakeBackendInterceptor.getRankUmbrellas();
       case url.endsWith('api/news') && method === 'GET':
         return FakeBackendInterceptor.getNewsFeed();
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
@@ -147,6 +150,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     return FakeBackendInterceptor.createOkResponse(news);
   }
+
+
+  private static getRankUmbrellas(): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock);
+  }
+
 
 
   private static getCustBookings(request: HttpRequest<unknown>): ObservableInput<any> {

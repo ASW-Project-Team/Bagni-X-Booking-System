@@ -63,4 +63,8 @@ export class ApiService {
   public generateBooking(booking: Booking): Observable<any> {
     return this._http.post(`${environment.apiUrl}/api/new-booking/checkout`, booking);
   }
+
+  public getRankUmbrellas(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas`);
+  }
 }

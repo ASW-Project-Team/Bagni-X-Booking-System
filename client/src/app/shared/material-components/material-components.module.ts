@@ -68,5 +68,11 @@ export class MaterialComponentsModule {
     matIconRegistry.addSvgIcon('new-news',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-news.svg')
     );
+    matIconRegistry.addSvgIcon('new-rank',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-rank.svg')
+    );
+    matIconRegistry.addSvgIcon('rank',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/rank.svg')
+    );
   }
 }
