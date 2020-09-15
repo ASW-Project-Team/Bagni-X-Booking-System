@@ -1,4 +1,6 @@
 # Bagni X Booking System
+![Contribution guidelines for this project](docs/assets/github-banner.png)
+
 Progetto d'esame per il corso di [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), parte del corso di laurea magistrale in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), sede di Cesena.
 
 ## Membri del team
@@ -27,7 +29,7 @@ L’utente può visualizzare le caratteristiche dello stabilimento ed effettuare
 
 Lo scopo primario del progetto è quello di realizzare un **sistema di prenotazioni, ma non di pagamento**. Ciò esula dagli scopi del progetto, e presenta inoltre delle problematiche di difficile gestione.
 
-## Funzionalità aggiuntive (in aggiornamento)
+## Funzionalità aggiuntive
 Se i tempi di progetto lo consentiranno, e non risulterà eccessivamente complesso porlo in atto, si prevede di affinare l’applicazione tramite delle funzionalità extra, secondo un approccio di tipo incrementale. 
 
 Si pensava di utilizzare ad esempio dei dati meteo forecast, per affinare le predizioni, e mostrare informazioni aggiuntive agli utenti customer. O ancora, di affinare ancora più gli algoritmi predittivi, sfruttando reti neurali, e framework di ML quali TensorFlow.
@@ -46,6 +48,8 @@ Si pensa inoltre di organizzare il lavoro tramite metodologie Scrum e GitHub Flo
 
 ## Deployment
 Un makefile è fornito all'interno del progetto, per rendere immediato il dispiegamento dei container su tecnologia Docker. Tra i comandi più importanti:
-- `make` (o `make deploy`): dispiega tutti container utilizzati per database e web server (per l'attivazione in produzione);
-- `make server-dev`: genera dipendenze e build per il web server e avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker (utile in fase di sviluppo server);
-- `make client-dev`: genera dipendenze e build per il client Angular e avvia un'istanza locale del server Angular di sviluppo, senza passare per la containerizzazione Docker (utile in fase di sviluppo client);
+- **`make`** (o **`make deploy`**): dispiega tutti container utilizzati per database e web server (per l'attivazione in produzione);
+- **`make server-dev`**: genera dipendenze e build per il web server e avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker (utile in fase di sviluppo server). Richiede un'istanza MongoDB in esecuzione in `localhost:27017`;
+- **`make client-dev`**: genera dipendenze e build per il client Angular e avvia un'istanza locale del server Angular di sviluppo, senza passare per la containerizzazione Docker (utile in fase di sviluppo client). Non richiede istanze server e database, basando le risposte su un backend mock;
+- **`make integration`**: genera dipendenze e build per il client Angular e per il web server, avviando un'istanza locale del web server comprensivo di client Angular (utile in fase di integrazione client-server). Richiede un'istanza MongoDB in esecuzione in `localhost:27017`;
+

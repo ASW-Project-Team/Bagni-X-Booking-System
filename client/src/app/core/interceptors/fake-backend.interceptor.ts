@@ -26,7 +26,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   constructor() { }
 
   public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(!environment.fakeBackend) {
+    if (!environment.fakeBackend) {
       return next.handle(request);
     }
 
@@ -42,7 +42,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   // route functions
   private static handleRoute(request: HttpRequest<unknown>, next: HttpHandler): ObservableInput<any> {
-
     const {url, method} = request;
 
     switch (true) {

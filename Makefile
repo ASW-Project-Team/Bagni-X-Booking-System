@@ -44,14 +44,16 @@ client-dev: build-client-dev up-client-dev
 
 .PHONY: build-client-dev
 build-client-dev:
-	cd ./client && npm install @angular/cli && npm install && npm run build
+	cd ./client && npm install @angular/cli && npm install
 
 .PHONY: up-client-dev
 up-client-dev:
 	ng serve
 
+
 .PHONY: integration
-integration:
+integration: build-server-dev build-client-dev up-integration
+
+.PHONY: up-integration
+up-integration:
 	cd ./client && ng build --configuration=integration --output-path=../server/client && cd ../server && npm run integration
-
-
