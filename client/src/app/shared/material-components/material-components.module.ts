@@ -65,5 +65,8 @@ export class MaterialComponentsModule {
     matIconRegistry.addSvgIcon('new-booking',
       domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-booking.svg')
     );
+    matIconRegistry.addSvgIcon('new-news',
+      domSanitizer.bypassSecurityTrustResourceUrl('assets/custom-icons/new-news.svg')
+    );
   }
 }

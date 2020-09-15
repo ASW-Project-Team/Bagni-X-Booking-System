@@ -9,7 +9,7 @@
     <ul class="bookings-container">
       <li *ngFor="let booking of bookingsToConfirm">
         <app-booking-card
-          [routerLink]="['/bookings', booking.id, { title: booking.getTitle() }]"
+          [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
           [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
         </app-booking-card>
@@ -22,7 +22,7 @@
     <ul class="bookings-container">
       <li *ngFor="let booking of confirmedBookings">
         <app-booking-card
-          [routerLink]="['/bookings', booking.id, { title: booking.getTitle() }]"
+          [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
           [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
         </app-booking-card>
@@ -38,7 +38,7 @@
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>
-<app-fab title="Prenota" iconName="new-booking" route="/new-booking"
+<app-fab title="Prenota" iconName="new-booking" route="/admin/new-booking"
          currentPageName="Prenotazioni" currentPageRoute="/bookings">
 </app-fab>
 

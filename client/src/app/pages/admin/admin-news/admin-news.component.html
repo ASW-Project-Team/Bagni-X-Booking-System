@@ -1,6 +1,27 @@
 <div class="page">
-  <p>admin-news works!</p>
+  <p>Da questa pagina è possibile aggiornare il feed, ovvero la sezione dedicata alle news dello stabilimento, da
+    comunicare a clienti o semplici visitatori non iscritti.</p>
+
+
+  <div *ngIf="newsFeed; else loadingScreen">
+    <ul class="news-feed-container">
+      <li *ngFor="let news of newsFeed">
+        <app-news-card
+          [routerLink]="['/admin/news', news.id, { title: news.title }]"
+          [news]="news"
+          [isLastCard]="newsFeed.indexOf(news) >= newsFeed.length - 1">
+        </app-news-card>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loadingScreen>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen [smallHeight]="true"></app-loading-screen>
+  </ng-template>
+
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>
+<app-fab title="Aggiungi" currentPageName="News" currentPageRoute="/admin/news" route="/admin/new-news" iconName="new-news"></app-fab>
