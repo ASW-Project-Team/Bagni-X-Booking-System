@@ -41,6 +41,7 @@
               [price]="rankUmbrella.dailyPrice + ' €/gg'"
               [moreInfo]="'Dal n°' + rankUmbrella.fromUmbrella + ' al n°' + rankUmbrella.toUmbrella"
               [onSale]="rankUmbrella.sales.length > 0"
+              [notClickable]="true"
               [isLastCard]="homeData.rankUmbrellas.indexOf(rankUmbrella) >= homeData.rankUmbrellas.length - 1">
             </app-salable-card>
           </li>
@@ -58,6 +59,7 @@
               [title]="service.name"
               [description]="service.description"
               [imageUrl]="service.imageUrl"
+              [notClickable]="true"
               [price]="service.dailyPrice == 0 ? 'Incluso' : service.dailyPrice  + ' €/gg'"
               [isLastCard]="homeData.services.indexOf(service) >= homeData.services.length - 1">
             </app-salable-card>

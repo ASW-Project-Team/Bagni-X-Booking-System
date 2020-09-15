@@ -1,6 +1,33 @@
 <div class="page">
-  <p>admin-services works!</p>
+  <p>
+    In questa schermata è possibile personalizzare i servizi dello stabilimento, che l’utente può aggiungere alla
+    propria prenotazione ad un prezzo giornaliero (o inclusi automaticamente, in caso di servizi gratuiti).
+  </p>
+
+  <div *ngIf="services; else loadingScreen">
+    <ul class="news-feed-container">
+      <li *ngFor="let service of services">
+        <app-salable-card
+          [routerLink]="['/admin/services', service.id, { title: service.name }]"
+          [title]="service.name"
+          [description]="service.description"
+          [imageUrl]="service.imageUrl"
+          [notClickable]="true"
+          [price]="service.dailyPrice == 0 ? 'Incluso' : service.dailyPrice  + ' €/gg'"
+          [isLastCard]="services.indexOf(service) >= services.length - 1">
+        </app-salable-card>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loadingScreen>
+    <!-- Content to render when data is loading -->
+    <app-loading-screen [smallHeight]="true"></app-loading-screen>
+  </ng-template>
 </div>
+
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>
+<app-fab title="Aggiungi" currentPageName="Servizi" currentPageRoute="/admin/services" route="/admin/new-service" iconName="puzzle-plus-outline"></app-fab>
+

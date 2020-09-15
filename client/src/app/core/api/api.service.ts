@@ -67,4 +67,9 @@ export class ApiService {
   public getRankUmbrellas(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas`);
   }
+
+
+  public getServices(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/catalog/services`);
+  }
 }

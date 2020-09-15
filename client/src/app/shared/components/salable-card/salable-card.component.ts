@@ -11,6 +11,7 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./salable-card.component.scss']
 })
 export class SalableCardComponent implements OnInit {
+  @Input() notClickable: boolean = false;
   @Input() imageUrl: string;
   @Input() title: string;
   @Input() description: string;
