@@ -1,4 +1,5 @@
 import { ApiService } from './api.service';
+import {CustomerAuthService} from "../auth/customer-auth.service";
 
 describe('ApiService', () => {
   let httpClientSpy: { get: jasmine.Spy };
@@ -6,7 +7,7 @@ describe('ApiService', () => {
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-    service = new ApiService(httpClientSpy as any);
+    //service = new ApiService(httpClientSpy as any);
   });
 
   it('should be created', () => {

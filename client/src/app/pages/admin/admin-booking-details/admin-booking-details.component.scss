@@ -1,9 +1,5 @@
 @import "~src/styles/utils";
 
-.booking-state {
-  @include responsiveProp(margin-bottom, $defaultMargin);
-}
-
-.summary {
+.content-container {
   @include responsiveProp(margin-bottom, $defaultMargin);
 }

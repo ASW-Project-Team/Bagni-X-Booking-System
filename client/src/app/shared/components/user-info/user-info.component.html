@@ -1,0 +1,15 @@
+<div class="profile-summary" xmlns="http://www.w3.org/1999/html">
+  <mat-icon class="icon">account_circle</mat-icon>
+  <div class="text" *ngIf="customer">
+    <h2>{{customer.name + " " + customer.surname}}</h2>
+    <p *ngIf="customer.email">Email: <strong>{{customer.email}}</strong></p>
+    <p *ngIf="customer.address">Indirizzo: <strong>{{customer.address}}</strong></p>
+    <p *ngIf="customer.phone">Telefono: <strong>{{customer.phone}}</strong></p>
+  </div>
+
+  <div *ngIf="admin" class="text">
+    <h2>{{admin.username}}</h2>
+    <p *ngIf="admin.root">Admin con privilegi di <strong>root</strong></p>
+    <p *ngIf="!admin.root">Admin <strong>standard</strong></p>
+  </div>
+</div>

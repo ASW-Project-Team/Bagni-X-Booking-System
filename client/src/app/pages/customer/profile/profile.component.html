@@ -1,12 +1,7 @@
 <div class="page">
   <p>Da questa pagina è possibile consultare i dettagli del proprio account, modificandone i dettagli se necessario.</p>
-  <div class="profile-summary" *ngIf="customer">
-    <mat-icon class="icon">account_circle</mat-icon>
-    <div class="text">
-      <h1>{{customer.name + " " + customer.surname}}</h1>
-      <p>{{customer.email}}</p>
-    </div>
-  </div>
+  <app-user-info class="user-container" [customer]="customer"></app-user-info>
+
 
   <app-settings-list-item title="Modifica dati account" description="Modifica nome, indirizzo, numero di telefono, email."
                     icon="shield-account-outline"></app-settings-list-item>

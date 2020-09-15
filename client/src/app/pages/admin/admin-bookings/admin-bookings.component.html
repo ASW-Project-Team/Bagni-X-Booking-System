@@ -11,6 +11,7 @@
         <app-booking-card
           [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
+          [confirmable]="true" (updateBookings)="updateBookings()"
           [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
         </app-booking-card>
       </li>
@@ -19,12 +20,12 @@
     <h1 *ngIf="!confirmedBookings || (confirmedBookings && confirmedBookings.length > 0)">
       Prenotazioni confermate
     </h1>
-    <ul class="bookings-container">
+    <ul class="last-bookings-container">
       <li *ngFor="let booking of confirmedBookings">
         <app-booking-card
           [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
-          [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
+          [isLastCard]="confirmedBookings.indexOf(booking) >= confirmedBookings.length - 1">
         </app-booking-card>
       </li>
     </ul>

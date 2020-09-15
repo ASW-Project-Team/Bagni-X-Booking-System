@@ -9,6 +9,7 @@ export class QuantitySelectorComponent implements OnInit {
   @Input() maxQuantity: number = 10;
   @Output() incrementQuantity = new EventEmitter<number>();
   @Output() decrementQuantity = new EventEmitter<number>();
+  @Output() disableParentRipple = new EventEmitter<boolean>();
 
   quantity = 0;
 

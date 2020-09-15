@@ -4,8 +4,7 @@ import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {AdminAuthService} from "../../../core/auth/admin-auth.service";
-import {CustomerModel} from "../../../shared/models/customer.model";
-import {AdminModel} from "../../../shared/models/admin.model";
+import {Admin} from "../../../shared/models/admin.model";
 
 @Component({
   selector: 'app-admin-profile',
@@ -13,7 +12,7 @@ import {AdminModel} from "../../../shared/models/admin.model";
   styleUrls: ['./admin-profile.component.scss']
 })
 export class AdminProfileComponent implements OnInit {
-  admin: AdminModel;
+  admin: Admin;
 
 
   constructor(private authService: AdminAuthService,
@@ -22,7 +21,7 @@ export class AdminProfileComponent implements OnInit {
               private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.admin = this.authService.currentAdminValue();
+    this.admin = new Admin(this.authService.currentAdminValue());
   }
 
   logout() {

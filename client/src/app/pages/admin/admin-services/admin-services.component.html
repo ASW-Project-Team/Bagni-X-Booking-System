@@ -12,7 +12,6 @@
           [title]="service.name"
           [description]="service.description"
           [imageUrl]="service.imageUrl"
-          [notClickable]="true"
           [price]="service.dailyPrice == 0 ? 'Incluso' : service.dailyPrice  + ' €/gg'"
           [isLastCard]="services.indexOf(service) >= services.length - 1">
         </app-salable-card>

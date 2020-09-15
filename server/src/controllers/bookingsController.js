@@ -91,8 +91,8 @@ module.exports.modifyBooking = async (req, res) => {
 	const userId = sanitizers.toMongoId(req.body.userId);
 	const umbrellas = sanitizers.toArrayOfUmbrellas(req.body.umbrellas);
 	const price = sanitizers.toPositiveFloat(req.body.price);
-	const confirmed = sanitizers.toArrayOfUmbrellas(req.body.confirmed);
-	const cancelled = sanitizers.toPositiveFloat(req.body.cancelled);
+	const confirmed = sanitizers.toBool(req.body.confirmed);
+	const cancelled = sanitizers.toBool(req.body.cancelled);
 	const dateFrom = sanitizers.toDate(req.body.dateFrom);
 	const dateTo = sanitizers.toDate(req.body.dateTo);
 	const services = sanitizers.toArrayOfServices(req.body.services);

@@ -5,11 +5,21 @@ p {
 }
 
 
-.bookings-container {
+@mixin bookings-container {
   box-sizing: border-box;
-  @include responsiveProp(margin-bottom, $defaultMargin);
 
   p {
     margin: 0;
   }
+}
+
+
+.bookings-container {
+  @include bookings-container;
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.last-bookings-container {
+  @include bookings-container;
+  margin-bottom: 0;
 }

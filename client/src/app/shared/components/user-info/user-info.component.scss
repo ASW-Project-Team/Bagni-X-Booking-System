@@ -1,0 +1,29 @@
+@import "../../../../styles/utils";
+
+.profile-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  .icon {
+    @include mat-icon-size(72px);
+
+    @include forDesktopOnly {
+      @include mat-icon-size(96px);
+    }
+  }
+
+  .text {
+    @include responsiveProp(margin-left, $halfMargin);
+    @include responsiveProp(margin-right, $defaultMargin);
+
+    h2 {
+      @include responsiveProp(margin-bottom, $quarterMargin);
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}

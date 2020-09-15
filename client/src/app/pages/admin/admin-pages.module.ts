@@ -11,6 +11,7 @@ import { AdminHomeCustomizeComponent } from './admin-home-customize/admin-home-c
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { AdminContactsComponent } from './admin-contacts/admin-contacts.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { AdminBookingDetailsComponent } from './admin-booking-details/admin-booking-details.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
     AdminHomeCustomizeComponent,
     AdminProfileComponent,
     AdminContactsComponent,
-    AdminLoginComponent
+    AdminLoginComponent,
+    AdminBookingDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -39,7 +41,8 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
     AdminHomeCustomizeComponent,
     AdminProfileComponent,
     AdminContactsComponent,
-    AdminLoginComponent
+    AdminLoginComponent,
+    AdminBookingDetailsComponent
   ]
 })
 export class AdminPagesModule { }

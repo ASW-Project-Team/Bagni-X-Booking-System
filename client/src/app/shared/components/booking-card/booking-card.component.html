@@ -1,4 +1,4 @@
-<div class="booking-card" matRipple matRippleColor="primary"
+<div class="booking-card" matRipple [matRippleDisabled]="disableParentRipple"
      [ngStyle]="isLastCard == true ? { 'margin-bottom': 0 } : {}">
 
   <div class="main-line">
@@ -9,6 +9,12 @@
     <div class="lines">
       <h2 class="title">{{ booking.getTitle() }}</h2>
       <p class="description">{{ booking.getDescription() }}</p>
+    </div>
+
+    <div class="confirm-button" matRipple appClickStopPropagation [(disableParentRipple)]="disableParentRipple"
+         *ngIf="confirmable" (click)="confirmBooking()">
+        <mat-icon svgIcon="progress-check"></mat-icon>
+        <h2>Conferma</h2>
     </div>
   </div>
 

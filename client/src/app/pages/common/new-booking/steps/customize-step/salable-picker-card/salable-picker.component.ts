@@ -24,6 +24,8 @@ export class SalablePickerComponent implements OnInit {
 
   @ViewChild('qtSelector') qtSelector: QuantitySelectorComponent;
 
+  rippleDisabled: boolean = false;
+
   private availableItems: SalableItemModel[] = [];
   private cartedItems: SalableItemModel[] = [];
 

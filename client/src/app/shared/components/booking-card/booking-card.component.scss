@@ -5,6 +5,7 @@
   box-shadow: $defaultShadow;
   background: $backgroundColor;
   width: 100%;
+  cursor: pointer;
   @include responsiveProp(padding, $defaultMargin);
   @include responsiveProp(margin-bottom, $defaultMargin);
   @include responsiveProp(border-radius, $defaultMargin);
@@ -27,9 +28,32 @@
     }
 
     .lines {
+      flex-grow: 1;
       h2.title {}
       p.description {
         margin-bottom: 0;
+      }
+    }
+
+
+    .confirm-button {
+      @include responsiveProp(border-radius, $defaultMargin);
+      @include responsiveProp(padding, $halfMargin);
+      color: $primaryColor;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+
+      mat-icon {
+        margin-bottom: $marginSmartphone / 4;
+      }
+
+      h2 {
+        color: $primaryColor;
+        margin:0;
       }
     }
   }

@@ -47,7 +47,6 @@ export class ApiService {
     return this._http.delete(`${environment.apiUrl}/api/bookings/${bookingId}`);
   }
 
-
   public getSeason(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/new-booking/season`,);
   }
@@ -71,5 +70,14 @@ export class ApiService {
 
   public getServices(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/catalog/services`);
+  }
+
+
+  public editBooking(bookingId: string, modifiedFields: Object): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/bookings/${bookingId}`, modifiedFields);
+  }
+
+  public getCustomer(customerId: string): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/customers/${customerId}`);
   }
 }

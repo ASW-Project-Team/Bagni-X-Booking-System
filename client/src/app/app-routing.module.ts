@@ -22,6 +22,7 @@ import {AdminProfileComponent} from "./pages/admin/admin-profile/admin-profile.c
 import {AdminRanksComponent} from "./pages/admin/admin-ranks/admin-ranks.component";
 import {AdminServicesComponent} from "./pages/admin/admin-services/admin-services.component";
 import {AdminStatsComponent} from "./pages/admin/admin-stats/admin-stats.component";
+import {AdminBookingDetailsComponent} from "./pages/admin/admin-booking-details/admin-booking-details.component";
 
 
 // populate app routes
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'admin', redirectTo: 'admin/login' },
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/bookings', component: AdminBookingsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/bookings/:id', component: AdminBookingDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/contacts', component: AdminContactsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/home-customize', component: AdminHomeCustomizeComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/news', component: AdminNewsComponent, canActivate: [AdminAuthGuard] },

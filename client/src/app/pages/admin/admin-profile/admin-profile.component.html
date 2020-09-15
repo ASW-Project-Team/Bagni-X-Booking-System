@@ -1,13 +1,7 @@
 <div class="page">
   <p>Da questa pagina è possibile consultare i dettagli del proprio account, modificandone i dettagli se necessario.
     L’utente root può anche gestire gli altri utenti.</p>
-  <div class="profile-summary" *ngIf="admin">
-    <mat-icon class="icon">account_circle</mat-icon>
-    <div class="text">
-      <h1>{{admin.username}}</h1>
-      <p>{{admin.root ? 'Admin con privilegi di root' : 'Admin standard'}}</p>
-    </div>
-  </div>
+  <app-user-info class="user-container" [admin]="admin"></app-user-info>
 
   <app-settings-list-item *ngIf="admin.root" title="Aggiungi un account admin"
                           description="L’utente root ha il permesso di creare utenti amministratori."

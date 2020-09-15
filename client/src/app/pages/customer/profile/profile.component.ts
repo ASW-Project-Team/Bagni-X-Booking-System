@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {Router} from "@angular/router";
-import {CustomerModel} from "../../../shared/models/customer.model";
+import {Customer} from "../../../shared/models/customer.model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
@@ -12,7 +12,7 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
-  customer: CustomerModel;
+  customer: Customer;
 
   constructor(private authService: CustomerAuthService,
               private router: Router,
@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.customer = this.authService.currentCustomerValue();
+    this.customer = new Customer(this.authService.currentCustomerValue());
   }
 
   logout() {
@@ -55,9 +55,10 @@ export class ProfileComponent implements OnInit {
         positiveAction: {
           text: "Sì, elimina l'account",
           execute: function () {
-            context.authService.logout();
-            context.router.navigate(['/login']).then(() => {
-              context.snackBar.open("Account eliminato.", null, {duration: 4000});
+            context.authService.deleteCustomer().subscribe(() => {
+              context.router.navigate(['/login']).then(() => {
+                context.snackBar.open("Account eliminato.", null, {duration: 4000});
+              });
             });
           }
         },

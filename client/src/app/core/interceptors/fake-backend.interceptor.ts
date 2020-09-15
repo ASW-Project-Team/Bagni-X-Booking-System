@@ -53,6 +53,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.authenticateAdmin(request);
       case url.endsWith('api/auth/customers/register') && method === 'POST':
         return FakeBackendInterceptor.registerCustomer(request);
+      case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
+        return FakeBackendInterceptor.getCustomer();
       case url.endsWith('api/home') && method === 'GET':
         return FakeBackendInterceptor.getHome();
       case url.endsWith('api/catalog/rank-umbrellas') && method === 'GET':
@@ -69,9 +71,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getAllBookings(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getBooking(request);
+      case url.match(/\/api\/bookings\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.editBooking();
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.deleteBooking(request);
-      case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
+      case url.match(/\/api\/customers\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.deleteCustomer();
       case url.endsWith('api/new-booking/season') && method === 'GET':
         return FakeBackendInterceptor.getSeason();
@@ -134,6 +138,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return FakeBackendInterceptor.createOkResponse(customer);
   }
 
+  private static getCustomer(): ObservableInput<any> {
+    const customer: CustomerModel = customersMock[0];
+    return FakeBackendInterceptor.createOkResponse(customer);
+  }
+
 
   private static getHome(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(homeMock);
@@ -179,6 +188,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return FakeBackendInterceptor.createOkResponse(bookingsMock);
   }
 
+  private static editBooking(): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse();
+  }
 
   private static getBooking(request: HttpRequest<unknown>): ObservableInput<any> {
     if (!this.isCustomerLoggedIn(request)) {

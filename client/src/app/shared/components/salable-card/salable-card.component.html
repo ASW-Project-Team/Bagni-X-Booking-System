@@ -1,5 +1,5 @@
 <div class="salable-card" mat-ripple [matRippleDisabled]="notClickable"
-     [ngStyle]="isLastCard == true ? {'margin-bottom': 0} : {}">
+     [ngClass]="{'clickable': !notClickable, 'last-card':isLastCard }">
 
   <div class="main-line">
     <div class="image"

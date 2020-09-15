@@ -4,6 +4,7 @@
   box-sizing: border-box;
   box-shadow: $defaultShadow;
   background: $backgroundColor;
+  cursor: pointer;
   width: 100%;
   @include responsiveProp(padding, $defaultMargin);
   @include responsiveProp(margin-bottom, $defaultMargin);

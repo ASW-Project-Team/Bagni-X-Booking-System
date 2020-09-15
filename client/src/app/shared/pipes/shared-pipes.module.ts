@@ -22,4 +22,4 @@ import {BookingDatePipe, BookingDatePipeExtended} from "./booking-date.pipe";
     BookingDatePipeExtended
   ]
 })
-export class PipesModule { }
+export class SharedPipesModule { }

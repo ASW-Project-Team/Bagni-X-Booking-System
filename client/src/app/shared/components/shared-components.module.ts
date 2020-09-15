@@ -18,8 +18,10 @@ import {SettingsListItemComponent} from "./settings-list-item/settings-list-item
 import {AppRoutingModule} from "../../app-routing.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MaterialComponentsModule} from "../material-components/material-components.module";
-import {PipesModule} from "../pipes/pipes.module";
+import {SharedPipesModule} from "../pipes/shared-pipes.module";
 import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-appbar.component";
+import {UserInfoComponent} from "./user-info/user-info.component";
+import {SharedDirectivesModule} from "../directives/shared-directives.module";
 
 
 @NgModule({
@@ -39,14 +41,16 @@ import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-a
     NewsCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
-    AdminMainAppbarComponent
+    AdminMainAppbarComponent,
+    UserInfoComponent
   ],
   imports: [
     CommonModule,
     MaterialComponentsModule,
-    PipesModule,
+    SharedPipesModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SharedDirectivesModule
   ],
   exports: [
     AlertDialogComponent,
@@ -63,7 +67,8 @@ import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-a
     NewsCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
-    AdminMainAppbarComponent
+    AdminMainAppbarComponent,
+    UserInfoComponent
   ]
 })
 export class SharedComponentsModule { }
