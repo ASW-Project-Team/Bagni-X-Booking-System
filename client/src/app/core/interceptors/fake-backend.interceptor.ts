@@ -59,7 +59,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getNews(request);
       case url.match(/\/api\/bookings\/customer\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getBookings(request);
+        return FakeBackendInterceptor.getCustBookings(request);
+      case url.endsWith('api/bookings') && method === 'GET':
+        return FakeBackendInterceptor.getAllBookings(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getBooking(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
@@ -99,7 +101,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     const username = request.body['username'];
     const password = request.body['password'];
 
-    if (username == 'test' && password == 'test') {
+    if (username == 'admin' && password == 'admin') {
       const admin: AdminModel = adminsMocks[0];
       admin.jwt = FakeBackendInterceptor.fakeJwtToken;
       return FakeBackendInterceptor.createOkResponse(admin);
@@ -148,8 +150,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
   }
 
 
-  private static getBookings(request: HttpRequest<unknown>): ObservableInput<any> {
+  private static getCustBookings(request: HttpRequest<unknown>): ObservableInput<any> {
     if (!this.isCustomerLoggedIn(request)) {
+      return FakeBackendInterceptor.createError401()
+    }
+
+    return FakeBackendInterceptor.createOkResponse(bookingsMock);
+  }
+
+  private static getAllBookings(request: HttpRequest<unknown>): ObservableInput<any> {
+    if (!this.isAdminLoggedIn(request)) {
       return FakeBackendInterceptor.createError401()
     }
 
@@ -207,6 +217,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   // helper functions
   private static isCustomerLoggedIn(request: HttpRequest<unknown>): boolean {
+    return request.headers.get('Authorization') === 'Bearer ' + FakeBackendInterceptor.fakeJwtToken;
+  }
+
+  private static isAdminLoggedIn(request: HttpRequest<unknown>): boolean {
     return request.headers.get('Authorization') === 'Bearer ' + FakeBackendInterceptor.fakeJwtToken;
   }
 

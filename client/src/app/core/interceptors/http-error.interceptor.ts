@@ -3,6 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor} from '@angular/co
 import {Observable, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CustomerAuthService } from "../auth/customer-auth.service";
+import {AdminAuthService} from "../auth/admin-auth.service";
 
 /**
  * The Error Interceptor intercepts http http-responses from the api to check if there were any errors.
@@ -14,13 +15,21 @@ import { CustomerAuthService } from "../auth/customer-auth.service";
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
 
-  constructor(private _authService: CustomerAuthService) {}
+  constructor(private customerAuthService: CustomerAuthService,
+              private adminAuthService: AdminAuthService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(catchError(err => {
       if (err.status === 401) {
         // auto logout if 401 response returned from api
-        this._authService.logout();
+        if (this.adminAuthService.isLoggedIn()) {
+          this.adminAuthService.logout();
+        }
+
+        if (this.customerAuthService.isLoggedIn()) {
+          this.customerAuthService.logout();
+        }
+
         location.reload();
 
       } else if (err.error == undefined) {

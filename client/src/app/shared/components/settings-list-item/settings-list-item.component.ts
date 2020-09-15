@@ -6,11 +6,11 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./settings-list-item.component.scss']
 })
 export class SettingsListItemComponent implements OnInit {
-  @Input('title') title: string;
-  @Input('description') description: string;
-  @Input('icon') icon: string;
-  @Input('is-mdi') isMdi: boolean = true;
-  @Input('is-last') isLast: boolean = false;
+  @Input() title: string;
+  @Input() description: string;
+  @Input() icon: string;
+  @Input() isMdi: boolean = true;
+  @Input() isLast: boolean = false;
 
   constructor() { }
 

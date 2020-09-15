@@ -14,7 +14,7 @@ export class BookingsComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    this.apiService.getUserBookings().subscribe(data => {
+    this.apiService.getCustomerBookings().subscribe(data => {
       const bookingsData = data as BookingModel[];
       this.bookings = bookingsData.map(model => new Booking(model));
     });

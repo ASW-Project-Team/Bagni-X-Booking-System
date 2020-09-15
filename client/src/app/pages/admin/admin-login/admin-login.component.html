@@ -11,7 +11,7 @@
   <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="input-field">
       <mat-label>Username</mat-label>
-      <input matInput [formControl]="usernameControl" type="text" placeholder="mario.rossi">
+      <input matInput [formControl]="usernameControl" type="text" placeholder="Es. mario.rossi">
       <mat-error *ngIf="usernameControl.hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
@@ -43,6 +43,6 @@
 </div>
 
 <!-- Header goes last, to make them appear over content -->
-<app-nested-appbar title="Accedi al pennello amministratore" backPageName="Home" backRoute="/home"></app-nested-appbar>
+<app-nested-appbar title="Accedi al pannello amministratore" backPageName="Home" backRoute="/home"></app-nested-appbar>
 
 

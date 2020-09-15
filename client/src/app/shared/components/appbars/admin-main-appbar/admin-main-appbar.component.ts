@@ -71,6 +71,11 @@ export class AdminMainAppbarComponent extends MainAppbarComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    this.username = this.adminAuth.currentAdminValue().username;
+    if (this.adminAuth.isLoggedIn()) {
+      this.username = this.adminAuth.currentAdminValue().username;
+
+    } else {
+      this.username = undefined;
+    }
   }
 }

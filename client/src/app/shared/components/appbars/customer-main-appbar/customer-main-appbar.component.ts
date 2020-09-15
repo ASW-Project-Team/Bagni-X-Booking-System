@@ -42,6 +42,11 @@ export class CustomerMainAppbarComponent extends MainAppbarComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    this.username = this.customerAuth.currentCustomerValue().name;
+    if (this.customerAuth.isLoggedIn()) {
+      this.username = this.customerAuth.currentCustomerValue().name;
+
+    } else {
+      this.username = undefined;
+    }
   }
 }

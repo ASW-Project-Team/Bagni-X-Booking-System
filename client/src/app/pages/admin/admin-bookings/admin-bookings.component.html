@@ -1,6 +1,44 @@
 <div class="page">
-  <p>admin-bookings works!</p>
+  <p>Da questa pagina è possibile visualizzare le prenotazioni della stagione corrente, e modificarne eventuali
+    dettagli. Le prenotazioni da confermare vengono mostrate in cima alla schermata.</p>
+
+  <div *ngIf="bookingsToConfirm && confirmedBookings; else loadingScreen">
+    <h1 *ngIf="!bookingsToConfirm || (bookingsToConfirm && bookingsToConfirm.length > 0)">
+      Prenotazioni da confermare
+    </h1>
+    <ul class="bookings-container">
+      <li *ngFor="let booking of bookingsToConfirm">
+        <app-booking-card
+          [routerLink]="['/bookings', booking.id, { title: booking.getTitle() }]"
+          [booking]="booking"
+          [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
+        </app-booking-card>
+      </li>
+    </ul>
+
+    <h1 *ngIf="!confirmedBookings || (confirmedBookings && confirmedBookings.length > 0)">
+      Prenotazioni confermate
+    </h1>
+    <ul class="bookings-container">
+      <li *ngFor="let booking of confirmedBookings">
+        <app-booking-card
+          [routerLink]="['/bookings', booking.id, { title: booking.getTitle() }]"
+          [booking]="booking"
+          [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
+        </app-booking-card>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loadingScreen>
+    <app-loading-screen [smallHeight]="true"></app-loading-screen>
+  </ng-template>
+
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>
+<app-fab title="Prenota" iconName="new-booking" route="/new-booking"
+         currentPageName="Prenotazioni" currentPageRoute="/bookings">
+</app-fab>
+

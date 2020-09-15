@@ -30,7 +30,11 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/news/${newsId}`);
   }
 
-  public getUserBookings(): Observable<any> {
+  public getAllBookings(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/bookings`);
+  }
+
+  public getCustomerBookings(): Observable<any> {
     const userId: string = this.authService.currentCustomerValue().id;
     return this._http.get(`${environment.apiUrl}/api/bookings/customer/${userId}`);
   }

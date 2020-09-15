@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {CustomerAuthService} from "../auth/customer-auth.service";
+import {AdminAuthService} from "../auth/admin-auth.service";
 
 /**
  * The JWT Interceptor intercepts http requests from the application to add a
@@ -15,17 +16,30 @@ import {CustomerAuthService} from "../auth/customer-auth.service";
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(private authService: CustomerAuthService) {}
+  constructor(private customerAuthService: CustomerAuthService,
+              private adminAuthService: AdminAuthService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // add authorization header with jwt token if available
-    let currentCustomer = this.authService.currentCustomerValue();
-    if (currentCustomer && currentCustomer.jwt) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${currentCustomer.jwt}`
-        }
-      });
+    if (this.adminAuthService.isLoggedIn()) {
+      let currentAdmin = this.adminAuthService.currentAdminValue();
+      if (currentAdmin && currentAdmin.jwt) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${currentAdmin.jwt}`
+          }
+        });
+      }
+
+    } else if (this.customerAuthService.isLoggedIn()) {
+      let currentCustomer = this.customerAuthService.currentCustomerValue();
+      if (currentCustomer && currentCustomer.jwt) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${currentCustomer.jwt}`
+          }
+        });
+      }
     }
 
     return next.handle(request);
