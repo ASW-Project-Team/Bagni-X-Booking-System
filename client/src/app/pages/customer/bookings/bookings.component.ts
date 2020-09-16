@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Booking, BookingModel} from "../../../shared/models/booking.model";
 import {ApiService} from "../../../core/api/api.service";
+import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 
 
 @Component({
@@ -11,10 +12,12 @@ import {ApiService} from "../../../core/api/api.service";
 export class BookingsComponent implements OnInit {
   bookings: Booking[];
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,
+              private customerAuth: CustomerAuthService) { }
 
   ngOnInit(): void {
-    this.apiService.getCustomerBookings().subscribe(data => {
+    const customerId: string = this.customerAuth.currentCustomerValue().id;
+    this.apiService.getCustomerBookings(customerId).subscribe(data => {
       const bookingsData = data as BookingModel[];
       this.bookings = bookingsData.map(model => new Booking(model));
     });

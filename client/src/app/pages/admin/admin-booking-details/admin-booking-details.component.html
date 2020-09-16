@@ -25,6 +25,6 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar [title]="getAppbarTitle()" backRoute="/admin/bookings"
-                   backPageName="Prenotazioni" [actions]="actions">
+<app-nested-appbar [title]="getAppbarTitle()" [backRoute]="backRoute"
+                   [backPageName]="backRouteName" [actions]="actions">
 </app-nested-appbar>

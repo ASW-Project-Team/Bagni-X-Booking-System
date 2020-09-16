@@ -1,6 +1,6 @@
 @import "~src/styles/utils";
 
-p {
+.customer-section {
   @include responsiveProp(margin-bottom, $defaultMargin);
 }
 

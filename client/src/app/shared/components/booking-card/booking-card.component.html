@@ -12,7 +12,7 @@
     </div>
 
     <div class="confirm-button" matRipple appClickStopPropagation [(disableParentRipple)]="disableParentRipple"
-         *ngIf="confirmable" (click)="confirmBooking()">
+         *ngIf="confirmable && !booking.confirmed && !booking.cancelled" (click)="confirmBooking()">
         <mat-icon svgIcon="progress-check"></mat-icon>
         <h2>Conferma</h2>
     </div>

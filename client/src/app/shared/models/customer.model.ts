@@ -35,4 +35,8 @@ export class Customer implements CustomerModel {
     this.registered = model.registered;
     this.surname = model.surname;
   }
+
+  getFullName() {
+    return this.name + ' ' + this.surname;
+  }
 }

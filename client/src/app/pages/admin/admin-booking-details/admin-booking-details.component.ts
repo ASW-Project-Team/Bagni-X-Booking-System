@@ -16,6 +16,8 @@ import {Customer} from "../../../shared/models/customer.model";
 export class AdminBookingDetailsComponent implements OnInit {
   // params
   titleParam: string;
+  backRoute: string = '/admin/bookings';
+  backRouteName: string = 'Prenotazioni';
 
   booking: Booking;
   customer: Customer;
@@ -30,6 +32,14 @@ export class AdminBookingDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.titleParam = params.title;
+
+      if (params.backRoute) {
+        this.backRoute = params.backRoute;
+      }
+
+      if (params.backRouteName) {
+        this.backRouteName = params.backRouteName
+      }
 
       this.api.getBooking(params.id).subscribe(data => {
         this.booking = new Booking(data);

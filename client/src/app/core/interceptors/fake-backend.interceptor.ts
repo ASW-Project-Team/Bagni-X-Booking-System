@@ -61,6 +61,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getRankUmbrellas();
       case url.endsWith('api/catalog/services') && method === 'GET':
         return FakeBackendInterceptor.getServices();
+      case url.endsWith('api/customers') && method === 'GET':
+        return FakeBackendInterceptor.getCustomers();
       case url.endsWith('api/catalog/services') && method === 'POST':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/services\/\d+$/) && method === 'GET':
@@ -190,6 +192,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   private static getServices(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(servicesMock);
+  }
+
+
+  private static getCustomers(): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(customersMock);
   }
 
   private static getCustBookings(request: HttpRequest<unknown>): ObservableInput<any> {

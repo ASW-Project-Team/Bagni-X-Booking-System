@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {CustomerAuthService} from "../auth/customer-auth.service";
 import {Booking} from "../../shared/models/booking.model";
 
 
@@ -15,8 +14,7 @@ import {Booking} from "../../shared/models/booking.model";
 })
 export class ApiService {
 
-  constructor(private _http: HttpClient,
-              private authService: CustomerAuthService) { }
+  constructor(private _http: HttpClient) { }
 
   public getHome(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/home`);
@@ -46,9 +44,8 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/bookings`);
   }
 
-  public getCustomerBookings(): Observable<any> {
-    const userId: string = this.authService.currentCustomerValue().id;
-    return this._http.get(`${environment.apiUrl}/api/bookings/customer/${userId}`);
+  public getCustomerBookings(customerId: string): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/bookings/customer/${customerId}`);
   }
 
   public getBooking(bookingId: string): Observable<any> {
@@ -101,6 +98,10 @@ export class ApiService {
     return this._http.delete(`${environment.apiUrl}/api/catalog/services/${serviceId}`);
   }
 
+
+  public getCustomers(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/customers`);
+  }
 
 
   public editBooking(bookingId: string, modifiedFields: Object): Observable<any> {

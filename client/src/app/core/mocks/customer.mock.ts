@@ -20,5 +20,15 @@ export const customersMock: CustomerModel[] = [
     address: "Viale della Vittoria, 22",
     deleted: false,
     registered: true,
+  },
+  {
+    id: "12343",
+    name: "Matteo",
+    surname: "Montesi22",
+    email: "test@altrotest.it",
+    phone: "331123456",
+    address: "Viale della Vittoria, 22",
+    deleted: false,
+    registered: false,
   }
 ];

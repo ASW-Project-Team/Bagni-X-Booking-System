@@ -14,6 +14,7 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminBookingDetailsComponent } from './admin-booking-details/admin-booking-details.component';
 import { AdminNewsDetailsComponent } from './admin-news-details/admin-news-details.component';
 import { AdminServicesDetailsComponent } from './admin-services-details/admin-services-details.component';
+import { AdminContactDetailsComponent } from './admin-contact-details/admin-contact-details.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { AdminServicesDetailsComponent } from './admin-services-details/admin-se
     AdminBookingDetailsComponent,
     AdminNewsDetailsComponent,
     AdminServicesDetailsComponent,
+    AdminContactDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -48,7 +50,8 @@ import { AdminServicesDetailsComponent } from './admin-services-details/admin-se
     AdminLoginComponent,
     AdminBookingDetailsComponent,
     AdminNewsDetailsComponent,
-    AdminServicesDetailsComponent
+    AdminServicesDetailsComponent,
+    AdminContactDetailsComponent
   ]
 })
 export class AdminPagesModule { }

@@ -1,0 +1,25 @@
+<div class="page">
+  <div class="customer-section" *ngIf="customer">
+    <h1>Informazioni sul cliente</h1>
+    <p *ngIf="customer.email">Email: <strong>{{customer.email}}</strong></p>
+    <p *ngIf="customer.address">Indirizzo: <strong>{{customer.address}}</strong></p>
+    <p *ngIf="customer.phone">Telefono: <strong>{{customer.phone}}</strong></p>
+    <p>Registrato dall'admin? <strong>{{customer.registered ? 'No' : 'Sì'}}</strong></p>
+  </div>
+
+  <div class="bookings-section" *ngIf="bookings && bookings.length > 0">
+    <h1>Prenotazioni del cliente</h1>
+    <ul>
+      <li *ngFor="let booking of bookings">
+        <app-booking-card
+          [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle(), backRoute: '/admin/contacts/' + customer.id, backRouteName: 'Contatto ' + customerFullName }]"
+          [booking]="booking"
+          [confirmable]="true" (updateBookings)="updateBookings()"
+          [isLastCard]="bookings.indexOf(booking) >= bookings.length - 1">
+        </app-booking-card>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<app-nested-appbar backPageName="Contatti" backRoute="/admin/contacts" [title]="customerFullName"></app-nested-appbar>
