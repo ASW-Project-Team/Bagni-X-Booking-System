@@ -29,6 +29,7 @@
     flex-direction: column;
     align-items: stretch;
     min-width: 0;
+    width: 100%;
 
     .title-line {
       display: flex;
@@ -43,7 +44,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         @include responsiveProp(margin-right, $defaultMargin);
-
       }
 
       .date {

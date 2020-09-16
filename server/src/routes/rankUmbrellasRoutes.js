@@ -7,7 +7,7 @@ module.exports.set = function (app) {
     .put(imgUpload.addSupport, rankUmbrellasController.updateRankUmbrella)
     .delete(rankUmbrellasController.deleteRankUmbrella)
 
-  app.route('/api/catalog/rank-umbrellas/')
+  app.route('/api/catalog/rank-umbrellas')
     .get(rankUmbrellasController.readRankUmbrellas)
     .post(imgUpload.addSupport, rankUmbrellasController.createRankUmbrella)
 }

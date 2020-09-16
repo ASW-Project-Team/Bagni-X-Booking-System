@@ -23,6 +23,7 @@ import {AdminRanksComponent} from "./pages/admin/admin-ranks/admin-ranks.compone
 import {AdminServicesComponent} from "./pages/admin/admin-services/admin-services.component";
 import {AdminStatsComponent} from "./pages/admin/admin-stats/admin-stats.component";
 import {AdminBookingDetailsComponent} from "./pages/admin/admin-booking-details/admin-booking-details.component";
+import {AdminNewsDetailsComponent} from "./pages/admin/admin-news-details/admin-news-details.component";
 
 
 // populate app routes
@@ -47,6 +48,8 @@ const routes: Routes = [
   { path: 'admin/contacts', component: AdminContactsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/home-customize', component: AdminHomeCustomizeComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/news', component: AdminNewsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/new-news', component: AdminNewsDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/news/:id', component: AdminNewsDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/profile', component: AdminProfileComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/rank-umbrellas', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services', component: AdminServicesComponent, canActivate: [AdminAuthGuard] },

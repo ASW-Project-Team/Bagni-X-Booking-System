@@ -1,0 +1,38 @@
+<div class="page">
+  <form [formGroup]="newsForm" class="news-form">
+    <mat-form-field appearance="outline" class="input-field" >
+      <mat-label>Titolo</mat-label>
+      <input matInput  formControlName="title" type="text" placeholder="Es. Titolo dell'articolo">
+      <mat-error *ngIf="newsForm.get('title').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Articolo</mat-label>
+      <textarea matInput rows="12" formControlName="article" type="text" placeholder="Es. Lorem ipsum..."></textarea>
+      <mat-error *ngIf="newsForm.get('title').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="input-field">
+      <app-image-upload formControlName="image"></app-image-upload>
+    </div>
+
+    <div class="warning-container" *ngIf="loading">
+      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
+      <span>Elaborazione modifiche in corso...</span>
+    </div>
+    <div class="warning-container" *ngIf="error">
+      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
+      <span>{{error}}</span>
+    </div>
+  </form>
+</div>
+
+<app-nested-appbar backRoute="/admin/news" backPageName="News"
+                   [title]="isNewNews ? 'Aggiungi news' : 'Modifica news'"
+                   [actions]="actions">
+</app-nested-appbar>
+

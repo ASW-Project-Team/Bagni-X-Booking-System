@@ -2,7 +2,7 @@ module.exports.set = function(app) {
 	const newsController = require('../controllers/newsController');
 	const imgUpload = require('../utils/imageUpload');
 
-	app.route('/api/news/')
+	app.route('/api/news')
 		.get(newsController.readNews)
 		.post(imgUpload.addSupport, newsController.createNews);
 

@@ -12,14 +12,13 @@ const common = require('../utils/common');
  */
 module.exports.createNews = async function(req, res) {
 	// Sanitization
-	const date = sanitizers.toDate(req.body.date);
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
 	const imageUrl = await imgUploader.syncUpload(req, res,);
 
 	// creation flow
 	await common.create(req, res, News, {
-		date: date,
+		date: new Date(),
 		title: title,
 		article: article,
 		imageUrl: imageUrl ? imageUrl : imgUploader.defaultImage
@@ -58,12 +57,10 @@ module.exports.updateNews = async function(req, res) {
 	const paramId = sanitizers.toMongoId(req.params.id);
 	const title = sanitizers.toString(req.body.title);
 	const article = sanitizers.toString(req.body.article);
-	const date = sanitizers.toDate(req.body.date);
 	const imageUrl = await imgUploader.syncUpload(req, res);
 
 	// Update flow
 	await common.update(req, res, News, paramId, {
-		date: date,
 		title: title,
 		article: article,
 		imageUrl: imageUrl

@@ -65,6 +65,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getNewsFeed();
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getNews(request);
+      case url.match(/\/api\/news\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.endsWith('api/news') && method === 'POST':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/news\/\d+$/) && method === 'DELETE':
+        return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/bookings\/customer\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getCustBookings(request);
       case url.endsWith('api/bookings') && method === 'GET':
@@ -72,17 +78,17 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.match(/\/api\/bookings\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getBooking(request);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'PUT':
-        return FakeBackendInterceptor.editBooking();
+        return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
-        return FakeBackendInterceptor.deleteBooking(request);
+        return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/customers\/\d+$/) && method === 'DELETE':
-        return FakeBackendInterceptor.deleteCustomer();
+        return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/new-booking/season') && method === 'GET':
         return FakeBackendInterceptor.getSeason();
       case url.endsWith('api/new-booking/availability') && method === 'GET':
         return FakeBackendInterceptor.getAvailability();
       case url.endsWith('api/new-booking/checkout') && method === 'POST':
-        return FakeBackendInterceptor.generateBooking();
+        return FakeBackendInterceptor.createOkResponse();
 
       // todo ecc.
 
@@ -188,10 +194,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return FakeBackendInterceptor.createOkResponse(bookingsMock);
   }
 
-  private static editBooking(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse();
-  }
-
   private static getBooking(request: HttpRequest<unknown>): ObservableInput<any> {
     if (!this.isCustomerLoggedIn(request)) {
       return FakeBackendInterceptor.createError401()
@@ -207,36 +209,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     return FakeBackendInterceptor.createOkResponse(booking);
   }
 
-  private static deleteBooking(request: HttpRequest<unknown>): ObservableInput<any> {
-    if (!this.isCustomerLoggedIn(request)) {
-      return FakeBackendInterceptor.createError401()
-    }
-
-    const booking = bookingsMock.find(
-      x => x.id === FakeBackendInterceptor.idFromUrl(request)
-    );
-    if (!booking) {
-      return FakeBackendInterceptor.createError404();
-    }
-
-    return FakeBackendInterceptor.createOkResponse(booking);
-  }
-
-
-  private static deleteCustomer(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse();
-  }
-
   private static getAvailability(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(availabilityMock);
   }
 
   private static getSeason(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(seasonMock);
-  }
-
-  private static generateBooking(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse();
   }
 
 

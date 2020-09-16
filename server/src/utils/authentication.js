@@ -51,7 +51,8 @@ const customerSpecificEndpoints = [
 const allAdminsEndpoints = [
   { url: new RegExp('^\/customers\/?$'), methods: ['GET', 'POST'] },
   { url: new RegExp('^\/customers\/.+$'), methods: ['PUT', 'POST'] },
-  { url: new RegExp('^\/news\/.+$'), methods: ['POST', 'PUT', 'DELETE'] },
+  { url: new RegExp('^\/news\/.+$'), methods: ['PUT', 'DELETE'] },
+  { url: new RegExp('^\/news\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/home-cards\/?$'), methods: ['GET'] },
   {
     url: new RegExp('^\/home-cards\/.*$'),

@@ -48,8 +48,7 @@ export class NewsDetailsComponent implements OnInit {
       this.newsId = params.id;
       this.newsTitle = params.title;
       this.api.getNews(this.newsId).subscribe(data => {
-        const newsData = data as NewsModel;
-        this.downloadedNews = newsData ? new News(newsData) : undefined;
+        this.downloadedNews = new News(data);
       });
     });
   }

@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 
 
 /**
@@ -82,8 +83,7 @@ module.exports.addSupport = multer({
 module.exports.syncUpload = async (req, res) => {
   let imageUrl;
   try {
-    const upload = await upload(req, res);
-    imageUrl = upload.imageUrl;
+    imageUrl = await upload(req, res);
   } catch (e) {
     imageUrl = undefined;
   }

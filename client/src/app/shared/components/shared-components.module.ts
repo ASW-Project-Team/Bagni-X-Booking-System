@@ -22,6 +22,7 @@ import {SharedPipesModule} from "../pipes/shared-pipes.module";
 import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-appbar.component";
 import {UserInfoComponent} from "./user-info/user-info.component";
 import {SharedDirectivesModule} from "../directives/shared-directives.module";
+import { ImageUploadComponent } from './image-upload/image-upload.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import {SharedDirectivesModule} from "../directives/shared-directives.module";
     SalableCardComponent,
     SettingsListItemComponent,
     AdminMainAppbarComponent,
-    UserInfoComponent
+    UserInfoComponent,
+    ImageUploadComponent
   ],
   imports: [
     CommonModule,
@@ -52,23 +54,24 @@ import {SharedDirectivesModule} from "../directives/shared-directives.module";
     AppRoutingModule,
     SharedDirectivesModule
   ],
-  exports: [
-    AlertDialogComponent,
-    CustomerMainAppbarComponent,
-    NestedAppbarComponent,
-    BookingCardComponent,
-    BookingStateComponent,
-    BookingStateExtendedComponent,
-    BookingSummaryComponent,
-    FabComponent,
-    FooterComponent,
-    ImgLandscapeComponent,
-    LoadingScreenComponent,
-    NewsCardComponent,
-    SalableCardComponent,
-    SettingsListItemComponent,
-    AdminMainAppbarComponent,
-    UserInfoComponent
-  ]
+    exports: [
+        AlertDialogComponent,
+        CustomerMainAppbarComponent,
+        NestedAppbarComponent,
+        BookingCardComponent,
+        BookingStateComponent,
+        BookingStateExtendedComponent,
+        BookingSummaryComponent,
+        FabComponent,
+        FooterComponent,
+        ImgLandscapeComponent,
+        LoadingScreenComponent,
+        NewsCardComponent,
+        SalableCardComponent,
+        SettingsListItemComponent,
+        AdminMainAppbarComponent,
+        UserInfoComponent,
+        ImageUploadComponent
+    ]
 })
 export class SharedComponentsModule { }
