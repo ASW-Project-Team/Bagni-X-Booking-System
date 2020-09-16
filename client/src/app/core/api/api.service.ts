@@ -84,6 +84,25 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/catalog/services`);
   }
 
+  public createService(values: FormData): Observable<any> {
+    return this._http.post(`${environment.apiUrl}/api/catalog/services`, values);
+  }
+
+
+  public getService(serviceId: string): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/catalog/services/${serviceId}`);
+  }
+
+  public editService(serviceId: string, modifiedFields: FormData): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/catalog/services/${serviceId}`, modifiedFields);
+  }
+
+  public deleteService(serviceId: string): Observable<any> {
+    return this._http.delete(`${environment.apiUrl}/api/catalog/services/${serviceId}`);
+  }
+
+
+
   public editBooking(bookingId: string, modifiedFields: Object): Observable<any> {
     return this._http.put(`${environment.apiUrl}/api/bookings/${bookingId}`, modifiedFields);
   }

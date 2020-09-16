@@ -1,0 +1,46 @@
+<div class="page">
+  <form [formGroup]="serviceForm" class="service-form">
+    <mat-form-field appearance="outline" class="input-field" >
+      <mat-label>Nome</mat-label>
+      <input matInput  formControlName="name" type="text" placeholder="Es. Cabina">
+      <mat-error *ngIf="serviceForm.get('name').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput rows="8" formControlName="description" type="text" placeholder="Es. Lorem ipsum..."></textarea>
+      <mat-error *ngIf="serviceForm.get('description').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field" >
+      <mat-label>Prezzo giornaliero</mat-label>
+      <input matInput  formControlName="dailyPrice" type="number" placeholder="Es. Cabina">
+      <span matSuffix>&nbsp;€/gg</span>
+      <mat-error *ngIf="serviceForm.get('dailyPrice').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="input-field">
+      <app-image-upload formControlName="image"></app-image-upload>
+    </div>
+
+    <div class="warning-container" *ngIf="loading">
+      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
+      <span>Elaborazione modifiche in corso...</span>
+    </div>
+    <div class="warning-container" *ngIf="error">
+      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
+      <span>{{error}}</span>
+    </div>
+  </form>
+</div>
+
+<app-nested-appbar backRoute="/admin/services" backPageName="Servizi"
+                   [title]="isNew ? 'Aggiungi servizio' : 'Modifica servizio'"
+                   [actions]="actions">
+</app-nested-appbar>

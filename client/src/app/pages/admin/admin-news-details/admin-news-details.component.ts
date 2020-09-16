@@ -3,7 +3,6 @@ import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {News} from "../../../shared/models/news.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {SharingService} from "../../../core/sharing/sharing.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
@@ -17,11 +16,10 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
 })
 export class AdminNewsDetailsComponent implements OnInit {
   actions: AppbarAction[] = [];
-  downloadedNews: News;
+  news: News;
   newsForm: FormGroup;
-  isNewNews: boolean = true;
+  isNew: boolean = true;
   loading: boolean = false;
-  submitted: boolean = false;
   error: string = '';
 
   constructor(private formBuilder: FormBuilder,
@@ -41,12 +39,12 @@ export class AdminNewsDetailsComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       if (params.id) {
-        this.isNewNews = false;
+        this.isNew = false;
 
         this.api.getNews(params.id).subscribe(data => {
-          this.downloadedNews = new News(data);
-          this.newsForm.get('title').setValue(this.downloadedNews.title);
-          this.newsForm.get('article').setValue(this.downloadedNews.article);
+          this.news = new News(data);
+          this.newsForm.get('title').setValue(this.news.title);
+          this.newsForm.get('article').setValue(this.news.article);
           this.actions = [
             {
               id: "1",
@@ -86,8 +84,6 @@ export class AdminNewsDetailsComponent implements OnInit {
 
 
   modifyNews() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.newsForm.invalid) {
       return;
@@ -95,7 +91,7 @@ export class AdminNewsDetailsComponent implements OnInit {
 
     this.loading = true;
 
-    this.api.editNews(this.downloadedNews.id, UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
+    this.api.editNews(this.news.id, UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
       this.loading = false;
       this.router.navigate(['/admin/news'])
         .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
@@ -109,7 +105,7 @@ export class AdminNewsDetailsComponent implements OnInit {
 
   deleteNews() {
     this.loading = true;
-    this.api.deleteNews(this.downloadedNews.id).subscribe(() => {
+    this.api.deleteNews(this.news.id).subscribe(() => {
       this.loading = false;
       this.router.navigate(['/admin/news'])
         .then(() => this.snackBar.open("Notizia eliminata!", null, {duration: 4000}))
@@ -121,8 +117,6 @@ export class AdminNewsDetailsComponent implements OnInit {
   }
 
   createNews() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.newsForm.invalid) {
       return;

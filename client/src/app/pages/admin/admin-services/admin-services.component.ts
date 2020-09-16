@@ -14,7 +14,7 @@ export class AdminServicesComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit(): void {
-    this.api.getRankUmbrellas().subscribe(data => {
+    this.api.getServices().subscribe(data => {
       this.services = data.map(model => new Service(model));
     });
   }

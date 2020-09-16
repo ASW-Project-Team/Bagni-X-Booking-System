@@ -24,6 +24,7 @@ import {AdminServicesComponent} from "./pages/admin/admin-services/admin-service
 import {AdminStatsComponent} from "./pages/admin/admin-stats/admin-stats.component";
 import {AdminBookingDetailsComponent} from "./pages/admin/admin-booking-details/admin-booking-details.component";
 import {AdminNewsDetailsComponent} from "./pages/admin/admin-news-details/admin-news-details.component";
+import {AdminServicesDetailsComponent} from "./pages/admin/admin-services-details/admin-services-details.component";
 
 
 // populate app routes
@@ -53,6 +54,8 @@ const routes: Routes = [
   { path: 'admin/profile', component: AdminProfileComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/rank-umbrellas', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services', component: AdminServicesComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/services/:id', component: AdminServicesDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/new-service', component: AdminServicesDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/stats', component: AdminStatsComponent, canActivate: [AdminAuthGuard] },
 
   { path: '404', component: PageNotFoundComponent },
