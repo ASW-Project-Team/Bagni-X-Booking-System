@@ -1,5 +1,5 @@
 <div class="page">
-  <div *ngIf="downloadedBooking; else loadingScreen">
+  <div *ngIf="booking; else loadingScreen">
     <h1>Cliente</h1>
     <div class="content-container" *ngIf="customer">
       <app-user-info [customer]="customer"></app-user-info>
@@ -7,15 +7,15 @@
 
     <h1>Stato</h1>
     <div class="content-container">
-      <app-booking-state-extended [bookingState]="downloadedBooking.getState()"></app-booking-state-extended>
+      <app-booking-state-extended [bookingState]="booking.getState()"></app-booking-state-extended>
     </div>
 
     <div class="content-container">
-      <app-booking-summary [booking]="downloadedBooking"></app-booking-summary>
+      <app-booking-summary [booking]="booking"></app-booking-summary>
     </div>
 
     <h1>ID prenotazione</h1>
-    <p>{{ downloadedBooking.id }}</p>
+    <p>{{ booking.id }}</p>
   </div>
 
   <ng-template #loadingScreen>
