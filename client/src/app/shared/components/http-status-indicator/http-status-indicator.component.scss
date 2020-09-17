@@ -1,0 +1,15 @@
+@import "~src/styles/utils";
+
+.status-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  @include responsiveProp(margin-top, $defaultMargin);
+  text-align: left;
+
+  .status-icon {
+    @include responsiveProp(margin-right, $defaultMargin);
+  }
+}

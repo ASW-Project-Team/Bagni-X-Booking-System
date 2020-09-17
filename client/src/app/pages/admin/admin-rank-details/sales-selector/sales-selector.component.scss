@@ -1,0 +1,25 @@
+@import "~src/styles/utils";
+
+.sales-selector-container {
+  @include responsiveProp(margin-top, $defaultMargin);
+
+  .sale-adder {
+    @include responsiveProp(margin-top, $defaultMargin);
+
+    .inputs-container {
+      @include inputsContainer;
+    }
+
+    .add-sale-button {
+    }
+  }
+
+  .sales-container {
+    @include responsiveProp(margin-top, $defaultMargin);
+
+    p {
+      width: 100%;
+      @include responsiveProp(margin-bottom, $halfMargin);
+    }
+  }
+}

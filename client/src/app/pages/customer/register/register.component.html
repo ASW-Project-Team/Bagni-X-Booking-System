@@ -1,13 +1,9 @@
 <div class="page">
   <div class="description">
-      <span>
-            Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
-      </span>
-
+      Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
   </div>
   <form [formGroup]="regForm" class="registration-form" (ngSubmit)="onSubmit()">
-    <div class="inputs-container">
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Nome</mat-label>
         <input matInput formControlName="name" type="text" placeholder="Es. Mario">
         <mat-error *ngIf="regForm.get('name').hasError('required')">
@@ -15,7 +11,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Cognome</mat-label>
         <input matInput formControlName="surname" type="text"  placeholder="Es. Rossi">
         <mat-error *ngIf="regForm.get('surname').hasError('required')">
@@ -23,7 +19,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field long-input">
+      <mat-form-field appearance="outline" class="input-field-wide">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
         <mat-error
@@ -35,7 +31,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Password</mat-label>
         <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'" placeholder="Es. mySuperPassword!">
         <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -50,7 +46,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Conferma password</mat-label>
         <input matInput formControlName="confirmPassword" [type]="hideConfirm ? 'password' : 'text'" placeholder="Es. mySuperPassword!" >
         <mat-icon matSuffix (click)="hideConfirm = !hideConfirm">{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -62,7 +58,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Numero di telefono</mat-label>
         <input matInput formControlName="phone" placeholder="Es. 3310000000" type="tel">
         <mat-error *ngIf="regForm.get('phone').hasError('pattern')">
@@ -73,27 +69,33 @@
         </mat-hint>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Indirizzo</mat-label>
         <input matInput formControlName="address" type="text" placeholder="Es. Viale della Vittoria, 46">
         <mat-hint>
           Il campo è <strong>facoltativo</strong>
         </mat-hint>
       </mat-form-field>
+
+    <div class="input-field-wide">
+      <app-http-status-indicator [loading]="loading" [error]="error"
+                                 loadingText="Registrazione in corso...">
+      </app-http-status-indicator>
     </div>
 
-    <div class="warning-container" *ngIf="loading">
-      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
-      <span>Registrazione in corso...</span>
-    </div>
-    <div class="warning-container" *ngIf="error">
-      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
-      <span>{{error}}</span>
+    <div class="input-field-wide">
+      <app-http-status-indicator [loading]="loading" [error]="error"
+                                 loadingText="Registrazione in corso...">
+      </app-http-status-indicator>
     </div>
 
-    <button mat-raised-button color="primary" [disabled]="loading" class="registration-button" type="submit">
-      Registrati
-    </button>
+    <div class="input-field-wide button-container">
+      <button mat-raised-button color="primary" [disabled]="loading"
+              class="registration-button" type="submit">
+        Registrati
+      </button>
+    </div>
+
   </form>
 </div>
 

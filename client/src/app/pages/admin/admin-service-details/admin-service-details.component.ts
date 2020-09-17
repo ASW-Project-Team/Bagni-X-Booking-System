@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
-import {News} from "../../../shared/models/news.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
@@ -11,11 +10,11 @@ import {UploadUtils} from "../../../shared/utils/upload.utils";
 import {Service} from "../../../shared/models/service.model";
 
 @Component({
-  selector: 'app-admin-services-details',
-  templateUrl: './admin-services-details.component.html',
-  styleUrls: ['./admin-services-details.component.scss']
+  selector: 'app-admin-service-details',
+  templateUrl: './admin-service-details.component.html',
+  styleUrls: ['./admin-service-details.component.scss']
 })
-export class AdminServicesDetailsComponent implements OnInit {
+export class AdminServiceDetailsComponent implements OnInit {
   actions: AppbarAction[] = [];
   service: Service;
   serviceForm: FormGroup;
@@ -126,7 +125,6 @@ export class AdminServicesDetailsComponent implements OnInit {
     }
 
     this.loading = true;
-
     this.api.createService(UploadUtils.toFormData(this.serviceForm.value)).subscribe(() => {
       this.loading = false;
       this.router.navigate(['/admin/services'])

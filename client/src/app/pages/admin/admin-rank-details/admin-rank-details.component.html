@@ -1,0 +1,61 @@
+<div class="page">
+  <form [formGroup]="rankForm" class="rank-form">
+    <mat-form-field appearance="outline" class="input-field-wide" >
+      <mat-label>Nome</mat-label>
+      <input matInput  formControlName="name" type="text" placeholder="Es. Cabina">
+      <mat-error *ngIf="rankForm.get('name').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput rows="8" formControlName="description" type="text" placeholder="Es. Lorem ipsum..."></textarea>
+      <mat-error *ngIf="rankForm.get('description').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Prezzo giornaliero</mat-label>
+      <input matInput  formControlName="dailyPrice" type="number" placeholder="Es. Cabina">
+      <span matSuffix>&nbsp;€/gg</span>
+      <mat-error *ngIf="rankForm.get('dailyPrice').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Da ombrellone n°</mat-label>
+      <input matInput formControlName="fromUmbrella" type="number" placeholder="Es. 10">
+      <mat-error *ngIf="rankForm.get('fromUmbrella').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>A ombrellone n°</mat-label>
+      <input matInput formControlName="toUmbrella" type="number" placeholder="Es. 20">
+      <mat-error *ngIf="rankForm.get('toUmbrella').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="input-field-wide">
+      <app-image-upload formControlName="image"></app-image-upload>
+    </div>
+
+    <div class="input-field-wide">
+      <app-sales-selector formControlName="sales"></app-sales-selector>
+    </div>
+
+    <div class="input-field-wide">
+      <app-http-status-indicator [loading]="loading" [error]="error"></app-http-status-indicator>
+    </div>
+  </form>
+</div>
+
+<app-nested-appbar backRoute="/admin/rank-umbrellas" backPageName="Ombrelloni"
+                   [title]="isNew ? 'Aggiungi categoria ombrelloni' : 'Modifica categoria ombrelloni'"
+                   [actions]="activeActions">
+</app-nested-appbar>

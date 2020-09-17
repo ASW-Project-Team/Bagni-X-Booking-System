@@ -24,8 +24,9 @@ import {AdminServicesComponent} from "./pages/admin/admin-services/admin-service
 import {AdminStatsComponent} from "./pages/admin/admin-stats/admin-stats.component";
 import {AdminBookingDetailsComponent} from "./pages/admin/admin-booking-details/admin-booking-details.component";
 import {AdminNewsDetailsComponent} from "./pages/admin/admin-news-details/admin-news-details.component";
-import {AdminServicesDetailsComponent} from "./pages/admin/admin-services-details/admin-services-details.component";
+import {AdminServiceDetailsComponent} from "./pages/admin/admin-service-details/admin-service-details.component";
 import {AdminContactDetailsComponent} from "./pages/admin/admin-contact-details/admin-contact-details.component";
+import {AdminRankDetailsComponent} from "./pages/admin/admin-rank-details/admin-rank-details.component";
 
 
 // populate app routes
@@ -55,9 +56,11 @@ const routes: Routes = [
   { path: 'admin/news/:id', component: AdminNewsDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/profile', component: AdminProfileComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/rank-umbrellas', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/rank-umbrellas/:id', component: AdminRankDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/new-rank-umbrella', component: AdminRankDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services', component: AdminServicesComponent, canActivate: [AdminAuthGuard] },
-  { path: 'admin/services/:id', component: AdminServicesDetailsComponent, canActivate: [AdminAuthGuard] },
-  { path: 'admin/new-service', component: AdminServicesDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/services/:id', component: AdminServiceDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/new-service', component: AdminServiceDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/stats', component: AdminStatsComponent, canActivate: [AdminAuthGuard] },
 
   { path: '404', component: PageNotFoundComponent },

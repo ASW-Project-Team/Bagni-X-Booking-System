@@ -13,8 +13,11 @@ import { AdminContactsComponent } from './admin-contacts/admin-contacts.componen
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminBookingDetailsComponent } from './admin-booking-details/admin-booking-details.component';
 import { AdminNewsDetailsComponent } from './admin-news-details/admin-news-details.component';
-import { AdminServicesDetailsComponent } from './admin-services-details/admin-services-details.component';
+import { AdminServiceDetailsComponent } from './admin-service-details/admin-service-details.component';
 import { AdminContactDetailsComponent } from './admin-contact-details/admin-contact-details.component';
+import { AdminRankDetailsComponent } from './admin-rank-details/admin-rank-details.component';
+import { SalesSelectorComponent } from './admin-rank-details/sales-selector/sales-selector.component';
+import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.module";
 
 
 @NgModule({
@@ -30,13 +33,14 @@ import { AdminContactDetailsComponent } from './admin-contact-details/admin-cont
     AdminLoginComponent,
     AdminBookingDetailsComponent,
     AdminNewsDetailsComponent,
-    AdminServicesDetailsComponent,
+    AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AdminRankDetailsModule
   ],
   exports: [
     AdminBookingsComponent,
@@ -50,8 +54,9 @@ import { AdminContactDetailsComponent } from './admin-contact-details/admin-cont
     AdminLoginComponent,
     AdminBookingDetailsComponent,
     AdminNewsDetailsComponent,
-    AdminServicesDetailsComponent,
-    AdminContactDetailsComponent
+    AdminServiceDetailsComponent,
+    AdminContactDetailsComponent,
+    AdminRankDetailsModule
   ]
 })
 export class AdminPagesModule { }

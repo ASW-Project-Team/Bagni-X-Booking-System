@@ -76,6 +76,24 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas`);
   }
 
+  public getRankUmbrella(rankId: string): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`);
+  }
+
+
+  public createRankUmbrella(values: FormData): Observable<any> {
+    return this._http.post(`${environment.apiUrl}/api/catalog/rank-umbrellas`, values);
+  }
+
+
+  public editRankUmbrella(rankId: string, modifiedFields: FormData): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`, modifiedFields);
+  }
+
+  public deleteRankUmbrella(rankId: string): Observable<any> {
+    return this._http.delete(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`);
+  }
+
 
   public getServices(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/catalog/services`);
@@ -84,7 +102,6 @@ export class ApiService {
   public createService(values: FormData): Observable<any> {
     return this._http.post(`${environment.apiUrl}/api/catalog/services`, values);
   }
-
 
   public getService(serviceId: string): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/catalog/services/${serviceId}`);

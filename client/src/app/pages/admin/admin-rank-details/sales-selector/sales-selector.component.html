@@ -1,0 +1,59 @@
+<div class="sales-selector-container">
+  <!-- lista sconti attivi, dentro a card -->
+  <div class="sales-container">
+    <h1>Sconti attivi</h1>
+    <p>
+      Ad ogni categoria di ombrelloni, è possibile associare dei periodi lungo i quali verrà applicato
+      uno specifico sconto. Tale sconto verrà applicato sul costo del singolo ombrellone, per ogni
+      ombrellone prenotato, lungo il periodo indicato.
+    </p>
+    <ul *ngFor="let sale of sales">
+      <li class="sale">
+        <app-settings-list-item
+          title="Sconto del {{ sale.percent | percent: '1.2'}}"
+          description="Dal {{sale.dateFrom | date:'dd/MM/yyyy'}} al {{sale.dateTo | date:'dd/MM/yyyy'}}"
+          icon="sale"
+          actionIcon="trash-can-outline" [action]="generateRemoveSaleFunction(sale)"
+          [clickable]="false"
+          [isLast]="sales.indexOf(sale) >= sales.length - 1">
+        </app-settings-list-item>
+      </li>
+    </ul>
+    <div class="no-sales-container" *ngIf="!sales || sales.length == 0">
+      <strong>Non ci sono sconti attivi al momento.</strong>
+    </div>
+  </div>
+
+  <!-- adder per lo sconto, con bordo material outlined -->
+  <form [formGroup]="saleAdderForm" (ngSubmit)="addSale()" class="sale-adder">
+    <h1>Aggiungi uno sconto</h1>
+
+    <div class="inputs-container">
+      <mat-form-field appearance="outline" class="input-field-half">
+        <mat-label>Intervallo di date</mat-label>
+        <mat-date-range-input [rangePicker]="pickerPeriod" formGroupName="saleDateRange"
+                              [min]="startSaleDate" [max]="endSaleDate">
+          <input matStartDate placeholder="Data di inizio" formControlName="dateFrom">
+          <input matEndDate placeholder="Data di fine" formControlName="dateTo">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="pickerPeriod"></mat-datepicker-toggle>
+        <mat-date-range-picker touchUi #pickerPeriod></mat-date-range-picker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input-field-half">
+        <mat-label>Percentuale sconto</mat-label>
+        <input matInput formControlName="percent" type="number" placeholder="Es. Cabina">
+        <span matSuffix>&nbsp;%</span>
+        <mat-error *ngIf="saleAdderForm.get('percent').hasError('required')">
+          Il campo è <strong>obbligatorio</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+
+    <button mat-raised-button color="primary" class="add-sale-button">
+      Aggiungi sconto
+    </button>
+  </form>
+
+</div>

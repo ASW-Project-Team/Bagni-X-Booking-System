@@ -61,6 +61,16 @@ module.exports.isPercent = (value) => {
   return module.exports.isFloat(value + '') && float >= 0 && float <= 1;
 }
 
+const generateUmbrellas = (from, to) => {
+  const umbrellas = [];
+
+  for (let i = from; i <= to; i++) {
+    umbrellas.push(i);
+  }
+
+  return umbrellas;
+}
+
 module.exports.isValidUmbrellaRange = async (fromUmbrella, toUmbrella, rankModel, properId) => {
   if (module.exports.isPositiveInt(fromUmbrella) && module.exports.isPositiveInt(toUmbrella)) {
     const fromUmbrellaInt = validator.toInt(fromUmbrella + '');
@@ -71,13 +81,16 @@ module.exports.isValidUmbrellaRange = async (fromUmbrella, toUmbrella, rankModel
 
       // exclude from the research th id of the rank, if present
       if (properId) {
-        allRanks = allRanks.filter(rank => rank._id !== properId);
+        allRanks = allRanks.filter(rank => rank._id.toString() !== properId);
       }
 
-      return allRanks.map(
-        rank => (rank.toUmbrella < toUmbrellaInt) ||
-          (rank.fromUmbrella < fromUmbrellaInt)).
-        reduce((prev, curr) => prev && curr, true)
+      const newUmbrellas = generateUmbrellas(fromUmbrellaInt, toUmbrellaInt);
+
+      const allUmbrellas = allRanks
+          .map(rank => generateUmbrellas(rank.fromUmbrella, rank.toUmbrella))
+          .reduce((prev, curr) => prev.concat(curr), newUmbrellas);
+
+      return new Set(allUmbrellas).size === allUmbrellas.length
     }
   }
   return false;

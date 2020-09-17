@@ -1,8 +1,14 @@
-<div class="options-item" matRipple matRippleColor="primary">
+<div class="options-item" matRipple [matRippleDisabled]="!clickable" matRippleColor="primary">
+
+  <div class="main-elements">
   <mat-icon class="icon" [svgIcon]="isMdi ? icon : null">{{!isMdi ? icon : ''}}</mat-icon>
   <div class="text">
     <h2 class="title">{{title}}</h2>
     <p class="description">{{description}}</p>
-    <div *ngIf="!isLast" class="divider"></div>
   </div>
+  <button class="action" *ngIf="action" mat-icon-button>
+    <mat-icon [svgIcon]="actionIcon" (click)="action()" color="primary"></mat-icon>
+  </button>
+  </div>
+  <div *ngIf="!isLast" class="divider"></div>
 </div>

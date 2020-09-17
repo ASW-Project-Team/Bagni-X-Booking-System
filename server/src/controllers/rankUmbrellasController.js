@@ -17,12 +17,13 @@ module.exports.createRankUmbrella = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas);
-  const imageUrl = await imgUploader.syncUpload(req, res);
-  const sales = sanitizers.toArray(req.body.sales, {
+  const sales = sanitizers.toJsonArray(req.body.sales, {
     dateFrom: sanitizers.toDate,
     dateTo: sanitizers.toDate,
     percent: sanitizers.toPercent
-  })
+  });
+  const imageUrl = await imgUploader.syncUpload(req, res);
+
 
   // creation flow
   await common.create(req, res, RankUmbrellas, {
@@ -75,12 +76,13 @@ module.exports.updateRankUmbrella = async (req, res) => {
   const description = sanitizers.toString(req.body.description);
   const dailyPrice = sanitizers.toPositiveFloat(req.body.dailyPrice);
   const { fromUmbrella, toUmbrella } = await sanitizers.toUmbrellaRange(req.body.fromUmbrella, req.body.toUmbrella, RankUmbrellas, paramId);
-  const imageUrl = await imgUploader.syncUpload(req, res);
-  const sales = sanitizers.toArray(req.body.sales, {
+  const sales = sanitizers.toJsonArray(req.body.sales, {
     dateFrom: sanitizers.toDate,
     dateTo: sanitizers.toDate,
     percent: sanitizers.toPercent
   });
+  const imageUrl = await imgUploader.syncUpload(req, res);
+
 
   // Update flow
   await common.update(req, res, RankUmbrellas, paramId, {

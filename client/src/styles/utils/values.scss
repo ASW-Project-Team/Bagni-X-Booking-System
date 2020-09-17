@@ -65,3 +65,25 @@ $defaultShadow: 0 2px 5px 0 rgba(0,0,0,.2);
   align-items: center;
   justify-content: center;
 }
+
+
+@mixin inputsContainer {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  .input-field-wide {
+    box-sizing: border-box;
+    padding: 0;
+    width: 100%;
+  }
+
+  .input-field-half {
+    box-sizing: border-box;
+    padding: 0;
+    @include responsiveProp(width, $textboxWidth);
+  }
+}

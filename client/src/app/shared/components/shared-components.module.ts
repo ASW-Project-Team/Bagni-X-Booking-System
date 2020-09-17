@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {MainAppbarComponent} from "./appbars/main-appbar/main-appbar.component";
 import {AlertDialogComponent} from "./alert-dialog/alert-dialog.component";
 import {CustomerMainAppbarComponent} from "./appbars/customer-main-appbar/customer-main-appbar.component";
@@ -22,7 +22,8 @@ import {SharedPipesModule} from "../pipes/shared-pipes.module";
 import {AdminMainAppbarComponent} from "./appbars/admin-main-appbar/admin-main-appbar.component";
 import {UserInfoComponent} from "./user-info/user-info.component";
 import {SharedDirectivesModule} from "../directives/shared-directives.module";
-import { ImageUploadComponent } from './image-upload/image-upload.component';
+import {ImageUploadComponent} from './image-upload/image-upload.component';
+import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-indicator.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { ImageUploadComponent } from './image-upload/image-upload.component';
     SettingsListItemComponent,
     AdminMainAppbarComponent,
     UserInfoComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
+    HttpStatusIndicatorComponent
   ],
   imports: [
     CommonModule,
@@ -54,24 +56,26 @@ import { ImageUploadComponent } from './image-upload/image-upload.component';
     AppRoutingModule,
     SharedDirectivesModule
   ],
-    exports: [
-        AlertDialogComponent,
-        CustomerMainAppbarComponent,
-        NestedAppbarComponent,
-        BookingCardComponent,
-        BookingStateComponent,
-        BookingStateExtendedComponent,
-        BookingSummaryComponent,
-        FabComponent,
-        FooterComponent,
-        ImgLandscapeComponent,
-        LoadingScreenComponent,
-        NewsCardComponent,
-        SalableCardComponent,
-        SettingsListItemComponent,
-        AdminMainAppbarComponent,
-        UserInfoComponent,
-        ImageUploadComponent
-    ]
+  exports: [
+    AlertDialogComponent,
+    CustomerMainAppbarComponent,
+    NestedAppbarComponent,
+    BookingCardComponent,
+    BookingStateComponent,
+    BookingStateExtendedComponent,
+    BookingSummaryComponent,
+    FabComponent,
+    FooterComponent,
+    ImgLandscapeComponent,
+    LoadingScreenComponent,
+    NewsCardComponent,
+    SalableCardComponent,
+    SettingsListItemComponent,
+    AdminMainAppbarComponent,
+    UserInfoComponent,
+    ImageUploadComponent,
+    HttpStatusIndicatorComponent
+  ]
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {
+}

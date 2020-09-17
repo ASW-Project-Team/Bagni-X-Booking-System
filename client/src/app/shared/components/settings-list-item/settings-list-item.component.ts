@@ -12,6 +12,10 @@ export class SettingsListItemComponent implements OnInit {
   @Input() isMdi: boolean = true;
   @Input() isLast: boolean = false;
 
+  @Input() clickable: boolean = true;
+  @Input() action: Function;
+  @Input() actionIcon: string;
+
   constructor() { }
 
   ngOnInit(): void {

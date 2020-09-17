@@ -78,6 +78,7 @@ module.exports.toArray = (array, itemSanitizers) => {
   // esegui sanitization per tutti gli oggetti; se anche solo un oggetto ha un undefined, invalida
   if (customValidators.isArray(array) && array.length >= 0) {
     const allItemsValid = array.map(item => {
+
       Object.entries(item).
         map(([key, value]) => {
           if (itemSanitizers[key]) {
@@ -89,8 +90,25 @@ module.exports.toArray = (array, itemSanitizers) => {
     });
 
     if (allItemsValid) {
-      return array;
+      return array.map(item => {
+        const newItem = {}
+        Object.keys(item).forEach(key => {
+          newItem[key] = itemSanitizers[key](item[key]);
+        });
+        return newItem;
+      });
     }
+  }
+}
+
+module.exports.toJsonArray = (value, itemSanitizers) => {
+  if (value !== undefined) {
+    if (value === '') {
+      return [];
+    }
+
+    const parsedValue = JSON.parse(value);
+    return module.exports.toArray(parsedValue, itemSanitizers)
   }
 }
 

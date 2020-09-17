@@ -59,6 +59,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.getHome();
       case url.endsWith('api/catalog/rank-umbrellas') && method === 'GET':
         return FakeBackendInterceptor.getRankUmbrellas();
+      case url.endsWith('api/catalog/rank-umbrellas') && method === 'POST':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'GET':
+        return FakeBackendInterceptor.getRankUmbrella();
+      case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'DELETE':
       case url.endsWith('api/catalog/services') && method === 'GET':
         return FakeBackendInterceptor.getServices();
       case url.endsWith('api/customers') && method === 'GET':
@@ -188,6 +195,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
   private static getRankUmbrellas(): ObservableInput<any> {
     return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock);
+  }
+
+  private static getRankUmbrella(): ObservableInput<any> {
+    return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock[0]);
   }
 
   private static getServices(): ObservableInput<any> {
