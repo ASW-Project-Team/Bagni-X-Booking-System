@@ -1,6 +1,5 @@
 <div class="page">
   <div class="first-section">
-    <h1>Dati dello stabilimento</h1>
     <p>
       Da questo form è possibile personalizzare i dati di base dello stabilimento. Nome e logo
       sono quelli mostrati nella parte superiore delle pagine. La data di inizio e fine stagione
@@ -19,7 +18,7 @@
       <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Inizio e fine stagione</mat-label>
         <mat-date-range-input [rangePicker]="pickerPeriod" formGroupName="seasonDateRange">
-          <input matStartDate placeholder="Data di inizio" formControlName="seasonstart">
+          <input matStartDate placeholder="Data di inizio" formControlName="seasonStart">
           <input matEndDate placeholder="Data di fine" formControlName="seasonEnd">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="pickerPeriod"></mat-datepicker-toggle>
@@ -31,12 +30,9 @@
         <app-image-upload formControlName="image" helperText="Seleziona il logo."></app-image-upload>
       </div>
 
-      <div class="input-field-wide left-aligned">
-        <button mat-raised-button type="submit" color="primary">Salva dati</button>
-      </div>
-
-      <div class="input-field-wide">
-        <app-http-status-indicator [loading]="loading" [error]="error"></app-http-status-indicator>
+      <div class="submit-container">
+        <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+        <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
       </div>
     </form>
   </div>

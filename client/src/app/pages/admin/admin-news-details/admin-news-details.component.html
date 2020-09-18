@@ -1,6 +1,6 @@
 <div class="page">
-  <form [formGroup]="newsForm" class="news-form">
-    <mat-form-field appearance="outline" class="input-field" >
+  <form [formGroup]="newsForm" class="news-form" (ngSubmit)="submitAction()">
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Titolo</mat-label>
       <input matInput  formControlName="title" type="text" placeholder="Es. Titolo dell'articolo">
       <mat-error *ngIf="newsForm.get('title').hasError('required')">
@@ -8,7 +8,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="input-field">
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Articolo</mat-label>
       <textarea matInput rows="12" formControlName="article" type="text" placeholder="Es. Lorem ipsum..."></textarea>
       <mat-error *ngIf="newsForm.get('article').hasError('required')">
@@ -16,17 +16,13 @@
       </mat-error>
     </mat-form-field>
 
-    <div class="input-field">
+    <div class="input-field-wide">
       <app-image-upload formControlName="image"></app-image-upload>
     </div>
 
-    <div class="warning-container" *ngIf="loading">
-      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
-      <span>Elaborazione modifiche in corso...</span>
-    </div>
-    <div class="warning-container" *ngIf="error">
-      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
-      <span>{{error}}</span>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
     </div>
   </form>
 </div>

@@ -16,11 +16,36 @@ import {AlertDialogComponent} from "../../../shared/components/alert-dialog/aler
 })
 export class AdminNewsDetailsComponent implements OnInit {
   actions: AppbarAction[] = [];
-  news: News;
+  newsId: string;
   newsForm: FormGroup;
   isNew: boolean = true;
   loading: boolean = false;
   error: string = '';
+  submitAction: Function;
+
+  private createAction: AppbarAction = {
+    id: "0",
+    name: "Crea news",
+    mdiIcon: 'content-save-outline',
+    isMdi: true,
+    execute: () => this.createNews()
+  };
+
+  private deleteAction: AppbarAction = {
+    id: "1",
+    name: "Elimina news",
+    mdiIcon: 'trash-can-outline',
+    isMdi: true,
+    execute: () => this.deleteNews()
+  };
+
+  private modifyAction: AppbarAction = {
+    id: "0",
+    name: "Salva modifiche",
+    mdiIcon: 'content-save-outline',
+    isMdi: true,
+    execute: () => this.modifyNews()
+  };
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -38,60 +63,33 @@ export class AdminNewsDetailsComponent implements OnInit {
     });
 
     this.route.params.subscribe(params => {
-      if (params.id) {
-        this.isNew = false;
+      this.isNew = !!!params.id;
 
-        this.api.getNews(params.id).subscribe(data => {
-          this.news = new News(data);
-          this.newsForm.get('title').setValue(this.news.title);
-          this.newsForm.get('article').setValue(this.news.article);
-          this.actions = [
-            {
-              id: "1",
-              name: "Elimina news",
-              mdiIcon: 'trash-can-outline',
-              isMdi: true,
-              execute: () =>
-                this.dialog.open(AlertDialogComponent, { data: {
-                    content: "Sei sicuro di voler eliminare la notizia? L'azione non è reversibile.",
-                    positiveAction: { text: "Sì, elimina", execute: () => this.deleteNews() },
-                    negativeAction: { text: "No", execute: () => {} }
-                }})
-            },
-            {
-              id: "0",
-              name: "Salva modifiche",
-              mdiIcon: 'content-save-outline',
-              isMdi: true,
-              execute: () => this.modifyNews()
-            }
-          ];
-        });
+      if (this.isNew) {
+        this.actions.push(this.createAction);
+        this.submitAction = this.createNews;
 
       } else {
-        this.actions = [
-          {
-            id: "0",
-            name: "Crea news",
-            mdiIcon: 'content-save-outline',
-            isMdi: true,
-            execute: () => this.createNews()
-          }
-        ];
+        this.newsId = params.id;
+        this.actions.push(this.deleteAction, this.modifyAction);
+        this.submitAction = this.modifyNews;
+
+        this.api.getNews(params.id).subscribe(data => {
+          const news = new News(data);
+          this.newsForm.get('title').setValue(news.title);
+          this.newsForm.get('article').setValue(news.article);
+        });
       }
     });
   }
 
-
   modifyNews() {
-    // stop here if form is invalid
     if (this.newsForm.invalid) {
       return;
     }
 
     this.loading = true;
-
-    this.api.editNews(this.news.id, UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
+    this.api.editNews(this.newsId, UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
       this.loading = false;
       this.router.navigate(['/admin/news'])
         .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
@@ -104,20 +102,26 @@ export class AdminNewsDetailsComponent implements OnInit {
 
 
   deleteNews() {
-    this.loading = true;
-    this.api.deleteNews(this.news.id).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/news'])
-        .then(() => this.snackBar.open("Notizia eliminata!", null, {duration: 4000}))
-      },
-      error => {
-      this.error = error;
-      this.loading = false;
-    });
+    this.dialog.open(AlertDialogComponent, { data: {
+      content: "Sei sicuro di voler eliminare la notizia? L'azione non è reversibile.",
+      positiveAction: { text: "Sì, elimina", execute: () => {
+        this.loading = true;
+        this.api.deleteNews(this.newsId).subscribe(() => {
+          this.loading = false;
+          this.router.navigate(['/admin/news'])
+            .then(() => this.snackBar.open("Notizia eliminata!", null, {duration: 4000}))
+
+        }, error => {
+          this.error = error;
+          this.loading = false;
+        });
+      }},
+      negativeAction: { text: "No", execute: () => {} }
+    }});
   }
 
+
   createNews() {
-    // stop here if form is invalid
     if (this.newsForm.invalid) {
       return;
     }
