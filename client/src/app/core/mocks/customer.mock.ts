@@ -9,7 +9,7 @@ export const customersMock: CustomerModel[] = [
     phone: "331123456",
     address: "Viale della Vittoria, 22",
     deleted: false,
-    registered: true,
+    registered: false,
   },
   {
     id: "1234",

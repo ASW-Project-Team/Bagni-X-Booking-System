@@ -1,12 +1,17 @@
 <div class="page">
-  <p>La schermata accoglie la rubrica, ovvero la lista dei clienti
-    registrati nell'applicazione.</p>
+  <p>
+    La schermata accoglie la rubrica, ovvero la lista dei clienti che si sono registrati nell'applicazione.
+    Puoi anche registrare a mano dei clienti, nel caso in cui voglia registrare delle prenotazioni, da parte di
+    clienti che non utilizzano l'app.
+  </p>
 
   <div *ngFor="let customer of customers">
     <app-settings-list-item [title]="customer.getFullName()"
                             [description]="customer.email"
                             [routerLink]="['/admin/contacts', customer.id, { fullName: customer.getFullName() }]"
                             icon="account-circle-outline"
+                            [actionIcon]="!customer.registered ? 'trash-can-outline' : undefined"
+                            [action]="generateDeleteCustomerAction(customer)"
                             [isLast]="customers.indexOf(customer) >= customers.length - 1">
     </app-settings-list-item>
   </div>

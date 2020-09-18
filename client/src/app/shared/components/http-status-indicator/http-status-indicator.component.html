@@ -1,5 +1,5 @@
 <div class="status-container" *ngIf="loading">
-  <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
+  <mat-spinner class="status-icon" color="primary" [diameter]="24"></mat-spinner>
   <span>{{ loadingText ? loadingText : 'Processando la richiesta...'}}</span>
 </div>
 <div class="status-container" *ngIf="error">

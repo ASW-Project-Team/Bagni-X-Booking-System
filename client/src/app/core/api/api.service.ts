@@ -116,16 +116,27 @@ export class ApiService {
   }
 
 
-  public getCustomers(): Observable<any> {
-    return this._http.get(`${environment.apiUrl}/api/customers`);
-  }
-
-
   public editBooking(bookingId: string, modifiedFields: Object): Observable<any> {
     return this._http.put(`${environment.apiUrl}/api/bookings/${bookingId}`, modifiedFields);
   }
 
+  public getCustomers(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/customers`);
+  }
+
   public getCustomer(customerId: string): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/customers/${customerId}`);
+  }
+
+  public deleteUnregisteredCustomer(customerId: string): Observable<any> {
+    return this._http.delete(`${environment.apiUrl}/api/customers/${customerId}`);
+  }
+
+  public editUnregisteredCustomer(customerId: string, modifiedData: Object): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/customers/${customerId}`, modifiedData);
+  }
+
+  public createUnregisteredCustomer(newData: Object): Observable<any> {
+    return this._http.post(`${environment.apiUrl}/api/customers`, newData);
   }
 }

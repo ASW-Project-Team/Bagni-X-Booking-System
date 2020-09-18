@@ -1,4 +1,4 @@
-<div class="options-item" matRipple [matRippleDisabled]="!clickable" matRippleColor="primary">
+<div class="options-item" matRipple [matRippleDisabled]="!clickable || disableParentRipple" matRippleColor="primary">
 
   <div class="main-elements">
   <mat-icon class="icon" [svgIcon]="isMdi ? icon : null">{{!isMdi ? icon : ''}}</mat-icon>
@@ -6,7 +6,7 @@
     <h2 class="title">{{title}}</h2>
     <p class="description">{{description}}</p>
   </div>
-  <button class="action" *ngIf="action" mat-icon-button>
+  <button class="action" *ngIf="action" mat-icon-button appClickStopPropagation [(disableParentRipple)]="disableParentRipple">
     <mat-icon [svgIcon]="actionIcon" (click)="action()" color="primary"></mat-icon>
   </button>
   </div>

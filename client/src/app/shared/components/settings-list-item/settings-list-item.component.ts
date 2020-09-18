@@ -16,6 +16,8 @@ export class SettingsListItemComponent implements OnInit {
   @Input() action: Function;
   @Input() actionIcon: string;
 
+  disableParentRipple: boolean = false;
+
   constructor() { }
 
   ngOnInit(): void {

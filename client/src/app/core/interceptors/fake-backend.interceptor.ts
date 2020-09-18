@@ -55,6 +55,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.registerCustomer(request);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
         return FakeBackendInterceptor.getCustomer();
+      case url.endsWith('api/customers') && method === 'POST':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/customers\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/customers\/\d+$/) && method === 'DELETE':
+        return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/home') && method === 'GET':
         return FakeBackendInterceptor.getHome();
       case url.endsWith('api/catalog/rank-umbrellas') && method === 'GET':
@@ -66,6 +72,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'DELETE':
+        return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/catalog/services') && method === 'GET':
         return FakeBackendInterceptor.getServices();
       case url.endsWith('api/customers') && method === 'GET':
@@ -97,8 +104,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       case url.match(/\/api\/bookings\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
-        return FakeBackendInterceptor.createOkResponse();
-      case url.match(/\/api\/customers\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/new-booking/season') && method === 'GET':
         return FakeBackendInterceptor.getSeason();

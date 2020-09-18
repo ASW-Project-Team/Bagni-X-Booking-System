@@ -15,9 +15,8 @@ import { AdminBookingDetailsComponent } from './admin-booking-details/admin-book
 import { AdminNewsDetailsComponent } from './admin-news-details/admin-news-details.component';
 import { AdminServiceDetailsComponent } from './admin-service-details/admin-service-details.component';
 import { AdminContactDetailsComponent } from './admin-contact-details/admin-contact-details.component';
-import { AdminRankDetailsComponent } from './admin-rank-details/admin-rank-details.component';
-import { SalesSelectorComponent } from './admin-rank-details/sales-selector/sales-selector.component';
 import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.module";
+import { AdminContactEditComponent } from './admin-contact-edit/admin-contact-edit.component';
 
 
 @NgModule({
@@ -35,6 +34,7 @@ import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.mo
     AdminNewsDetailsComponent,
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
+    AdminContactEditComponent,
   ],
   imports: [
     CommonModule,
@@ -56,7 +56,8 @@ import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.mo
     AdminNewsDetailsComponent,
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
-    AdminRankDetailsModule
+    AdminRankDetailsModule,
+    AdminContactEditComponent
   ]
 })
 export class AdminPagesModule { }

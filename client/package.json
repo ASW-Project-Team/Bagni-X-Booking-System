@@ -4,7 +4,7 @@
   "description": "Client module of ASW project BagniX Booking System.",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve -o",
     "build": "ng build",
     "build-prod": "ng build --prod",
     "test": "ng test",
