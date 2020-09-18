@@ -17,6 +17,7 @@ import { AdminServiceDetailsComponent } from './admin-service-details/admin-serv
 import { AdminContactDetailsComponent } from './admin-contact-details/admin-contact-details.component';
 import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.module";
 import { AdminContactEditComponent } from './admin-contact-edit/admin-contact-edit.component';
+import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-home-card-details.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { AdminContactEditComponent } from './admin-contact-edit/admin-contact-ed
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
     AdminContactEditComponent,
+    AdminHomeCardDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -57,7 +59,8 @@ import { AdminContactEditComponent } from './admin-contact-edit/admin-contact-ed
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
     AdminRankDetailsModule,
-    AdminContactEditComponent
+    AdminContactEditComponent,
+    AdminHomeCardDetailsComponent,
   ]
 })
 export class AdminPagesModule { }

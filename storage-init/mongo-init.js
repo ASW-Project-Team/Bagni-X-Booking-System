@@ -14,7 +14,7 @@ db.createUser({
 
 // Initializes collections
 db.createCollection('admins');
-db.createCollection('bathhouse', { capped : true, size : 1024, max : 1 })
+db.createCollection('bathhouse')
 db.createCollection('homeCards');
 db.createCollection('bookings');
 db.createCollection('customers');

@@ -1,0 +1,16 @@
+<div class="news-card" matRipple matRippleColor="primary"
+     [ngStyle]="isLastCard ? { 'margin-bottom': 0 } : { }">
+
+  <div class="image"
+       [ngStyle]="{'background-image': 'url(' + imageUrl }">
+  </div>
+
+  <div class="lines">
+    <div class="title-line">
+      <h2 class="title" [innerHTML]="title"></h2>
+      <p *ngIf="date" class="date">{{ date | newsDate | titlecase }}</p>
+    </div>
+
+    <p class="description" [innerHTML]="description"></p>
+  </div>
+</div>

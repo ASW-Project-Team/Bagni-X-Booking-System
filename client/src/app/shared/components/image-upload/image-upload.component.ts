@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
@@ -15,6 +15,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 })
 export class ImageUploadComponent implements ControlValueAccessor {
   file: File | null = null;
+  @Input() helperText: string = 'L\'immagine verrà mostrata qui.';
   onChange: Function;
   @ViewChild('fileInput') fileInput;
 

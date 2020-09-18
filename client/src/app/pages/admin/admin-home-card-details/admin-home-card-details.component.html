@@ -1,0 +1,34 @@
+<div class="page">
+  <form [formGroup]="homeCardForm" class="home-card-form" (ngSubmit)="modifyHomeCard()">
+    <mat-form-field appearance="outline" class="input-field-wide" >
+      <mat-label>Titolo</mat-label>
+      <input matInput  formControlName="title" type="text" placeholder="Es. Titolo della card">
+      <mat-error *ngIf="homeCardForm.get('title').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput rows="12" formControlName="description" type="text" placeholder="Es. Lorem ipsum..."></textarea>
+      <mat-error *ngIf="homeCardForm.get('description').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="input-field-wide">
+      <app-image-upload formControlName="image" helperText="Seleziona l'immagine."></app-image-upload>
+    </div>
+
+    <div class="input-field-wide">
+      <app-http-status-indicator [error]="error" [loading]="loading"></app-http-status-indicator>
+    </div>
+
+  </form>
+</div>
+
+<app-nested-appbar backRoute="/admin/home-customize" backPageName="Personalizza home"
+                   [title]="'Modifica home card'"
+                   [actions]="actions">
+</app-nested-appbar>
+

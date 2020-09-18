@@ -12,6 +12,7 @@
   justify-content: space-between;
   transition-duration: 100ms;
   padding: ($marginSmartphone / 2) + 1;
+  @include responsiveProp(margin-bottom, $defaultMargin);
 
   &:hover {
     border-color: #000000;

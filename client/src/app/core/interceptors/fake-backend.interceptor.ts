@@ -15,17 +15,19 @@ import {homeMock} from "../mocks/home.mock";
 import {bookingsMock} from "../mocks/bookings.mock";
 import {availabilityMock} from "../mocks/availability.mock";
 import {environment} from "../../../environments/environment";
-import {seasonMock} from "../mocks/bathhouse.mock";
+import {bathhouseMock} from "../mocks/bathhouse.mock";
 import {AdminModel} from "../../shared/models/admin.model";
 import {adminsMocks} from "../mocks/admins.mock";
 import {rankUmbrellasMock} from "../mocks/rank-umbrellas.mock";
 import {servicesMock} from "../mocks/services.mock";
+import {homeCardsMock} from "../mocks/home-cards-model";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
   static fakeJwtToken: string = 'fake-jwt-token';
 
-  constructor() { }
+  constructor() {
+  }
 
   public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!environment.fakeBackend) {
@@ -53,66 +55,82 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.authenticateAdmin(request);
       case url.endsWith('api/auth/customers/register') && method === 'POST':
         return FakeBackendInterceptor.registerCustomer(request);
+
+      case url.endsWith('api/customers') && method === 'GET':
+        return FakeBackendInterceptor.createOkResponse(customersMock);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getCustomer();
+        return FakeBackendInterceptor.createOkResponse(customersMock[0]);
       case url.endsWith('api/customers') && method === 'POST':
-        return FakeBackendInterceptor.createOkResponse();
-      case url.match(/\/api\/customers\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/customers\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
+
+      case url.endsWith('api/home-cards') && method === 'GET':
+        return FakeBackendInterceptor.createOkResponse(homeCardsMock);
+      case url.match(/\/api\/home-cards\/\d+$/) && method === 'GET':
+        return FakeBackendInterceptor.createOkResponse(homeCardsMock[0]);
+      case url.match(/\/api\/customers\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
+      case url.match(/\/api\/home-cards\/\d+$/) && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/home') && method === 'GET':
-        return FakeBackendInterceptor.getHome();
+        return FakeBackendInterceptor.createOkResponse(homeMock);
+
+      case url.endsWith('api/bathhouse') && method === 'GET':
+        return FakeBackendInterceptor.createOkResponse(bathhouseMock);
+      case url.endsWith('api/bathhouse') && method === 'PUT':
+        return FakeBackendInterceptor.createOkResponse();
+
       case url.endsWith('api/catalog/rank-umbrellas') && method === 'GET':
-        return FakeBackendInterceptor.getRankUmbrellas();
+        return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock);
       case url.endsWith('api/catalog/rank-umbrellas') && method === 'POST':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getRankUmbrella();
+        return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock[0]);
       case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/rank-umbrellas\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
+
       case url.endsWith('api/catalog/services') && method === 'GET':
-        return FakeBackendInterceptor.getServices();
-      case url.endsWith('api/customers') && method === 'GET':
-        return FakeBackendInterceptor.getCustomers();
+        return FakeBackendInterceptor.createOkResponse(servicesMock);
       case url.endsWith('api/catalog/services') && method === 'POST':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/services\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getService();
+        return FakeBackendInterceptor.createOkResponse(servicesMock[0]);
       case url.match(/\/api\/catalog\/services\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/catalog\/services\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
+
       case url.endsWith('api/news') && method === 'GET':
-        return FakeBackendInterceptor.getNewsFeed();
+        return FakeBackendInterceptor.createOkResponse(newsFeedMock);
       case url.match(/\/api\/news\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getNews(request);
+        return FakeBackendInterceptor.createOkResponse(newsFeedMock[0]);
       case url.match(/\/api\/news\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.endsWith('api/news') && method === 'POST':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/news\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
+
       case url.match(/\/api\/bookings\/customer\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getCustBookings(request);
+        return FakeBackendInterceptor.createOkResponse(bookingsMock);
       case url.endsWith('api/bookings') && method === 'GET':
-        return FakeBackendInterceptor.getAllBookings(request);
+        return FakeBackendInterceptor.createOkResponse(bookingsMock);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'GET':
-        return FakeBackendInterceptor.getBooking(request);
+        return FakeBackendInterceptor.createOkResponse(bookingsMock[0]);
       case url.match(/\/api\/bookings\/\d+$/) && method === 'PUT':
         return FakeBackendInterceptor.createOkResponse();
       case url.match(/\/api\/bookings\/\d+$/) && method === 'DELETE':
         return FakeBackendInterceptor.createOkResponse();
+
       case url.endsWith('api/new-booking/season') && method === 'GET':
-        return FakeBackendInterceptor.getSeason();
+        return FakeBackendInterceptor.createOkResponse(bathhouseMock);
       case url.endsWith('api/new-booking/availability') && method === 'GET':
-        return FakeBackendInterceptor.getAvailability();
+        return FakeBackendInterceptor.createOkResponse(availabilityMock);
       case url.endsWith('api/new-booking/checkout') && method === 'POST':
         return FakeBackendInterceptor.createOkResponse();
-
-      // todo ecc.
 
       default:
         // pass through any requests not handled above
@@ -164,94 +182,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     const customer: CustomerModel = customersMock[0];
     customer.jwt = FakeBackendInterceptor.fakeJwtToken;
     return FakeBackendInterceptor.createOkResponse(customer);
-  }
-
-  private static getCustomer(): ObservableInput<any> {
-    const customer: CustomerModel = customersMock[0];
-    return FakeBackendInterceptor.createOkResponse(customer);
-  }
-
-
-  private static getHome(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(homeMock);
-  }
-
-
-
-  private static getService(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(servicesMock[0]);
-  }
-
-
-  private static getNewsFeed(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(newsFeedMock);
-  }
-
-
-  private static getNews(request: HttpRequest<unknown>): ObservableInput<any> {
-    const news = newsFeedMock.find(x => x.id === FakeBackendInterceptor.idFromUrl(request))
-    if (!news) {
-      return FakeBackendInterceptor.createError404();
-    }
-
-    return FakeBackendInterceptor.createOkResponse(news);
-  }
-
-
-  private static getRankUmbrellas(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock);
-  }
-
-  private static getRankUmbrella(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(rankUmbrellasMock[0]);
-  }
-
-  private static getServices(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(servicesMock);
-  }
-
-
-  private static getCustomers(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(customersMock);
-  }
-
-  private static getCustBookings(request: HttpRequest<unknown>): ObservableInput<any> {
-    if (!this.isCustomerLoggedIn(request)) {
-      return FakeBackendInterceptor.createError401()
-    }
-
-    return FakeBackendInterceptor.createOkResponse(bookingsMock);
-  }
-
-  private static getAllBookings(request: HttpRequest<unknown>): ObservableInput<any> {
-    if (!this.isAdminLoggedIn(request)) {
-      return FakeBackendInterceptor.createError401()
-    }
-
-    return FakeBackendInterceptor.createOkResponse(bookingsMock);
-  }
-
-  private static getBooking(request: HttpRequest<unknown>): ObservableInput<any> {
-    if (!this.isCustomerLoggedIn(request)) {
-      return FakeBackendInterceptor.createError401()
-    }
-
-    const booking = bookingsMock.find(
-      x => x.id === FakeBackendInterceptor.idFromUrl(request)
-    );
-    if (!booking) {
-      return FakeBackendInterceptor.createError404();
-    }
-
-    return FakeBackendInterceptor.createOkResponse(booking);
-  }
-
-  private static getAvailability(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(availabilityMock);
-  }
-
-  private static getSeason(): ObservableInput<any> {
-    return FakeBackendInterceptor.createOkResponse(seasonMock);
   }
 
 

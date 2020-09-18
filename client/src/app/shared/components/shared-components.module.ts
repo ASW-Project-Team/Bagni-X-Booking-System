@@ -12,7 +12,7 @@ import {FabComponent} from "./fab/fab.component";
 import {FooterComponent} from "./footer/footer.component";
 import {ImgLandscapeComponent} from "./img-landscape/img-landscape.component";
 import {LoadingScreenComponent} from "./loading-screen/loading-screen.component";
-import {NewsCardComponent} from "./news-card/news-card.component";
+import {SmallCardComponent} from "./small-card/small-card.component";
 import {SalableCardComponent} from "./salable-card/salable-card.component";
 import {SettingsListItemComponent} from "./settings-list-item/settings-list-item.component";
 import {AppRoutingModule} from "../../app-routing.module";
@@ -40,7 +40,7 @@ import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-
     FooterComponent,
     ImgLandscapeComponent,
     LoadingScreenComponent,
-    NewsCardComponent,
+    SmallCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
     AdminMainAppbarComponent,
@@ -68,7 +68,7 @@ import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-
     FooterComponent,
     ImgLandscapeComponent,
     LoadingScreenComponent,
-    NewsCardComponent,
+    SmallCardComponent,
     SalableCardComponent,
     SettingsListItemComponent,
     AdminMainAppbarComponent,

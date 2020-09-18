@@ -20,6 +20,27 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/home`);
   }
 
+  public getBathhouse(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/bathhouse`);
+  }
+
+  public editBathhouse(newData: FormData): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/bathhouse`, newData);
+  }
+
+  public getHomeCards(): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/home-cards`);
+  }
+
+  public editHomeCard(homeCardId: string,newData: FormData): Observable<any> {
+    return this._http.put(`${environment.apiUrl}/api/home-cards/${homeCardId}`, newData);
+  }
+
+
+  public getHomeCard(homeCardId: string): Observable<any> {
+    return this._http.get(`${environment.apiUrl}/api/home-cards/${homeCardId}`);
+  }
+
   public getAllNews(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/news`);
   }
@@ -80,11 +101,9 @@ export class ApiService {
     return this._http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`);
   }
 
-
   public createRankUmbrella(values: FormData): Observable<any> {
     return this._http.post(`${environment.apiUrl}/api/catalog/rank-umbrellas`, values);
   }
-
 
   public editRankUmbrella(rankId: string, modifiedFields: FormData): Observable<any> {
     return this._http.put(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`, modifiedFields);
@@ -93,7 +112,6 @@ export class ApiService {
   public deleteRankUmbrella(rankId: string): Observable<any> {
     return this._http.delete(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`);
   }
-
 
   public getServices(): Observable<any> {
     return this._http.get(`${environment.apiUrl}/api/catalog/services`);
@@ -114,7 +132,6 @@ export class ApiService {
   public deleteService(serviceId: string): Observable<any> {
     return this._http.delete(`${environment.apiUrl}/api/catalog/services/${serviceId}`);
   }
-
 
   public editBooking(bookingId: string, modifiedFields: Object): Observable<any> {
     return this._http.put(`${environment.apiUrl}/api/bookings/${bookingId}`, modifiedFields);

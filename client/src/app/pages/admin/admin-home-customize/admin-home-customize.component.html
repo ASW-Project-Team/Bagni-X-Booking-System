@@ -1,5 +1,75 @@
 <div class="page">
-  <p>admin-home-customize works!</p>
+  <div class="first-section">
+    <h1>Dati dello stabilimento</h1>
+    <p>
+      Da questo form è possibile personalizzare i dati di base dello stabilimento. Nome e logo
+      sono quelli mostrati nella parte superiore delle pagine. La data di inizio e fine stagione
+      vengono utilizzate per permettere ai bagnanti di prenotare ombrelloni. Ricordati di aggiornarli
+      ogni anno!
+    </p>
+    <form class="bathhouse-form" [formGroup]="bathhouseForm" (ngSubmit)="modifyBathhouseData()">
+      <mat-form-field appearance="outline" class="input-field-half">
+        <mat-label>Nome stabilimento</mat-label>
+        <input matInput formControlName="name" type="text" placeholder="Es. Bagni X">
+        <mat-error *ngIf="bathhouseForm.get('name').hasError('required')">
+          Il campo è <strong>obbligatorio</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input-field-half">
+        <mat-label>Inizio e fine stagione</mat-label>
+        <mat-date-range-input [rangePicker]="pickerPeriod" formGroupName="seasonDateRange">
+          <input matStartDate placeholder="Data di inizio" formControlName="seasonstart">
+          <input matEndDate placeholder="Data di fine" formControlName="seasonEnd">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="pickerPeriod"></mat-datepicker-toggle>
+        <mat-date-range-picker touchUi #pickerPeriod></mat-date-range-picker>
+      </mat-form-field>
+
+
+      <div class="input-field-wide">
+        <app-image-upload formControlName="image" helperText="Seleziona il logo."></app-image-upload>
+      </div>
+
+      <div class="input-field-wide left-aligned">
+        <button mat-raised-button type="submit" color="primary">Salva dati</button>
+      </div>
+
+      <div class="input-field-wide">
+        <app-http-status-indicator [loading]="loading" [error]="error"></app-http-status-indicator>
+      </div>
+    </form>
+  </div>
+
+  <div class="section" *ngIf="mainCard">
+    <h1>Sezione header</h1>
+    <p>La sezione header corrisponde alla parte superiore della pagina iniziale, e presenta un’immagine
+      sfocata artificialmente. Puoi modificarla premendo sulla sezione sottostante.</p>
+    <app-small-card
+      [routerLink]="['/admin/home-cards', mainCard.id]"
+      [title]="mainCard.title"
+      [description]="mainCard.description"
+      [imageUrl]="mainCard.imageUrl"
+      [isLastCard]="true">
+    </app-small-card>
+  </div>
+
+  <div class="section" *ngIf="homeCards">
+    <h1>Sezioni body</h1>
+    <p>Queste sono le schede successivamente visualizzate nella schermata home. Puoi personalizzarle
+    a tuo piacimento.</p>
+    <ul>
+      <li *ngFor="let homeCard of homeCards">
+        <app-small-card
+          [routerLink]="['/admin/home-cards', homeCard.id]"
+          [title]="homeCard.title"
+          [description]="homeCard.description"
+          [imageUrl]="homeCard.imageUrl"
+          [isLastCard]="homeCards.indexOf(homeCard) >= homeCards.length - 1">
+        </app-small-card>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

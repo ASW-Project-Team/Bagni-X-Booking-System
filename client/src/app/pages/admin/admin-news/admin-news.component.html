@@ -5,11 +5,14 @@
   <div *ngIf="newsFeed; else loadingScreen">
     <ul class="news-feed-container">
       <li *ngFor="let news of newsFeed">
-        <app-news-card
+        <app-small-card
           [routerLink]="['/admin/news', news.id, { title: news.title }]"
-          [news]="news"
+          [title]="news.title"
+          [description]="news.article"
+          [imageUrl]="news.imageUrl"
+          [date]="news.date"
           [isLastCard]="newsFeed.indexOf(news) >= newsFeed.length - 1">
-        </app-news-card>
+        </app-small-card>
       </li>
     </ul>
   </div>
