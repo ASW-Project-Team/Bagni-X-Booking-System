@@ -1,5 +1,5 @@
 <div class="uploader-container">
-  <button class="load-button" type="button" mat-raised-button color="primary" (click)="loadFile()">Scegli immagine</button>
-  <span class="image-name">{{file ? file.name : helperText }}</span>
+  <button class="load-button" type="button" mat-raised-button color="primary" (click)="loadFile()">{{helperText}}</button>
+  <span class="image-name">{{file ? file.name : 'L\'immagine verrà mostrata qui.' }}</span>
   <input class="file-input" type="file" accept="image/*" #fileInput>
 </div>

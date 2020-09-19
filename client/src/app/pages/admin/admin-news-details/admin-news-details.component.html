@@ -1,5 +1,5 @@
 <div class="page">
-  <form [formGroup]="newsForm" class="news-form" (ngSubmit)="submitAction()">
+  <form [formGroup]="newsForm" class="news-form" (ngSubmit)="submit()" #formRef="ngForm">
     <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Titolo</mat-label>
       <input matInput  formControlName="title" type="text" placeholder="Es. Titolo dell'articolo">

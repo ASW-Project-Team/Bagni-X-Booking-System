@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
 import {Bathhouse} from "../../../shared/models/bathhouse.model";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
 import {HomeCard} from "../../../shared/models/home-card.model";
@@ -63,7 +62,7 @@ export class AdminHomeCustomizeComponent implements OnInit {
       image: this.bathhouseForm.get('image').value
     }
 
-    this.api.editBathhouse(UploadUtils.toFormData(newData)).subscribe(data => {
+    this.api.editBathhouse(UploadUtils.toFormData(newData)).subscribe(() => {
       this.loading = false;
       this.snackBar.open('Dati modificati.', null, {duration: 4000});
     }, error => {

@@ -1,95 +1,91 @@
 <div class="page">
-  <div class="description">
-      Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
-  </div>
+  <p>
+    Registrati all'applicazione per usufruire del servizio di prenotazione del nostro stabilimento!
+  </p>
   <form [formGroup]="regForm" class="registration-form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Nome</mat-label>
-        <input matInput formControlName="name" type="text" placeholder="Es. Mario">
-        <mat-error *ngIf="regForm.get('name').hasError('required')">
-          Il campo è <strong>obbligatorio</strong>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" type="text" placeholder="Es. Mario">
+      <mat-error *ngIf="regForm.get('name').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Cognome</mat-label>
-        <input matInput formControlName="surname" type="text"  placeholder="Es. Rossi">
-        <mat-error *ngIf="regForm.get('surname').hasError('required')">
-          Il campo è <strong>obbligatorio</strong>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Cognome</mat-label>
+      <input matInput formControlName="surname" type="text" placeholder="Es. Rossi">
+      <mat-error *ngIf="regForm.get('surname').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-wide">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
-        <mat-error
-          *ngIf="regForm.get('email').hasError('email') && !regForm.get('email').hasError('required')">
-          Inserisci un indirizzo email valido.
-        </mat-error>
-        <mat-error *ngIf="regForm.get('email').hasError('required')">
-          Il campo è <strong>obbligatorio</strong>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
+      <mat-error
+        *ngIf="regForm.get('email').hasError('email') && !regForm.get('email').hasError('required')">
+        Inserisci un indirizzo email valido.
+      </mat-error>
+      <mat-error *ngIf="regForm.get('email').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'" placeholder="Es. mySuperPassword!">
-        <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
-        <mat-error *ngIf="regForm.get('password').hasError('minlength') && !regForm.get('password').hasError('required')">
-         Troppo breve!
-        </mat-error>
-        <mat-error *ngIf="regForm.get('password').hasError('pattern') && !regForm.get('password').hasError('required') && !regForm.get('password').hasError('minlength')">
-          Password non valida
-        </mat-error>
-        <mat-error *ngIf="regForm.get('password').hasError('required')">
-          Il campo è <strong>obbligatorio</strong>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'"
+             placeholder="Es. mySuperPassword!">
+      <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <mat-error *ngIf="regForm.get('password').hasError('minlength') && !regForm.get('password').hasError('required')">
+        Troppo breve!
+      </mat-error>
+      <mat-error
+        *ngIf="regForm.get('password').hasError('pattern') && !regForm.get('password').hasError('required') && !regForm.get('password').hasError('minlength')">
+        Password non valida
+      </mat-error>
+      <mat-error *ngIf="regForm.get('password').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Conferma password</mat-label>
-        <input matInput formControlName="confirmPassword" [type]="hideConfirm ? 'password' : 'text'" placeholder="Es. mySuperPassword!" >
-        <mat-icon matSuffix (click)="hideConfirm = !hideConfirm">{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
-        <mat-error *ngIf="regForm.get('confirmPassword').hasError('NoPassswordMatch') && !regForm.get('confirmPassword').hasError('required')">
-          Password e conferma non corrispondono
-        </mat-error>
-        <mat-error *ngIf="regForm.get('confirmPassword').hasError('required')">
-          Il campo è <strong>obbligatorio</strong>
-        </mat-error>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Conferma password</mat-label>
+      <input matInput formControlName="confirmPassword" [type]="hideConfirm ? 'password' : 'text'"
+             placeholder="Es. mySuperPassword!">
+      <mat-icon matSuffix
+                (click)="hideConfirm = !hideConfirm">{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <mat-error
+        *ngIf="regForm.get('confirmPassword').hasError('NoPassswordMatch') && !regForm.get('confirmPassword').hasError('required')">
+        Password e conferma non corrispondono
+      </mat-error>
+      <mat-error *ngIf="regForm.get('confirmPassword').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Numero di telefono</mat-label>
-        <input matInput formControlName="phone" placeholder="Es. 3310000000" type="tel">
-        <mat-error *ngIf="regForm.get('phone').hasError('pattern')">
-          Il numero non è valido
-        </mat-error>
-        <mat-hint>
-          Il campo è <strong>facoltativo</strong>
-        </mat-hint>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Numero di telefono</mat-label>
+      <input matInput formControlName="phone" placeholder="Es. 3310000000" type="tel">
+      <mat-error *ngIf="regForm.get('phone').hasError('pattern')">
+        Il numero non è valido
+      </mat-error>
+      <mat-hint>
+        Il campo è <strong>facoltativo</strong>
+      </mat-hint>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field-half">
-        <mat-label>Indirizzo</mat-label>
-        <input matInput formControlName="address" type="text" placeholder="Es. Viale della Vittoria, 46">
-        <mat-hint>
-          Il campo è <strong>facoltativo</strong>
-        </mat-hint>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Indirizzo</mat-label>
+      <input matInput formControlName="address" type="text" placeholder="Es. Viale della Vittoria, 46">
+      <mat-hint>
+        Il campo è <strong>facoltativo</strong>
+      </mat-hint>
+    </mat-form-field>
 
-    <div class="input-field-wide">
-      <app-http-status-indicator [loading]="loading" [error]="error"
-                                 loadingText="Registrazione in corso...">
-      </app-http-status-indicator>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Registrati</button>
     </div>
-
-    <div class="input-field-wide button-container">
-      <button mat-raised-button color="primary" [disabled]="loading"
-              class="registration-button" type="submit">
-        Registrati
-      </button>
-    </div>
-
   </form>
 </div>
 

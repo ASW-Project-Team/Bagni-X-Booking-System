@@ -1,11 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Customer} from "../../../shared/models/customer.model";
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UnregCustomerFormComponent} from "../../../shared/components/unreg-customer-form/unreg-customer-form.component";
 
 @Component({
@@ -22,7 +16,7 @@ export class AdminContactCreateComponent implements OnInit {
     name: "Crea cliente",
     mdiIcon: 'content-save-outline',
     isMdi: true,
-    execute: () => this.editor.createCustomer()
+    execute: () => this.editor.submitProgrammatically()
   }
 
   constructor() { }

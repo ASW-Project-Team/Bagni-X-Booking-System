@@ -40,7 +40,7 @@ export class AdminContactDetailsComponent implements OnInit {
     name: "Modifica cliente",
     mdiIcon: 'pencil-outline',
     isMdi: true,
-    execute: () => this.editor.modifyCustomer()
+    execute: () => this.editor.submitProgrammatically()
   }
 
 

@@ -1,5 +1,5 @@
 <div class="page">
-  <form [formGroup]="serviceForm" class="service-form" (ngSubmit)="submitAction()">
+  <form [formGroup]="serviceForm" class="service-form" (ngSubmit)="submit()" #formRef="ngForm">
     <mat-form-field appearance="outline" class="input-field-wide" >
       <mat-label>Nome</mat-label>
       <input matInput  formControlName="name" type="text" placeholder="Es. Cabina">

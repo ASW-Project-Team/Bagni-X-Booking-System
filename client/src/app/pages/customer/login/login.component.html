@@ -1,15 +1,13 @@
 <div class="page">
-  <div class="description">
-      <span *ngIf="returnUrlExternallySet">
-        Per utilizzare questa funzione, devi effettuare l'accesso al sito.
-      </span>
-    <span *ngIf="!returnUrlExternallySet">
-        Accedi al sito per usufruire del servizio di prenotazione del nostro stabilimento!
-      </span>
-  </div>
+  <p *ngIf="returnUrlExternallySet">
+    Per utilizzare questa funzione, devi effettuare l'accesso al sito.
+  </p>
+  <p *ngIf="!returnUrlExternallySet">
+    Accedi al sito per usufruire del servizio di prenotazione del nostro stabilimento!
+  </p>
 
   <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-wide">
         <mat-label>Email</mat-label>
         <input matInput [formControl]="emailControl" type="email" placeholder="Es. mario.rossi@example.com">
         <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
@@ -20,7 +18,7 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="input-field">
+      <mat-form-field appearance="outline" class="input-field-wide">
         <mat-label>Password</mat-label>
         <input matInput [formControl]="passwordControl" [type]="hidePw ? 'password' : 'text'"
                placeholder="Es. mySuperPassword!">
@@ -30,18 +28,10 @@
         </mat-error>
       </mat-form-field>
 
-    <div class="warning-container" *ngIf="loading">
-      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
-      <span>Effettuando il login...</span>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Login</button>
     </div>
-    <div class="warning-container" *ngIf="error">
-      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
-      <span>{{error}}</span>
-    </div>
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="login-button">
-      Login
-    </button>
   </form>
 </div>
 

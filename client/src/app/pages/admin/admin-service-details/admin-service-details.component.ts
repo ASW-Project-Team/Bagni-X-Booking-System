@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -20,15 +20,16 @@ export class AdminServiceDetailsComponent implements OnInit {
   isNew: boolean = true;
   loading: boolean = false;
   error: string = '';
-  submitAction: Function;
   serviceId: string;
+  @ViewChild('formRef') formRef: FormGroupDirective;
 
-  private createAction: AppbarAction = {
+
+  private submitAction: AppbarAction = {
     id: "0",
     name: "Crea servizio",
     mdiIcon: 'content-save-outline',
     isMdi: true,
-    execute: () => this.createService()
+    execute: () => this.formRef.onSubmit(undefined)
   };
 
   private deleteAction: AppbarAction =  {
@@ -39,13 +40,6 @@ export class AdminServiceDetailsComponent implements OnInit {
     execute: () => this.deleteService()
   };
 
-  private editAction: AppbarAction = {
-    id: "0",
-    name: "Salva modifiche",
-    mdiIcon: 'content-save-outline',
-    isMdi: true,
-    execute: () => this.modifyService()
-  };
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -66,19 +60,18 @@ export class AdminServiceDetailsComponent implements OnInit {
       this.isNew = !!!params.id;
 
       if (this.isNew) {
-        this.activeActions.push(this.createAction);
-        this.submitAction = this.createService;
+        this.submitAction.name = "Crea servizio";
+        this.activeActions.push(this.submitAction);
 
       } else {
-        this.activeActions.push(this.deleteAction, this.editAction);
-        this.submitAction = this.modifyService;
         this.serviceId = params.id;
+        this.submitAction.name = "Modifica servizio";
+        this.activeActions.push(this.deleteAction, this.submitAction);
         this.api.getService(this.serviceId).subscribe(data => {
           const service = new Service(data);
           this.serviceForm.get('name').setValue(service.name);
           this.serviceForm.get('description').setValue(service.description);
           this.serviceForm.get('dailyPrice').setValue(service.dailyPrice);
-
         });
       }
     });
@@ -106,7 +99,6 @@ export class AdminServiceDetailsComponent implements OnInit {
 
 
   deleteService() {
-
     this.dialog.open(AlertDialogComponent, { data: {
         content: "Sei sicuro di voler eliminare il servizio? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
         positiveAction: { text: "Sì, elimina", execute: () => {
@@ -141,5 +133,13 @@ export class AdminServiceDetailsComponent implements OnInit {
       this.error = error;
       this.loading = false;
     });
+  }
+
+  submit() {
+    if (this.isNew) {
+      this.createService();
+    } else {
+      this.modifyService();
+    }
   }
 }

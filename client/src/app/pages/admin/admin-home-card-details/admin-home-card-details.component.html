@@ -1,5 +1,5 @@
 <div class="page">
-  <form [formGroup]="homeCardForm" class="home-card-form" (ngSubmit)="modifyHomeCard()">
+  <form [formGroup]="homeCardForm" class="home-card-form" (ngSubmit)="modifyHomeCard()" #formRef="ngForm">
     <mat-form-field appearance="outline" class="input-field-wide" >
       <mat-label>Titolo</mat-label>
       <input matInput  formControlName="title" type="text" placeholder="Es. Titolo della card">

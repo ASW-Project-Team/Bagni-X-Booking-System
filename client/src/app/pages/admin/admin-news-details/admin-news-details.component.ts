@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {News} from "../../../shared/models/news.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
 import {MatDialog} from "@angular/material/dialog";
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
@@ -21,14 +21,15 @@ export class AdminNewsDetailsComponent implements OnInit {
   isNew: boolean = true;
   loading: boolean = false;
   error: string = '';
-  submitAction: Function;
+  @ViewChild('formRef') formRef: FormGroupDirective;
 
-  private createAction: AppbarAction = {
+
+  private submitAction: AppbarAction = {
     id: "0",
     name: "Crea news",
     mdiIcon: 'content-save-outline',
     isMdi: true,
-    execute: () => this.createNews()
+    execute: () => this.formRef.onSubmit(undefined)
   };
 
   private deleteAction: AppbarAction = {
@@ -37,14 +38,6 @@ export class AdminNewsDetailsComponent implements OnInit {
     mdiIcon: 'trash-can-outline',
     isMdi: true,
     execute: () => this.deleteNews()
-  };
-
-  private modifyAction: AppbarAction = {
-    id: "0",
-    name: "Salva modifiche",
-    mdiIcon: 'content-save-outline',
-    isMdi: true,
-    execute: () => this.modifyNews()
   };
 
   constructor(private formBuilder: FormBuilder,
@@ -66,13 +59,13 @@ export class AdminNewsDetailsComponent implements OnInit {
       this.isNew = !!!params.id;
 
       if (this.isNew) {
-        this.actions.push(this.createAction);
-        this.submitAction = this.createNews;
+        this.submitAction.name = "Crea news";
+        this.actions.push(this.submitAction);
 
       } else {
         this.newsId = params.id;
-        this.actions.push(this.deleteAction, this.modifyAction);
-        this.submitAction = this.modifyNews;
+        this.submitAction.name = "Modifica news";
+        this.actions.push(this.deleteAction, this.submitAction);
 
         this.api.getNews(params.id).subscribe(data => {
           const news = new News(data);
@@ -137,5 +130,13 @@ export class AdminNewsDetailsComponent implements OnInit {
       this.error = error;
       this.loading = false;
     });
+  }
+
+  submit() {
+    if (this.isNew) {
+      this.createNews();
+    } else {
+      this.modifyNews();
+    }
   }
 }

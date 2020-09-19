@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {News} from "../../../shared/models/news.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -20,13 +20,14 @@ export class AdminHomeCardDetailsComponent implements OnInit {
   homeCardForm: FormGroup;
   loading: boolean = false;
   error: string = '';
+  @ViewChild('formRef') formRef: FormGroupDirective;
 
-  private modifyAction: AppbarAction = {
+  private submitAction: AppbarAction = {
     id: "0",
     name: "Salva modifiche",
     mdiIcon: 'content-save-outline',
     isMdi: true,
-    execute: () => this.modifyHomeCard()
+    execute: () => this.formRef.onSubmit(undefined)
   }
 
   constructor(private formBuilder: FormBuilder,
@@ -50,7 +51,7 @@ export class AdminHomeCardDetailsComponent implements OnInit {
           const homeCard = new HomeCard(data);
           this.homeCardForm.get('title').setValue(homeCard.title);
           this.homeCardForm.get('description').setValue(homeCard.description);
-          this.actions.push(this.modifyAction);
+          this.actions.push(this.submitAction);
         });
       }
     });

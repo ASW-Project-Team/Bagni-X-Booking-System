@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Customer} from "../../models/customer.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -18,6 +18,8 @@ export class UnregCustomerFormComponent implements OnInit {
   customerForm: FormGroup;
   loading: boolean = false;
   error: string = '';
+
+  @ViewChild('formRef') formRef: FormGroupDirective;
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -82,5 +84,9 @@ export class UnregCustomerFormComponent implements OnInit {
         this.error = error;
         this.loading = false;
       });
+  }
+
+  submitProgrammatically() {
+    this.formRef.onSubmit(undefined);
   }
 }

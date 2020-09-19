@@ -1,28 +1,9 @@
 @import "~src/styles/utils";
 
-.description {
-  width: 100%;
-  @include responsiveProp(margin-bottom, $defaultMargin);
-
-  @include forDesktopOnly {
-    text-align: center;
-  }
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin)
 }
-
 .registration-form {
   @include inputsContainer;
-
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @include responsiveProp(margin-top, $defaultMargin);
-
-    .registration-button {
-      @include button;
-      width: 100%;
-      max-width: $widerTextboxWidthDesktop;
-    }
-  }
 }
 

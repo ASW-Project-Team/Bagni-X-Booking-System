@@ -21,7 +21,6 @@ import {first} from "rxjs/operators";
 export class RegisterComponent implements OnInit {
   regForm: FormGroup;
   loading: boolean = false;
-  submitted: boolean = false;
   error: string = '';
 
   constructor(private formBuilder: FormBuilder,
@@ -72,8 +71,6 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.regForm.invalid) {
       return;

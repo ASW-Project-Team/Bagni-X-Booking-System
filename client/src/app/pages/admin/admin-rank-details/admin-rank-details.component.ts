@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -16,12 +16,12 @@ import {UploadUtils} from "../../../shared/utils/upload.utils";
 })
 export class AdminRankDetailsComponent implements OnInit {
   activeActions: AppbarAction[] = [];
-  rankUmbrella: RankUmbrella;
+  rankUmbrellaId: string;
   rankForm: FormGroup;
   isNew: boolean = true;
   loading: boolean = false;
   error: string = '';
-  submitAction: Function;
+  @ViewChild('formRef') formRef: FormGroupDirective;
 
   private deleteAction: AppbarAction = {
     id: "1",
@@ -32,20 +32,12 @@ export class AdminRankDetailsComponent implements OnInit {
 
   };
 
-  private modifyAction: AppbarAction = {
-    id: "0",
-    name: "Salva modifiche",
-    mdiIcon: 'content-save-outline',
-    isMdi: true,
-    execute: () => this.modifyRank()
-  }
-
-  private createAction: AppbarAction = {
+  private submitAction: AppbarAction = {
     id: "0",
     name: "Crea categoria ombrelloni",
     mdiIcon: 'content-save-outline',
     isMdi: true,
-    execute: () => this.createRank()
+    execute: () => this.formRef.onSubmit(undefined)
   }
 
 
@@ -72,21 +64,22 @@ export class AdminRankDetailsComponent implements OnInit {
       this.isNew = !!!params.id;
 
       if (this.isNew) {
-        this.activeActions.push(this.createAction);
-        this.submitAction = this.createRank;
+        this.submitAction.name = "Crea categoria ombrelloni";
+        this.activeActions.push(this.submitAction);
 
       } else {
-        this.api.getRankUmbrella(params.id).subscribe(data => {
-          this.rankUmbrella = new RankUmbrella(data);
-          this.rankForm.get('name').setValue(this.rankUmbrella.name);
-          this.rankForm.get('description').setValue(this.rankUmbrella.description);
-          this.rankForm.get('dailyPrice').setValue(this.rankUmbrella.dailyPrice);
-          this.rankForm.get('fromUmbrella').setValue(this.rankUmbrella.fromUmbrella);
-          this.rankForm.get('toUmbrella').setValue(this.rankUmbrella.toUmbrella);
-          this.rankForm.get('sales').setValue(this.rankUmbrella.sales);
+        this.rankUmbrellaId = params.id;
+        this.submitAction.name = "Modifica categoria ombrelloni";
+        this.activeActions.push(this.deleteAction, this.submitAction);
 
-          this.activeActions.push(this.deleteAction, this.modifyAction);
-          this.submitAction = this.modifyRank;
+        this.api.getRankUmbrella(this.rankUmbrellaId).subscribe(data => {
+          const rankUmbrella = new RankUmbrella(data);
+          this.rankForm.get('name').setValue(rankUmbrella.name);
+          this.rankForm.get('description').setValue(rankUmbrella.description);
+          this.rankForm.get('dailyPrice').setValue(rankUmbrella.dailyPrice);
+          this.rankForm.get('fromUmbrella').setValue(rankUmbrella.fromUmbrella);
+          this.rankForm.get('toUmbrella').setValue(rankUmbrella.toUmbrella);
+          this.rankForm.get('sales').setValue(rankUmbrella.sales);
         });
       }
     });
@@ -116,7 +109,7 @@ export class AdminRankDetailsComponent implements OnInit {
         content: "Sei sicuro di voler eliminare questa categoria? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
         positiveAction: { text: "Sì, elimina", execute: () => {
             this.loading = true;
-            this.api.deleteRankUmbrella(this.rankUmbrella.id).subscribe(() => {
+            this.api.deleteRankUmbrella(this.rankUmbrellaId).subscribe(() => {
                 this.loading = false;
                 this.router.navigate(['/admin/rank-umbrellas'])
                   .then(() => this.snackBar.open("Categoria ombrelloni eliminata!", null, {duration: 4000}))
@@ -139,7 +132,7 @@ export class AdminRankDetailsComponent implements OnInit {
 
     this.loading = true;
 
-    this.api.editRankUmbrella(this.rankUmbrella.id, UploadUtils.toFormData(this.rankForm.value)).subscribe(() => {
+    this.api.editRankUmbrella(this.rankUmbrellaId, UploadUtils.toFormData(this.rankForm.value)).subscribe(() => {
       this.loading = false;
       this.router.navigate(['/admin/rank-umbrellas'])
         .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
@@ -148,5 +141,14 @@ export class AdminRankDetailsComponent implements OnInit {
       this.error = error;
       this.loading = false;
     });
+  }
+
+
+  submit() {
+    if (this.isNew) {
+      this.createRank();
+    } else {
+      this.modifyRank();
+    }
   }
 }

@@ -1,4 +1,4 @@
-<form [formGroup]="customerForm" class="registration-form" (ngSubmit)="submitAction()">
+<form [formGroup]="customerForm" class="registration-form" (ngSubmit)="submitAction()" #formRef="ngForm">
   <mat-form-field appearance="outline" class="input-field-half">
     <mat-label>Nome</mat-label>
     <input matInput formControlName="name" type="text" placeholder="Es. Mario">
