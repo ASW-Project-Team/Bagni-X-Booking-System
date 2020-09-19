@@ -6,8 +6,7 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./http-status-indicator.component.scss']
 })
 export class HttpStatusIndicatorComponent implements OnInit {
-  @Input() error: string;
-  @Input() loading: boolean;
+  @Input() status: string;
   @Input() loadingText: string;
 
   constructor() { }

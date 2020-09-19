@@ -1,11 +1,11 @@
 <div class="status-container">
-  <div class="status-section" *ngIf="loading">
+  <div class="status-section" *ngIf="status && status == 'loading'">
     <mat-spinner class="status-icon" color="primary" [diameter]="24"></mat-spinner>
     <div class="status-text">{{ loadingText ? loadingText : 'Processando la richiesta...'}}</div>
   </div>
-  <div class="status-section" *ngIf="error">
+  <div class="status-section" *ngIf="status && status != 'loading'">
     <mat-icon svgIcon="alert-circle-outline" class="status-icon" color="warn"></mat-icon>
-    <div class="status-text">{{error}}</div>
+    <div class="status-text">{{status}}</div>
   </div>
 </div>
 

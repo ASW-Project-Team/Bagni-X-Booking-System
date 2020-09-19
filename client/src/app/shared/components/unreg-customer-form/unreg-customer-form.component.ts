@@ -14,10 +14,8 @@ import {MatDialog} from "@angular/material/dialog";
 export class UnregCustomerFormComponent implements OnInit {
   @Input() customer: Customer;
   @Input() isCreate: boolean = true;
-
   customerForm: FormGroup;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
 
   @ViewChild('formRef') formRef: FormGroupDirective;
 
@@ -51,14 +49,14 @@ export class UnregCustomerFormComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     this.api.editUnregisteredCustomer(this.customer.id, this.customerForm.value).subscribe(() => {
+        this.status = '';
         this.router.navigate(['/admin/contacts'],).then(() =>
           this.snackBar.open("Cliente modificato.", null, { duration: 4000 }))
       },
       error => {
-        this.error = error;
-        this.loading = false;
+        this.status = error;
       });
   }
 
@@ -75,14 +73,14 @@ export class UnregCustomerFormComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     this.api.createUnregisteredCustomer(this.customerForm.value).subscribe(() => {
+        this.status = '';
         this.router.navigate(['/admin/contacts'],).then(() =>
           this.snackBar.open("Cliente creato.", null, { duration: 4000 }))
       },
       error => {
-        this.error = error;
-        this.loading = false;
+        this.status = error;
       });
   }
 

@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Customer} from "../../../shared/models/customer.model";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {Booking} from "../../../shared/models/booking.model";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-contacts',
@@ -15,8 +12,7 @@ export class AdminContactsComponent implements OnInit {
   customers: Customer[];
 
   constructor(private api: ApiService,
-              private dialog: MatDialog,
-              private snackbar: MatSnackBar) { }
+              private matUtils: MatUtilsService) { }
 
   ngOnInit(): void {
     this.api.getCustomers().subscribe(data => {
@@ -26,16 +22,16 @@ export class AdminContactsComponent implements OnInit {
 
   generateDeleteCustomerAction(customer: Customer): Function {
     return () => {
-      this.dialog.open(AlertDialogComponent, { data: {
-          content: "Sei sicuro di voler eliminare il cliente? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
-          positiveAction: { text: "Sì, elimina", execute: () => {
-              this.api.deleteUnregisteredCustomer(customer.id).subscribe(() => {
-                this.snackbar.open('Cliente eliminato.', null, {duration: 4000});
-                this.updateContacts();
-              });
-          }},
-          negativeAction: { text: "No", execute: () => {} }
-      }});
+      this.matUtils.createAlertDialog({
+        content: "Sei sicuro di voler eliminare il cliente? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
+        positiveAction: { text: "Sì, elimina", execute: () => {
+          this.api.deleteUnregisteredCustomer(customer.id).subscribe(() => {
+            this.matUtils.createSnackBar('Cliente eliminato.');
+            this.updateContacts();
+          });
+        }},
+        negativeAction: { text: "No", execute: () => {} }
+      });
     }
   }
 

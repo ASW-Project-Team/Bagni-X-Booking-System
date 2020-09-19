@@ -3,11 +3,9 @@ import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {News} from "../../../shared/models/news.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
-import {MatDialog} from "@angular/material/dialog";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-news-details',
@@ -19,10 +17,8 @@ export class AdminNewsDetailsComponent implements OnInit {
   newsId: string;
   newsForm: FormGroup;
   isNew: boolean = true;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
   @ViewChild('formRef') formRef: FormGroupDirective;
-
 
   private submitAction: AppbarAction = {
     id: "0",
@@ -43,9 +39,8 @@ export class AdminNewsDetailsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar,
               private router: Router,
-              private dialog: MatDialog) {
+              private matUtils: MatUtilsService) {
   }
 
   ngOnInit(): void {
@@ -81,36 +76,34 @@ export class AdminNewsDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     this.api.editNews(this.newsId, UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/news'])
-        .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/news']).then(() =>
+        this.matUtils.createSnackBar("Modifiche applicate!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 
 
   deleteNews() {
-    this.dialog.open(AlertDialogComponent, { data: {
+    this.matUtils.createAlertDialog({
       content: "Sei sicuro di voler eliminare la notizia? L'azione non è reversibile.",
       positiveAction: { text: "Sì, elimina", execute: () => {
-        this.loading = true;
+        this.status = 'loading';
         this.api.deleteNews(this.newsId).subscribe(() => {
-          this.loading = false;
-          this.router.navigate(['/admin/news'])
-            .then(() => this.snackBar.open("Notizia eliminata!", null, {duration: 4000}))
+          this.status = '';
+          this.router.navigate(['/admin/news']).then(() =>
+            this.matUtils.createSnackBar("Notizia eliminata!"))
 
         }, error => {
-          this.error = error;
-          this.loading = false;
+          this.status = error;
         });
       }},
       negativeAction: { text: "No", execute: () => {} }
-    }});
+    });
   }
 
 
@@ -119,16 +112,14 @@ export class AdminNewsDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-
+    this.status = 'loading';
     this.api.createNews(UploadUtils.toFormData(this.newsForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/news'])
-        .then(() => this.snackBar.open("Notizia creata!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/news']).then(() =>
+        this.matUtils.createSnackBar("Notizia creata!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 

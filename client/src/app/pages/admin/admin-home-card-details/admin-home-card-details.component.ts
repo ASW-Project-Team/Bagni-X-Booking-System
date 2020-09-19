@@ -1,13 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
-import {News} from "../../../shared/models/news.model";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
 import {HomeCard} from "../../../shared/models/home-card.model";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-home-card-details',
@@ -18,8 +16,7 @@ export class AdminHomeCardDetailsComponent implements OnInit {
   actions: AppbarAction[] = [];
   homeCardId: string;
   homeCardForm: FormGroup;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
   @ViewChild('formRef') formRef: FormGroupDirective;
 
   private submitAction: AppbarAction = {
@@ -30,10 +27,11 @@ export class AdminHomeCardDetailsComponent implements OnInit {
     execute: () => this.formRef.onSubmit(undefined)
   }
 
+
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar,
+              private matUtils: MatUtilsService,
               private router: Router) {
 
     this.homeCardForm = this.formBuilder.group({
@@ -42,6 +40,7 @@ export class AdminHomeCardDetailsComponent implements OnInit {
       image: ['']
     });
   }
+
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -57,22 +56,20 @@ export class AdminHomeCardDetailsComponent implements OnInit {
     });
   }
 
+
   modifyHomeCard() {
     if (!this.homeCardForm.valid) {
       return;
     }
 
-    this.loading = true;
-
-    this.api.editHomeCard(this.homeCardId, UploadUtils.toFormData(this.homeCardForm.value))
-      .subscribe(() => {
-        this.loading = false;
-        this.router.navigate(['/admin/home-customize']).then(() => {
-          this.snackBar.open('Home card modificata!', null, {duration: 4000});
-        })
-      }, error => {
-        this.loading = false;
-        this.error = error;
-      });
+    this.status = 'loading';
+    this.api.editHomeCard(this.homeCardId, UploadUtils.toFormData(this.homeCardForm.value)).subscribe(() => {
+      this.status = '';
+      this.router.navigate(['/admin/home-customize']).then(() => {
+        this.matUtils.createSnackBar('Home card modificata!');
+      })
+    }, error => {
+      this.status = error;
+    });
   }
 }

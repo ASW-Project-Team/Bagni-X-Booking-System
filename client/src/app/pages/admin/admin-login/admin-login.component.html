@@ -1,44 +1,34 @@
 <div class="page">
-  <div class="description">
-      <span *ngIf="returnUrlExternallySet">
-        Per utilizzare il pannello amministratore, devi effettuare l'accesso.
-      </span>
-    <span *ngIf="!returnUrlExternallySet">
-        Benvenuto nel pannello di accesso amministratore. Accedi per gestire le prenotaizioni dei tuoi clienti!
-      </span>
-  </div>
+  <p *ngIf="returnUrlExternallySet">
+    Per utilizzare il pannello amministratore, devi effettuare l'accesso.
+  </p>
+  <p *ngIf="!returnUrlExternallySet">
+    Benvenuto nel pannello di accesso amministratore. Accedi per gestire le prenotaizioni dei tuoi clienti!
+  </p>
 
   <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="input-field">
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Username</mat-label>
-      <input matInput [formControl]="usernameControl" type="text" placeholder="Es. mario.rossi">
-      <mat-error *ngIf="usernameControl.hasError('required')">
+      <input matInput formControlName="username" type="text" placeholder="Es. mario.rossi">
+      <mat-error *ngIf="loginForm.get('username').hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="input-field">
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Password</mat-label>
-      <input matInput [formControl]="passwordControl" [type]="hidePw ? 'password' : 'text'"
+      <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'"
              placeholder="Es. mySuperPassword!">
       <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
-      <mat-error *ngIf="passwordControl.hasError('required')">
+      <mat-error *ngIf="loginForm.get('password').hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
     </mat-form-field>
 
-    <div class="warning-container" *ngIf="loading">
-      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
-      <span>Effettuando il login...</span>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [status]="status"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Login</button>
     </div>
-    <div class="warning-container" *ngIf="error">
-      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
-      <span>{{error}}</span>
-    </div>
-
-    <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="login-button">
-      Login
-    </button>
   </form>
 </div>
 

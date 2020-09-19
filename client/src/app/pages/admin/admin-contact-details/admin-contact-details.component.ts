@@ -4,10 +4,8 @@ import {Booking} from "../../../shared/models/booking.model";
 import {ApiService} from "../../../core/api/api.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {UnregCustomerFormComponent} from "../../../shared/components/unreg-customer-form/unreg-customer-form.component";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-contact-details',
@@ -28,11 +26,11 @@ export class AdminContactDetailsComponent implements OnInit {
     mdiIcon: 'trash-can-outline',
     isMdi: true,
     execute: () =>
-      this.dialog.open(AlertDialogComponent, { data: {
-          content: "Sei sicuro di voler eliminare il cliente? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
-          positiveAction: { text: "Sì, elimina", execute: () => this.deleteCustomer() },
-          negativeAction: { text: "No", execute: () => {} }
-      }})
+      this.matUtils.createAlertDialog({
+        content: "Sei sicuro di voler eliminare il cliente? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
+        positiveAction: { text: "Sì, elimina", execute: () => this.deleteCustomer() },
+        negativeAction: { text: "No", execute: () => {} }
+      })
   };
 
   private modifyAction: AppbarAction = {
@@ -46,11 +44,11 @@ export class AdminContactDetailsComponent implements OnInit {
 
   constructor(private api: ApiService,
               private route: ActivatedRoute,
-              private dialog: MatDialog,
               private router: Router,
-              private snackbar: MatSnackBar) {
+              private matUtils: MatUtilsService) {
 
   }
+
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -80,10 +78,12 @@ export class AdminContactDetailsComponent implements OnInit {
     });
   }
 
+
   deleteCustomer() {
-    this.api.deleteUnregisteredCustomer(this.customer.id)
-      .subscribe(() => this.router.navigate(['/admin/contacts'])
-        .then(() => this.snackbar.open("Cliente eliminato.", null, { duration: 4000 }))
+    this.api.deleteUnregisteredCustomer(this.customer.id).subscribe(() =>
+      this.router.navigate(['/admin/contacts']).then(() =>
+        this.matUtils.createSnackBar("Cliente eliminato.")
       )
+    )
   }
 }

@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {Bathhouse} from "../../../shared/models/bathhouse.model";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
 import {HomeCard} from "../../../shared/models/home-card.model";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-home-customize',
@@ -14,15 +14,15 @@ import {HomeCard} from "../../../shared/models/home-card.model";
 })
 export class AdminHomeCustomizeComponent implements OnInit {
   bathhouseForm: FormGroup;
-  error: string = '';
-  loading: boolean = false;
+  status: string = '';
   mainCard: HomeCard;
   homeCards: HomeCard[];
+
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar) {
+              private matUtils: MatUtilsService) {
 
     this.bathhouseForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -33,6 +33,7 @@ export class AdminHomeCustomizeComponent implements OnInit {
       }),
     });
   }
+
 
   ngOnInit(): void {
     this.api.getBathhouse().subscribe(data => {
@@ -49,12 +50,13 @@ export class AdminHomeCustomizeComponent implements OnInit {
     });
   }
 
+
   modifyBathhouseData() {
     if (!this.bathhouseForm.valid) {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     const newData = {
       name:  this.bathhouseForm.get('name').value,
       seasonDateFrom: this.bathhouseForm.get('seasonDateRange.seasonStart').value,
@@ -63,11 +65,10 @@ export class AdminHomeCustomizeComponent implements OnInit {
     }
 
     this.api.editBathhouse(UploadUtils.toFormData(newData)).subscribe(() => {
-      this.loading = false;
-      this.snackBar.open('Dati modificati.', null, {duration: 4000});
+      this.status = '';
+      this.matUtils.createSnackBar('Dati modificati.');
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 }

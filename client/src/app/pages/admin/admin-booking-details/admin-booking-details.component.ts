@@ -3,10 +3,8 @@ import {Booking} from "../../../shared/models/booking.model";
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {Customer} from "../../../shared/models/customer.model";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-booking-details',
@@ -18,15 +16,13 @@ export class AdminBookingDetailsComponent implements OnInit {
   titleParam: string;
   backRoute: string = '/admin/bookings';
   backRouteName: string = 'Prenotazioni';
-
   booking: Booking;
   customer: Customer;
   actions: AppbarAction[] = [];
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar,
-              private dialog: MatDialog,
+              private matUtils: MatUtilsService,
               private router: Router) { }
 
   ngOnInit(): void {
@@ -56,19 +52,20 @@ export class AdminBookingDetailsComponent implements OnInit {
             mdiIcon: 'trash-can-outline',
             isMdi: true,
             disabled: this.booking.cancelled,
-            execute: () => this.dialog.open(AlertDialogComponent, { data: {
+            execute: () => this.matUtils.createAlertDialog({
               content: "Sei sicuro di voler annullare la tua prenotazione? L'azione non è reversibile.",
               negativeAction: { text: "No", execute: () => { } },
               positiveAction: {
                 text: "Sì, annulla",
                 execute: () => {
-                  this.api.editBooking(ctx.booking.id, { cancelled: true })
-                    .subscribe(() => this.router.navigate(['/admin/bookings'])
-                      .then(() => this.snackBar.open("Prenotazione annullata.", null, { duration: 4000 }))
+                  this.api.editBooking(ctx.booking.id, { cancelled: true }).subscribe(() =>
+                    this.router.navigate(['/admin/bookings']).then(() =>
+                      this.matUtils.createSnackBar("Prenotazione annullata.")
                     )
+                  )
                 }
               }
-            }})
+            })
           },
           {
             id: "1",
@@ -77,10 +74,11 @@ export class AdminBookingDetailsComponent implements OnInit {
             isMdi: true,
             disabled: this.booking.confirmed,
             execute: () => {
-              this.api.editBooking(ctx.booking.id, { confirmed: true })
-                .subscribe(() => this.router.navigate(['/admin/bookings'])
-                  .then(() => this.snackBar.open("Prenotazione confermata.", null, { duration: 4000 }))
+              this.api.editBooking(ctx.booking.id, { confirmed: true }).subscribe(() =>
+                this.router.navigate(['/admin/bookings']).then(() =>
+                  this.matUtils.createSnackBar("Prenotazione confermata.")
                 )
+              )
             }
           }
         ];

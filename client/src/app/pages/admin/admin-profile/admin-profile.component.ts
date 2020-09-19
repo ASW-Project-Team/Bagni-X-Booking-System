@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {Router} from "@angular/router";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
 import {AdminAuthService} from "../../../core/auth/admin-auth.service";
 import {Admin} from "../../../shared/models/admin.model";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-profile',
@@ -17,40 +15,34 @@ export class AdminProfileComponent implements OnInit {
 
   constructor(private authService: AdminAuthService,
               private router: Router,
-              private snackBar: MatSnackBar,
-              private dialog: MatDialog) { }
+              private matUtils: MatUtilsService) { }
+
 
   ngOnInit(): void {
     this.admin = new Admin(this.authService.currentAdminValue());
   }
 
+
   logout() {
-    let context = this;
-    this.dialog.open(AlertDialogComponent, {
-      data: {
-        content: "Sei sicuro di voler effettuare il logout?",
-        positiveAction: {
-          text: "Sì, esegui il logout",
-          execute: function () {
-            context.authService.logout();
-            context.router.navigate(['/admin/login']).then(() => {
-              context.snackBar.open("Logout effettuato.", null, {duration: 4000});
-            });
-          }
-        },
-        negativeAction: {
-          text: "No",
-          execute: function () { }
-        }
-      }
+    this.matUtils.createAlertDialog({
+      content: "Sei sicuro di voler effettuare il logout?",
+      positiveAction: { text: "Sì, esegui il logout", execute: () => {
+        this.authService.logout();
+        this.router.navigate(['/admin/login']).then(() => {
+            this.matUtils.createSnackBar("Logout effettuato.");
+        });
+      }},
+      negativeAction: { text: "No", execute: () => { }}
     });
   }
 
-  createAdmin() {
 
+  createAdmin() {
+    // todo
   }
 
-  deleteAdmin() {
 
+  deleteAdmin() {
+    // todo
   }
 }

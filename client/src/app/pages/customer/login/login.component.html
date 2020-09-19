@@ -9,27 +9,27 @@
   <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline" class="input-field-wide">
         <mat-label>Email</mat-label>
-        <input matInput [formControl]="emailControl" type="email" placeholder="Es. mario.rossi@example.com">
-        <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
+        <input matInput formControlName="email" type="email" placeholder="Es. mario.rossi@example.com">
+        <mat-error *ngIf="loginForm.get('email').hasError('email') && !loginForm.get('email').hasError('required')">
           Inserisci un indirizzo email valido
         </mat-error>
-        <mat-error *ngIf="emailControl.hasError('required')">
+        <mat-error *ngIf="loginForm.get('email').hasError('required')">
           Il campo è <strong>obbligatorio</strong>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input-field-wide">
         <mat-label>Password</mat-label>
-        <input matInput [formControl]="passwordControl" [type]="hidePw ? 'password' : 'text'"
+        <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'"
                placeholder="Es. mySuperPassword!">
         <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
-        <mat-error *ngIf="passwordControl.hasError('required')">
+        <mat-error *ngIf="loginForm.get('password').hasError('required')">
           Il campo è <strong>obbligatorio</strong>
         </mat-error>
       </mat-form-field>
 
     <div class="submit-container">
-      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <app-http-status-indicator class="submit-checker" [status]="status"></app-http-status-indicator>
       <button mat-raised-button class="submit-button" type="submit" color="primary">Login</button>
     </div>
   </form>

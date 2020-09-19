@@ -12,6 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {first} from "rxjs/operators";
+import {CustomerModel} from "../../../shared/models/customer.model";
 
 @Component({
   selector: 'app-register',
@@ -20,8 +21,7 @@ import {first} from "rxjs/operators";
 })
 export class RegisterComponent implements OnInit {
   regForm: FormGroup;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
 
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
@@ -76,32 +76,27 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-    this.authService.register({
+    const customerData: CustomerModel = {
       name: this.regForm.get('name').value,
       surname:  this.regForm.get('surname').value,
       email:  this.regForm.get('email').value,
       password:  this.regForm.get('password').value,
-      address: this.regForm.get('address').value != '' ? this.regForm.get('address').value : null,
-      phone: this.regForm.get('phone').value != '' ? this.regForm.get('phone').value : null,
+      address: this.regForm.get('address').value != '' ? this.regForm.get('address').value : undefined,
+      phone: this.regForm.get('phone').value != '' ? this.regForm.get('phone').value : undefined,
       registered: true,
       deleted: false,
-    })
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate(['/profile']).then(() => {
-            const customerName = this.authService.currentCustomerValue().name;
-            this.snackBar.open(
-              `Registrazione completata. Benvenuto, ${customerName}!`,
-              null,
-              {duration: 4000}
-            );
-          });
-        },
-        error => {
-          this.error = error;
-          this.loading = false;
-        });
+    }
+
+    this.status = 'loading';
+    this.authService.register(customerData).pipe(first()).subscribe(() => {
+      this.status = '';
+      this.router.navigate(['/profile']).then(() => {
+        const customerName = this.authService.currentCustomerValue().name;
+        this.snackBar.open(`Registrazione completata. Benvenuto, ${customerName}!`, null, {duration: 4000});
+      });
+
+    }, error => {
+      this.status = error;
+    });
   }
 }

@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
 import {Service} from "../../../shared/models/service.model";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-service-details',
@@ -18,11 +19,9 @@ export class AdminServiceDetailsComponent implements OnInit {
   activeActions: AppbarAction[] = [];
   serviceForm: FormGroup;
   isNew: boolean = true;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
   serviceId: string;
   @ViewChild('formRef') formRef: FormGroupDirective;
-
 
   private submitAction: AppbarAction = {
     id: "0",
@@ -44,9 +43,8 @@ export class AdminServiceDetailsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar,
               private router: Router,
-              private dialog: MatDialog) {
+              private matUtils: MatUtilsService) {
     this.serviceForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -54,6 +52,7 @@ export class AdminServiceDetailsComponent implements OnInit {
       image: ['']
     });
   }
+
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -84,38 +83,36 @@ export class AdminServiceDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-
+    this.status = 'loading';
     this.api.editService(this.serviceId, UploadUtils.toFormData(this.serviceForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/services'])
-        .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/services']).then(() =>
+        this.matUtils.createSnackBar("Modifiche applicate!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 
 
   deleteService() {
-    this.dialog.open(AlertDialogComponent, { data: {
-        content: "Sei sicuro di voler eliminare il servizio? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
-        positiveAction: { text: "Sì, elimina", execute: () => {
-          this.loading = true;
-          this.api.deleteService(this.serviceId).subscribe(() => {
-              this.loading = false;
-              this.router.navigate(['/admin/services'])
-                .then(() => this.snackBar.open("Servizio eliminato!", null, {duration: 4000}))
+    this.matUtils.createAlertDialog({
+      content: "Sei sicuro di voler eliminare il servizio? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
+      positiveAction: { text: "Sì, elimina", execute: () => {
+        this.status = 'loading';
+        this.api.deleteService(this.serviceId).subscribe(() => {
+          this.status = '';
+          this.router.navigate(['/admin/services']).then(() =>
+            this.matUtils.createSnackBar("Servizio eliminato!"))
 
-          }, error => {
-            this.error = error;
-            this.loading = false;
-          });
-        } },
-        negativeAction: { text: "No", execute: () => {} }
-      }});
+        }, error => {
+          this.status = error;
+        });
+      }},
+      negativeAction: { text: "No", execute: () => {} }
+    });
   }
+
 
   createService() {
     // stop here if form is invalid
@@ -123,17 +120,17 @@ export class AdminServiceDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     this.api.createService(UploadUtils.toFormData(this.serviceForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/services'])
-        .then(() => this.snackBar.open("Servizio creato!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/services']).then(() =>
+        this.matUtils.createSnackBar("Servizio creato!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
+
 
   submit() {
     if (this.isNew) {

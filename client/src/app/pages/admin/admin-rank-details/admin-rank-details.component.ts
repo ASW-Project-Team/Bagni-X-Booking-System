@@ -4,10 +4,8 @@ import {RankUmbrella} from "../../../shared/models/rank-umbrella.model";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiService} from "../../../core/api/api.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatDialog} from "@angular/material/dialog";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-admin-rank-details',
@@ -19,8 +17,7 @@ export class AdminRankDetailsComponent implements OnInit {
   rankUmbrellaId: string;
   rankForm: FormGroup;
   isNew: boolean = true;
-  loading: boolean = false;
-  error: string = '';
+  status: string = '';
   @ViewChild('formRef') formRef: FormGroupDirective;
 
   private deleteAction: AppbarAction = {
@@ -44,9 +41,8 @@ export class AdminRankDetailsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private api: ApiService,
-              private snackBar: MatSnackBar,
               private router: Router,
-              private dialog: MatDialog) {
+              private matUtils: MatUtilsService) {
 
     this.rankForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -91,36 +87,34 @@ export class AdminRankDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
+    this.status = 'loading';
     this.api.createRankUmbrella(UploadUtils.toFormData(this.rankForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/rank-umbrellas'])
-        .then(() => this.snackBar.open("Categoria ombrelloni creata!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/rank-umbrellas']).then(() =>
+        this.matUtils.createSnackBar("Categoria ombrelloni creata!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 
 
   private deleteRank() {
-    this.dialog.open(AlertDialogComponent, { data: {
-        content: "Sei sicuro di voler eliminare questa categoria? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
-        positiveAction: { text: "Sì, elimina", execute: () => {
-            this.loading = true;
-            this.api.deleteRankUmbrella(this.rankUmbrellaId).subscribe(() => {
-                this.loading = false;
-                this.router.navigate(['/admin/rank-umbrellas'])
-                  .then(() => this.snackBar.open("Categoria ombrelloni eliminata!", null, {duration: 4000}))
-              },
-              error => {
-                this.error = error;
-                this.loading = false;
-              });
-        } },
-        negativeAction: { text: "No", execute: () => {} }
-      }});
+    this.matUtils.createAlertDialog({
+      content: "Sei sicuro di voler eliminare questa categoria? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
+      positiveAction: { text: "Sì, elimina", execute: () => {
+        this.status = 'loading';
+        this.api.deleteRankUmbrella(this.rankUmbrellaId).subscribe(() => {
+          this.status = '';
+          this.router.navigate(['/admin/rank-umbrellas']).then(() =>
+            this.matUtils.createSnackBar("Categoria ombrelloni eliminata!"))
+
+        }, error => {
+          this.status = error;
+        });
+      }},
+      negativeAction: { text: "No", execute: () => {} }
+    });
   }
 
 
@@ -130,16 +124,14 @@ export class AdminRankDetailsComponent implements OnInit {
       return;
     }
 
-    this.loading = true;
-
+    this.status = 'loading';
     this.api.editRankUmbrella(this.rankUmbrellaId, UploadUtils.toFormData(this.rankForm.value)).subscribe(() => {
-      this.loading = false;
-      this.router.navigate(['/admin/rank-umbrellas'])
-        .then(() => this.snackBar.open("Modifiche applicate!", null, {duration: 4000}))
+      this.status = '';
+      this.router.navigate(['/admin/rank-umbrellas']).then(() =>
+        this.matUtils.createSnackBar("Modifiche applicate!"))
 
     }, error => {
-      this.error = error;
-      this.loading = false;
+      this.status = error;
     });
   }
 

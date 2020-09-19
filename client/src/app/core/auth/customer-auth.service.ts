@@ -32,8 +32,8 @@ export class CustomerAuthService {
     return this.currentCustomerSubject.value;
   }
 
-  public login(email: string, password: string ): Observable<CustomerModel> {
-    return this.httpClient.post<CustomerModel>(`${environment.apiUrl}/api/auth/customers/login`, { email: email, password: password })
+  public login(credentials: {email: string, password: string}): Observable<CustomerModel> {
+    return this.httpClient.post<CustomerModel>(`${environment.apiUrl}/api/auth/customers/login`, credentials)
       .pipe(map(customer => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.customerCookieName, JSON.stringify(customer));

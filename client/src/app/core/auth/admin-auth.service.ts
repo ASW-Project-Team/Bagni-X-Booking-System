@@ -32,8 +32,8 @@ export class AdminAuthService {
     return this.currentAdminSubject.value;
   }
 
-  public login(username: string, password: string ): Observable<AdminModel> {
-    return this.httpClient.post<AdminModel>(`${environment.apiUrl}/api/auth/admins/login`, { username: username, password: password })
+  public login(credentials: { username: string, password: string }): Observable<AdminModel> {
+    return this.httpClient.post<AdminModel>(`${environment.apiUrl}/api/auth/admins/login`, credentials)
       .pipe(map(admin => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.adminCookieName, JSON.stringify(admin));

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -12,14 +12,9 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  emailControl: FormControl;
-  passwordControl: FormControl;
-
-  loading: boolean = false;
-  submitted: boolean = false;
   returnUrl: string;
   returnUrlExternallySet: boolean = false;
-  error: string = '';
+  status: string = '';
   hidePw = true;
 
   constructor(private formBuilder: FormBuilder,
@@ -32,61 +27,50 @@ export class LoginComponent implements OnInit {
       this.router.navigate(["/home"]).then(() => {
         const customerEmail = this.customerAuthService.currentCustomerValue().email;
         this.snackBar.open(
-        `Sei già loggato come ${customerEmail}! per effettuare l'accesso con un altro account,
+          `Sei già loggato come ${customerEmail}! per effettuare l'accesso con un altro account,
                  esegui prima il logout da questo.`,
           null,
-          { duration: 4000 }
+          {duration: 4000}
         );
       });
     }
+
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
   }
 
 
   ngOnInit(): void {
-    this.emailControl = new FormControl('',[Validators.required, Validators.email])
-    this.passwordControl = new FormControl('',[Validators.required])
-
-    this.loginForm = new FormGroup({
-      emailControl: this.emailControl,
-      passwordControl: this.passwordControl
-    });
-
     // get return url from route parameters, or default to '/home'
-    if (this.route.snapshot.queryParams['returnUrl']) {
-      this.returnUrlExternallySet = true;
-      this.returnUrl = this.route.snapshot.queryParams['returnUrl']
-    } else {
-      this.returnUrl = '/home';
-    }
-
+    this.route.queryParamMap.subscribe(params => {
+      if (params.get('returnUrl')) {
+        this.returnUrlExternallySet = true;
+        this.returnUrl = params.get('returnUrl')
+      } else {
+        this.returnUrl = '/home';
+      }
+    });
   }
 
 
   public onSubmit(): void {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
 
-    this.loading = true;
-    this.customerAuthService.login(this.emailControl.value, this.passwordControl.value)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl]).then(() => {
-            const customerName = this.customerAuthService.currentCustomerValue().name;
-            this.snackBar.open(
-              `Login completato. Benvenuto, ${customerName}!`,
-              null,
-              { duration: 4000 }
-            );
-          });
-        },
-        error => {
-          this.error = error;
-          this.loading = false;
-        });
+    this.status = 'loading';
+    this.customerAuthService.login(this.loginForm.value).pipe(first()).subscribe(() => {
+      this.status = '';
+      this.router.navigate([this.returnUrl]).then(() => {
+        const customerName = this.customerAuthService.currentCustomerValue().name;
+        this.snackBar.open(`Login completato. Benvenuto, ${customerName}!`, null, {duration: 4000});
+      });
+
+    }, error => {
+      this.status = error;
+    });
   }
 }
