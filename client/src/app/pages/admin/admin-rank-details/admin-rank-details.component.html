@@ -1,5 +1,5 @@
 <div class="page">
-  <form [formGroup]="rankForm" class="rank-form">
+  <form [formGroup]="rankForm" class="rank-form" (ngSubmit)="submitAction()">
     <mat-form-field appearance="outline" class="input-field-wide" >
       <mat-label>Nome</mat-label>
       <input matInput  formControlName="name" type="text" placeholder="Es. Cabina">
@@ -45,12 +45,13 @@
       <app-image-upload formControlName="image"></app-image-upload>
     </div>
 
-    <div class="input-field-wide">
-      <app-sales-selector formControlName="sales"></app-sales-selector>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
     </div>
 
     <div class="input-field-wide">
-      <app-http-status-indicator [loading]="loading" [error]="error"></app-http-status-indicator>
+      <app-sales-selector formControlName="sales"></app-sales-selector>
     </div>
   </form>
 </div>

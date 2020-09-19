@@ -3,17 +3,6 @@
 .sales-selector-container {
   @include responsiveProp(margin-top, $defaultMargin);
 
-  .sale-adder {
-    @include responsiveProp(margin-top, $defaultMargin);
-
-    .inputs-container {
-      @include inputsContainer;
-    }
-
-    .add-sale-button {
-    }
-  }
-
   .sales-container {
     @include responsiveProp(margin-top, $defaultMargin);
 
@@ -22,4 +11,14 @@
       @include responsiveProp(margin-bottom, $halfMargin);
     }
   }
+
+  .add-sale-container {
+    @include responsiveProp(margin-top, $defaultMargin);
+
+    .add-sale-form {
+      @include inputsContainer;
+    }
+  }
+
+
 }

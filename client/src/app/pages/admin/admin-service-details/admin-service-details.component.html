@@ -1,6 +1,6 @@
 <div class="page">
-  <form [formGroup]="serviceForm" class="service-form">
-    <mat-form-field appearance="outline" class="input-field" >
+  <form [formGroup]="serviceForm" class="service-form" (ngSubmit)="submitAction()">
+    <mat-form-field appearance="outline" class="input-field-wide" >
       <mat-label>Nome</mat-label>
       <input matInput  formControlName="name" type="text" placeholder="Es. Cabina">
       <mat-error *ngIf="serviceForm.get('name').hasError('required')">
@@ -8,7 +8,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="input-field">
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Descrizione</mat-label>
       <textarea matInput rows="8" formControlName="description" type="text" placeholder="Es. Lorem ipsum..."></textarea>
       <mat-error *ngIf="serviceForm.get('description').hasError('required')">
@@ -16,7 +16,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="input-field" >
+    <mat-form-field appearance="outline" class="input-field-wide">
       <mat-label>Prezzo giornaliero</mat-label>
       <input matInput  formControlName="dailyPrice" type="number" placeholder="Es. Cabina">
       <span matSuffix>&nbsp;€/gg</span>
@@ -25,22 +25,18 @@
       </mat-error>
     </mat-form-field>
 
-    <div class="input-field">
+    <div class="input-field-wide">
       <app-image-upload formControlName="image"></app-image-upload>
     </div>
 
-    <div class="warning-container" *ngIf="loading">
-      <mat-spinner class="warning-icon" color="primary" [diameter]="24"></mat-spinner>
-      <span>Elaborazione modifiche in corso...</span>
-    </div>
-    <div class="warning-container" *ngIf="error">
-      <mat-icon svgIcon="alert-circle-outline" class="warning-icon" color="warn"></mat-icon>
-      <span>{{error}}</span>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
     </div>
   </form>
 </div>
 
 <app-nested-appbar backRoute="/admin/services" backPageName="Servizi"
                    [title]="isNew ? 'Aggiungi servizio' : 'Modifica servizio'"
-                   [actions]="actions">
+                   [actions]="activeActions">
 </app-nested-appbar>

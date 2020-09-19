@@ -21,18 +21,15 @@ export class AdminRankDetailsComponent implements OnInit {
   isNew: boolean = true;
   loading: boolean = false;
   error: string = '';
+  submitAction: Function;
 
   private deleteAction: AppbarAction = {
     id: "1",
     name: "Elimina categoria ombrelloni",
     mdiIcon: 'trash-can-outline',
     isMdi: true,
-    execute: () =>
-      this.dialog.open(AlertDialogComponent, { data: {
-          content: "Sei sicuro di voler eliminare questa categoria? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
-          positiveAction: { text: "Sì, elimina", execute: () => this.deleteRank() },
-          negativeAction: { text: "No", execute: () => {} }
-        }})
+    execute: () => this.deleteRank()
+
   };
 
   private modifyAction: AppbarAction = {
@@ -76,6 +73,7 @@ export class AdminRankDetailsComponent implements OnInit {
 
       if (this.isNew) {
         this.activeActions.push(this.createAction);
+        this.submitAction = this.createRank;
 
       } else {
         this.api.getRankUmbrella(params.id).subscribe(data => {
@@ -87,8 +85,8 @@ export class AdminRankDetailsComponent implements OnInit {
           this.rankForm.get('toUmbrella').setValue(this.rankUmbrella.toUmbrella);
           this.rankForm.get('sales').setValue(this.rankUmbrella.sales);
 
-          this.activeActions.push(this.deleteAction);
-          this.activeActions.push(this.modifyAction);
+          this.activeActions.push(this.deleteAction, this.modifyAction);
+          this.submitAction = this.modifyRank;
         });
       }
     });
@@ -112,18 +110,26 @@ export class AdminRankDetailsComponent implements OnInit {
     });
   }
 
+
   private deleteRank() {
-    this.loading = true;
-    this.api.deleteRankUmbrella(this.rankUmbrella.id).subscribe(() => {
-        this.loading = false;
-        this.router.navigate(['/admin/rank-umbrellas'])
-          .then(() => this.snackBar.open("Categoria ombrelloni eliminata!", null, {duration: 4000}))
-      },
-      error => {
-        this.error = error;
-        this.loading = false;
-      });
+    this.dialog.open(AlertDialogComponent, { data: {
+        content: "Sei sicuro di voler eliminare questa categoria? L'azione interesserà le future prenotazioni, ma non quelle già effettuate.",
+        positiveAction: { text: "Sì, elimina", execute: () => {
+            this.loading = true;
+            this.api.deleteRankUmbrella(this.rankUmbrella.id).subscribe(() => {
+                this.loading = false;
+                this.router.navigate(['/admin/rank-umbrellas'])
+                  .then(() => this.snackBar.open("Categoria ombrelloni eliminata!", null, {duration: 4000}))
+              },
+              error => {
+                this.error = error;
+                this.loading = false;
+              });
+        } },
+        negativeAction: { text: "No", execute: () => {} }
+      }});
   }
+
 
   private modifyRank() {
     // stop here if form is invalid

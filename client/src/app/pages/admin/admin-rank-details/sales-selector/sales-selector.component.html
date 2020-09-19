@@ -25,10 +25,10 @@
   </div>
 
   <!-- adder per lo sconto, con bordo material outlined -->
-  <form [formGroup]="saleAdderForm" (ngSubmit)="addSale()" class="sale-adder">
+  <div class="add-sale-container">
     <h1>Aggiungi uno sconto</h1>
 
-    <div class="inputs-container">
+    <form [formGroup]="saleAdderForm" (ngSubmit)="addSale()" class="add-sale-form">
       <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Intervallo di date</mat-label>
         <mat-date-range-input [rangePicker]="pickerPeriod" formGroupName="saleDateRange"
@@ -48,12 +48,14 @@
           Il campo è <strong>obbligatorio</strong>
         </mat-error>
       </mat-form-field>
-    </div>
 
-
-    <button mat-raised-button color="primary" class="add-sale-button">
-      Aggiungi sconto
-    </button>
-  </form>
+      <div class="submit-container">
+        <div class="submit-checker">
+          <p *ngIf="!datesAvailable"> La stagione è terminata! Puoi porre sconti solo durante la stagione.</p>
+        </div>
+        <button mat-raised-button class="submit-button" [disabled]="!datesAvailable" type="submit" color="primary">Aggiungi sconto</button>
+      </div>
+    </form>
+  </div>
 
 </div>

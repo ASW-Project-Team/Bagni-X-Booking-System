@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Customer} from "../../../shared/models/customer.model";
 import {Booking} from "../../../shared/models/booking.model";
 import {ApiService} from "../../../core/api/api.service";
@@ -7,6 +7,7 @@ import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {UnregCustomerFormComponent} from "../../../shared/components/unreg-customer-form/unreg-customer-form.component";
 
 @Component({
   selector: 'app-admin-contact-details',
@@ -18,6 +19,8 @@ export class AdminContactDetailsComponent implements OnInit {
   customer: Customer;
   bookings: Booking[];
   actions: AppbarAction[] = [];
+
+  @ViewChild('editor') editor: UnregCustomerFormComponent;
 
   private deleteAction: AppbarAction = {
     id: "1",
@@ -37,7 +40,7 @@ export class AdminContactDetailsComponent implements OnInit {
     name: "Modifica cliente",
     mdiIcon: 'pencil-outline',
     isMdi: true,
-    execute: () => this.modifyCustomer()
+    execute: () => this.editor.modifyCustomer()
   }
 
 
@@ -82,11 +85,5 @@ export class AdminContactDetailsComponent implements OnInit {
       .subscribe(() => this.router.navigate(['/admin/contacts'])
         .then(() => this.snackbar.open("Cliente eliminato.", null, { duration: 4000 }))
       )
-  }
-
-  modifyCustomer() {
-    this.router.navigate(
-      ['/admin/contacts/edit', this.customer.id,
-      { backRoute: '/admin/contacts/' + this.customer.id, backRouteName: 'Informazioni di ' + this.customerFullName}])
   }
 }

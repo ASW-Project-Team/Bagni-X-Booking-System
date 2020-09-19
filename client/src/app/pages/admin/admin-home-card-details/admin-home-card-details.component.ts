@@ -7,7 +7,6 @@ import {ApiService} from "../../../core/api/api.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {HomeCard} from "../../../shared/models/home-card.model";
-import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
 import {UploadUtils} from "../../../shared/utils/upload.utils";
 
 @Component({
@@ -34,8 +33,7 @@ export class AdminHomeCardDetailsComponent implements OnInit {
               private route: ActivatedRoute,
               private api: ApiService,
               private snackBar: MatSnackBar,
-              private router: Router,
-              private dialog: MatDialog) {
+              private router: Router) {
 
     this.homeCardForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -47,15 +45,13 @@ export class AdminHomeCardDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params.id) {
+        this.homeCardId = params.id;
         this.api.getHomeCard(params.id).subscribe(data => {
-          this.homeCardId = params.id;
-
           const homeCard = new HomeCard(data);
           this.homeCardForm.get('title').setValue(homeCard.title);
           this.homeCardForm.get('description').setValue(homeCard.description);
           this.actions.push(this.modifyAction);
         });
-
       }
     });
   }
@@ -76,6 +72,6 @@ export class AdminHomeCardDetailsComponent implements OnInit {
       }, error => {
         this.loading = false;
         this.error = error;
-      })
+      });
   }
 }

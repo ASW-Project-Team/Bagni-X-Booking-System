@@ -24,6 +24,7 @@ import {UserInfoComponent} from "./user-info/user-info.component";
 import {SharedDirectivesModule} from "../directives/shared-directives.module";
 import {ImageUploadComponent} from './image-upload/image-upload.component';
 import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-indicator.component';
+import { UnregCustomerFormComponent } from './unreg-customer-form/unreg-customer-form.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-
     AdminMainAppbarComponent,
     UserInfoComponent,
     ImageUploadComponent,
-    HttpStatusIndicatorComponent
+    HttpStatusIndicatorComponent,
+    UnregCustomerFormComponent
   ],
   imports: [
     CommonModule,
@@ -74,7 +76,8 @@ import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-
     AdminMainAppbarComponent,
     UserInfoComponent,
     ImageUploadComponent,
-    HttpStatusIndicatorComponent
+    HttpStatusIndicatorComponent,
+    UnregCustomerFormComponent
   ]
 })
 export class SharedComponentsModule {

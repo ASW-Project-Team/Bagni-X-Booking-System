@@ -1,0 +1,53 @@
+<form [formGroup]="customerForm" class="registration-form" (ngSubmit)="submitAction()">
+  <mat-form-field appearance="outline" class="input-field-half">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="name" type="text" placeholder="Es. Mario">
+    <mat-error *ngIf="customerForm.get('name').hasError('required')">
+      Il campo è <strong>obbligatorio</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="input-field-half">
+    <mat-label>Cognome</mat-label>
+    <input matInput formControlName="surname" type="text"  placeholder="Es. Rossi">
+    <mat-error *ngIf="customerForm.get('surname').hasError('required')">
+      Il campo è <strong>obbligatorio</strong>
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="input-field-wide">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
+    <mat-error
+      *ngIf="customerForm.get('email').hasError('email')">
+      Inserisci un indirizzo email valido.
+    </mat-error>
+    <mat-hint>
+      Il campo è <strong>facoltativo</strong>
+    </mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="input-field-half">
+    <mat-label>Numero di telefono</mat-label>
+    <input matInput formControlName="phone" placeholder="Es. 3310000000" type="tel">
+    <mat-error *ngIf="customerForm.get('phone').hasError('pattern')">
+      Il numero non è valido
+    </mat-error>
+    <mat-hint>
+      Il campo è <strong>facoltativo</strong>
+    </mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="input-field-half">
+    <mat-label>Indirizzo</mat-label>
+    <input matInput formControlName="address" type="text" placeholder="Es. Viale della Vittoria, 46">
+    <mat-hint>
+      Il campo è <strong>facoltativo</strong>
+    </mat-hint>
+  </mat-form-field>
+
+  <div class="submit-container">
+    <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+    <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
+  </div>
+</form>

@@ -17,13 +17,13 @@
     </mat-form-field>
 
     <div class="input-field-wide">
-      <app-image-upload formControlName="image" helperText="Seleziona l'immagine."></app-image-upload>
+      <app-image-upload formControlName="image"></app-image-upload>
     </div>
 
-    <div class="input-field-wide">
-      <app-http-status-indicator [error]="error" [loading]="loading"></app-http-status-indicator>
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [loading]="loading" [error]="error"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati</button>
     </div>
-
   </form>
 </div>
 

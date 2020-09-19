@@ -1,10 +1,15 @@
 <div class="page">
   <div class="customer-section" *ngIf="customer">
     <h1>Informazioni sul cliente</h1>
-    <p *ngIf="customer.email">Email: <strong>{{customer.email}}</strong></p>
-    <p *ngIf="customer.address">Indirizzo: <strong>{{customer.address}}</strong></p>
-    <p *ngIf="customer.phone">Telefono: <strong>{{customer.phone}}</strong></p>
-    <p>Registrato dall'admin? <strong>{{customer.registered ? 'No' : 'Sì'}}</strong></p>
+    <app-user-info [customer]="customer"></app-user-info>
+
+    <div class="editor" *ngIf="!customer.registered">
+      <p>
+        Il cliente è stato aggiunto manualmente dall'amministratore, e non detiene quindi un account personale.
+        Da questa schermata, puoi modificarne le informazioni di recapito.
+      </p>
+      <app-unreg-customer-form [customer]="customer" #editor></app-unreg-customer-form>
+    </div>
   </div>
 
   <div class="bookings-section" *ngIf="bookings && bookings.length > 0">

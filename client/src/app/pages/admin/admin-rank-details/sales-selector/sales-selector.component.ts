@@ -21,6 +21,7 @@ export class SalesSelectorComponent implements ControlValueAccessor  {
   saleAdderForm: FormGroup;
   startSaleDate: Date;
   endSaleDate: Date;
+  datesAvailable: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
               private api: ApiService) {
@@ -37,8 +38,14 @@ export class SalesSelectorComponent implements ControlValueAccessor  {
       const seasonEnd = new Date(data.seasonEnd);
       const today = new Date();
 
-      this.startSaleDate = seasonStart.getTime() >= today.getTime() ? seasonStart : today;
-      this.endSaleDate = seasonEnd.getTime() >= today.getTime() ? seasonEnd : today;
+      this.datesAvailable = seasonEnd.getTime() >= today.getTime();
+
+      if (!this.datesAvailable) {
+        this.saleAdderForm.disable();
+      } else {
+        this.startSaleDate = seasonStart.getTime() >= today.getTime() ? seasonStart : today;
+        this.endSaleDate = seasonEnd.getTime() >= today.getTime() ? seasonEnd : today;
+      }
     });
   }
 

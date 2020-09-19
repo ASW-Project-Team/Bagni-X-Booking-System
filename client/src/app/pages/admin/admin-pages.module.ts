@@ -16,7 +16,7 @@ import { AdminNewsDetailsComponent } from './admin-news-details/admin-news-detai
 import { AdminServiceDetailsComponent } from './admin-service-details/admin-service-details.component';
 import { AdminContactDetailsComponent } from './admin-contact-details/admin-contact-details.component';
 import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.module";
-import { AdminContactEditComponent } from './admin-contact-edit/admin-contact-edit.component';
+import { AdminContactCreateComponent } from './admin-contact-create/admin-contact-create.component';
 import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-home-card-details.component';
 
 
@@ -35,7 +35,7 @@ import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-h
     AdminNewsDetailsComponent,
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
-    AdminContactEditComponent,
+    AdminContactCreateComponent,
     AdminHomeCardDetailsComponent,
   ],
   imports: [
@@ -59,7 +59,7 @@ import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-h
     AdminServiceDetailsComponent,
     AdminContactDetailsComponent,
     AdminRankDetailsModule,
-    AdminContactEditComponent,
+    AdminContactCreateComponent,
     AdminHomeCardDetailsComponent,
   ]
 })
