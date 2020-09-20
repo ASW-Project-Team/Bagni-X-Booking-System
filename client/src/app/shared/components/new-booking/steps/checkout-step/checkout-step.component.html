@@ -1,0 +1,18 @@
+<p>Controlla che tutti i dati siano giusti. Una volta terminato, dovrai attendere la conferma da parte del gestore.</p>
+
+<div class="summary-container">
+  <app-booking-summary [booking]="booking"></app-booking-summary>
+</div>
+
+<div class="http-status-container">
+  <app-http-status-indicator [status]="status"></app-http-status-indicator>
+</div>
+
+<div class="stepper-buttons">
+  <button class="back-button" mat-raised-button color="accent" matStepperPrevious>
+    Indietro
+  </button>
+  <button class="next-button" mat-raised-button color="primary" (click)="generateBooking()" matStepperNext>
+    Prenota!
+  </button>
+</div>

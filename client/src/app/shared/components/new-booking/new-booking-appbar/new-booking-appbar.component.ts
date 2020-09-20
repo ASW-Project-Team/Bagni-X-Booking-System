@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking} from "../../../../shared/models/booking.model";
+import {Booking} from "../../../models/booking.model";
 
 @Component({
   selector: 'app-new-booking-appbar',
@@ -11,8 +11,7 @@ export class NewBookingAppbarComponent implements OnInit {
   @Input() backPageName: string;
   @Input() booking: Booking;
 
-  constructor() {
-  }
+  constructor() { }
 
   ngOnInit(): void { }
 

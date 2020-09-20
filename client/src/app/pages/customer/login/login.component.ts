@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
     this.status = 'loading';
     this.customerAuthService.login(this.loginForm.value).pipe(first()).subscribe(() => {
       this.status = '';
-      this.router.navigate([this.returnUrl]).then(() => {
+      this.router.navigate([ this.returnUrl ]).then(() => {
         const customerName = this.customerAuthService.currentCustomerValue().name;
         this.snackBar.open(`Login completato. Benvenuto, ${customerName}!`, null, {duration: 4000});
       });

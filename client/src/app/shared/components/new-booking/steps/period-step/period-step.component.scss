@@ -1,4 +1,4 @@
-@import "../../../../../../styles/utils";
+@import "~src/styles/utils";
 
 p {
   @include responsiveProp(margin-bottom, $defaultMargin);
@@ -7,19 +7,10 @@ p {
 h2 {
   margin: 0;
 }
-.buttons-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  @include responsiveProp(margin-bottom, $quarterMargin);
 
-  .next-button {
-    @include button;
-    @include responsiveProp(width, $widerTextboxWidth);
-  }
+.not-available {
+  @include responsiveProp(margin-bottom, $defaultMargin);
 }
-
 
 .date-range-type-content {
   p {
@@ -55,3 +46,5 @@ h2 {
     }
   }
 }
+
+@include stepperButtons;

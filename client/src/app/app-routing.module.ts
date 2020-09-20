@@ -5,13 +5,13 @@ import { HomeComponent } from "./pages/customer/home/home.component";
 import { NewsComponent } from "./pages/customer/news/news.component";
 import { BookingsComponent } from "./pages/customer/bookings/bookings.component";
 import { ProfileComponent } from "./pages/customer/profile/profile.component";
-import { PageNotFoundComponent } from "./pages/common/page-not-found/page-not-found.component";
+import { PageNotFoundComponent } from "./pages/customer/page-not-found/page-not-found.component";
 import {NewsDetailsComponent} from "./pages/customer/news-details/news-details.component";
 import {BookingDetailsComponent} from "./pages/customer/booking-details/booking-details.component";
 import {CustomerAuthGuard} from "./core/guards/customer-auth.guard";
 import {LoginComponent} from "./pages/customer/login/login.component";
 import {RegisterComponent} from "./pages/customer/register/register.component";
-import {NewBookingComponent} from "./pages/common/new-booking/new-booking.component";
+import {NewBookingComponent} from "./pages/customer/new-booking/new-booking.component";
 import {AdminLoginComponent} from "./pages/admin/admin-login/admin-login.component";
 import {AdminBookingsComponent} from "./pages/admin/admin-bookings/admin-bookings.component";
 import {AdminAuthGuard} from "./core/guards/admin-auth.guard";
@@ -29,6 +29,7 @@ import {AdminContactDetailsComponent} from "./pages/admin/admin-contact-details/
 import {AdminRankDetailsComponent} from "./pages/admin/admin-rank-details/admin-rank-details.component";
 import {AdminContactCreateComponent} from "./pages/admin/admin-contact-create/admin-contact-create.component";
 import {AdminHomeCardDetailsComponent} from "./pages/admin/admin-home-card-details/admin-home-card-details.component";
+import {AdminBookingCreateComponent} from "./pages/admin/admin-booking-create/admin-booking-create.component";
 
 
 // populate app routes
@@ -50,6 +51,8 @@ const routes: Routes = [
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/bookings', component: AdminBookingsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/bookings/:id', component: AdminBookingDetailsComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/new-booking', component: AdminBookingCreateComponent, canActivate: [AdminAuthGuard] },
+
   { path: 'admin/contacts', component: AdminContactsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/contacts/:id', component: AdminContactDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/contacts/edit/:id', component: AdminContactCreateComponent, canActivate: [AdminAuthGuard] },

@@ -1,0 +1,15 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.selected-customer-container {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.customers-container {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+@include stepperButtons;

@@ -18,6 +18,7 @@ import { AdminContactDetailsComponent } from './admin-contact-details/admin-cont
 import {AdminRankDetailsModule} from "./admin-rank-details/admin-rank-details.module";
 import { AdminContactCreateComponent } from './admin-contact-create/admin-contact-create.component';
 import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-home-card-details.component';
+import { AdminBookingCreateComponent } from './admin-booking-create/admin-booking-create.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { AdminHomeCardDetailsComponent } from './admin-home-card-details/admin-h
     AdminContactDetailsComponent,
     AdminContactCreateComponent,
     AdminHomeCardDetailsComponent,
+    AdminBookingCreateComponent,
   ],
   imports: [
     CommonModule,

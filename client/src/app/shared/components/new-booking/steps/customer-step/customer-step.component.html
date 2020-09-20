@@ -1,0 +1,30 @@
+<p>
+ Seleziona il cliente per il quale intendi effettuare la prenotazione.
+</p>
+
+<div *ngIf="selectedCustomer" class="selected-customer-container">
+  <h1>Cliente selezionato</h1>
+  <app-user-info [customer]="selectedCustomer"></app-user-info>
+</div>
+
+<div class="customers-container">
+  <ul *ngFor="let customer of customers">
+    <li>
+      <app-settings-list-item [title]="customer.getFullName()"
+                              [description]="customer.email"
+                              (click)="selectCustomer(customer)"
+                              icon="account-circle-outline"
+                              [isLast]="customers.indexOf(customer) >= customers.length - 1">
+      </app-settings-list-item>
+    </li>
+  </ul>
+
+</div>
+
+
+<div class="stepper-buttons">
+  <div class="back-button"></div>
+  <button class="next-button" mat-raised-button color="primary" [disabled]="!selectedCustomer" matStepperNext>
+    Vai a selezione periodo
+  </button>
+</div>

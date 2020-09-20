@@ -25,6 +25,14 @@ import {SharedDirectivesModule} from "../directives/shared-directives.module";
 import {ImageUploadComponent} from './image-upload/image-upload.component';
 import {HttpStatusIndicatorComponent} from './http-status-indicator/http-status-indicator.component';
 import { UnregCustomerFormComponent } from './unreg-customer-form/unreg-customer-form.component';
+import {NewBookingAppbarComponent} from "./new-booking/new-booking-appbar/new-booking-appbar.component";
+import {CheckoutStepComponent} from "./new-booking/steps/checkout-step/checkout-step.component";
+import {CustomizeStepComponent} from "./new-booking/steps/customize-step/customize-step.component";
+import {SalablePickerComponent} from "./new-booking/steps/customize-step/salable-picker-card/salable-picker.component";
+import {PeriodStepComponent} from "./new-booking/steps/period-step/period-step.component";
+import {QuantitySelectorComponent} from "./new-booking/steps/customize-step/salable-picker-card/quantity-selector/quantity-selector.component";
+import {CartComponent} from "./new-booking/new-booking-appbar/cart/cart.component";
+import { CustomerStepComponent } from './new-booking/steps/customer-step/customer-step.component';
 
 
 @NgModule({
@@ -48,7 +56,15 @@ import { UnregCustomerFormComponent } from './unreg-customer-form/unreg-customer
     UserInfoComponent,
     ImageUploadComponent,
     HttpStatusIndicatorComponent,
-    UnregCustomerFormComponent
+    UnregCustomerFormComponent,
+    NewBookingAppbarComponent,
+    CheckoutStepComponent,
+    CustomizeStepComponent,
+    SalablePickerComponent,
+    PeriodStepComponent,
+    QuantitySelectorComponent,
+    CartComponent,
+    CustomerStepComponent
   ],
   imports: [
     CommonModule,
@@ -77,7 +93,15 @@ import { UnregCustomerFormComponent } from './unreg-customer-form/unreg-customer
     UserInfoComponent,
     ImageUploadComponent,
     HttpStatusIndicatorComponent,
-    UnregCustomerFormComponent
+    UnregCustomerFormComponent,
+    NewBookingAppbarComponent,
+    CheckoutStepComponent,
+    CustomizeStepComponent,
+    SalablePickerComponent,
+    PeriodStepComponent,
+    QuantitySelectorComponent,
+    CartComponent,
+    CustomerStepComponent
   ]
 })
 export class SharedComponentsModule {

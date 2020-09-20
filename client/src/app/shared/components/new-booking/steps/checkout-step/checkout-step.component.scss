@@ -1,0 +1,19 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.summary-container {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+.http-status-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include responsiveProp(margin-bottom, $defaultMargin);
+}
+
+@include stepperButtons;

@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Booking} from "../../../../../shared/models/booking.model";
-import {AvailabilityData} from "../../../../../shared/models/http-responses/availability-data.model";
-import {RankUmbrella} from "../../../../../shared/models/rank-umbrella.model";
-import {Service} from "../../../../../shared/models/service.model";
-import {Umbrella} from "../../../../../shared/models/umbrella.model";
-import {SalableItemModel} from "../../../../../shared/models/salable.model";
+import {Booking} from "../../../../models/booking.model";
+import {AvailabilityData} from "../../../../models/http-responses/availability-data.model";
+import {RankUmbrella} from "../../../../models/rank-umbrella.model";
+import {Service} from "../../../../models/service.model";
+import {Umbrella} from "../../../../models/umbrella.model";
+import {SalableItemModel} from "../../../../models/salable.model";
 
 @Component({
   selector: 'app-customize-step',
@@ -14,29 +14,22 @@ import {SalableItemModel} from "../../../../../shared/models/salable.model";
 export class CustomizeStepComponent implements OnInit {
   @Input() booking: Booking;
   @Output() bookingChange: EventEmitter<Booking> = new EventEmitter<Booking>();
-
   availableRankings: RankUmbrella[];
   availableUmbrellas: Umbrella[];
   availableServices: Service[];
-
-  customizationValidator: boolean = false;
-  @Output() customizationValidatorChange = new EventEmitter<boolean>();
-
-  constructor() {
-
-  }
+  validator: boolean = false;
 
 
-  ngOnInit(): void {
-  }
+  constructor() { }
+
+
+  ngOnInit(): void { }
 
 
   setAvailableItems(availability: AvailabilityData) {
     if (availability != undefined) {
       this.availableUmbrellas = availability.availableUmbrellas.map(model => new Umbrella(model));
-
       this.availableRankings = availability.rankUmbrellas.map(rankModel => new RankUmbrella(rankModel));
-
       this.availableServices = availability.services.map(serviceModel => new Service(serviceModel))
         .filter(service => service.dailyPrice > 0);
 
@@ -49,10 +42,10 @@ export class CustomizeStepComponent implements OnInit {
       this.booking.services = [];
       this.booking.price = 0.0;
       this.bookingChange.emit(this.booking);
-      this.customizationValidator = false;
-      this.customizationValidatorChange.emit(false);
+      this.validator = false;
     }
   }
+
 
   getUmbrellasByRank(rank: RankUmbrella): Umbrella[] {
     const umbrellasByRank = this.availableUmbrellas
@@ -63,12 +56,12 @@ export class CustomizeStepComponent implements OnInit {
     return umbrellasByRank.sort((a,b) => (a.number > b.number) ? -1 : ((b.number > a.number) ? 1 : 0))
   }
 
+
   insertUmbrella(item: SalableItemModel) {
     let umbrella = item as Umbrella;
     this.booking.umbrellas.push(umbrella);
     this.booking.price += umbrella.rankUmbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
-    this.customizationValidator = true;
-    this.customizationValidatorChange.emit(true);
+    this.validator = true;
     this.bookingChange.emit(this.booking);
   }
 
@@ -82,8 +75,7 @@ export class CustomizeStepComponent implements OnInit {
     this.booking.price -= umbrella.calculatePrice(this.booking.dateFrom, this.booking.dateTo);
 
     if (this.booking.umbrellas.length <= 0) {
-      this.customizationValidator = false;
-      this.customizationValidatorChange.emit(false);
+      this.validator = false;
     }
     this.bookingChange.emit(this.booking);
   }

@@ -3,10 +3,11 @@ import {ActivatedRoute} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {STEPPER_GLOBAL_OPTIONS, StepperSelectionEvent} from "@angular/cdk/stepper";
 import {Booking} from "../../../shared/models/booking.model";
-import {PeriodStepComponent} from "./steps/period-step/period-step.component";
+import {PeriodStepComponent} from "../../../shared/components/new-booking/steps/period-step/period-step.component";
 import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {ApiService} from "../../../core/api/api.service";
-import {CustomizeStepComponent} from "./steps/customize-step/customize-step.component";
+import {CustomizeStepComponent} from "../../../shared/components/new-booking/steps/customize-step/customize-step.component";
+import {DateUtils} from "../../../shared/utils/date.utils";
 
 @Component({
   selector: 'app-new-booking',
@@ -35,8 +36,8 @@ export class NewBookingComponent implements OnInit {
     this.backPageName = this._route.snapshot.queryParams['backPageName'] || 'Home';
     this.booking = new Booking({
       customerId: this._authService.currentCustomerValue().id,
-      dateFrom: NewBookingComponent.createTodayAtMidnight(),
-      dateTo: NewBookingComponent.createTodayAtMidnight(),
+      dateFrom: DateUtils.todayAtMidnight(),
+      dateTo: DateUtils.todayAtMidnight(),
       umbrellas: [],
       services: [],
       confirmed: false,
@@ -67,12 +68,5 @@ export class NewBookingComponent implements OnInit {
     if (event.selectedIndex == 0) {
       this.customizeStep.setAvailableItems(undefined);
     }
-  }
-
-  // helpers
-  private static createTodayAtMidnight(): Date {
-    let todayAtMidnight = new Date();
-    todayAtMidnight.setHours(0,0,0,0);
-    return todayAtMidnight;
   }
 }

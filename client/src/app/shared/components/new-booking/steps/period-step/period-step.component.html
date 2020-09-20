@@ -1,9 +1,13 @@
 <div *ngIf="startBookingDate && endBookingDate; else loadingScreen">
-  <div *ngIf="datesAvailable; else noDatesAvailableScreen">
+  <form [formGroup]="periodForm">
+    <p>
+      Da questa schermata puoi porre in atto la tua prenotazione, direttamente dall'app! In questa schermata, seleziona
+      il periodo nel quale intendi prenotare. Sulla base di questo verrà calcolata la disponibilità.
+    </p>
 
-  <form [formGroup]="formGroup">
-    <p>Da questa schermata puoi porre in atto la tua prenotazione, direttamente dall'app! In questa schermata, seleziona
-      il periodo nel quale intendi prenotare. Sulla base di questo verrà calcolata la disponibilità.</p>
+    <div *ngIf="!datesAvailable" class="not-available">
+      Al momento, la non sono disponibili dati della stagione per effettuare la prenotazione!
+    </div>
 
     <mat-radio-group color="primary" formControlName="dateRangeType" (change)="dateRangeTypeChange($event)">
       <h2>
@@ -69,12 +73,6 @@
       </div>
     </mat-radio-group>
   </form>
-  </div>
-
-  <ng-template #noDatesAvailableScreen>
-    Al momento, le prenotazioni sono chiuse!
-  </ng-template>
-
 </div>
 
 
@@ -83,7 +81,14 @@
   <app-loading-screen [smallHeight]="true"></app-loading-screen>
 </ng-template>
 
-<div class="buttons-container">
-  <button mat-raised-button color="primary" matStepperNext class="next-button">Seleziona l'ombrellone</button>
+
+<div class="stepper-buttons">
+  <div class="back-button" *ngIf="!isAdmin"></div>
+  <button class="back-button" *ngIf="isAdmin" mat-raised-button color="accent" matStepperPrevious>
+    Indietro
+  </button>
+  <button class="next-button" mat-raised-button color="primary" [disabled]="!datesAvailable" matStepperNext>
+    Vai a personalizza
+  </button>
 </div>
 

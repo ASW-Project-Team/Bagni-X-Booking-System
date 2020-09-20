@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Booking} from "../../../../../shared/models/booking.model";
+import {Booking} from "../../../../models/booking.model";
 
 @Component({
   selector: 'app-cart',

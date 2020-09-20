@@ -1,7 +1,12 @@
 <p>Seleziona qui l’ombrellone (o gli ombrelloni) che intendi prenotare, e gli eventuali servizi aggiuntivi.</p>
 
-<div *ngIf="availableRankings && availableServices; else loadingScreen">
-  <div class="salable-category-container">
+
+<ng-template #loadingScreen>
+  <app-loading-screen [smallHeight]="true"></app-loading-screen>
+</ng-template>
+
+<div class="customization-container" *ngIf="availableRankings && availableServices; else loadingScreen">
+  <div class="salables-container">
     <h1>Ombrelloni</h1>
     <ul>
       <li *ngFor="let rank of availableRankings">
@@ -15,7 +20,7 @@
     </ul>
   </div>
 
-  <div class="salable-category-container">
+  <div class="salables-container">
     <h1>Servizi aggiuntivi</h1>
     <ul>
       <li *ngFor="let service of availableServices">
@@ -29,14 +34,10 @@
   </div>
 </div>
 
-<ng-template #loadingScreen>
-  <!-- Content to render when data is loading -->
-  <app-loading-screen [smallHeight]="true"></app-loading-screen>
-</ng-template>
-
-<div class="buttons-container">
-  <button mat-raised-button matStepperPrevious class="back-button">
-    <mat-icon svgIcon="chevron-left" color="primary"></mat-icon>
+<div class="stepper-buttons">
+  <button class="back-button" mat-raised-button color="accent" matStepperPrevious>
+    Indietro
+  </button>  <button class="next-button" mat-raised-button color="primary" [disabled]="!validator" matStepperNext>
+    Vai al checkout
   </button>
-  <button mat-raised-button color="primary" [disabled]="!customizationValidator" matStepperNext class="next-button">Vai al checkout</button>
 </div>

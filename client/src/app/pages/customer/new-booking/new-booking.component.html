@@ -1,19 +1,19 @@
 <div class="page">
   <mat-horizontal-stepper [linear]="true" labelPosition="bottom" (selectionChange)="selectionChange($event)" #stepper>
 
-    <mat-step [stepControl]="periodStep.formGroup">
+    <mat-step [completed]="periodStep.validator">
         <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
-        <app-period-step [(booking)]="booking" #periodStep></app-period-step>
+        <app-period-step [(booking)]="booking" [isAdmin]="false" #periodStep></app-period-step>
     </mat-step>
 
-    <mat-step [completed]="customizationValidator">
+    <mat-step [completed]="customizeStep.validator">
       <ng-template matStepLabel><span class="step-label">Personalizza</span></ng-template>
-      <app-customize-step [(booking)]="booking" (customizationValidatorChange)="customizationValidatorChange($event)" #customizeStep></app-customize-step>
+      <app-customize-step [(booking)]="booking" #customizeStep></app-customize-step>
     </mat-step>
 
     <mat-step [completed]="false">
       <ng-template matStepLabel><span class="step-label">Checkout</span></ng-template>
-      <app-checkout-step [booking]="booking"></app-checkout-step>
+      <app-checkout-step [booking]="booking" [backRoute]="backRoute"></app-checkout-step>
     </mat-step>
   </mat-horizontal-stepper>
 </div>

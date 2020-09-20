@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {SalableItemModel} from "../../../../../../shared/models/salable.model";
+import {SalableItemModel} from "../../../../../models/salable.model";
 import {PeriodStepComponent} from "../../period-step/period-step.component";
 import {QuantitySelectorComponent} from "./quantity-selector/quantity-selector.component";
 

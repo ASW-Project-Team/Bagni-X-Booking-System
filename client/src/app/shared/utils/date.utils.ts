@@ -40,4 +40,10 @@ export class DateUtils {
     newDate.setTime(date.getTime() + 12*60*60*1000);
     return newDate;
   }
+
+  static todayAtMidnight(): Date {
+    let todayAtMidnight = new Date();
+    todayAtMidnight.setHours(0,0,0,0);
+    return todayAtMidnight;
+  }
 }

@@ -1,0 +1,25 @@
+<div class="page">
+  <mat-horizontal-stepper [linear]="true" labelPosition="bottom" (selectionChange)="selectionChange($event)">
+    <mat-step [completed]="customerStep.validator">
+      <ng-template matStepLabel><span class="step-label">Cliente</span></ng-template>
+      <app-customer-step [(booking)]="booking" #customerStep></app-customer-step>
+    </mat-step>
+
+    <mat-step [completed]="periodStep.validator">
+      <ng-template matStepLabel><span class="step-label">Periodo</span></ng-template>
+      <app-period-step [(booking)]="booking" [isAdmin]="true" #periodStep></app-period-step>
+    </mat-step>
+
+    <mat-step [completed]="customizeStep.validator">
+      <ng-template matStepLabel><span class="step-label">Personalizza</span></ng-template>
+      <app-customize-step [(booking)]="booking" #customizeStep></app-customize-step>
+    </mat-step>
+
+    <mat-step [completed]="false">
+      <ng-template matStepLabel><span class="step-label">Checkout</span></ng-template>
+      <app-checkout-step [booking]="booking" backRoute="/admin/bookings"></app-checkout-step>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>
+
+<app-new-booking-appbar backRoute="/admin/bookings" backPageName="Prenotazioni" [booking]="booking"></app-new-booking-appbar>
