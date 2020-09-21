@@ -1,6 +1,7 @@
 const validators = require('./validators');
 const responseGen = require('./responseGenerator');
 const respFilters = require('./responseFilters');
+const RankUmbrella = require('../models/rankUmbrellasModel')
 
 
 /*
@@ -13,7 +14,7 @@ const respFilters = require('./responseFilters');
  * Insert all, validate all. fields are in format {name: value}
  */
 module.exports.create = async (req, res, model, fields, config) => {
-  if(!config) {
+  if (!config) {
     config = {};
   }
 
@@ -36,7 +37,7 @@ module.exports.create = async (req, res, model, fields, config) => {
 
 
 module.exports.update = async (req, res, model, paramId, fields, config) => {
-  if(!config) {
+  if (!config) {
     config = {};
   }
 
@@ -49,13 +50,13 @@ module.exports.update = async (req, res, model, paramId, fields, config) => {
   // updates the item, if exists
   // if the id is present and valid, return the correspondent
   // item non-secret data
-  let findAndUpdateQuery = model.findOne({ _id: paramId});
+  let findAndUpdateQuery = model.findOne({_id: paramId});
 
   if (config.checkLogicalDeletion) {
     findAndUpdateQuery.where({deleted: false});
   }
 
-  findAndUpdateQuery.setOptions({ omitUndefined: true, new: true });
+  findAndUpdateQuery.setOptions({omitUndefined: true, new: true});
   findAndUpdateQuery.updateOne(fields);
 
   const itemFound = await findAndUpdateQuery.exec();
@@ -81,10 +82,10 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, config)
 
     // if the id is present and valid, return the correspondent
     // item non-secret data
-    let findItemQuery = model.findOne({ _id: paramId});
+    let findItemQuery = model.findOne({_id: paramId});
 
     if (config.checkLogicalDeletion) {
-      findItemQuery.where({ deleted: false });
+      findItemQuery.where({deleted: false});
     }
 
     const foundItem = await findItemQuery.exec();
@@ -102,12 +103,14 @@ module.exports.read = async (req, res, model, paramId, pageId, pageSize, config)
 
   // if the id is not present, or not valid, return returns the news, ordered
   // from the most recent, and paginated
-  let itemsQuery =  model.find();
+  let itemsQuery = model.find();
 
-  config.sortRules.forEach(rule => { itemsQuery = itemsQuery.sort(rule) });
+  config.sortRules.forEach(rule => {
+    itemsQuery = itemsQuery.sort(rule)
+  });
 
   if (config.checkLogicalDeletion) {
-    itemsQuery = itemsQuery.where({ deleted: false });
+    itemsQuery = itemsQuery.where({deleted: false});
   }
 
   const items = await itemsQuery.exec();
@@ -127,10 +130,10 @@ module.exports.delete = async (req, res, model, paramId, config) => {
   if (validators.isMongoId(paramId)) {
     if (!config.logicalDeletion) {
       // find the admin by the id, if present
-      removedItem = await model.findOneAndRemove({ _id: paramId });
+      removedItem = await model.findOneAndRemove({_id: paramId});
 
     } else {
-      removedItem = await model.findOneAndUpdate({ _id: paramId }, { deleted: true });
+      removedItem = await model.findOneAndUpdate({_id: paramId}, {deleted: true});
     }
 
   } else {
@@ -147,4 +150,52 @@ module.exports.delete = async (req, res, model, paramId, config) => {
 
   // request completed
   responseGen.respondOK(res);
+}
+
+/**
+ * Creates an array with all the umbrella extracted from the ranks, in a format
+ * used from the client to book umbrellas.
+ * @return {Promise<{number: number, rankId: string}[]>}
+ */
+module.exports.generateAllUmbrellas = async () => {
+  const rankUmbrellas = await RankUmbrella.find();
+
+  return rankUmbrellas.map(rank => {
+    let umbrellas = [];
+
+    for (let i = rank.fromUmbrella; i <= rank.toUmbrella; i++) {
+      umbrellas.push({
+        number: i,
+        rankUmbrellaId: rank._id
+      })
+    }
+
+    return umbrellas;
+  }).reduce((prev, curr) => prev.concat(curr), []);
+}
+
+
+/**
+ * Creates an array with only the available umbrellas, in a format
+ * used from the client to book umbrellas.
+ * @return {Promise<{number: number, rankId: string}[]>}
+ */
+module.exports.generateAvailableUmbrellas = async (dateFrom, dateTo) => {
+  const allBookings = await Booking.find();
+  const involvedBookings = allBookings.filter(book =>
+    book.dateFrom.getTime() <= dateFrom.getTime() && book.dateTo.getTime() > dateFrom.getTime()
+    || book.dateFrom.getTime() < dateTo.getTime() && book.dateTo.getTime() >= dateTo.getTime()
+    || book.dateFrom.getTime() >= dateFrom.getTime() && book.dateTo.getTime() <= dateTo.getTime()
+    || book.dateFrom.getTime() >= dateFrom.getTime() && book.dateTo.getTime() >= dateTo.getTime());
+
+  const involvedUmbrNumbers = involvedBookings.map(book => {
+    return book.umbrellas.map(umbrella => {
+      return umbrella.number;
+    });
+
+  }).reduce((prev, curr) => prev.concat(curr), []);
+
+  const allUmbrellas = await this.generateAllUmbrellas();
+
+  return allUmbrellas.filter(umbrella => !involvedUmbrNumbers.includes(umbrella.number));
 }
