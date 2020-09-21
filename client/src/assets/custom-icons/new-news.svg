@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="23" height="20.88" viewBox="0 0 23 20.88">
-  <g id="AddBooking" transform="translate(-338 -18.12)">
-    <path id="newspaper-variant-outline" d="M20,5v9.209L15.338,19H4V5H20m0-2H4A1.993,1.993,0,0,0,2,5V19a1.993,1.993,0,0,0,2,2H15.338V19c.243,0-.179.1,0,0L20,14.209h2V5a1.993,1.993,0,0,0-2-2M18,15H6v2H18V15M10,7H6v6h4V7m2,2h6V7H12V9m6,2H12v2h6Z" transform="translate(336 15.12)"/>
-    <path id="plus" d="M21,15v3h3v2H21v3H19V20H16V18h3V15h2" transform="translate(337 16)"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g transform="translate(-337 -16)"><rect width="24" height="24" transform="translate(337 16)" fill="none"/><path d="M19,4.889v8.7l-4.4,4.526H3.889V4.889H19M19,3H3.889A1.883,1.883,0,0,0,2,4.889V18.116A1.883,1.883,0,0,0,3.889,20H14.6V18.116c.229,0-1.334,1.364,0,0L19,13.59h1.889v-8.7A1.883,1.883,0,0,0,19,3M17.116,14.337H5.779v1.889H17.116V14.337M9.558,6.779H5.779v5.668H9.558V6.779m1.889,1.889h5.668V6.779H11.447V8.668m5.668,1.889H11.447v1.889h5.668Z" transform="translate(336 15)"/><path d="M21,15v3h3v2H21v3H19V20H16V18h3V15h2" transform="translate(336 14.88)"/></g></svg>
