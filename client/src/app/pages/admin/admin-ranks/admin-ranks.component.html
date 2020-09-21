@@ -21,6 +21,11 @@
     </ul>
   </div>
 
+  <mat-paginator [length]="totalItems" class="paginator"
+                 [pageSize]="10" (page)="changePage($event)"
+                 [pageSizeOptions]="[10]">
+  </mat-paginator>
+
   <ng-template #loadingScreen>
     <!-- Content to render when data is loading -->
     <app-loading-screen [smallHeight]="true"></app-loading-screen>

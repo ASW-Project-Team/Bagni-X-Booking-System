@@ -28,8 +28,8 @@ export class ApiService {
     return this.http.put(`${environment.apiUrl}/api/bathhouse`, newData);
   }
 
-  public getHomeCards(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/home-cards`);
+  public getHomeCards(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/home-cards`,{ params: {'page-id': page.toString()} });
   }
 
   public editHomeCard(homeCardId: string,newData: FormData): Observable<any> {
@@ -41,8 +41,8 @@ export class ApiService {
     return this.http.get(`${environment.apiUrl}/api/home-cards/${homeCardId}`);
   }
 
-  public getAllNews(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/news`);
+  public getAllNews(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/news`,{ params: {'page-id': page.toString()} });
   }
 
   public getNews(newsId: string): Observable<any> {
@@ -61,12 +61,12 @@ export class ApiService {
     return this.http.post(`${environment.apiUrl}/api/news`, newData);
   }
 
-  public getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/bookings`);
+  public getAllBookings(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/bookings`,{ params: {'page-id': page.toString()} });
   }
 
-  public getCustomerBookings(customerId: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/bookings/customer/${customerId}`);
+  public getCustomerBookings(customerId: string, page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/bookings/customer/${customerId}`,{ params: {'page-id': page.toString()} });
   }
 
   public getBooking(bookingId: string): Observable<any> {
@@ -93,8 +93,8 @@ export class ApiService {
     return this.http.post(`${environment.apiUrl}/api/new-booking/checkout`, booking);
   }
 
-  public getRankUmbrellas(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas`);
+  public getRankUmbrellas(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/catalog/rank-umbrellas`,{ params: {'page-id': page.toString()} });
   }
 
   public getRankUmbrella(rankId: string): Observable<any> {
@@ -113,8 +113,8 @@ export class ApiService {
     return this.http.delete(`${environment.apiUrl}/api/catalog/rank-umbrellas/${rankId}`);
   }
 
-  public getServices(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/catalog/services`);
+  public getServices(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/catalog/services`,{ params: {'page-id': page.toString()} });
   }
 
   public createService(values: FormData): Observable<any> {
@@ -137,8 +137,8 @@ export class ApiService {
     return this.http.put(`${environment.apiUrl}/api/bookings/${bookingId}`, modifiedFields);
   }
 
-  public getCustomers(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/customers`);
+  public getCustomers(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/customers`,{ params: {'page-id': page.toString()} });
   }
 
   public getCustomer(customerId: string): Observable<any> {

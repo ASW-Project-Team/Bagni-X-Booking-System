@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Customer} from "../../../shared/models/customer.model";
 import {ApiService} from "../../../core/api/api.service";
 import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
+import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-admin-contacts',
@@ -10,15 +11,18 @@ import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 })
 export class AdminContactsComponent implements OnInit {
   customers: Customer[];
+  totalItems: number = 100;
+  currentPageId = 0;
+
 
   constructor(private api: ApiService,
               private matUtils: MatUtilsService) { }
 
+
   ngOnInit(): void {
-    this.api.getCustomers().subscribe(data => {
-      this.customers = data.map(model => new Customer(model));
-    });
+   this.updateContactsPage()
   }
+
 
   generateDeleteCustomerAction(customer: Customer): Function {
     return () => {
@@ -27,7 +31,7 @@ export class AdminContactsComponent implements OnInit {
         positiveAction: { text: "Sì, elimina", execute: () => {
           this.api.deleteUnregisteredCustomer(customer.id).subscribe(() => {
             this.matUtils.createSnackBar('Cliente eliminato.');
-            this.updateContacts();
+            this.updateContactsPage(this.currentPageId);
           });
         }},
         negativeAction: { text: "No", execute: () => {} }
@@ -35,9 +39,21 @@ export class AdminContactsComponent implements OnInit {
     }
   }
 
-  updateContacts(): void {
-    this.api.getCustomers().subscribe(data => {
+
+  changePage($event: PageEvent) {
+    this.currentPageId = $event.pageIndex - 1;
+    this.updateContactsPage(this.currentPageId);
+  }
+
+
+  updateContactsPage(page: number = 0): void {
+    this.customers = undefined;
+    this.api.getCustomers(page).subscribe(data => {
       this.customers = data.map(model => new Customer(model));
+
+      if (this.customers.length < 10) {
+        this.totalItems = (page) * 10 + this.customers.length;
+      }
     });
   }
 }

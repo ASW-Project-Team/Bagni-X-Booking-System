@@ -15,6 +15,11 @@
                             [isLast]="customers.indexOf(customer) >= customers.length - 1">
     </app-settings-list-item>
   </div>
+
+  <mat-paginator [length]="totalItems" class="paginator"
+                 [pageSize]="10" (page)="changePage($event)"
+                 [pageSizeOptions]="[10]">
+  </mat-paginator>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

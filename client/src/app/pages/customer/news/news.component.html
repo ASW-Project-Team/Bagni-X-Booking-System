@@ -4,6 +4,8 @@
     sempre aggiornato sulle ultime novità!
   </p>
 
+
+
   <div *ngIf="newsFeed; else loadingScreen">
     <ul class="news-feed-container">
       <li *ngFor="let news of newsFeed">
@@ -18,6 +20,11 @@
       </li>
     </ul>
   </div>
+
+  <mat-paginator [length]="totalItems" class="paginator"
+                 [pageSize]="10" (page)="changePage($event)"
+                 [pageSizeOptions]="[10]">
+  </mat-paginator>
 
   <ng-template #loadingScreen>
     <!-- Content to render when data is loading -->

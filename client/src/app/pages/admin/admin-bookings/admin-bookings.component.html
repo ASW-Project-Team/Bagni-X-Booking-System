@@ -11,7 +11,7 @@
         <app-booking-card
           [routerLink]="['/admin/bookings', booking.id, { title: booking.getTitle() }]"
           [booking]="booking"
-          [confirmable]="true" (updateBookings)="updateBookings()"
+          [confirmable]="true" (updateBookings)="updateBookingsPage(currentPageId)"
           [isLastCard]="bookingsToConfirm.indexOf(booking) >= bookingsToConfirm.length - 1">
         </app-booking-card>
       </li>
@@ -30,6 +30,11 @@
       </li>
     </ul>
   </div>
+
+  <mat-paginator [length]="totalItems" class="paginator"
+                 [pageSize]="10" (page)="changePage($event)"
+                 [pageSizeOptions]="[10]">
+  </mat-paginator>
 
   <ng-template #loadingScreen>
     <app-loading-screen [smallHeight]="true"></app-loading-screen>

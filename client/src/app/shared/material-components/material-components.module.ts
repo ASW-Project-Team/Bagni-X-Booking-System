@@ -16,6 +16,7 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatMenuModule} from "@angular/material/menu";
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [ ],
@@ -37,6 +38,7 @@ import {MatMenuModule} from "@angular/material/menu";
     MatSelectModule,
     MatBadgeModule,
     MatTooltipModule,
+    MatPaginatorModule
   ],
   exports: [
     MatIconModule,
@@ -55,6 +57,7 @@ import {MatMenuModule} from "@angular/material/menu";
     MatSelectModule,
     MatBadgeModule,
     MatTooltipModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialComponentsModule {
