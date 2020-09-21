@@ -10,7 +10,7 @@ const Customer = require('../models/customerModel')
 const Admin = require('../models/adminModel')
 const Bookings = require('../models/bookingModel')
 const sanitizers = require('./sanitizers')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 /**
  * Lists endpoints that not require authentication, neither JWT.
@@ -23,6 +23,7 @@ const freeEndpoints = [
   { url: new RegExp('^\/auth\/customers\/register\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/auth\/customers\/login\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/auth\/admins\/login\/?$'), methods: ['POST'] },
+  { url: new RegExp('^\/bathhouse\/?$'), methods: ['GET'] },
 ]
 
 /**
@@ -58,7 +59,7 @@ const allAdminsEndpoints = [
     url: new RegExp('^\/home-cards\/.*$'),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
-  { url: new RegExp('^\/bathhouse\/?$'), methods: ['GET', 'PUT'] },
+  { url: new RegExp('^\/bathhouse\/?$'), methods: ['PUT'] },
   {
     url: new RegExp('^\/catalog\/.+$'),
     methods: ['GET', 'PUT', 'POST', 'DELETE'],

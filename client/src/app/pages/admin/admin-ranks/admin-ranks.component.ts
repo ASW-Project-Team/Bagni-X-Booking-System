@@ -16,9 +16,7 @@ export class AdminRanksComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit(): void {
-    this.api.getRankUmbrellas().subscribe(data => {
-      this.rankUmbrellas = data.map(model => new RankUmbrella(model));
-    });
+    this.updateRanksPage();
   }
 
 

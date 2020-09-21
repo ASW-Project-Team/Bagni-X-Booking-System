@@ -6,7 +6,8 @@
       vengono utilizzate per permettere ai bagnanti di prenotare ombrelloni. Ricordati di aggiornarli
       ogni anno!
     </p>
-    <form class="bathhouse-form" [formGroup]="bathhouseForm" (ngSubmit)="modifyBathhouseData()">
+    <form class="bathhouse-form" [formGroup]="bathhouseForm" (ngSubmit)="modifyBathhouseData()"
+          *ngIf="dataReady(); else loadingScreen">
       <mat-form-field appearance="outline" class="input-field-half">
         <mat-label>Nome stabilimento</mat-label>
         <input matInput formControlName="name" type="text" placeholder="Es. Bagni X">
@@ -37,7 +38,7 @@
     </form>
   </div>
 
-  <div class="section" *ngIf="mainCard">
+  <div class="section" *ngIf="dataReady(); else loadingScreen">
     <h1>Sezione header</h1>
     <p>La sezione header corrisponde alla parte superiore della pagina iniziale, e presenta un’immagine
       sfocata artificialmente. Puoi modificarla premendo sulla sezione sottostante.</p>
@@ -50,7 +51,7 @@
     </app-small-card>
   </div>
 
-  <div class="section" *ngIf="homeCards">
+  <div class="section" *ngIf="dataReady(); else loadingScreen">
     <h1>Sezioni body</h1>
     <p>Queste sono le schede successivamente visualizzate nella schermata home. Puoi personalizzarle
     a tuo piacimento.</p>
@@ -67,6 +68,10 @@
     </ul>
   </div>
 </div>
+
+<ng-template #loadingScreen>
+  <app-loading-screen [smallHeight]="true"></app-loading-screen>
+</ng-template>
 
 <!-- Header and fab go last, to make them appear over content -->
 <app-admin-main-appbar></app-admin-main-appbar>

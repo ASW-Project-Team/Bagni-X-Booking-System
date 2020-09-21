@@ -32,6 +32,7 @@ switch(mode) {
  * Sets up the server.
  */
 const main = async function () {
+  console.log('BagniX Webserver, v.1.0.0 - Maldini, Gorini, Angelini');
   const app = express();
 
   try {

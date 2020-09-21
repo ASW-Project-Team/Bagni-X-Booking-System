@@ -17,6 +17,8 @@ export class AdminHomeCustomizeComponent implements OnInit {
   status: string = '';
   mainCard: HomeCard;
   homeCards: HomeCard[];
+  homeReady: boolean = false;
+  bathhouseReady: boolean = false;
 
 
   constructor(private formBuilder: FormBuilder,
@@ -41,15 +43,20 @@ export class AdminHomeCustomizeComponent implements OnInit {
       this.bathhouseForm.get('name').setValue(bathhouse.name);
       this.bathhouseForm.get('seasonDateRange.seasonStart').setValue(bathhouse.seasonStart);
       this.bathhouseForm.get('seasonDateRange.seasonEnd').setValue(bathhouse.seasonEnd);
+      this.bathhouseReady = true;
     });
 
     this.api.getHomeCards().subscribe(data => {
       const allCards: HomeCard[] = data.map(model => new HomeCard(model));
       this.homeCards = allCards.filter(item => !item.isMainCard && item.orderingIndex != -1);
       this.mainCard = allCards.filter(item => item.isMainCard && item.orderingIndex == -1)[0];
+      this.homeReady = true;
     });
   }
 
+  dataReady():boolean {
+    return this.homeReady && this.bathhouseReady;
+  }
 
   modifyBathhouseData() {
     if (!this.bathhouseForm.valid) {
