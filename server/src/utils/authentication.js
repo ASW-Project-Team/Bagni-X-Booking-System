@@ -18,7 +18,7 @@ const bcrypt = require('bcrypt');
  */
 const freeEndpoints = [
   { url: new RegExp('^\/home\/?$'), methods: ['GET'] },
-  { url: new RegExp('^\/news\/?$'), methods: ['GET'] },
+  { url: new RegExp('^\/news\/?(\\?.+)?$'), methods: ['GET'] },
   { url: new RegExp('^\/news\/.*$'), methods: ['GET'] },
   { url: new RegExp('^\/auth\/customers\/register\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/auth\/customers\/login\/?$'), methods: ['POST'] },
@@ -49,11 +49,11 @@ const customerSpecificEndpoints = [
  * @type {{url: string|RegExp, methods: [string]}[]}
  */
 const allAdminsEndpoints = [
-  { url: new RegExp('^\/customers\/?$'), methods: ['GET', 'POST'] },
+  { url: new RegExp('^\/customers\/?(\\?.+)?$'), methods: ['GET', 'POST'] },
   { url: new RegExp('^\/customers\/.+$'), methods: ['PUT', 'POST'] },
   { url: new RegExp('^\/news\/.+$'), methods: ['PUT', 'DELETE'] },
   { url: new RegExp('^\/news\/?$'), methods: ['POST'] },
-  { url: new RegExp('^\/home-cards\/?$'), methods: ['GET'] },
+  { url: new RegExp('^\/home-cards\/?(\\?.+)?$'), methods: ['GET'] },
   {
     url: new RegExp('^\/home-cards\/.*$'),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -64,7 +64,7 @@ const allAdminsEndpoints = [
     methods: ['GET', 'PUT', 'POST', 'DELETE'],
   },
   { url: new RegExp('^\/bookings\/.+$'), methods: ['PUT'] },
-  { url: new RegExp('^\/bookings\/?$'), methods: ['GET'] },
+  { url: new RegExp('^\/bookings\/?(\\?.+)?$'), methods: ['GET'] },
 ]
 
 /**
