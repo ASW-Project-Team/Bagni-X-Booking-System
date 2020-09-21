@@ -1,5 +1,9 @@
 <div *ngIf="startBookingDate && endBookingDate; else loadingScreen">
-  <form [formGroup]="periodForm">
+  <ng-template #loadingScreen>
+    <app-loading-screen [smallHeight]="true"></app-loading-screen>
+  </ng-template>
+
+  <form [formGroup]="periodForm" *ngIf="startBookingDate && endBookingDate; else loadingScreen">
     <p>
       Da questa schermata puoi porre in atto la tua prenotazione, direttamente dall'app! In questa schermata, seleziona
       il periodo nel quale intendi prenotare. Sulla base di questo verrà calcolata la disponibilità.

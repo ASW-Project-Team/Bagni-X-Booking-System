@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {MenuItem} from "../appbars.model";
 import {MainAppbarComponent} from "../main-appbar/main-appbar.component";
 import {AdminAuthService} from "../../../../core/auth/admin-auth.service";
+import {CustomerAuthService} from "../../../../core/auth/customer-auth.service";
+import {ApiService} from "../../../../core/api/api.service";
 
 /**
  * @file This is the main appbar with menu, used from the admin.
@@ -65,8 +67,9 @@ export class AdminMainAppbarComponent extends MainAppbarComponent {
   ];
   isAdmin = true;
 
-  constructor(private adminAuth: AdminAuthService) {
-    super();
+  constructor(private adminAuth: AdminAuthService,
+              api: ApiService) {
+    super(api);
   }
 
   ngOnInit() {

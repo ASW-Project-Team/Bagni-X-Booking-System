@@ -1,8 +1,8 @@
 <mat-toolbar class="appbar">
   <div class="logo">
-    <a routerLink="/" class="logo">
-      <img src="assets/fake-backend/logo.png" alt="BagniX Logo"/>
-      <h1 class="title">Bagni X</h1><h1 *ngIf="isAdmin" class="subtitle">Admin panel</h1>
+    <a routerLink="/" class="logo" *ngIf="bathhouse">
+      <img [src]="bathhouse.logoUrl" alt="Logo"/>
+      <h1 class="title">{{bathhouse.name}}</h1><h1 *ngIf="isAdmin" class="subtitle">Admin panel</h1>
     </a>
   </div>
 
