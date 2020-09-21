@@ -1,14 +1,2 @@
 @import "~src/styles/utils";
 
-p {
-  @include responsiveProp(margin-bottom, $defaultMargin);
-}
-
-
-.bookings-container {
-  box-sizing: border-box;
-
-  p {
-    margin: 0;
-  }
-}

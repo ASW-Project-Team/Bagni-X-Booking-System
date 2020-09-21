@@ -1,17 +1,3 @@
 @import "~src/styles/utils";
 
-p {
-  @include responsiveProp(margin-bottom, $defaultMargin);
-}
-
-
-.news-feed-container {
-  box-sizing: border-box;
-
-  p {
-    margin: 0;
-  }
-}
-
-
 

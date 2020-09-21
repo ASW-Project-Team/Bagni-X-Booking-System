@@ -1,6 +1,8 @@
 <div class="page">
-  <p>Da questa pagina è possibile consultare le prenotazioni portate avanti presso lo stabilimento, e modificarne
-    eventuali dettagli. Le prenotazioni vengono mostrate in ordine cronologico.</p>
+  <p>
+    Da questa pagina è possibile consultare le prenotazioni portate avanti presso lo stabilimento, e modificarne
+    eventuali dettagli. Le prenotazioni vengono mostrate in ordine cronologico.
+  </p>
 
   <div *ngIf="bookings; else loadingScreen">
     <ul class="bookings-container">
@@ -18,7 +20,6 @@
     <!-- Content to render when data is loading -->
     <app-loading-screen [smallHeight]="true"></app-loading-screen>
   </ng-template>
-
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

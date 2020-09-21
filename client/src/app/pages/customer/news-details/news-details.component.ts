@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {AppbarAction} from "../../../shared/components/appbars/appbars.model";
 import {ApiService} from "../../../core/api/api.service";
-import {News, NewsModel} from "../../../shared/models/news.model";
+import {News} from "../../../shared/models/news.model";
 import {SharingService} from "../../../core/sharing/sharing.service";
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 
 @Component({
@@ -13,57 +14,42 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   styleUrls: ['./news-details.component.scss']
 })
 export class NewsDetailsComponent implements OnInit {
-  shareAction: AppbarAction;
+  activeActions: AppbarAction[] = [];
   newsId: string;
-  newsTitle: string;
-  downloadedNews: News;
+  appbarTitle: string = '';
+  news: News;
+
+  private shareAction: AppbarAction = {
+    id: "0",
+    name: "Condividi",
+    mdiIcon: 'share-variant-outline',
+    disabled: false,
+    isMdi: true,
+    execute: () => {
+      if (this.sharing.shareNews(this.news)) {
+        this.matUtils.createSnackBar('Condivisione in corso...');
+      } else {
+        this.matUtils.createSnackBar('Link all\'articolo salvato negli appunti!');
+      }
+    }
+  };
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
               private sharing: SharingService,
-              private snackBar: MatSnackBar) { }
+              private matUtils: MatUtilsService) { }
 
 
   ngOnInit(): void {
-    let ctx = this;
-    this.shareAction = {
-      id: "0",
-      name: "Condividi",
-      mdiIcon: 'share-variant-outline',
-      disabled: false,
-      isMdi: true,
-      execute: function() {
-        let sharingApiAvailable = ctx.sharing.shareNews(ctx.downloadedNews);
-        let snackbarText = "Link all'articolo salvato negli appunti!";
-
-        if (sharingApiAvailable) {
-          snackbarText = "Condivisione in corso...";
-        }
-
-        ctx.snackBar.open(snackbarText, null, { duration: 4000 });
-      }
-    }
+    this.activeActions.push(this.shareAction);
 
     this.route.params.subscribe(params => {
       this.newsId = params.id;
-      this.newsTitle = params.title;
+      this.appbarTitle = params.title;
       this.api.getNews(this.newsId).subscribe(data => {
-        this.downloadedNews = new News(data);
+        this.news = new News(data);
+        this.appbarTitle = this.news.title;
       });
     });
-  }
-
-  /**
-   * Set the title to the downloaded information if available, else tries to retrive
-   * information from the parameters. If the title is not already found, sets it to an empty string.
-   */
-  getTitleIfAvailable(): string {
-    if (this.downloadedNews) {
-      return this.downloadedNews.title;
-    } else if (this.newsTitle) {
-      return this.newsTitle;
-    } else {
-      return '';
-    }
   }
 }

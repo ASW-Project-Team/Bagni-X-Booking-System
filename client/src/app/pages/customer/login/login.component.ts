@@ -4,6 +4,7 @@ import {CustomerAuthService} from "../../../core/auth/customer-auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {first} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatUtilsService} from "../../../core/mat-utils/mat-utils.service";
 
 @Component({
   selector: 'app-login',
@@ -21,17 +22,13 @@ export class LoginComponent implements OnInit {
               private route: ActivatedRoute,
               private customerAuthService: CustomerAuthService,
               private router: Router,
-              private snackBar: MatSnackBar) {
+              private matUtils: MatUtilsService) {
     // redirect to home if already logged in
     if (this.customerAuthService.isLoggedIn()) {
       this.router.navigate(["/home"]).then(() => {
         const customerEmail = this.customerAuthService.currentCustomerValue().email;
-        this.snackBar.open(
-          `Sei già loggato come ${customerEmail}! per effettuare l'accesso con un altro account,
-                 esegui prima il logout da questo.`,
-          null,
-          {duration: 4000}
-        );
+        this.matUtils.createSnackBar(`Sei già loggato come ${customerEmail}! per effettuare l'accesso con
+        un altro account, esegui prima il logout da questo.`);
       });
     }
 
@@ -56,7 +53,6 @@ export class LoginComponent implements OnInit {
 
 
   public onSubmit(): void {
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       return;
     }
@@ -66,7 +62,7 @@ export class LoginComponent implements OnInit {
       this.status = '';
       this.router.navigate([ this.returnUrl ]).then(() => {
         const customerName = this.customerAuthService.currentCustomerValue().name;
-        this.snackBar.open(`Login completato. Benvenuto, ${customerName}!`, null, {duration: 4000});
+        this.matUtils.createSnackBar(`Login completato. Benvenuto, ${customerName}!`);
       });
 
     }, error => {

@@ -9,8 +9,8 @@
 }
 
 
-// the following mixin makes more div completely overlayable between tem,
-// and make them occupy all the available space
+// the following mixin makes more div completely overlayable
+// between them, and make them occupy all the available space
 @mixin overlayable {
   position: absolute;
   top:0;
@@ -24,13 +24,10 @@
   height: 256px;
   position: relative;
 
-
-  // combination of h1 and class super-title, used for very important titles, such as logo.
   h1.title {
     @include responsiveProp(margin-top, $halfMargin);
     color: $primaryColor;
   }
-
 
   // for desktop screens, the main card takes the page height size,
   // reduced a bit to hide de exceeding blurred image.

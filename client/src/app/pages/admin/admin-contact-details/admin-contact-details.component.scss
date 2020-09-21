@@ -5,11 +5,6 @@
 
   .editor {
     @include responsiveProp(margin-top, $halfMargin);
-
-    p {
-      @include responsiveProp(margin-bottom, $halfMargin);
-
-    }
   }
 }
 

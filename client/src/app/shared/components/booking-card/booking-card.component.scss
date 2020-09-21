@@ -10,6 +10,11 @@
   @include responsiveProp(margin-bottom, $defaultMargin);
   @include responsiveProp(border-radius, $defaultMargin);
 
+
+  p {
+    @include responsiveProp(margin-bottom, $quarterMargin);
+  }
+
   .main-line {
     display: flex;
     align-items: center;

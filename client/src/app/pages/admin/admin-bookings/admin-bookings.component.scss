@@ -1,10 +1,5 @@
 @import "~src/styles/utils";
 
-p {
-  @include responsiveProp(margin-bottom, $defaultMargin);
-}
-
-
 @mixin bookings-container {
   box-sizing: border-box;
 

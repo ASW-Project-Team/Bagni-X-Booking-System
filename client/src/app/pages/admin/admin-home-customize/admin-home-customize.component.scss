@@ -1,21 +1,8 @@
 @import "~src/styles/utils";
 
-p {
-  @include responsiveProp(margin-bottom, $halfMargin);
+.bathhouse-form {
+  @include inputsContainer;
 }
-.first-section {
-  .bathhouse-form {
-    @include inputsContainer;
-
-    .left-aligned {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
-}
-
 
 .section {
   @include responsiveProp(margin-top, $defaultMargin);

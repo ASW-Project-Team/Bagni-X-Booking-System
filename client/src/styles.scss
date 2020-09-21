@@ -69,7 +69,7 @@ h2 {
 p {
   @include bodyFont;
   margin-top: 0;
-  @include responsiveProp(margin-bottom, $quarterMargin);
+  @include responsiveProp(margin-bottom, $defaultMargin);
 }
 
 

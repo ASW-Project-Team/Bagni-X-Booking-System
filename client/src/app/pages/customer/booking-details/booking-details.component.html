@@ -1,25 +1,26 @@
 <div class="page">
-  <div *ngIf="downloadedBooking; else loadingScreen">
-    <h1>Stato</h1>
-    <div class="booking-state">
-      <app-booking-state-extended [bookingState]="downloadedBooking.getState()"></app-booking-state-extended>
+  <div *ngIf="booking; else loadingScreen">
+    <div class="section">
+      <h1>Stato</h1>
+      <app-booking-state-extended [bookingState]="booking.getState()"></app-booking-state-extended>
     </div>
 
-    <div class="summary">
-      <app-booking-summary [booking]="downloadedBooking"></app-booking-summary>
+    <div class="section">
+      <app-booking-summary [booking]="booking"></app-booking-summary>
     </div>
 
-    <h1>ID prenotazione</h1>
-    <p>{{ downloadedBooking.id }}</p>
+    <div class="last-section">
+      <h1>ID prenotazione</h1>
+      <p>{{ booking.id }}</p>
+    </div>
   </div>
 
   <ng-template #loadingScreen>
-    <!-- Content to render when data is loading -->
     <app-loading-screen></app-loading-screen>
   </ng-template>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar [title]="getAppbarTitle()" backRoute="/bookings"
-                   backPageName="Prenotazioni" [actions]="actions">
+<app-nested-appbar [title]="appbarTitle" [actions]="activeActions"
+                   backRoute="/bookings" backPageName="Prenotazioni">
 </app-nested-appbar>

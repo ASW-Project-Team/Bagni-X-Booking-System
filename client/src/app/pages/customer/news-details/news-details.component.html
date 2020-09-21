@@ -1,12 +1,12 @@
 <div class="page">
-  <div *ngIf="downloadedNews; else loadingScreen">
+  <div *ngIf="news; else loadingScreen">
     <div class="image">
-      <app-img-landscape [src]="downloadedNews.imageUrl"></app-img-landscape>
+      <app-img-landscape [src]="news.imageUrl"></app-img-landscape>
     </div>
-    <h1 class="title">{{downloadedNews.title}}</h1>
-    <p class="date">{{downloadedNews.date | newsDateExtended | titlecase}}</p>
+    <h1 class="title">{{news.title}}</h1>
+    <p class="date">{{news.date | newsDateExtended | titlecase}}</p>
     <div class="divider"></div>
-    <p class="article">{{downloadedNews.article}}</p>
+    <p class="article">{{news.article}}</p>
   </div>
 
   <ng-template #loadingScreen>
@@ -16,4 +16,4 @@
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->
-<app-nested-appbar [title]="getTitleIfAvailable()" backRoute="/news" backPageName="News" [actions]="[shareAction]"></app-nested-appbar>
+<app-nested-appbar [title]="appbarTitle" backRoute="/news" backPageName="News" [actions]="activeActions"></app-nested-appbar>
