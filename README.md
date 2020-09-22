@@ -1,7 +1,17 @@
 # Bagni X Booking System
 ![Contribution guidelines for this project](docs/assets/github-banner.png)
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Docker%20Compose%20CI?label=Docker%20Compose%20CI%20Build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Angular%20CD?label=Angular%20GH%20Pages%20CD)
+![Website](https://img.shields.io/website?label=GH%20Pages%20demo%20site&url=https%3A%2F%2Fasw-project-team.github.io%2FBagni-X-Booking-System)
+![Lines of code](https://img.shields.io/tokei/lines/github/ASW-Project-Team/Bagni-X-Booking-System)
+![GitHub repo size](https://img.shields.io/github/repo-size/ASW-Project-Team/Bagni-X-Booking-System)
+[![GitHub license](https://img.shields.io/github/license/ASW-Project-Team/Bagni-X-Booking-System)](https://github.com/ASW-Project-Team/Bagni-X-Booking-System/blob/master/LICENSE)
+
+
+
 Progetto d'esame per il corso di [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), parte del corso di laurea magistrale in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), sede di Cesena.
+
 
 ## Membri del team
  - [Riccardo Maldini](https://github.com/maldins46) - [riccardo.maldini2@studio.unibo.it](riccardo.maldini2@studio.unibo.it)
