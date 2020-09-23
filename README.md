@@ -45,7 +45,7 @@ Se i tempi di progetto lo consentiranno, e non risulterà eccessivamente comples
 Si pensava di utilizzare ad esempio dei dati meteo forecast, per affinare le predizioni, e mostrare informazioni aggiuntive agli utenti customer. O ancora, di affinare ancora più gli algoritmi predittivi, sfruttando reti neurali, e framework di ML quali TensorFlow.
 
 **Update**: rispetto al piano iniziale di progetto, ulteriori funzioni sono in corso di valutazione; in particolare:
- - Differenti tecnologie per la gestione dell'authentication, rispetto alla bozza iniziale. Utilizzare Firebase Authentication introduce caratteristiche interessanti, ma anche una complessità aggiuntiva, e la mancanza di una gestione centralizzata dell'autenticazione. Un si sta valutando quindi di utilizzare sistema interno al server node;
+ - Differenti tecnologie per la gestione dell'authentication, rispetto alla bozza iniziale. Utilizzare Firebase Authentication introduce caratteristiche interessanti, ma anche una complessità aggiuntiva, e la mancanza di una gestione centralizzata dell'autenticazione. Si sta valutando quindi di utilizzare sistema interno al server node;
  - Ulteriori possibilità di implementazione del layout degli ombrelloni per l'admin;
  - Personalizzazione della welcome screen mostrata agli utenti, da parte dell'admin.
 
