@@ -1,7 +1,17 @@
 # Bagni X Booking System
 ![Contribution guidelines for this project](docs/assets/github-banner.png)
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Docker%20Compose%20CI?label=Docker%20Compose%20CI%20Build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Angular%20CD?label=Angular%20GH%20Pages%20CD)
+![Website](https://img.shields.io/website?label=GH%20Pages%20demo%20site&url=https%3A%2F%2Fasw-project-team.github.io%2FBagni-X-Booking-System)
+![Lines of code](https://img.shields.io/tokei/lines/github/ASW-Project-Team/Bagni-X-Booking-System)
+![GitHub repo size](https://img.shields.io/github/repo-size/ASW-Project-Team/Bagni-X-Booking-System)
+[![GitHub license](https://img.shields.io/github/license/ASW-Project-Team/Bagni-X-Booking-System)](https://github.com/ASW-Project-Team/Bagni-X-Booking-System/blob/master/LICENSE)
+
+
+
 Progetto d'esame per il corso di [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), parte del corso di laurea magistrale in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), sede di Cesena.
+
 
 ## Membri del team
  - [Riccardo Maldini](https://github.com/maldins46) - [riccardo.maldini2@studio.unibo.it](riccardo.maldini2@studio.unibo.it)
@@ -35,7 +45,7 @@ Se i tempi di progetto lo consentiranno, e non risulterà eccessivamente comples
 Si pensava di utilizzare ad esempio dei dati meteo forecast, per affinare le predizioni, e mostrare informazioni aggiuntive agli utenti customer. O ancora, di affinare ancora più gli algoritmi predittivi, sfruttando reti neurali, e framework di ML quali TensorFlow.
 
 **Update**: rispetto al piano iniziale di progetto, ulteriori funzioni sono in corso di valutazione; in particolare:
- - Differenti tecnologie per la gestione dell'authentication, rispetto alla bozza iniziale. Utilizzare Firebase Authentication introduce caratteristiche interessanti, ma anche una complessità aggiuntiva, e la mancanza di una gestione centralizzata dell'autenticazione. Un si sta valutando quindi di utilizzare sistema interno al server node;
+ - Differenti tecnologie per la gestione dell'authentication, rispetto alla bozza iniziale. Utilizzare Firebase Authentication introduce caratteristiche interessanti, ma anche una complessità aggiuntiva, e la mancanza di una gestione centralizzata dell'autenticazione. Si sta valutando quindi di utilizzare il sistema interno al server node;
  - Ulteriori possibilità di implementazione del layout degli ombrelloni per l'admin;
  - Personalizzazione della welcome screen mostrata agli utenti, da parte dell'admin.
 
