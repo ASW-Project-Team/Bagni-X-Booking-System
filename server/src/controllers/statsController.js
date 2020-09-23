@@ -31,6 +31,7 @@ module.exports.currentSeason = async (req,res) => {
   const totUmbrellasArray = await common.generateAllUmbrellas();
   const totalUmbrellas = totUmbrellasArray.length;
 
+
   const allDailyOccupations = [];
   let currentDay = bathhouse.seasonStart;
   do {

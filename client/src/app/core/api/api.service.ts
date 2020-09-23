@@ -156,4 +156,8 @@ export class ApiService {
   public createUnregisteredCustomer(newData: Object): Observable<any> {
     return this.http.post(`${environment.apiUrl}/api/customers`, newData);
   }
+
+  public getCurrentSeasonStats() : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/stats/current-season`);
+  }
 }

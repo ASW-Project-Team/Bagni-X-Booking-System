@@ -1,5 +1,45 @@
 <div class="page">
-  <p>admin-stats works!</p>
+  <p>Da questa pagina è possibile visualizzare delle statistiche, ricavate dai dati della nostra IA, combinati ai dati
+    raccolti nella stagione corrente e in quelle precedenti (se presenti).</p>
+  <div class="daily-section" *ngIf="currentSeasonStats; else loadingScreen">
+    <h1>Proiezione per oggi {{ today | date: 'dd MMMM' }}</h1>
+    <p>Nella giornata di oggi sono stati prenotati {{currentSeasonStats.dailyOccupation.todayOccupation}} ombrelloni su
+      {{currentSeasonStats.dailyOccupation.totalUmbrellas}}. Rispetto al giorno precedente, le prenotazioni hanno subito
+      un {{this.currentSeasonStats.isPositiveIncrement() ? 'incremento' : 'decremento' }}
+      del {{ currentSeasonStats.getIncrement() | percent }}.</p>
+    <div class="chart">
+      <ngx-charts-bar-horizontal [scheme]="colorScheme" [results]="dailyData" [animations]="true" [legend]="false"
+         [xAxisLabel]="'N° Ombrelloni'" [yAxisLabel]="'Giornate'" [showXAxisLabel]="true" [showYAxisLabel]="false"
+         [xScaleMax]="currentSeasonStats.dailyOccupation.totalUmbrellas" [xAxis]="true" [yAxis]="true">
+      </ngx-charts-bar-horizontal>
+    </div>
+  </div>
+
+  <div class="season-section" *ngIf="currentSeasonStats">
+    <h1>Proiezione stagionale</h1>
+    <p>Nel grafico seguente vengono riportate informazioni statistiche sulle prenotazioni di questa stagione.</p>
+    <div class="chart">
+      <ngx-charts-line-chart
+        [scheme]="colorSchemeLinear"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [xAxisLabel]="'Stagione'"
+        [yAxisLabel]="'Percentuale occupazione'"
+        [results]="seasonData"
+        [xScaleMin]="bathhouse.seasonStart"
+        [xScaleMax]="bathhouse.seasonEnd"
+        [yScaleMax]="1"
+      >
+      </ngx-charts-line-chart>
+    </div>
+  </div>
+
+  <ng-template #loadingScreen>
+    <app-loading-screen></app-loading-screen>
+  </ng-template>
+
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

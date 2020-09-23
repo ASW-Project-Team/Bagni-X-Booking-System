@@ -21,6 +21,7 @@ import {adminsMocks} from "../mocks/admins.mock";
 import {rankUmbrellasMock} from "../mocks/rank-umbrellas.mock";
 import {servicesMock} from "../mocks/services.mock";
 import {homeCardsMock} from "../mocks/home-cards-model";
+import {currentSeasonStatsMock} from "../mocks/stats.mock";
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -55,7 +56,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return FakeBackendInterceptor.authenticateAdmin(request);
       case url.endsWith('api/auth/customers/register') && method === 'POST':
         return FakeBackendInterceptor.registerCustomer(request);
-
+      case url.endsWith('/api/stats/current-season') && method === 'GET':
+        return FakeBackendInterceptor.createOkResponse(currentSeasonStatsMock);
       case url.endsWith('api/customers') && method === 'GET':
         return FakeBackendInterceptor.createOkResponse(customersMock);
       case url.match(/\/api\/customers\/\d+$/) && method === 'GET':

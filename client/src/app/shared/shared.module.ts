@@ -5,6 +5,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {SharedComponentsModule} from "./components/shared-components.module";
 import {SharedPipesModule} from "./pipes/shared-pipes.module";
 import {SharedDirectivesModule} from "./directives/shared-directives.module";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [ ],
@@ -14,14 +15,16 @@ import {SharedDirectivesModule} from "./directives/shared-directives.module";
     SharedComponentsModule,
     MaterialComponentsModule,
     SharedPipesModule,
-    SharedDirectivesModule
+    SharedDirectivesModule,
+    NgxChartsModule
   ],
   exports: [
     MaterialComponentsModule,
     ReactiveFormsModule,
     SharedComponentsModule,
     SharedPipesModule,
-    SharedDirectivesModule
+    SharedDirectivesModule,
+    NgxChartsModule
   ]
 })
 export class SharedModule { }
