@@ -32,7 +32,7 @@ const freeEndpoints = [
  */
 const allCustomersEndpoints = [
   { url: new RegExp('^\/new-booking\/.+$'), methods: ['GET', 'POST'] },
-  { url: new RegExp('^\/stats\/?$'), methods: ['GET'] },
+  { url: new RegExp('^\/stats\/.+$'), methods: ['GET'] },
 ]
 
 /**

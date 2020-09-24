@@ -10,6 +10,7 @@ module.exports.set = function(app) {
 	const servicesRoutes = require('./servicesRoutes');
 	const homeRoutes = require('./homeRoutes');
 	const newBookingsRoutes = require('./newBookingRoutes');
+	const statsRoutes = require('./statsRoutes');
 
 
 	customersRoutes.set(app)
@@ -22,6 +23,7 @@ module.exports.set = function(app) {
 	servicesRoutes.set(app);
 	homeRoutes.set(app);
 	newBookingsRoutes.set(app);
+	statsRoutes.set(app);
 
 	// the generic routes setting must be called last, handling all
 	// remaining routes

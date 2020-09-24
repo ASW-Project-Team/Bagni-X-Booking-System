@@ -14,7 +14,9 @@ export class CurrentSeasonStats implements  CurrentSeasonStatsModel {
   outOfSeason: boolean;
 
   constructor(model: CurrentSeasonStatsModel) {
-    this.currentSeasonProjection = model.currentSeasonProjection;
+    this.currentSeasonProjection = model.currentSeasonProjection.map(data => {
+      return { date: new Date(data.date), percent: data.percent}
+    });
     this.dailyOccupation = model.dailyOccupation;
     this.outOfSeason = model.outOfSeason;
   }

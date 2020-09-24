@@ -35,7 +35,7 @@ module.exports.currentSeason = async (req,res) => {
   const allDailyOccupations = [];
   let currentDay = bathhouse.seasonStart;
   do {
-    allDailyOccupations.push(await getDailyOccupation(currentDay));
+    allDailyOccupations.push({date: new Date(currentDay), value: await getDailyOccupation(new Date(currentDay), allBookings)});
     currentDay.setDate(currentDay.getDate() + 1);
   } while (currentDay.getTime() < Date.now())
 
@@ -53,10 +53,11 @@ module.exports.currentSeason = async (req,res) => {
           percent: avgOccupation
         });
       }
-      currentDate = new Date();
+      currentDate = undefined;
     } else {
       // media su elem
-      const occupationPercent = 100 * allDailyOccupations[i] / totalUmbrellas;
+      currentDate = allDailyOccupations[i].date;
+      const occupationPercent = 100 * allDailyOccupations[i].value / totalUmbrellas;
       currentGroup.push(occupationPercent);
     }
   }

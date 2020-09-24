@@ -1,24 +1,22 @@
 <div class="page">
   <p>Da questa pagina è possibile visualizzare delle statistiche, ricavate dai dati della nostra IA, combinati ai dati
     raccolti nella stagione corrente e in quelle precedenti (se presenti).</p>
-  <div class="daily-section" *ngIf="currentSeasonStats; else loadingScreen">
+  <div class="current-season-section" *ngIf="currentSeasonStats && !currentSeasonStats.outOfSeason; else loadingScreen">
     <h1>Proiezione per oggi {{ today | date: 'dd MMMM' }}</h1>
     <p>Nella giornata di oggi sono stati prenotati {{currentSeasonStats.dailyOccupation.todayOccupation}} ombrelloni su
       {{currentSeasonStats.dailyOccupation.totalUmbrellas}}. Rispetto al giorno precedente, le prenotazioni hanno subito
       un {{this.currentSeasonStats.isPositiveIncrement() ? 'incremento' : 'decremento' }}
       del {{ currentSeasonStats.getIncrement() | percent }}.</p>
-    <div class="chart">
+    <div class="chart-daily">
       <ngx-charts-bar-horizontal [scheme]="colorScheme" [results]="dailyData" [animations]="true" [legend]="false"
          [xAxisLabel]="'N° Ombrelloni'" [yAxisLabel]="'Giornate'" [showXAxisLabel]="true" [showYAxisLabel]="false"
          [xScaleMax]="currentSeasonStats.dailyOccupation.totalUmbrellas" [xAxis]="true" [yAxis]="true">
       </ngx-charts-bar-horizontal>
     </div>
-  </div>
 
-  <div class="season-section" *ngIf="currentSeasonStats">
     <h1>Proiezione stagionale</h1>
     <p>Nel grafico seguente vengono riportate informazioni statistiche sulle prenotazioni di questa stagione.</p>
-    <div class="chart">
+    <div class="chart-season">
       <ngx-charts-line-chart
         [scheme]="colorSchemeLinear"
         [showXAxisLabel]="true"
@@ -34,6 +32,10 @@
       >
       </ngx-charts-line-chart>
     </div>
+  </div>
+
+  <div class="current-season-section" *ngIf="currentSeasonStats && currentSeasonStats.outOfSeason">
+    Dati live stagionali non disponibili! Ciò indica che la stagione è terminata, o deve ancora iniziare.
   </div>
 
   <ng-template #loadingScreen>
