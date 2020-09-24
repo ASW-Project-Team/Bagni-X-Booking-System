@@ -15,7 +15,7 @@ module.exports.updateBathhouse = async (req, res) => {
    // Sanitization
     const name = sanitizers.toString(req.body.name);
     const seasonStart = sanitizers.toDate(req.body.seasonStart);
-    const seasonEnd = sanitizers.toBool(req.body.seasonEnd);
+    const seasonEnd = sanitizers.toDate(req.body.seasonEnd);
     const logoUrl = await imgUploader.syncUpload(req, res);
 
     await Bathhouse.findOneAndUpdate({}, {

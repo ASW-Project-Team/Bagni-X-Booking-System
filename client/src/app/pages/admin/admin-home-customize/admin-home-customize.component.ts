@@ -66,8 +66,8 @@ export class AdminHomeCustomizeComponent implements OnInit {
     this.status = 'loading';
     const newData = {
       name:  this.bathhouseForm.get('name').value,
-      seasonDateFrom: this.bathhouseForm.get('seasonDateRange.seasonStart').value,
-      seasonDateTo: this.bathhouseForm.get('seasonDateRange.seasonEnd').value,
+      seasonStart: this.bathhouseForm.get('seasonDateRange.seasonStart').value,
+      seasonEnd: this.bathhouseForm.get('seasonDateRange.seasonEnd').value,
       image: this.bathhouseForm.get('image').value
     }
 
