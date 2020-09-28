@@ -1,24 +1,46 @@
 <div class="page">
   <p>Da questa pagina è possibile visualizzare delle statistiche, ricavate dai dati della nostra IA, combinati ai dati
     raccolti nella stagione corrente e in quelle precedenti (se presenti).</p>
-  <div class="current-season-section" *ngIf="currentSeasonStats && !currentSeasonStats.outOfSeason; else loadingScreen">
+
+  <div *ngIf="!currentSeasonStats">
+    <app-loading-screen></app-loading-screen>
+  </div>
+
+  <div class="current-season-section" *ngIf="currentSeasonStats && currentSeasonStats.outOfSeason">
+    Dati live stagionali non disponibili! Ciò indica che la stagione è terminata, o deve ancora iniziare.
+  </div>
+
+  <div class="current-season-section" *ngIf="currentSeasonStats && !currentSeasonStats.outOfSeason">
     <h1>Proiezione per oggi {{ today | date: 'dd MMMM' }}</h1>
     <p>Nella giornata di oggi sono stati prenotati {{currentSeasonStats.dailyOccupation.todayOccupation}} ombrelloni su
       {{currentSeasonStats.dailyOccupation.totalUmbrellas}}. Rispetto al giorno precedente, le prenotazioni hanno subito
       un {{this.currentSeasonStats.isPositiveIncrement() ? 'incremento' : 'decremento' }}
       del {{ currentSeasonStats.getIncrement() | percent }}.</p>
-    <div class="chart-daily">
-      <ngx-charts-bar-horizontal [scheme]="colorScheme" [results]="dailyData" [animations]="true" [legend]="false"
-         [xAxisLabel]="'N° Ombrelloni'" [yAxisLabel]="'Giornate'" [showXAxisLabel]="true" [showYAxisLabel]="false"
-         [xScaleMax]="currentSeasonStats.dailyOccupation.totalUmbrellas" [xAxis]="true" [yAxis]="true">
+    <div class="daily-chart">
+      <ngx-charts-bar-horizontal
+        [scheme]="colorScheme"
+        [results]="dailyData"
+        [animations]="true"
+        [legend]="false"
+        [xAxisLabel]="'N° Ombrelloni'"
+        [yAxisLabel]="'Giornate'"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="false"
+        [xScaleMax]="currentSeasonStats.dailyOccupation.totalUmbrellas"
+        [xAxis]="true"
+        [yAxis]="true">
       </ngx-charts-bar-horizontal>
     </div>
+  </div>
 
+  <div class="current-season-section" *ngIf="currentSeasonStats">
     <h1>Proiezione stagionale</h1>
-    <p>Nel grafico seguente vengono riportate informazioni statistiche sulle prenotazioni di questa stagione.</p>
-    <div class="chart-season">
+    <p>Nel grafico seguente vengono riportate informazioni statistiche sulle prenotazioni di questa stagione, e le
+      previsioni sulla stagione corrente della nostra IA.
+    </p>
+    <div class="season-chart">
       <ngx-charts-line-chart
-        [scheme]="colorSchemeLinear"
+        [scheme]="seasonColorScheme"
         [showXAxisLabel]="true"
         [showYAxisLabel]="true"
         [xAxis]="true"
@@ -26,22 +48,63 @@
         [xAxisLabel]="'Stagione'"
         [yAxisLabel]="'Percentuale occupazione'"
         [results]="seasonData"
-        [xScaleMin]="bathhouse.seasonStart"
-        [xScaleMax]="bathhouse.seasonEnd"
-        [yScaleMax]="1"
-      >
+        [yScaleMin]="0"
+        [timeline]="true"
+        [yScaleMax]="1">
       </ngx-charts-line-chart>
     </div>
   </div>
 
-  <div class="current-season-section" *ngIf="currentSeasonStats && currentSeasonStats.outOfSeason">
-    Dati live stagionali non disponibili! Ciò indica che la stagione è terminata, o deve ancora iniziare.
+  <div class="close-season-section" *ngIf="currentSeasonStats">
+    <h1>Chiusura stagione</h1>
+    <p>
+      La pressione su questo bottone genera i dati a consuntivo della stagione corrente. Utilizzato a scopo di
+      test, in assenza per ragioni pratiche di un cronjob lato server per il calcolo automatico del consuntivo a fine stagione.
+    </p>
+    <div class="input-container">
+      <div class="submit-container">
+        <app-http-status-indicator class="submit-checker" [status]="closeSeasonStatus"></app-http-status-indicator>
+        <button mat-raised-button class="submit-button" (click)="closeSeason()" color="primary">Chiudi stagione</button>
+      </div>
+    </div>
   </div>
 
-  <ng-template #loadingScreen>
-    <app-loading-screen></app-loading-screen>
-  </ng-template>
+  <div class="past-season-section" *ngIf="oldSeasonStats || noAvailableOldSeasons">
+    <h1>Stagioni precedenti</h1>
+    <p>
+      Nel grafico seguente è possibile consultare le informazioni riguardanti le prenotazioni delle passate stagioni,
+      raffrontandole con la media globale dello stabilimento, e con il dato medio della concorrenza.
+    </p>
+    <p *ngIf="noAvailableOldSeasons">
+      Non sono presenti ulteriori stagioni!
+    </p>
+    <div *ngIf="!noAvailableOldSeasons">
+      <mat-form-field appearance="outline" class="year-selector">
+        <mat-label>Anno mostrato</mat-label>
+        <mat-select [value]="oldSeasonStats.currentYear" (selectionChange)="searchYear($event)">
+          <mat-option *ngFor="let year of oldSeasonStats.availableYears" [value]="year">
+            {{year}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
+      <div class="season-chart">
+        <ngx-charts-line-chart
+          [scheme]="seasonColorScheme"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [xAxis]="true"
+          [yAxis]="true"
+          [timeline]="true"
+          [xAxisLabel]="'Stagione'"
+          [yAxisLabel]="'Percentuale occupazione'"
+          [results]="oldSeasonData"
+          [yScaleMin]="0"
+          [yScaleMax]="1">
+        </ngx-charts-line-chart>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

@@ -1,10 +1,32 @@
+@import "~src/styles/utils";
+
 .current-season-section {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+
   .daily-chart {
     width: 100%;
     box-sizing: border-box;
     height: 140px;
   }
 
+  .season-chart {
+    width: 100%;
+    box-sizing: border-box;
+    height: 280px;
+  }
+}
+
+.close-season-section {
+  @include responsiveProp(margin-bottom, $defaultMargin);
+  .input-container {
+    @include inputsContainer;
+  }
+}
+
+.past-season-section {
+  .year-selector {
+    width: 100%;
+  }
   .season-chart {
     width: 100%;
     box-sizing: border-box;
