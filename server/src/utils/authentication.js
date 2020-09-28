@@ -32,7 +32,6 @@ const freeEndpoints = [
  */
 const allCustomersEndpoints = [
   { url: new RegExp('^\/new-booking\/.+$'), methods: ['GET', 'POST'] },
-  { url: new RegExp('^\/stats\/.+$'), methods: ['GET'] },
 ]
 
 /**
@@ -55,6 +54,7 @@ const allAdminsEndpoints = [
   { url: new RegExp('^\/news\/.+$'), methods: ['PUT', 'DELETE'] },
   { url: new RegExp('^\/news\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/home-cards\/?(\\?.+)?$'), methods: ['GET'] },
+  { url: new RegExp('^\/stats\/.+$'), methods: ['GET', 'POST'] },
   {
     url: new RegExp('^\/home-cards\/.*$'),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -176,11 +176,10 @@ const isTokenRevoked = async (token) => {
  * @param {{url:string, method: string}} endpoint - the endpoint to verify.
  * @param {string} audience - the aud field of the token.
  * @param {string} userId - The sub field of the token.
- * @param {Object} req - The request object.
  * @return {boolean} True if the given user has the required privileges,
  * false otherwise.
  */
-const endpointsCheck = async (endpoint, audience, userId, req) => {
+const endpointsCheck = async (endpoint, audience, userId) => {
   // secure endpoints verification
   switch (true) {
     case endpointMatches(endpoint, rootEndpoints):

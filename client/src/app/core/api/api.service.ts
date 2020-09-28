@@ -158,6 +158,18 @@ export class ApiService {
   }
 
   public getCurrentSeasonStats() : Observable<any> {
-    return this.http.get(`${environment.apiUrl}/api/stats/current-season`);
+    return this.http.get(`${environment.apiUrl}/api/stats/current`);
+  }
+
+  public getSpecificSeasonStats(year: number) : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/stats/seasons/${year}`);
+  }
+
+  public getLastSeasonStats() : Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/stats/seasons`);
+  }
+
+  public closeSeason() : Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/stats/seasons/`, {});
   }
 }

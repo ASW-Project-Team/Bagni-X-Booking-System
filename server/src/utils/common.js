@@ -1,7 +1,8 @@
 const validators = require('./validators');
 const responseGen = require('./responseGenerator');
 const respFilters = require('./responseFilters');
-const RankUmbrella = require('../models/rankUmbrellasModel')
+const RankUmbrella = require('../models/rankUmbrellasModel');
+const Booking = require('../models/bookingModel');
 
 
 /*
@@ -20,7 +21,7 @@ module.exports.create = async (req, res, model, fields, config) => {
 
   // validation
   let nonRequiredFields = config.nonRequiredFields ? config.nonRequiredFields : [];
-  let requiredFields = Object.entries(fields).filter(([key, value]) => !nonRequiredFields.includes(key)).map(([key, value]) => value);
+  let requiredFields = Object.entries(fields).filter(([key, _]) => !nonRequiredFields.includes(key)).map(([_, value]) => value);
   if (!validators.areFieldsValid(...requiredFields)) {
     responseGen.respondMalformedRequest(res)
     return;
@@ -172,6 +173,11 @@ module.exports.generateAllUmbrellas = async () => {
 
     return umbrellas;
   }).reduce((prev, curr) => prev.concat(curr), []);
+}
+
+module.exports.totNumberOfUmbrellas = async () => {
+  const allUmbrellas = await this.generateAllUmbrellas();
+  return allUmbrellas.length;
 }
 
 
