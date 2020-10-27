@@ -4,5 +4,5 @@ export const bathhouseMock: BathhouseModel = {
   name: 'Bagni X',
   logoUrl: 'assets/fake-backend/logo.png',
   seasonStart: new Date("2020-05-10"),
-  seasonEnd: new Date("2020-09-15"),
+  seasonEnd: new Date("2020-10-15"),
 }
