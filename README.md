@@ -1,5 +1,5 @@
 # Bagni X Booking System
-![Contribution guidelines for this project](docs/assets/github-banner.png)
+![](docs/assets/github-banner.png)
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Docker%20Compose%20CI?label=Docker%20Compose%20CI%20Build)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Angular%20CD?label=Angular%20GH%20Pages%20CD)
@@ -8,61 +8,57 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/ASW-Project-Team/Bagni-X-Booking-System)
 [![GitHub license](https://img.shields.io/github/license/ASW-Project-Team/Bagni-X-Booking-System)](https://github.com/ASW-Project-Team/Bagni-X-Booking-System/blob/master/LICENSE)
 
+Project for the [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), course, part of the master's degree in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), Università di Bologna.
 
-
-Progetto d'esame per il corso di [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), parte del corso di laurea magistrale in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), sede di Cesena.
-
-
-## Membri del team
+## Team members
  - [Riccardo Maldini](https://github.com/maldins46) - [riccardo.maldini2@studio.unibo.it](riccardo.maldini2@studio.unibo.it)
  - [Francesco Gorini](https://github.com/francescogorini) - [francesco.gorini@studio.unibo.it](francesco.gorini@studio.unibo.it)
  - [Thomas Angelini](https://github.com/ThomasAngeliniUnibo) - [thomas.angelini@studio.unibo.it](thomas.angelini@studio.unibo.it)
     
-## Docente 
+## Professor 
 [Silvia Mirri](https://www.unibo.it/sitoweb/silvia.mirri)
  
-## Progetto
-Il progetto si propone di realizzare una web app, ideata per un generico stabilimento balneare “Bagni X”. In particolare, lo scopo è la **gestione delle prenotazioni**: gli utenti possono registrarsi, quindi prenotare determinati postazioni - ombrelloni, in un dato periodo di tempo.
+## Project
+The project aims to create a web app, designed for a generic bathhouse "Bagni X". The purpose is the **management of reservations**: customers can register, then book certain positions - umbrellas, in a given period of time.
 
-## Final report
-La relazione finale è disponibile [qui](./docs/report.pdf), alla posizione **`/docs/report.pdf`**.
+## Final report, documentation and demo
+The final report is available [here](./docs/report.pdf), in the position `/docs/report.pdf`. Further API specification is available at [this repository](https://github.com/ASW-Project-Team/Bagni-X-Api-Documentation/blob/master/swagger.yaml), or in an easy-to-read format [here](https://asw-project-team.github.io/Bagni-X-Api-Documentation/). A demo version of the project front-end (with a fake back-end) is up in the [GitHub Pages domain of the project](https://asw-project-team.github.io/Bagni-X-Booking-System) (more about how this works inside the report).
 
-## Funzionalità
-Verranno forniti in particolare due punti di accesso, uno per l’utente **admin** (responsabile dello stabilimento), e uno per l’utente customer.
+## Functionalities
+Two access point will be provider by the application, one for the **admin** user (with the role of bathhouse manager), and one for the **customer** user.
 
-L’admin può **personalizzare** le caratteristiche dello stabilimento, i prezzi per periodo (es. alta - bassa stagione, sconti infrasettimanali ecc.) e i servizi aggiuntivi forniti. Esso potrà inoltre gestire le prenotazioni dei clienti, visualizzando le statistiche sulle **prenotazioni**, confermandole o rifiutandole. 
+The admin can **customize** how bathhouse data are shown to the customers, the prices per period (ex. high and low season, midweek discounts, etc.), and additional services provided. The admin will also be able to manage customer reservations, viewing **reservations** statistics, confirming or refusing them.
 
-Le informazioni mostrate all'admin, in particolare, presenteranno caratteristiche:
+The information shown to the admin, in particular, will have :
+ - **predictive** characteristics, estimating the trend of the current season, based on historical data, and on other relevant information;
 
- - di tipo **predittivo**, andando a stimare l’andamento futuro della stagione, in base ai dati pregressi, ai vari periodi della stagione, e ad altre informazioni di rilievo;
+ - **historical** characteristics, aggregating previous data from the current season, through charts and different visualizations.
 
- - di tipo **statistico**, andando ad aggregare i dati raccolti nella stagione corrente, tramite grafici e differenti visualizzazioni.
+The customer can view the the characteristics of the bathhouse, and **make reservation requests** for some given periods (half day, full day, multiple days), for one or more umbrellas. It may also specify whe willingness to use additional services (such as an additional sunbed, or access to the beach volleyball court). The admin will than have to confirm the booking, through their interface.
 
-L’utente può visualizzare le caratteristiche dello stabilimento ed effettuare **richieste di prenotazione**, per determinati periodi di tempo (mezza giornata, un giorno, più giorni), in uno o più ombrelloni. Esso potrà inoltre specificare la volontà di usufruire di servizi aggiuntivi (come il lettino addizionale, o l’accesso al campo da beach volley). L’admin dovrà quindi confermare la prenotazione, tramite la propria interfaccia.
+The primary purpose of the project is to create a **reservation system, but not a payment system**. This is beyond the scope of the project, and also presents problems that are difficult to manage.
 
-Lo scopo primario del progetto è quello di realizzare un **sistema di prenotazioni, ma non di pagamento**. Ciò esula dagli scopi del progetto, e presenta inoltre delle problematiche di difficile gestione.
+## Additional functionalities
+If the project times allow it, and it will not be too complex to implement it, it is planned to refine the application through extra features, according to an incremental approach.
 
-## Funzionalità aggiuntive
-Se i tempi di progetto lo consentiranno, e non risulterà eccessivamente complesso porlo in atto, si prevede di affinare l’applicazione tramite delle funzionalità extra, secondo un approccio di tipo incrementale. 
+For example, it was thought to use weather forecast data, to refine predictions, and show additional information to customer users. Or again, to refine predictive algorithms even more, exploiting neural networks, and ML frameworks such as TensorFlow.
 
-Si pensava di utilizzare ad esempio dei dati meteo forecast, per affinare le predizioni, e mostrare informazioni aggiuntive agli utenti customer. O ancora, di affinare ancora più gli algoritmi predittivi, sfruttando reti neurali, e framework di ML quali TensorFlow.
+**Update**: with respect to the initial project plan, further functions are being evaluated; in particular:
+ - Different technologies for authentication management, compared to the initial draft. Firebase Authentication introduces interesting features, but also additional complexity, and the lack of a centralized authentication management. We are therefore considering using the internal Node server to handle the complete authentication flow;
+ - Further possibilities of implementing the umbrella layout for the admin;
+ - Personalization of the welcome screen shown to customers by the admin.
 
-**Update**: rispetto al piano iniziale di progetto, ulteriori funzioni sono in corso di valutazione; in particolare:
- - Differenti tecnologie per la gestione dell'authentication, rispetto alla bozza iniziale. Utilizzare Firebase Authentication introduce caratteristiche interessanti, ma anche una complessità aggiuntiva, e la mancanza di una gestione centralizzata dell'autenticazione. Si sta valutando quindi di utilizzare il sistema interno al server node;
- - Ulteriori possibilità di implementazione del layout degli ombrelloni per l'admin;
- - Personalizzazione della welcome screen mostrata agli utenti, da parte dell'admin.
+## Technologies
+It is planned to develop the project through a pure MEAN stack, that is, using Angular for the front-end, Express and NodeJS for the back-end aspects, and MongoDB for the aspects related to persistent data storage. Authentication will be implemented through Firebase Authentication, a Google service that acts as a separate authentication server, allowing the use of OAuth2 providers such as those of Google and Facebook (**update**: not anymore, as stated before).
 
-## Tecnologie
-Si prevede di sviluppare il progetto tramite stack MEAN puro, ovvero utilizzando Angular per il front-end, Express e NodeJS per gli aspetti di back-end, e MongoDB per gli aspetti legati alla memorizzazione persistente dei dati. L’autenticazione verrà implementata tramite l’utilizzo di Firebase Authentication, un servizio di Google che agisce da server di autenticazione separato, permettendo l’utilizzo di provider OAuth2 come quelli di Google e Facebook (**update**: in corso di valutazione soluzioni differenti). 
+Various testing methodologies will be used, both with regard to HCI/UX/UI aspects (through focus groups, tests with users, interface prototyping via the Adobe XD suite), and with regard to the mere correctness of the code, using CI techniques.
 
-Verranno utilizzate varie metodologie di testing, sia per quanto riguarda aspetti HCI/UX/UI (tramite focus group, test con utenti, prototipazione dell'interfaccia tramite il sw Adobe XD), sia per quanto riguarda la mera correttezza del codice, sfruttando dei framework di testing (ancora da definire) e tecniche di CI.
-
-Si pensa inoltre di organizzare il lavoro tramite metodologie Scrum e GitHub Flow. I vari servizi (client, server, db) saranno implementati tramite container Docker, saranno fornite a fine progetto una o più repository GitHub, con l’elaborato testabile.
+It is also planned to organize the work through Scrum and GitHub Flow methodologies. The various services (client, server, db) will be implemented through Docker containers, one or more GitHub repositories will be provided at the end of the project, with the testable report.
 
 ## Deployment
-Un makefile è fornito all'interno del progetto, per rendere immediato il dispiegamento dei container su tecnologia Docker. Tra i comandi più importanti:
-- **`make`** (o **`make deploy`**): dispiega tutti container utilizzati per database e web server (per l'attivazione in produzione);
-- **`make server-dev`**: genera dipendenze e build per il web server e avvia un'istanza locale del web server direttamente su Node, senza passare per la containerizzazione Docker (utile in fase di sviluppo server). Richiede un'istanza MongoDB in esecuzione in `localhost:27017`;
-- **`make client-dev`**: genera dipendenze e build per il client Angular e avvia un'istanza locale del server Angular di sviluppo, senza passare per la containerizzazione Docker (utile in fase di sviluppo client). Non richiede istanze server e database, basando le risposte su un backend mock;
-- **`make integration`**: genera dipendenze e build per il client Angular e per il web server, avviando un'istanza locale del web server comprensivo di client Angular (utile in fase di integrazione client-server). Richiede un'istanza MongoDB in esecuzione in `localhost:27017`;
+A makefile is provided within the project, to make the deployment of containers on Docker technology immediate. Among the most important commands:
+- **`make`** (or **`make deploy`**): it deploys all containers used for database and web server (for activation in production);
+- **`make server-dev`**: it generates dependencies and builds for the web server and starts a local instance of the web server directly on Node, without going through Docker containerization (useful in the server development phase). Requires a MongoDB instance running in `localhost:27017`;
+- **`make client-dev`**: it generates dependencies and builds for the Angular client and launches a local instance of the development Angular server, without going through Docker containerization (useful in client development). It requires no server and database instances, basing responses on a fake backend;
+- **`make integration`**: it generates dependencies and builds for the Angular client and for the web server, starting a local instance of the web server including the Angular client (useful in the client-server integration phase). Requires a MongoDB instance running in `localhost:27017`;
 
