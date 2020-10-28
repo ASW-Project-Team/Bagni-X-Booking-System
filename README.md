@@ -24,6 +24,9 @@ Progetto d'esame per il corso di [Applicazioni e Servizi Web](https://www.unibo.
 ## Progetto
 Il progetto si propone di realizzare una web app, ideata per un generico stabilimento balneare “Bagni X”. In particolare, lo scopo è la **gestione delle prenotazioni**: gli utenti possono registrarsi, quindi prenotare determinati postazioni - ombrelloni, in un dato periodo di tempo.
 
+## Final report
+La relazione finale è disponibile [qui](./docs/report.pdf), alla posizione **`/docs/report.pdf`**.
+
 ## Funzionalità
 Verranno forniti in particolare due punti di accesso, uno per l’utente **admin** (responsabile dello stabilimento), e uno per l’utente customer.
 
