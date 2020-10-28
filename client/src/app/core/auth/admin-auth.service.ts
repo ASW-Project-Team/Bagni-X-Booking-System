@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {CustomerModel} from "../../shared/models/customer.model";
 import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {map} from "rxjs/operators";
@@ -15,7 +14,7 @@ import {AdminModel} from "../../shared/models/admin.model";
   providedIn: 'root'
 })
 export class AdminAuthService {
-// The RxJS BehaviorSubject is a special type of Subject that keeps hold of the
+  // The RxJS BehaviorSubject is a special type of Subject that keeps hold of the
   // current value and emits it to any new subscribers as soon as they subscribe.
   // Regular Subjects don't store the current value, and only emit values that
   // are published after a subscription is created

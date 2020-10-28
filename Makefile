@@ -56,4 +56,4 @@ integration: build-server-dev build-client-dev up-integration
 
 .PHONY: up-integration
 up-integration:
-	cd ./client && ng build --configuration=integration --output-path=../server/client && cd ../server && npm run integration
+	cd ./client && ng build --configuration=integration --optimization=false --output-path=../server/client && cd ../server && npm run integration
