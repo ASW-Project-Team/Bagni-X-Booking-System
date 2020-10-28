@@ -8,7 +8,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/ASW-Project-Team/Bagni-X-Booking-System)
 [![GitHub license](https://img.shields.io/github/license/ASW-Project-Team/Bagni-X-Booking-System)](https://github.com/ASW-Project-Team/Bagni-X-Booking-System/blob/master/LICENSE)
 
-Project for the [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), course, part of the master's degree in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), Università di Bologna.
+Project for the couse [Applicazioni e Servizi Web](https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2020/412604), part of the master's degree in [Ingegneria e Scienze Informatiche](https://corsi.unibo.it/magistrale/IngegneriaScienzeInformatiche), Università di Bologna.
 
 ## Team members
  - [Riccardo Maldini](https://github.com/maldins46) - [riccardo.maldini2@studio.unibo.it](riccardo.maldini2@studio.unibo.it)
