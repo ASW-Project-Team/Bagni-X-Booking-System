@@ -24,9 +24,9 @@
     "csurf": "^1.11.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.3",
+    "mongoose": "^5.10.11",
     "mongoose-float": "^1.0.4",
     "multer": "^1.4.2",
-    "validator": "^13.1.1"
+    "validator": "^13.1.17"
   }
 }
