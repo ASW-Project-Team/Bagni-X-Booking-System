@@ -1,5 +1,5 @@
 # Bagni X Booking System
-![](docs/assets/github-banner.png)
+![Application banner](docs/assets/github-banner.png)
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Docker%20Compose%20CI?label=Docker%20Compose%20CI%20Build)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ASW-Project-Team/Bagni-X-Booking-System/Angular%20CD?label=Angular%20GH%20Pages%20CD)
@@ -36,11 +36,9 @@ Two access point will be provider by the application, one for the **admin** user
 
 The admin can **customize** how bathhouse data are shown to the customers, the prices per period (ex. high and low season, midweek discounts, etc.), and additional services provided. The admin will also be able to manage customer reservations, viewing **reservations** statistics, confirming or refusing them.
 
-The information shown to the admin, in particular, will have :
+The information shown to the admin, in particular, will have:
  - **predictive** characteristics, estimating the trend of the current season, based on historical data, and on other relevant information;
-
  - **historical** characteristics, aggregating previous data from the current season, through charts and different visualizations.
-
 The customer can view the the characteristics of the bathhouse, and **make reservation requests** for some given periods (half day, full day, multiple days), for one or more umbrellas. It may also specify whe willingness to use additional services (such as an additional sunbed, or access to the beach volleyball court). The admin will than have to confirm the booking, through their interface.
 
 The primary purpose of the project is to create a **reservation system, but not a payment system**. This is beyond the scope of the project, and also presents problems that are difficult to manage.
