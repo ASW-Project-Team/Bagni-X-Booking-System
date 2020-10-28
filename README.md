@@ -24,6 +24,13 @@ The project aims to create a web app, designed for a generic bathhouse "Bagni X"
 ## Final report, documentation and demo
 The final report is available [here](./docs/report.pdf), in the position `/docs/report.pdf`. Further API specification is available at [this repository](https://github.com/ASW-Project-Team/Bagni-X-Api-Documentation/blob/master/swagger.yaml), or in an easy-to-read format [here](https://asw-project-team.github.io/Bagni-X-Api-Documentation/). A demo version of the project front-end (with a fake back-end) is up in the [GitHub Pages domain of the project](https://asw-project-team.github.io/Bagni-X-Booking-System) (more about how this works inside the report).
 
+## Deploy
+A makefile is provided within the project, to make the deployment of containers on Docker technology immediate. Among the most important commands:
+- **`make`** (or **`make deploy`**): it deploys all containers used for database and web server (for activation in production);
+- **`make server-dev`**: it generates dependencies and builds for the web server and starts a local instance of the web server directly on Node, without going through Docker containerization (useful in the server development phase). Requires a MongoDB instance running in `localhost:27017`;
+- **`make client-dev`**: it generates dependencies and builds for the Angular client and launches a local instance of the development Angular server, without going through Docker containerization (useful in client development). It requires no server and database instances, basing responses on a fake backend;
+- **`make integration`**: it generates dependencies and builds for the Angular client and for the web server, starting a local instance of the web server including the Angular client (useful in the client-server integration phase). Requires a MongoDB instance running in `localhost:27017`;
+
 ## Functionalities
 Two access point will be provider by the application, one for the **admin** user (with the role of bathhouse manager), and one for the **customer** user.
 
@@ -54,11 +61,4 @@ It is planned to develop the project through a pure MEAN stack, that is, using A
 Various testing methodologies will be used, both with regard to HCI/UX/UI aspects (through focus groups, tests with users, interface prototyping via the Adobe XD suite), and with regard to the mere correctness of the code, using CI techniques.
 
 It is also planned to organize the work through Scrum and GitHub Flow methodologies. The various services (client, server, db) will be implemented through Docker containers, one or more GitHub repositories will be provided at the end of the project, with the testable report.
-
-## Deployment
-A makefile is provided within the project, to make the deployment of containers on Docker technology immediate. Among the most important commands:
-- **`make`** (or **`make deploy`**): it deploys all containers used for database and web server (for activation in production);
-- **`make server-dev`**: it generates dependencies and builds for the web server and starts a local instance of the web server directly on Node, without going through Docker containerization (useful in the server development phase). Requires a MongoDB instance running in `localhost:27017`;
-- **`make client-dev`**: it generates dependencies and builds for the Angular client and launches a local instance of the development Angular server, without going through Docker containerization (useful in client development). It requires no server and database instances, basing responses on a fake backend;
-- **`make integration`**: it generates dependencies and builds for the Angular client and for the web server, starting a local instance of the web server including the Angular client (useful in the client-server integration phase). Requires a MongoDB instance running in `localhost:27017`;
 
