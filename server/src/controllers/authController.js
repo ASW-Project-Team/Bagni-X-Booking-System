@@ -73,7 +73,7 @@ module.exports.authenticateAdmin = async function (req, res) {
   //    present, return an error. The 404 is not used here, to not give too
   //    much information to attackers.
   if (!foundAdmin || !auth.passwordValid(password, foundAdmin.hash)) {
-    responseGen.respondRequestError(res, 'Incorrect username/password combination.')
+    responseGen.respondRequestError(res, 'Username o password errati! Ricontrolla le credenziali.')
     return;
   }
 
@@ -108,7 +108,7 @@ module.exports.authenticateCustomer = async function (req, res) {
   //    present, return an error. The 404 is not used here, to not give too
   //    much information to attackers.
   if (!foundCustomer || !auth.passwordValid(password, foundCustomer.hash)) {
-    responseGen.respondRequestError(res, 'Incorrect username/password combination.')
+    responseGen.respondRequestError(res, 'Email o password errati! Ricontrolla le credenziali.')
     return;
   }
 
