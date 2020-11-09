@@ -43,8 +43,8 @@ module.exports.respondServerError = function (res, error) {
  */
 module.exports.respondRequestError = function (res, error) {
   const body = error
-    ? createDescription(`Error in the request: ${error}`)
-    : createDescription('Error in the request.');
+    ? createDescription(`Errore nella richiesta. ${error}`)
+    : createDescription('Errore nella richiesta.');
   res.status(HttpCodes.BAD_REQUEST).json(body);
 }
 
