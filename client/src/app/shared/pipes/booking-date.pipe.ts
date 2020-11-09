@@ -7,7 +7,7 @@ import { DatePipe } from "@angular/common";
 export class BookingDatePipe extends
   DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
-    return super.transform(value, "d MMM, h:mm");
+    return super.transform(value, "d MMM, H:mm");
   }
 }
 
@@ -17,6 +17,6 @@ export class BookingDatePipe extends
 export class BookingDatePipeExtended extends
   DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
-    return super.transform(value, "d MMMM, h:mm");
+    return super.transform(value, "d MMMM, H:mm");
   }
 }
