@@ -22,7 +22,7 @@ import {SharedModule} from "./shared/shared.module";
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production, registrationStrategy: 'registerImmediately'}),
     SharedModule,
     CoreModule,
     PagesModule

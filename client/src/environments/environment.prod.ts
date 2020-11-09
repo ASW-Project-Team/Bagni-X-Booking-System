@@ -5,5 +5,5 @@
 export const environment = {
   production: true,
   fakeBackend: false,
-  apiUrl: 'http://www.bagnix.it'
+  apiUrl: 'http://localhost:3000'
 };
