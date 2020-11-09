@@ -1,4 +1,4 @@
-FROM node:14 AS client-build
+FROM node:15 AS client-build
 # A multi stage build is used to first build the client.
 # Node 12 is the latest LTS (long term support) version
 # of Node.js container https://hub.docker.com/_/node
@@ -15,7 +15,7 @@ RUN npm install @angular/cli && npm install && npm run build-prod
 # service worker and PWA functionalities (disabled in dev mode)
 
 
-FROM node:14 AS server-build
+FROM node:15 AS server-build
 # The build image is then positioned in the right place, inside
 # the Express server container, that is build in this final phase
 
