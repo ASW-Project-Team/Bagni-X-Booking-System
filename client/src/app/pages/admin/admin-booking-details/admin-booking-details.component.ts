@@ -82,7 +82,7 @@ export class AdminBookingDetailsComponent implements OnInit {
         this.appbarTitle = this.booking.getTitle();
 
         this.deleteAction.disabled = this.booking.cancelled;
-        this.confirmAction.disabled = this.booking.confirmed;
+        this.confirmAction.disabled = this.booking.confirmed || this.booking.cancelled;
 
         this.api.getCustomer(this.booking.customerId).subscribe(data => {
           this.customer = new Customer(data);
