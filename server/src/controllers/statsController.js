@@ -84,11 +84,20 @@ const getSeasonProjectionOccupation = async (lastHistoricalOccupationValue) => {
   const benchmark = await getBenchmarkSeason();
   const benchmarkIncrements = [];
   for (let i = 0; i < benchmark.length; i++) {
-    if (benchmark[i] && benchmark[i + 1]) {
-      benchmarkIncrements.push({
-        date: benchmark[i + 1].date,
-        percent: benchmark[i].percent - benchmark[i + 1].percent
-      });
+    // after middle sept., every increment is -1 (security constraint)
+      if(benchmark[i] && benchmark[i + 1]) {
+        if(benchmark[i].date.getTime() > new Date('2020-09-15')) {
+          benchmarkIncrements.push({
+            date: benchmark[i + 1].date,
+            percent: -0.01
+          });
+
+        } else {
+          benchmarkIncrements.push({
+            date: benchmark[i + 1].date,
+            percent: benchmark[i].percent - benchmark[i + 1].percent
+          });
+        }
     }
   }
 
