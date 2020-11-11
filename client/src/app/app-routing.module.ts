@@ -30,6 +30,8 @@ import {AdminRankDetailsComponent} from "./pages/admin/admin-rank-details/admin-
 import {AdminContactCreateComponent} from "./pages/admin/admin-contact-create/admin-contact-create.component";
 import {AdminHomeCardDetailsComponent} from "./pages/admin/admin-home-card-details/admin-home-card-details.component";
 import {AdminBookingCreateComponent} from "./pages/admin/admin-booking-create/admin-booking-create.component";
+import {ModifyPasswordComponent} from "./pages/customer/profile/modify-password/modify-password.component";
+import {ModifyAccountComponent} from "./pages/customer/profile/modify-account/modify-account.component";
 
 
 // populate app routes
@@ -41,6 +43,9 @@ const routes: Routes = [
   { path: 'news', component: NewsComponent },
   { path: 'news/:id', component: NewsDetailsComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [CustomerAuthGuard] },
+  { path: 'profile/modify-pw', component: ModifyPasswordComponent, canActivate: [CustomerAuthGuard] },
+  { path: 'profile/modify-account', component: ModifyAccountComponent, canActivate: [CustomerAuthGuard] },
+
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'bookings', component: BookingsComponent, canActivate: [CustomerAuthGuard] },

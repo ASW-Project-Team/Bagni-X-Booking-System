@@ -149,7 +149,7 @@ export class ApiService {
     return this.http.delete(`${environment.apiUrl}/api/customers/${customerId}`);
   }
 
-  public editUnregisteredCustomer(customerId: string, modifiedData: Object): Observable<any> {
+  public editCustomer(customerId: string, modifiedData: Object): Observable<any> {
     return this.http.put(`${environment.apiUrl}/api/customers/${customerId}`, modifiedData);
   }
 

@@ -6,12 +6,12 @@ import {HomeComponent} from "./home/home.component";
 import {LoginComponent} from "./login/login.component";
 import {NewsComponent} from "./news/news.component";
 import {NewsDetailsComponent} from "./news-details/news-details.component";
-import {ProfileComponent} from "./profile/profile.component";
 import {RegisterComponent} from "./register/register.component";
 import {SharedModule} from "../../shared/shared.module";
 import {AppRoutingModule} from "../../app-routing.module";
 import {NewBookingComponent} from "./new-booking/new-booking.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
+import {ProfileModule} from "./profile/profile.module";
 
 
 @NgModule({
@@ -22,15 +22,15 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
     LoginComponent,
     NewsComponent,
     NewsDetailsComponent,
-    ProfileComponent,
     RegisterComponent,
     NewBookingComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     AppRoutingModule,
+    ProfileModule,
   ],
   exports: [
     BookingDetailsComponent,
@@ -39,7 +39,7 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
     LoginComponent,
     NewsComponent,
     NewsDetailsComponent,
-    ProfileComponent,
+    ProfileModule,
     RegisterComponent,
     NewBookingComponent,
     PageNotFoundComponent

@@ -5,6 +5,7 @@ import {Customer} from "../../../shared/models/customer.model";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatDialog} from "@angular/material/dialog";
 import {AlertDialogComponent} from "../../../shared/components/alert-dialog/alert-dialog.component";
+import {ModifyPasswordComponent} from "./modify-password/modify-password.component";
 
 @Component({
   selector: 'app-profile',
@@ -69,5 +70,9 @@ export class ProfileComponent implements OnInit {
         }
       }
     });
+  }
+
+  changePw() {
+    this.dialog.open(ModifyPasswordComponent);
   }
 }

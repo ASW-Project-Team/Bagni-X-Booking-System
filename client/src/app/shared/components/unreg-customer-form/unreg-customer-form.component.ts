@@ -50,7 +50,7 @@ export class UnregCustomerFormComponent implements OnInit {
     }
 
     this.status = 'loading';
-    this.api.editUnregisteredCustomer(this.customer.id, this.customerForm.value).subscribe(() => {
+    this.api.editCustomer(this.customer.id, this.customerForm.value).subscribe(() => {
         this.status = '';
         this.router.navigate(['/admin/contacts'],).then(() =>
           this.snackBar.open("Cliente modificato.", null, { duration: 4000 }))

@@ -3,12 +3,12 @@
   <app-user-info class="user-container" [customer]="customer"></app-user-info>
 
 
-  <app-settings-list-item title="Modifica dati account" description="Modifica nome, indirizzo, numero di telefono, email."
+  <app-settings-list-item title="Modifica dati account"  routerLink="/profile/modify-account" description="Modifica nome, indirizzo, numero di telefono, email."
                     icon="shield-account-outline"></app-settings-list-item>
   <app-settings-list-item title="Logout" description="Effettua il logout dal tuo profilo."
                     icon="logout-variant" (click)="logout()"></app-settings-list-item>
   <app-settings-list-item title="Cambia password" description="Modifica la password che utilizzi per accedere al tuo profilo."
-                    icon="form-textbox-password"></app-settings-list-item>
+                    icon="form-textbox-password" routerLink="/profile/modify-pw"></app-settings-list-item>
   <app-settings-list-item title="Elimina l'account" description="Così facendo, perderai tutte le preferenze memorizzate. La cancellazione dell’account è definitiva."
                     icon="account-remove-outline" [isLast]="true" (click)="deleteCustomer()"></app-settings-list-item>
 </div>
