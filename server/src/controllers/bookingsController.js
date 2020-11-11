@@ -4,16 +4,11 @@ const sanitizers = require('../utils/sanitizers');
 const common = require('../utils/common');
 const respFilters = require('../utils/responseFilters');
 const responseGen = require('../utils/responseGenerator');
+const dateUtils = require('../utils/dateUtils')
 const dayBeforeDeleteIsPossible = 2
 
 
 
-const bookingDeleteLimit = () => {
-	const date = new Date();
-	date.setDate(date.getDate() - dayBeforeDeleteIsPossible);
-	date.setHours(0,0,0,0);
-	return date;
-}
 
 /**
  */
@@ -53,26 +48,30 @@ module.exports.deleteBooking = async (req, res) => {
 	// sanitization
 	const paramId = sanitizers.toMongoId(req.params.id);
 
-	// the booking cannot be cancelled the the 2 days before
-	if (new Date().getTime() > bookingDeleteLimit().getTime()) {
-		responseGen.respondRequestError(res, `The booking cannot be cancelled in the previous ${dayBeforeDeleteIsPossible} days before the start.`);
-		return;
-	}
-
 	// checks if the id is well formed
 	if (!validators.isMongoId(paramId)) {
 		responseGen.respondMalformedRequest(res)
 		return;
 	}
 
-	// tries to update the item, setting the cancelled field to true
-	const itemFound = await Booking.findOneAndUpdate({ _id: paramId }, { cancelled: true });
+	const booking = await Booking.findOne({_id: paramId});
+
+
+	// the booking cannot be cancelled from the the 2 days before, with the DELETE primitive
+	if (dateUtils.dayAfterX(dayBeforeDeleteIsPossible) > booking.dateFrom) {
+		responseGen.respondRequestError(res, `The booking cannot be cancelled in the previous ${dayBeforeDeleteIsPossible} days before the start.`);
+		return;
+	}
 
 	// if the item is not found, respond 404
-	if (!itemFound) {
+	if (!booking) {
 		responseGen.respondNotFound(res, Booking.modelName);
 		return;
 	}
+
+	// tries to update the item, setting the cancelled field to true
+	booking.cancelled = true;
+	await booking.save();
 
 	// request completed
 	responseGen.respondOK(res);
@@ -80,8 +79,7 @@ module.exports.deleteBooking = async (req, res) => {
 
 
 /**
- * Modify booking:
- * 	. umbrella are passed as an array of numbers in req.body.umbrellas
+ * Modify booking: umbrella are passed as an array of numbers in req.body.umbrellas
  * 	N.B. Date are passed as from and to
  * @param req
  * @param res

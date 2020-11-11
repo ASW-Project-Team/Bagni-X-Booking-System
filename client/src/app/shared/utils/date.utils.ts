@@ -28,10 +28,9 @@ export class DateUtils {
     return newDate;
   }
 
-  static twoDaysBefore(date: Date): Date {
-    let newDate = new Date(date)
-    newDate.setDate(date.getDate() - 2);
-    newDate.setHours(0,0,0,0);
+  static dayAfterTomorrow(): Date {
+    let newDate = new Date()
+    newDate.setDate(new Date().getDate() + 2);
     return newDate;
   }
 

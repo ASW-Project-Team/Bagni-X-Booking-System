@@ -48,7 +48,7 @@ export class BookingDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeActions.push(this.deleteAction);
-
+    console.log("helo")
     this.route.params.subscribe(params => {
       this.bookingId = params.id;
       this.appbarTitle = params.title;
@@ -56,7 +56,9 @@ export class BookingDetailsComponent implements OnInit {
       this.api.getBooking(this.bookingId).subscribe(data => {
         this.booking = new Booking(data);
         this.appbarTitle = this.booking.getTitle();
-        this.deleteAction.disabled = DateUtils.twoDaysBefore(this.booking.dateFrom).getTime() < new Date().getTime();
+        this.deleteAction.disabled =
+          DateUtils.dayAfterTomorrow() > this.booking.dateFrom
+          || this.booking.getState().class == "state-negative";
       });
     });
   }

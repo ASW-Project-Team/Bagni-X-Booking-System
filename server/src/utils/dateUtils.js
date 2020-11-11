@@ -86,6 +86,24 @@ module.exports.yesterday = () => {
   return yesterday;
 }
 
+
+module.exports.dayAfterX = (days) => {
+  const dayAfterX = new Date();
+  dayAfterX.setDate(dayAfterX.getDate() + days);
+  return dayAfterX;
+}
+
+/**
+ * Returns x days before today's date, at this time.
+ * @param days {number}: the number of days to subtract.
+ * @return {Date} The day before yesterday's date.
+ */
+module.exports.xDaysAgo = (days) => {
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - days);
+  return twoDaysAgo;
+}
+
 /**
  * Returns a date that corresponds to the first day of this year.
  * @return {Date} The first day of the year.
