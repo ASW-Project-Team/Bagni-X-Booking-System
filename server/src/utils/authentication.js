@@ -39,7 +39,7 @@ const allCustomersEndpoints = [
  * @type {{url: string|RegExp, methods: [string]}[]}
  */
 const customerSpecificEndpoints = [
-  { url: new RegExp('^\/customers\/.+$'), methods: ['GET', 'DELETE'] },
+  { url: new RegExp('^\/customers\/.+$'), methods: ['GET', 'DELETE', 'PUT'] },
   { url: new RegExp('^\/bookings\/customer\/.+$'), methods: ['GET'] },
   { url: new RegExp('^\/bookings\/.+$'), methods: ['GET', 'DELETE'] },
 ]
@@ -50,7 +50,7 @@ const customerSpecificEndpoints = [
  */
 const allAdminsEndpoints = [
   { url: new RegExp('^\/customers\/?(\\?.+)?$'), methods: ['GET', 'POST'] },
-  { url: new RegExp('^\/customers\/.+$'), methods: ['PUT', 'POST'] },
+  { url: new RegExp('^\/customers\/.+$'), methods: ['POST'] },
   { url: new RegExp('^\/news\/.+$'), methods: ['PUT', 'DELETE'] },
   { url: new RegExp('^\/news\/?$'), methods: ['POST'] },
   { url: new RegExp('^\/home-cards\/?(\\?.+)?$'), methods: ['GET'] },

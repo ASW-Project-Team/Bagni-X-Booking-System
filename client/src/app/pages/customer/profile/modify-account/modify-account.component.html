@@ -2,11 +2,11 @@
   <p>
     Modifica informazioni dell'account, quali nome, indirizzo, numero di telefono, email.
   </p>
-  <form [formGroup]="accModForm" class="modify-form" (ngSubmit)="modifyAcc()" #formRef="ngForm">
+  <form [formGroup]="accountEditForm" class="modify-form" (ngSubmit)="modifyAcc()" #formRef="ngForm">
     <mat-form-field appearance="outline" class="input-field-half">
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" type="text" placeholder="Es. Mario">
-      <mat-error *ngIf="accModForm.get('name').hasError('required')">
+      <mat-error *ngIf="accountEditForm.get('name').hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
     </mat-form-field>
@@ -14,7 +14,7 @@
     <mat-form-field appearance="outline" class="input-field-half">
       <mat-label>Cognome</mat-label>
       <input matInput formControlName="surname" type="text" placeholder="Es. Rossi">
-      <mat-error *ngIf="accModForm.get('surname').hasError('required')">
+      <mat-error *ngIf="accountEditForm.get('surname').hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
     </mat-form-field>
@@ -23,10 +23,10 @@
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" placeholder="Es. mario.rossi@example.com" type="email">
       <mat-error
-        *ngIf="accModForm.get('email').hasError('email') && !accModForm.get('email').hasError('required')">
+        *ngIf="accountEditForm.get('email').hasError('email') && !accountEditForm.get('email').hasError('required')">
         Inserisci un indirizzo email valido.
       </mat-error>
-      <mat-error *ngIf="accModForm.get('email').hasError('required')">
+      <mat-error *ngIf="accountEditForm.get('email').hasError('required')">
         Il campo è <strong>obbligatorio</strong>
       </mat-error>
     </mat-form-field>
@@ -34,7 +34,7 @@
     <mat-form-field appearance="outline" class="input-field-half">
       <mat-label>Numero di telefono</mat-label>
       <input matInput formControlName="phone" placeholder="Es. 3310000000" type="tel">
-      <mat-error *ngIf="accModForm.get('phone').hasError('pattern')">
+      <mat-error *ngIf="accountEditForm.get('phone').hasError('pattern')">
         Il numero non è valido
       </mat-error>
       <mat-hint>

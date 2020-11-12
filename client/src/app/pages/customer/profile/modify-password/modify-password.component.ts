@@ -5,6 +5,7 @@ import {CustomerAuthService} from "../../../../core/auth/customer-auth.service";
 import {MatUtilsService} from "../../../../core/mat-utils/mat-utils.service";
 import {RegisterComponent} from "../../register/register.component";
 import {AppbarAction} from "../../../../shared/components/appbars/appbars.model";
+import {ApiService} from "../../../../core/api/api.service";
 
 @Component({
   selector: 'app-modify-password',
@@ -34,7 +35,9 @@ export class ModifyPasswordComponent implements OnInit {
               private route: ActivatedRoute,
               private authService: CustomerAuthService,
               private router: Router,
-              private matUtils: MatUtilsService) { }
+              private matUtils: MatUtilsService,
+              private api: ApiService) {
+  }
 
   ngOnInit(): void {
     this.pwForm = this.formBuilder.group({
@@ -58,7 +61,7 @@ export class ModifyPasswordComponent implements OnInit {
     // compare is the password math
     if (password !== confirmPassword) {
       // if they don't match, set an error in our confirmPassword form control
-      control.get('confirmPassword').setErrors({ NoPassswordMatch: true });
+      control.get('confirmPassword').setErrors({NoPassswordMatch: true});
     }
   }
 
@@ -67,10 +70,23 @@ export class ModifyPasswordComponent implements OnInit {
     if (this.pwForm.invalid) {
       return;
     }
+    this.status = 'loading';
 
 
-    // todo changePwActions
-    this.router.navigate(['/profile']).then(() =>
-      this.matUtils.createSnackBar("Password modificata con successo!"))
+    const customer = this.authService.currentCustomerValue()
+    this.authService.login({email: customer.email, password: this.pwForm.get("oldPassword").value})
+      .subscribe(() => {
+        this.api.editCustomer(customer.id, {password: this.pwForm.get("newPassword").value})
+          .subscribe(() => {
+            this.router.navigate(['/profile']).then(() =>
+              this.matUtils.createSnackBar("Password modificata con successo!"))
+          }, error => {
+            this.status = error;
+          })
+
+      }, error => {
+        this.status = error;
+        this.matUtils.createSnackBar("La vecchia password non è corretta!")
+      })
   }
 }

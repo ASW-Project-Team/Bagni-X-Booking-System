@@ -2,6 +2,7 @@ const Customer = require("../models/customerModel");
 const sanitizers = require('../utils/sanitizers');
 const common = require('../utils/common');
 const auth = require('../utils/authentication');
+const responseGen = require('../utils/responseGenerator')
 
 
 /**
@@ -73,7 +74,16 @@ module.exports.updateCustomer = async function(req, res) {
   const address = sanitizers.toString(req.body.address);
   const deleted = sanitizers.toBool(req.body.deleted);
 
-  // todo check if email is taken?
+  // stop everything if trying to modify the email, but the email is
+  // already taken
+  if (email && paramId) {
+    const customer = await Customer.findOne({email: email});
+
+    if (customer && customer.email !== email) {
+      responseGen.respondRequestError(res, "L'email è già utilizzata da un altro account!")
+      return;
+    }
+  }
 
   // Update flow
   await common.update(req, res, Customer, paramId, {

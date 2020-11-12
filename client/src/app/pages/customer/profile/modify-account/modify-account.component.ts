@@ -7,6 +7,7 @@ import {Customer} from "../../../../shared/models/customer.model";
 import {AppbarAction} from "../../../../shared/components/appbars/appbars.model";
 import {UploadUtils} from "../../../../shared/utils/upload.utils";
 import {ApiService} from "../../../../core/api/api.service";
+import {News} from "../../../../shared/models/news.model";
 
 @Component({
   selector: 'app-modify-account',
@@ -14,7 +15,7 @@ import {ApiService} from "../../../../core/api/api.service";
   styleUrls: ['./modify-account.component.scss']
 })
 export class ModifyAccountComponent implements OnInit {
-  accModForm: FormGroup;
+  accountEditForm: FormGroup;
   actions: AppbarAction[] = [];
   status = ""
   userId = ""
@@ -41,7 +42,7 @@ export class ModifyAccountComponent implements OnInit {
     const customer = new Customer(this.authService.currentCustomerValue());
     this.userId = customer.id
 
-    this.accModForm = this.formBuilder.group({
+    this.accountEditForm = this.formBuilder.group({
       name: [customer.name, Validators.required],
       surname: [customer.surname, Validators.required],
       email: [customer.email, [Validators.required, Validators.email]],
@@ -52,18 +53,28 @@ export class ModifyAccountComponent implements OnInit {
 
   modifyAcc() {
     // stop here if form is invalid
-    if (this.accModForm.invalid) {
+    if (this.accountEditForm.invalid) {
       return;
     }
 
     this.status = 'loading';
-    //this.api.editCustomer(this.userId, this.accModForm.value).subscribe(() => {
-    //  this.status = '';
-      this.router.navigate(['/profile']).then(() =>
-        this.matUtils.createSnackBar("Dati dell'account modificati con successo!"))
 
-    //}, error => {
-    //  this.status = error;
-    //});
+    this.api.editCustomer(this.userId, this.accountEditForm.value).subscribe(() => {
+      this.status = '';
+
+      this.api.getCustomer(this.userId).subscribe((data) => {
+        const updatedCust = new Customer(data);
+        this.authService.updateCustomerInfo(updatedCust);
+
+        this.router.navigate(['/profile']).then(() =>
+          this.matUtils.createSnackBar("Dati dell'account modificati con successo!"))
+
+      }, error => {
+        this.status = error;
+      })
+
+    }, error => {
+      this.status = error;
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {CustomerModel} from "../../shared/models/customer.model";
+import {Customer, CustomerModel} from "../../shared/models/customer.model";
 import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {map} from "rxjs/operators";
@@ -40,6 +40,13 @@ export class CustomerAuthService {
         this.currentCustomerSubject.next(customer);
         return customer;
       }));
+  }
+
+  // updates only customer basic information, without updating jwt
+  public updateCustomerInfo(customer: Customer) {
+    customer.jwt = this.currentCustomerValue().jwt
+    localStorage.setItem(this.customerCookieName, JSON.stringify(customer));
+    this.currentCustomerSubject.next(customer);
   }
 
   public register(customer: CustomerModel): Observable<CustomerModel> {
