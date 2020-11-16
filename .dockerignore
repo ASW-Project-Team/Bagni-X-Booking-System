@@ -10,9 +10,15 @@ tmp/
 app/**/*.js
 app/**/*.js.map
 
-# dependencies
-node_modules/**/*
+
+# custom exclusions and dependencies
+node_modules/
+server/node_modules/
+server/assets/
+client/node_modules/
 bower_components/
+server/client/
+server/demo-site/
 
 # IDEs and editors
 .idea/
