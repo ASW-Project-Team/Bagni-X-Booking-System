@@ -2,7 +2,7 @@ const Admin = require('../models/adminModel');
 const sanitizers = require('../utils/sanitizers');
 const common = require('../utils/common');
 const auth = require('../utils/authentication');
-
+const responseGen = require('../utils/responseGenerator')
 
 
 /**
@@ -40,11 +40,21 @@ module.exports.updateAdmin = async function (req, res) {
   const username = sanitizers.toString(req.body.username);
   const password = sanitizers.toPassword(req.body.password);
 
+  // stop everything if trying to modify the email, but the email is
+  // already taken
+  if (username && paramId) {
+    const admin = await Admin.findOne({username: username});
+
+    if (admin && admin.username !== username) {
+      responseGen.respondRequestError(res, "L'username è già utilizzato da un altro account!")
+      return;
+    }
+  }
+
   // Update flow
   await common.update(req, res, Admin, paramId, {
     username: username,
     hash: password ? auth.createHash(password) : undefined,
-    name: name,
   });
 }
 

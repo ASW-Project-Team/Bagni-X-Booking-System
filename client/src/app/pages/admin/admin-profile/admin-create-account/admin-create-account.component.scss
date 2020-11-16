@@ -1,0 +1,9 @@
+@import "~src/styles/utils";
+
+p {
+  @include responsiveProp(margin-bottom, $defaultMargin)
+}
+
+.form {
+  @include inputsContainer;
+}

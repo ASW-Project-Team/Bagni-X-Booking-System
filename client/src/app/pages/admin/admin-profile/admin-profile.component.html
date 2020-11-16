@@ -6,18 +6,18 @@
   <app-settings-list-item *ngIf="admin.root" title="Aggiungi un account admin"
                           description="L’utente root ha il permesso di creare utenti amministratori."
                           icon="account-plus-outline"
-                          (click)="createAdmin()"></app-settings-list-item>
+                          routerLink="/admin/profile/create-admin"></app-settings-list-item>
   <app-settings-list-item *ngIf="admin.root" title="Elimina un account admin"
                           description="L’utente root ha il permesso di eliminare utenti amministratori."
                           icon="account-remove-outline"
-                          (click)="deleteAdmin()"></app-settings-list-item>
+                          routerLink="/admin/profile/remove-admin"></app-settings-list-item>
   <app-settings-list-item title="Modifica dati account" description="Modifica username dell'account."
-                          icon="shield-account-outline"></app-settings-list-item>
+                          icon="shield-account-outline" routerLink="/admin/profile/modify-account"></app-settings-list-item>
   <app-settings-list-item title="Logout" description="Effettua il logout dal tuo profilo."
                           icon="logout-variant" (click)="logout()"></app-settings-list-item>
   <app-settings-list-item title="Cambia password"
                           description="Modifica la password che utilizzi per accedere al tuo profilo."
-                          icon="form-textbox-password" [isLast]="true"></app-settings-list-item>
+                          icon="form-textbox-password" [isLast]="true" routerLink="/admin/profile/modify-pw"></app-settings-list-item>
 </div>
 
 <!-- Header and fab go last, to make them appear over content -->

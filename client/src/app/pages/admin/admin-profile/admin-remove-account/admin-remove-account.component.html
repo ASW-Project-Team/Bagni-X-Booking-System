@@ -1,0 +1,27 @@
+<div class="page">
+  <p>
+    Da questa schermata è possibile eliminare account amministratori registrati nell'applicazione.
+    Seleziona account dalla lista per rimuoverlo.
+  </p>
+
+  <div *ngFor="let admin of admins">
+    <app-settings-list-item [title]="admin.username"
+                            [icon]="!isMe(admin) ? 'account-circle-outline' : 'account-circle'"
+                            (click)="!isMe(admin) ? deleteAdmin(admin): undefined"
+                            [clickable]="!isMe(admin)"
+                            [description]="admin.root ? 'Admin con privilegi di root' : 'Admin standard'"
+                            [isLast]="admins.indexOf(admin) >= admins.length - 1">
+    </app-settings-list-item>
+  </div>
+
+  <mat-paginator [length]="totalItems" class="paginator"
+                 [pageSize]="10" (page)="changePage($event)"
+                 [pageSizeOptions]="[10]">
+  </mat-paginator>
+</div>
+
+
+<!-- Header and fab go last, to make them appear over content -->
+<app-nested-appbar title="Rimuovi account admin" backRoute="/admin/profile" backPageName="Profilo">
+</app-nested-appbar>
+

@@ -1,0 +1,64 @@
+<div class="page">
+  <p>
+    Da questa schermata è possibile aggiungere un nuovo account admin. L'account creato avrà
+    privilegi standard: per questioni di sicurezza, non è possibile creare ulteriori account
+    con privilegi di root.
+  </p>
+  <form [formGroup]="accountForm" class="form" (ngSubmit)="createAdmin()" #formRef="ngForm">
+
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" type="text" placeholder="Es. adminUsername">
+      <mat-error *ngIf="accountForm.get('username').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+      <mat-error *ngIf="!accountForm.get('username').hasError('required') && accountForm.get('username').hasError('whitespace')">
+        L'username non può contenere <strong>spazi</strong>.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Nuova password</mat-label>
+      <input matInput formControlName="password" [type]="hidePw ? 'password' : 'text'"
+             placeholder="Es. myPassword!123">
+      <mat-icon matSuffix (click)="hidePw = !hidePw">{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <mat-error *ngIf="accountForm.get('password').hasError('minlength') && !accountForm.get('password').hasError('required')">
+        Troppo breve!
+      </mat-error>
+      <mat-error
+        *ngIf="accountForm.get('password').hasError('pattern') && !accountForm.get('password').hasError('required') && !accountForm.get('password').hasError('minlength')">
+        Password non valida
+      </mat-error>
+      <mat-error *ngIf="accountForm.get('password').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="input-field-half">
+      <mat-label>Conferma password</mat-label>
+      <input matInput formControlName="confirmPassword" [type]="hideConfirm ? 'password' : 'text'"
+             placeholder="Es. myNewPassword!">
+      <mat-icon matSuffix
+                (click)="hideConfirm = !hideConfirm">{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <mat-error
+        *ngIf="accountForm.get('confirmPassword').hasError('NoPasswordMatch') && !accountForm.get('confirmPassword').hasError('required')">
+        Password e conferma non corrispondono
+      </mat-error>
+      <mat-error *ngIf="accountForm.get('confirmPassword').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [status]="status"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Crea admin</button>
+    </div>
+  </form>
+</div>
+
+
+<!-- Header and fab go last, to make them appear over content -->
+<app-nested-appbar title="Aggiungi account admin" [actions]="actions"
+                   backRoute="/admin/profile" backPageName="Profilo">
+</app-nested-appbar>
+

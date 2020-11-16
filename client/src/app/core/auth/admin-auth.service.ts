@@ -3,7 +3,8 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {map} from "rxjs/operators";
-import {AdminModel} from "../../shared/models/admin.model";
+import {Admin, AdminModel} from "../../shared/models/admin.model";
+import {Customer} from "../../shared/models/customer.model";
 
 /**
  * The authentication service is used to login and logout the admin from the app. It notifies other
@@ -31,18 +32,15 @@ export class AdminAuthService {
     return this.currentAdminSubject.value;
   }
 
-  public login(credentials: { username: string, password: string }): Observable<AdminModel> {
-    return this.httpClient.post<AdminModel>(`${environment.apiUrl}/api/auth/admins/login`, credentials)
-      .pipe(map(admin => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem(this.adminCookieName, JSON.stringify(admin));
-        this.currentAdminSubject.next(admin);
-        return admin;
-      }));
+  // updates only customer basic information, without updating jwt
+  public updateAdminInfo(admin: Admin) {
+    admin.jwt = this.currentAdminValue().jwt
+    localStorage.setItem(this.adminCookieName, JSON.stringify(admin));
+    this.currentAdminSubject.next(admin);
   }
 
-  public register(admin: AdminModel): Observable<AdminModel> {
-    return this.httpClient.post<AdminModel>(`${environment.apiUrl}/api/auth/admins/register`, admin)
+  public login(credentials: { username: string, password: string }): Observable<AdminModel> {
+    return this.httpClient.post<AdminModel>(`${environment.apiUrl}/api/auth/admins/login`, credentials)
       .pipe(map(admin => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.adminCookieName, JSON.stringify(admin));

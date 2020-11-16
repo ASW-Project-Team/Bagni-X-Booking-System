@@ -1,0 +1,30 @@
+<div class="page">
+  <p>
+    Modifica informazioni dell'account amministratore. Per questa tipologia di account, è possibile
+    modificare soltanto l'username.
+  </p>
+  <form [formGroup]="accountEditForm" class="modify-form" (ngSubmit)="modifyAcc()" #formRef="ngForm">
+    <mat-form-field appearance="outline" class="input-field-wide">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" type="text" placeholder="Es. adminUsername">
+      <mat-error *ngIf="accountEditForm.get('username').hasError('required')">
+        Il campo è <strong>obbligatorio</strong>
+      </mat-error>
+      <mat-error *ngIf="!accountEditForm.get('username').hasError('required') && accountEditForm.get('username').hasError('whitespace')">
+        L'username non può contenere <strong>spazi</strong>.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="submit-container">
+      <app-http-status-indicator class="submit-checker" [status]="status"></app-http-status-indicator>
+      <button mat-raised-button class="submit-button" type="submit" color="primary">Salva dati account</button>
+    </div>
+  </form>
+</div>
+
+
+<!-- Header and fab go last, to make them appear over content -->
+<app-nested-appbar title="Modifica dati account" [actions]="actions"
+                   backRoute="/admin/profile" backPageName="Profilo">
+</app-nested-appbar>
+

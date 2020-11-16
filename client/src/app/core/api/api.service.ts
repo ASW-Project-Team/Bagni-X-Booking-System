@@ -157,6 +157,26 @@ export class ApiService {
     return this.http.post(`${environment.apiUrl}/api/customers`, newData);
   }
 
+  public editAdmin(adminId: string, modifiedData: Object): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/api/admins/${adminId}`, modifiedData);
+  }
+
+  public getAdmin(adminId: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/admins/${adminId}`);
+  }
+
+  public getAdmins(page: number = 0): Observable<any> {
+    return this.http.get(`${environment.apiUrl}/api/admins`,{ params: {'page-id': page.toString()} });
+  }
+
+  public createAdmin(newData: Object): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/auth/admins/register`, newData);
+  }
+
+  public deleteAdmin(adminId: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/admins/${adminId}`);
+  }
+
   public getCurrentSeasonStats() : Observable<any> {
     return this.http.get(`${environment.apiUrl}/api/stats/current`);
   }

@@ -32,6 +32,10 @@ import {AdminHomeCardDetailsComponent} from "./pages/admin/admin-home-card-detai
 import {AdminBookingCreateComponent} from "./pages/admin/admin-booking-create/admin-booking-create.component";
 import {ModifyPasswordComponent} from "./pages/customer/profile/modify-password/modify-password.component";
 import {ModifyAccountComponent} from "./pages/customer/profile/modify-account/modify-account.component";
+import {AdminModifyPasswordComponent} from "./pages/admin/admin-profile/admin-modify-password/admin-modify-password.component";
+import {AdminModifyAccountComponent} from "./pages/admin/admin-profile/admin-modify-account/admin-modify-account.component";
+import {AdminCreateAccountComponent} from "./pages/admin/admin-profile/admin-create-account/admin-create-account.component";
+import {AdminRemoveAccountComponent} from "./pages/admin/admin-profile/admin-remove-account/admin-remove-account.component";
 
 
 // populate app routes
@@ -57,6 +61,7 @@ const routes: Routes = [
   { path: 'admin/bookings', component: AdminBookingsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/bookings/:id', component: AdminBookingDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/new-booking', component: AdminBookingCreateComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/stats', component: AdminStatsComponent, canActivate: [AdminAuthGuard] },
 
   { path: 'admin/contacts', component: AdminContactsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/contacts/:id', component: AdminContactDetailsComponent, canActivate: [AdminAuthGuard] },
@@ -69,14 +74,19 @@ const routes: Routes = [
   { path: 'admin/news', component: AdminNewsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/new-news', component: AdminNewsDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/news/:id', component: AdminNewsDetailsComponent, canActivate: [AdminAuthGuard] },
+
   { path: 'admin/profile', component: AdminProfileComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/profile/modify-pw', component: AdminModifyPasswordComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/profile/modify-account', component: AdminModifyAccountComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/profile/create-admin', component: AdminCreateAccountComponent, canActivate: [AdminAuthGuard] },
+  { path: 'admin/profile/remove-admin', component: AdminRemoveAccountComponent, canActivate: [AdminAuthGuard] },
+
   { path: 'admin/rank-umbrellas', component: AdminRanksComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/rank-umbrellas/:id', component: AdminRankDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/new-rank-umbrella', component: AdminRankDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services', component: AdminServicesComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/services/:id', component: AdminServiceDetailsComponent, canActivate: [AdminAuthGuard] },
   { path: 'admin/new-service', component: AdminServiceDetailsComponent, canActivate: [AdminAuthGuard] },
-  { path: 'admin/stats', component: AdminStatsComponent, canActivate: [AdminAuthGuard] },
 
   { path: '404', component: PageNotFoundComponent },
   { path: '**', redirectTo: '404' }

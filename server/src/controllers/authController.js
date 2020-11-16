@@ -28,7 +28,7 @@ module.exports.registerAdmin = async function (req, res) {
   // 3. controls if admin exists yet
   const adminFound = await Admin.findOne({ username: username })
   if (adminFound) {
-    responseGen.respondAlreadyPresent(res)
+    responseGen.respondRequestError(res, "È già presente un admin con questo username!");
     return;
   }
 

@@ -73,7 +73,7 @@ const allAdminsEndpoints = [
  * @type {{url: string|RegExp, methods: [string]}[]}
  */
 const adminSpecificEndpoints = [
-  { url: new RegExp('^\/admins\/.+'), methods: ['GET', 'PUT', 'POST', 'DELETE'], },
+  { url: new RegExp('^\/admins.*$'), methods: ['GET', 'PUT', 'POST', 'DELETE'], },
 ]
 
 /**
